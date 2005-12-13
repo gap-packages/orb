@@ -15,7 +15,8 @@ InstallGlobalFunction( InitHT, function(len, hfun, eqfun)
              vals := [],       # a value for each element, "true" not stored
              len := len,       # the length of the hash
              nr := 0,          # number of elements in hash
-             hf := hfun,       # the hash function
+             hf := hfun.func,  # the hash function
+             hfd := hfun.data, # data for the second argument to hf
              eqf := eqfun,     # a comparison function
              collisions := 0,  # number of collisions
              accesses := 0,    # number of accesses
@@ -38,10 +39,10 @@ InstallMethod(ViewObj, "for hash tables", [IsRecord],
     if IsBound(ht.ishash) and
        IsBound(ht.len) and IsBound(ht.nr) and IsBound(ht.els) and
        IsBound(ht.vals) and IsBound(ht.hf) and IsBound(ht.eqf) and
-       IsBound(ht.collisions) then
+       IsBound(ht.collisions) and IsBound(ht.hfd) then
       # This is obviously a hash table
-      Print("<hash table len=",ht.len," used=",ht.nr," collisions=",
-            ht.collisions);
+      Print("<hash table len=",ht.len," used=",ht.nr," colls=",
+            ht.collisions," accs=",ht.accesses);
       if IsBound(ht.alert) then
           Print(" COLLISION ALERT!>");
       elif IsBound(ht.cangrow) then
@@ -66,7 +67,7 @@ InstallGlobalFunction( AddHT, function(ht, x, val)
       return fail;
     fi;
   fi;
-  h := ht.hf(x);
+  h := ht.hf(x,ht.hfd);
   while IsBound(ht.els[h]) do
     h := h+1;
     ht.collisions := ht.collisions + 1;
@@ -94,7 +95,7 @@ end );
 InstallGlobalFunction( ValueHT, function(ht, x)
   local h;
   ht.accesses := ht.accesses + 1;
-  h := ht.hf(x);
+  h := ht.hf(x,ht.hfd);
   while IsBound(ht.els[h]) do
     if ht.eqf(ht.els[h],x) then
         if IsBound(ht.vals[h]) then
@@ -115,14 +116,16 @@ InstallGlobalFunction( GrowHT, function(ht,x)
 
   Info(InfoOrb,1,"Growing hash table to length ",ht.len*2," !!!");
 
-  oldels := [];
-  oldvals := [];
+  oldels := ht.els;
+  oldvals := ht.vals;
   oldlen := ht.len;
 
   ht.els := [];
   ht.vals := [];
   ht.len := ht.len * 2 + 1;
   ht.hf := MakeHashFunction(x,ht.len);
+  ht.hfd := ht.hf.data;
+  ht.hf := ht.hf.func;
   ht.nr := 0;
   ht.collisions := 0;
   # Now copy into new hash:

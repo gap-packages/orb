@@ -1,0 +1,8 @@
+LoadPackage("orb");
+gens := AtlasGenerators("M11",17).generators;
+gens := List(gens,CMat);
+v := ShallowCopy(gens[1][1]);
+RandomizeVector(v);
+o := InitOrbit(gens,v,OnRight,12000);
+Enumerate(o,infinity);
+

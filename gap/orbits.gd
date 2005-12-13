@@ -11,5 +11,15 @@
 
 
 DeclareInfoClass( "InfoOrb" );
+SetInfoLevel( InfoOrb, 1 );
+
+BindGlobal( "OrbitsFamily", NewFamily( "OrbitsFamily" ) );
+DeclareRepresentation( "IsOrbit", IsComponentObjectRep, [] );
+DeclareGlobalVariable( "OrbitsType" );
+DeclareFilter( "IsReady", IsOrbit );
+
+DeclareGlobalFunction( "InitOrbit" );
+
+DeclareOperation( "Enumerate", [ IsOrbit, IsCyclotomic ] );
 
 
