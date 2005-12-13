@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE Book SYSTEM "gapdoc.dtd">
+
+<!--
+
+  orb.xml          orb package documentation                    Max Neunhoeffer
+                                                               and Felix Noeske
+
+  Copyright (C) 2005, Lehrstuhl D für Mathematik, RWTH-Aachen
+
+-->
+
+<Book Name="orb">
+
+<TitlePage>
+    <Title>GAP 4 Package <Package>orb</Package></Title>
+    <Subtitle>orb --- Methods to enumerate Orbits</Subtitle>
+    <Version>
+      <#Include SYSTEM "../VERSION">
+    </Version>
+    <Author>Max Neunhöffer
+<Address>
+Lehrstuhl D für Mathematik,
+RWTH Aachen,
+Templergraben 64,
+52062 Aachen,
+Germany
+</Address>
+    <Email>max.neunhoeffer@math.rwth-aachen.de</Email>
+    <Homepage>http://www.math.rwth-aachen.de/&tilde;Max.Neunhoeffer</Homepage>
+    </Author>
+    <Author>Felix Noeske
+<Address>
+Lehrstuhl D für Mathematik,
+RWTH Aachen,
+Templergraben 64,
+52062 Aachen,
+Germany
+</Address>
+    <Email>felix.noeske@math.rwth-aachen.de</Email>
+    <Homepage>http://www.math.rwth-aachen.de/&tilde;Felix.Noeske</Homepage>
+    </Author>
+    <Date>November 2005</Date>
+
+<Copyright>
+  &copyright; 2005 by Max Neunhöffer and Felix Noeske<P/>
+
+  This package may be distributed under the terms and conditions of the
+  GNU Public License Version 2 or higher.
+</Copyright>
+
+</TitlePage>
+
+<!--  TableOfContents  . . . . . .  generate a table of contents   -->
+<TableOfContents/>
+
+<!--  The only chapter of the book  --> 
+<Body>
+<#Include SYSTEM "intro.xml">
+<#Include SYSTEM "install.xml">
+<#Include SYSTEM "examples.xml">
+</Body>
+
+<Bibliography Databases="orb"/>
+
+<!--  And finally an index as well   -->
+<TheIndex/>
+
+</Book>
+

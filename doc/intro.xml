@@ -1,0 +1,36 @@
+<!-- 
+
+  intro.xml            orb package documentation               Max Neunhoeffer
+                                                                  Felix Noeske
+
+         Copyright (C) 2005, Lehrstuhl D für Mathematik, RWTH-Aachen
+
+This chapter gives a short introduction and explains the philosophy
+behind the package.
+
+-->
+
+<Chapter Label="intro">
+<Heading>Introduction</Heading>
+
+<Section Label="philosophy">
+<Heading>Philosophy</Heading>
+
+This package is about orbit enumeration. To be written further.
+</Section>
+
+<Section Label="overview">
+<Heading>Overview over this manual</Heading>
+
+Chapter <Ref Chap="install"/> describes the installation of this package.
+
+<E>More text on other chapters to be written.</E><P/>
+
+Finally, Chapter <Ref Chap="examples"/>
+shows instructive examples for the usage of this package.
+
+</Section>
+
+<!-- ############################################################ -->
+
+</Chapter>
