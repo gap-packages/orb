@@ -29,8 +29,11 @@ InstallGlobalFunction( InitOrbit,
     if IsGroup(gens) then
         if HasSize(gens) then
             opt.grpsize := Size(gens);
-            gens := GeneratorsOfGroup(gens);
+            if not IsBound(opt.maxsize) then
+                opt.maxsize := opt.grpsize;
+            fi;
         fi;
+        gens := GeneratorsOfGroup(gens);
     fi;
     # Now set some default options:
     if not IsBound( opt.makeperms ) then opt.makeperms := false; fi;
