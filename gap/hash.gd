@@ -10,3 +10,9 @@
 ##
 #############################################################################
 
+DeclareGlobalFunction( "InitHT" );
+DeclareGlobalFunction( "NewHT" );
+DeclareGlobalFunction( "AddHT" );
+DeclareGlobalFunction( "ValueHT" );
+DeclareGlobalFunction( "GrowHT" );
+
