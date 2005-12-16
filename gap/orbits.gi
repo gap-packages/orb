@@ -25,28 +25,51 @@ InstallGlobalFunction( InitOrbit,
         Print("Usage: InitOrbit( gens, point, action, hashlen [,options] )\n");
         return;
     fi;
+    # We make a copy:
+    o := ShallowCopy(opt);
     # Now get rid of the group object if necessary but preserve known size:
     if IsGroup(gens) then
         if HasSize(gens) then
-            opt.grpsize := Size(gens);
-            if not IsBound(opt.maxsize) then
-                opt.maxsize := opt.grpsize;
+            o.grpsize := Size(gens);
+            if not IsBound(o.maxsize) then
+                o.maxsize := o.grpsize;
             fi;
         fi;
         gens := GeneratorsOfGroup(gens);
     fi;
     # Now set some default options:
-    if not IsBound( opt.makeperms ) then opt.makeperms := false; fi;
-    if not IsBound( opt.makestab ) then opt.makestab := false; fi;
+    if not IsBound( o.permgens ) then 
+        o.stab := fail; 
+    else
+        o.stab := Group(o.permgens[1]^0);
+    fi;
+    if IsBound(o.lookingfor) then
+        if o.lookingfor <> fail then 
+            if not (IsList(o.lookingfor) or IsRecord(o.lookingfor) or
+                    IsFunction(o.lookingfor)) then
+                Error("opt.lookingfor must be a list or a hash table or a",
+                      " function");
+            fi;
+            o.found := false; 
+        fi;
+        o.schreiergen := true;
+    else
+        o.lookingfor := fail;
+    fi;
+    if not IsBound( o.schreiergen ) then 
+        o.schreiergen := fail; 
+        o.schreierpos := fail;
+    else
+        o.schreiergen := [fail];
+        o.schreierpos := [fail];
+    fi;
     
     # Now take this record as our orbit record and return:
-    o := opt;
     o.gens := gens;
     o.nrgens := Length(gens);
     o.op := op;
     o.ht := NewHT(x,hashlen);
     o.orbit := [x];
-    if o.makeperms then o.perms := List(gens,v->[]); else o.perms := fail; fi;
     o.pos := 1;
     AddHT(o.ht,x,true);
     Objectify( OrbitsType, o );
@@ -56,16 +79,25 @@ end );
 InstallMethod( ViewObj, "for an orbit", [IsOrbit],
   function( o )
     Print("<");
-    if IsReady(o) then Print("closed"); else Print("open"); fi;
-    Print(" orbit with ", Length(o!.orbit), " points>");
+    if IsClosed(o) then Print("closed"); else Print("open"); fi;
+    Print(" orbit with ", Length(o!.orbit), " points");
+    if o!.stab <> fail then
+        Print(" with stabilizer");
+    fi;
+    if o!.schreiergen <> fail then
+        Print(" with Schreier tree");
+    fi;
+    if o!.lookingfor <> fail then
+        Print(" looking for something");
+    fi;
+    Print(">");
   end );
 
 InstallMethod( Enumerate, "for an orbit and a limit", [IsOrbit, IsCyclotomic],
   function( o, limit )
-    local i,j,orb,perms,pos,yy;
+    local i,j,orb,pos,yy;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
-    perms := o!.perms;
     if IsBound(o!.maxsize) and o!.maxsize < limit then limit := o!.maxsize; fi;
     while Length(orb) <= limit and i <= Length(orb) do
         for j in [1..o!.nrgens] do
@@ -74,18 +106,60 @@ InstallMethod( Enumerate, "for an orbit and a limit", [IsOrbit, IsCyclotomic],
             if pos = fail then
                 Add(orb,yy);
                 AddHT(o!.ht,yy,Length(orb));
-                if perms <> fail then Add(perms[j],Length(orb)); fi;
+                if o!.schreiergen <> fail then
+                    Add(o!.schreiergen,j);
+                    Add(o!.schreierpos,i);
+                    if o!.lookingfor <> fail then
+                        if IsList(o!.lookingfor) then
+                            pos := Position(o!.lookingfor,yy);
+                            if pos <> fail then
+                                o!.pos := i;
+                                o!.found := Length(orb);
+                                return o;
+                            fi;
+                        elif IsFunction(o!.lookingfor) then
+                            pos := o!.lookingfor(yy);
+                            if pos = true then
+                                o!.pos := i;
+                                o!.found := Length(orb);
+                                return o;
+                            fi;
+                        else  # a hash table
+                            pos := ValueHT(o!.lookingfor,yy);
+                            if pos <> fail then
+                                o!.pos := i;
+                                o!.found := Length(orb);
+                                return o;
+                            fi;
+                        fi;
+                    fi;
+                fi;
             else
-                if perms <> fail then Add(perms[j],pos); fi;
+                if o!.stab <> fail then
+                    # Calculate an element of the stabilizer:
+                    Error("not yet implemented");
+                fi;
             fi;
         od;
         i := i + 1;
     od;
     o!.pos := i;
     if i > Length(orb) or IsBound(o!.maxsize) and Length(orb) >= o!.maxsize then
-        SetFilterObj(o,IsReady);
+        SetFilterObj(o,IsClosed);
     fi;
     return o;
 end );
+
+InstallMethod( TraceSchreierTree, "for an orbit and a position",
+  [ IsOrbit, IsPosInt ],
+  function( o, pos )
+    local word;
+    word := [];
+    while pos > 1 do
+        Add(word,o!.schreiergen[pos]);
+        pos := o!.schreierpos[pos];
+    od;
+    return Reversed(word);
+  end );
 
 

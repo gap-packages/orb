@@ -16,10 +16,11 @@ SetInfoLevel( InfoOrb, 1 );
 BindGlobal( "OrbitsFamily", NewFamily( "OrbitsFamily" ) );
 DeclareRepresentation( "IsOrbit", IsComponentObjectRep, [] );
 DeclareGlobalVariable( "OrbitsType" );
-DeclareFilter( "IsReady", IsOrbit );
+DeclareFilter( "IsClosed", IsOrbit );
 
 DeclareGlobalFunction( "InitOrbit" );
 
 DeclareOperation( "Enumerate", [ IsOrbit, IsCyclotomic ] );
+DeclareOperation( "TraceSchreierTree", [ IsOrbit, IsPosInt ] );
 
 
