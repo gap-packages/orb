@@ -29,6 +29,7 @@ InstallGlobalFunction( NewHT, function(sample,len)
   local eqfun,hfun,ht;
   hfun := MakeHashFunction(sample,len);
   eqfun := ApplicableMethod(\=,[sample,sample]);
+  if eqfun = fail then eqfun := CVEC_EQINT; fi;
   ht := InitHT(len,hfun,eqfun);
   ht.cangrow := true;
   return ht;

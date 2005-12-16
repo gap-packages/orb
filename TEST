@@ -5,6 +5,10 @@ v := ShallowCopy(gens[1][1]);
 RandomizeVector(v);
 o := InitOrbit(gens,v,OnRight,12000);
 Enumerate(o,infinity);
+permgens := AtlasGenerators("M11",1).generators;
+permgensi := List(permgens,x->x^-1);
+o := InitOrbit(gens,v,OnRight,12000,rec(permgensi := permgensi));
+Enumerate(o);
 
 findinvo := function(G,x)
   # x an involution in G

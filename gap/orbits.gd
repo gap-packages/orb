@@ -14,13 +14,25 @@ DeclareInfoClass( "InfoOrb" );
 SetInfoLevel( InfoOrb, 1 );
 
 BindGlobal( "OrbitsFamily", NewFamily( "OrbitsFamily" ) );
-DeclareRepresentation( "IsOrbit", IsComponentObjectRep, [] );
+DeclareCategory( "IsOrbit", IsComponentObjectRep );
 DeclareGlobalVariable( "OrbitsType" );
 DeclareFilter( "IsClosed", IsOrbit );
+DeclareRepresentation( "IsPermOnIntOrbitRep", IsOrbit, [] );
+DeclareRepresentation( "IsHashOrbitRep", IsOrbit, [] );
+DeclareFilter( "WithSchreierTree" );
+DeclareFilter( "WithPermStabilizer" );
+DeclareFilter( "WithMatStabilizer" );
+DeclareFilter( "LookingForUsingList" );
+DeclareFilter( "LookingForUsingHash" );
+DeclareFilter( "LookingForUsingFunc" );
+DeclareOperation( "LookFor", [ IsOrbit, IsObject ] );
 
 DeclareGlobalFunction( "InitOrbit" );
 
 DeclareOperation( "Enumerate", [ IsOrbit, IsCyclotomic ] );
-DeclareOperation( "TraceSchreierTree", [ IsOrbit, IsPosInt ] );
+DeclareOperation( "Enumerate", [ IsOrbit ] );
+DeclareOperation( "TraceSchreierTreeBack", [ IsOrbit, IsPosInt ] );
+DeclareOperation( "TraceSchreierTreeForward", [ IsOrbit, IsPosInt ] );
+DeclareOperation( "EvaluateWord", [ IsList, IsList ] );
 
 
