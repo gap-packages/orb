@@ -11,6 +11,33 @@
 
 InstallValue( OrbitsType, NewType( OrbitsFamily, IsOrbit ) );
 
+# Possible options:
+#  .grpsizebound
+#  .orbsizebound
+#  .stabsizebound
+#  .permgensi
+#  .matgensi
+#  .onlystab
+#  .schreier
+#  .lookingfor
+#  .report
+#  .stabchainrandom
+
+# Outputs:
+#  .gens
+#  .nrgens
+#  .op
+#  .orbit
+#  .pos
+#  .tab
+#  .ht
+#  .stab
+#  .stabsize
+#  .stabcomplete
+#  .schreiergen
+#  .schreierpos
+#  .found
+
 InstallGlobalFunction( InitOrbit, 
   function( arg )
     local filts,gens,hashlen,lmp,o,op,opt,x;
@@ -77,6 +104,9 @@ InstallGlobalFunction( InitOrbit,
         o.schreiergen := [fail];
         o.schreierpos := [fail];
     fi;
+    if not(IsBound(o.report)) then
+        o.report := 0;
+    fi;
     
     # Now take this record as our orbit record and return:
     o.gens := gens;
@@ -93,8 +123,8 @@ InstallGlobalFunction( InitOrbit,
         o.tab := 0*[1..lmp];
         o.tab[x] := 1;
         filts := filts and IsPermOnIntOrbitRep;
-        if not(IsBound(o.orbsizelimit)) then
-            o.orbsizelimit := lmp;
+        if not(IsBound(o.orbsizebound)) then
+            o.orbsizebound := lmp;
         fi;
     else
         o.ht := NewHT(x,hashlen);
@@ -175,13 +205,14 @@ InstallMethod( Enumerate,
   "for a hash orbit without Schreier tree and a limit", 
   [IsOrbit and IsHashOrbitRep, IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,pos,yy;
+    local i,j,nr,orb,pos,yy,rep;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
+    rep := o!.report;
     while nr <= limit and i <= nr do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
@@ -204,6 +235,11 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
+        rep := rep - 1;
+        if rep = 0 then
+            rep := o!.report;
+            Info(InfoOrb,1,"Have ",nr," points.");
+        fi;
     od;
     o!.pos := i;
     if i > nr then SetFilterObj(o,IsClosed); fi;
@@ -214,13 +250,14 @@ InstallMethod( Enumerate,
   "for a hash orbit with Schreier tree and a limit", 
   [IsOrbit and IsHashOrbitRep and WithSchreierTree, IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,pos,yy;
+    local i,j,nr,orb,pos,yy,rep;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
+    rep := o!.report;
     while nr <= limit and i <= nr do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
@@ -245,6 +282,11 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
+        rep := rep - 1;
+        if rep = 0 then
+            rep := o!.report;
+            Info(InfoOrb,1,"Have ",nr," points.");
+        fi;
     od;
     o!.pos := i;
     if i > nr then SetFilterObj(o,IsClosed); fi;
@@ -256,13 +298,14 @@ InstallMethod( Enumerate,
   [IsOrbit and IsHashOrbitRep and WithSchreierTree and WithPermStabilizer, 
    IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,pos,sgen,wordb,wordf,yy;
+    local i,j,nr,orb,pos,sgen,wordb,wordf,yy,rep;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
+    rep := o!.report;
     while nr <= limit and i <= nr do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
@@ -309,7 +352,18 @@ InstallMethod( Enumerate,
                     sgen := LeftQuotient(EvaluateWord(o!.permgensi,wordb),
                              o!.permgensi[j]*EvaluateWord(o!.permgensi,wordf));
                     if not(IsOne(sgen)) and not(sgen in o!.stab) then
-                        o!.stab := ClosureGroup(o!.stab,sgen);
+                        if IsBound(o!.stabchainrandom) then
+                          if o!.stabsize = 1 then
+                              o!.stab := Group(sgen);
+                          else
+                              o!.stab := Group(Concatenation(
+                                                 GeneratorsOfGroup(o!.stab),
+                                                 [sgen]));
+                          fi;
+                          StabChain(o!.stab,rec(random := o!.stabchainrandom));
+                        else
+                          o!.stab := ClosureGroup(o!.stab,sgen);
+                        fi;
                         o!.stabsize := Size(o!.stab);
                         Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
                         if IsBound(o!.stabsizebound) and
@@ -326,6 +380,11 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
+        rep := rep - 1;
+        if rep = 0 then
+            rep := o!.report;
+            Info(InfoOrb,1,"Have ",nr," points.");
+        fi;
     od;
     o!.pos := i;
     if i > nr then SetFilterObj(o,IsClosed); fi;
@@ -336,7 +395,7 @@ InstallMethod( Enumerate,
   "for a perm on int orbit without Schreier tree and a limit", 
   [IsOrbit and IsPermOnIntOrbitRep, IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,tab,yy;
+    local i,j,nr,orb,tab,yy,rep;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     tab := o!.tab;
@@ -344,6 +403,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
+    rep := o!.report;
     while nr <= limit and i <= nr do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
@@ -365,6 +425,11 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
+        rep := rep - 1;
+        if rep = 0 then
+            rep := o!.report;
+            Info(InfoOrb,1,"Have ",nr," points.");
+        fi;
     od;
     o!.pos := i;
     if i > nr then SetFilterObj(o,IsClosed); fi;
@@ -375,7 +440,7 @@ InstallMethod( Enumerate,
   "for a perm on int orbit with Schreier tree and a limit", 
   [IsOrbit and IsPermOnIntOrbitRep and WithSchreierTree, IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,tab,yy;
+    local i,j,nr,orb,tab,yy,rep;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     tab := o!.tab;
@@ -383,6 +448,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
+    rep := o!.report;
     while nr <= limit and i <= nr do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
@@ -406,6 +472,11 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
+        rep := rep - 1;
+        if rep = 0 then
+            rep := o!.report;
+            Info(InfoOrb,1,"Have ",nr," points.");
+        fi;
     od;
     o!.pos := i;
     if i > nr then SetFilterObj(o,IsClosed); fi;
@@ -417,7 +488,7 @@ InstallMethod( Enumerate,
   [IsOrbit and IsPermOnIntOrbitRep and WithSchreierTree and WithPermStabilizer, 
    IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,sgen,tab,wordb,wordf,yy;
+    local i,j,nr,orb,sgen,tab,wordb,wordf,yy,rep;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     tab := o!.tab;
@@ -425,6 +496,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
+    rep := o!.report;
     while nr <= limit and i <= nr do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
@@ -470,7 +542,18 @@ InstallMethod( Enumerate,
                     sgen := LeftQuotient(EvaluateWord(o!.permgensi,wordb),
                              o!.permgensi[j]*EvaluateWord(o!.permgensi,wordf));
                     if not(IsOne(sgen)) and not(sgen in o!.stab) then
-                        o!.stab := ClosureGroup(o!.stab,sgen);
+                        if IsBound(o!.stabchainrandom) then
+                          if o!.stabsize = 1 then
+                              o!.stab := Group(sgen);
+                          else
+                              o!.stab := Group(Concatenation(
+                                                 GeneratorsOfGroup(o!.stab),
+                                                 [sgen]));
+                          fi;
+                          StabChain(o!.stab,rec(random := o!.stabchainrandom));
+                        else
+                          o!.stab := ClosureGroup(o!.stab,sgen);
+                        fi;
                         o!.stabsize := Size(o!.stab);
                         Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
                         if IsBound(o!.stabsizebound) and
@@ -487,6 +570,11 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
+        rep := rep - 1;
+        if rep = 0 then
+            rep := o!.report;
+            Info(InfoOrb,1,"Have ",nr," points.");
+        fi;
     od;
     o!.pos := i;
     if i > nr then SetFilterObj(o,IsClosed); fi;
