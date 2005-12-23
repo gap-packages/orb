@@ -15,13 +15,14 @@ InstallValue( OrbitsType, NewType( OrbitsFamily, IsOrbit ) );
 #  .grpsizebound
 #  .orbsizebound
 #  .stabsizebound
-#  .permgensi
-#  .matgensi
+#  .permgens
+#  .matgens
 #  .onlystab
 #  .schreier
 #  .lookingfor
 #  .report
 #  .stabchainrandom
+#  .permbase
 
 # Outputs:
 #  .gens
@@ -68,9 +69,10 @@ InstallGlobalFunction( InitOrbit,
     filts := IsOrbit;
 
     # Now set some default options:
-    if IsBound( o.permgensi ) then 
+    if IsBound( o.permgens ) then 
         filts := filts and WithSchreierTree and WithPermStabilizer;
-        o.stab := Group(o.permgensi[1]^0);
+        o.stab := Group(o.permgens[1]^0);
+        o.permgensi := List(o.permgens,x->x^-1);
         o.schreier := true;   # we need a Schreier tree for the stabilizer
         o.stabcomplete := false;
         o.stabsize := 1;
@@ -106,6 +108,12 @@ InstallGlobalFunction( InitOrbit,
     fi;
     if not(IsBound(o.report)) then
         o.report := 0;
+    fi;
+    if not(IsBound(o.orbsizebound)) and IsBound(o.grpsizebound) then
+        o.orbsizebound := o.grpsizebound;
+    fi;
+    if not(IsBound(o.stabsizebound)) and IsBound(o.grpsizebound) then
+        o.stabsizebound := o.grpsizebound;
     fi;
     
     # Now take this record as our orbit record and return:
@@ -175,6 +183,17 @@ InstallMethod( EvaluateWord, "for a list of generators and a word",
         res := res * gens[w[i]];
     od;
     return res;
+  end );
+
+InstallMethod( ActWithWord, 
+  "for a list of generators, a word, an action, and a point",
+  [ IsList, IsList, IsFunction, IsObject ],
+  function( gens, w, op, p )
+    local i;
+    for i in w do
+        p := op(p,gens[i]);
+    od;
+    return p;
   end );
 
 InstallMethod( LookFor, "for an orbit with a list and a point",
@@ -298,7 +317,7 @@ InstallMethod( Enumerate,
   [IsOrbit and IsHashOrbitRep and WithSchreierTree and WithPermStabilizer, 
    IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,pos,sgen,wordb,wordf,yy,rep;
+    local basimg,i,j,nr,orb,pos,rep,sgen,sgentrivial,wordb,wordf,yy;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     nr := Length(orb);
@@ -340,41 +359,51 @@ InstallMethod( Enumerate,
                 fi;
             else
                 if not( o!.stabcomplete ) then
-                    # Calculate an element of the stabilizer:
-                    # We would do the following, if permgens were given:
-                    #wordf := TraceSchreierTreeForward(o,i);
-                    #wordb := TraceSchreierTreeBack(o,pos);
-                    #sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] /
-                    #        EvaluateWord(o!.permgens,wordb);
-                    # But now we have the inverses of the permgens, thus:
-                    wordf := TraceSchreierTreeBack(o,i);
+                    # Is stabilizer element trivial?
+                    sgentrivial := false;
+                    wordf := TraceSchreierTreeForward(o,i);
                     wordb := TraceSchreierTreeBack(o,pos);
-                    sgen := LeftQuotient(EvaluateWord(o!.permgensi,wordb),
-                             o!.permgensi[j]*EvaluateWord(o!.permgensi,wordf));
-                    if not(IsOne(sgen)) and not(sgen in o!.stab) then
-                        if IsBound(o!.stabchainrandom) then
-                          if o!.stabsize = 1 then
-                              o!.stab := Group(sgen);
-                          else
-                              o!.stab := Group(Concatenation(
-                                                 GeneratorsOfGroup(o!.stab),
-                                                 [sgen]));
-                          fi;
-                          StabChain(o!.stab,rec(random := o!.stabchainrandom));
-                        else
-                          o!.stab := ClosureGroup(o!.stab,sgen);
+                    if IsBound(o!.permbase) then
+                        basimg := ActWithWord(o!.permgens,wordf,
+                                              OnTuples,o!.permbase);
+                        basimg := OnTuples(basimg,o!.permgens[j]);
+                        basimg := ActWithWord(o!.permgensi,wordb,
+                                              OnTuples,basimg);
+                        if basimg = o!.permbase then
+                            sgentrivial := true;
                         fi;
-                        o!.stabsize := Size(o!.stab);
-                        Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
-                        if IsBound(o!.stabsizebound) and
-                           o!.stabsize >= o!.stabsizebound then
-                            o!.stabcomplete := true;
-                            Info(InfoOrb,1,"Stabilizer complete.");
-                            if o!.onlystab then
-                                o!.pos := i;
-                                return o;
+                    fi; 
+                    if not(sgentrivial) then
+                      Info(InfoOrb,3,"Evaluating stabilizer element...");
+                      # Calculate an element of the stabilizer:
+                      sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
+                              EvaluateWord(o!.permgensi,wordb);
+                      if not(IsOne(sgen)) and not(sgen in o!.stab) then
+                          if IsBound(o!.stabchainrandom) then
+                            if o!.stabsize = 1 then
+                                o!.stab := Group(sgen);
+                            else
+                                o!.stab := Group(Concatenation(
+                                                   GeneratorsOfGroup(o!.stab),
+                                                   [sgen]));
                             fi;
-                        fi;
+                            StabChain(o!.stab,
+                                      rec(random := o!.stabchainrandom));
+                          else
+                            o!.stab := ClosureGroup(o!.stab,sgen);
+                          fi;
+                          o!.stabsize := Size(o!.stab);
+                          Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
+                          if IsBound(o!.stabsizebound) and
+                             o!.stabsize >= o!.stabsizebound then
+                              o!.stabcomplete := true;
+                              Info(InfoOrb,1,"Stabilizer complete.");
+                              if o!.onlystab then
+                                  o!.pos := i;
+                                  return o;
+                              fi;
+                          fi;
+                      fi;
                     fi;
                 fi;
             fi;
@@ -488,7 +517,7 @@ InstallMethod( Enumerate,
   [IsOrbit and IsPermOnIntOrbitRep and WithSchreierTree and WithPermStabilizer, 
    IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,sgen,tab,wordb,wordf,yy,rep;
+    local basimg,i,j,nr,orb,rep,sgen,sgentrivial,tab,wordb,wordf,yy;
     i := o!.pos;  # we go on here
     orb := o!.orbit;
     tab := o!.tab;
@@ -530,18 +559,26 @@ InstallMethod( Enumerate,
                 fi;
             else
                 if not( o!.stabcomplete ) then
-                    # Calculate an element of the stabilizer:
-                    # We would do the following, if permgens were given:
-                    #wordf := TraceSchreierTreeForward(o,i);
-                    #wordb := TraceSchreierTreeBack(o,pos);
-                    #sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] /
-                    #        EvaluateWord(o!.permgens,wordb);
-                    # But now we have the inverses of the permgens, thus:
-                    wordf := TraceSchreierTreeBack(o,i);
-                    wordb := TraceSchreierTreeBack(o,yy);
-                    sgen := LeftQuotient(EvaluateWord(o!.permgensi,wordb),
-                             o!.permgensi[j]*EvaluateWord(o!.permgensi,wordf));
-                    if not(IsOne(sgen)) and not(sgen in o!.stab) then
+                    # Is stabilizer element trivial?
+                    sgentrivial := false;
+                    wordf := TraceSchreierTreeForward(o,i);
+                    wordb := TraceSchreierTreeBack(o,tab[yy]);
+                    if IsBound(o!.permbase) then
+                        basimg := ActWithWord(o!.permgens,wordf,
+                                              OnTuples,o!.permbase);
+                        basimg := OnTuples(basimg,o!.permgens[j]);
+                        basimg := ActWithWord(o!.permgensi,wordb,
+                                              OnTuples,basimg);
+                        if basimg = o!.permbase then
+                            sgentrivial := true;
+                        fi;
+                    fi; 
+                    if not(sgentrivial) then
+                      Info(InfoOrb,3,"Evaluating stabilizer element...");
+                      # Calculate an element of the stabilizer:
+                      sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
+                              EvaluateWord(o!.permgensi,wordb);
+                      if not(IsOne(sgen)) and not(sgen in o!.stab) then
                         if IsBound(o!.stabchainrandom) then
                           if o!.stabsize = 1 then
                               o!.stab := Group(sgen);
@@ -565,6 +602,7 @@ InstallMethod( Enumerate,
                                 return o;
                             fi;
                         fi;
+                      fi;
                     fi;
                 fi;
             fi;

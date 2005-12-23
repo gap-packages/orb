@@ -34,5 +34,5 @@ DeclareOperation( "Enumerate", [ IsOrbit ] );
 DeclareOperation( "TraceSchreierTreeBack", [ IsOrbit, IsPosInt ] );
 DeclareOperation( "TraceSchreierTreeForward", [ IsOrbit, IsPosInt ] );
 DeclareOperation( "EvaluateWord", [ IsList, IsList ] );
-
+DeclareOperation( "ActWithWord", [IsList, IsList, IsFunction, IsObject] );
 

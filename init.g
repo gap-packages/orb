@@ -12,3 +12,4 @@
 ReadPackage("orb","gap/hash.gd");
 ReadPackage("orb","gap/orbits.gd");
 ReadPackage("orb","gap/search.gd");
+ReadPackage("orb","gap/bysuborbit.gd");

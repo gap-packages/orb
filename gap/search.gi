@@ -382,3 +382,32 @@ function(ct,cyc)
   return StraightLineProgramNC([l],Length(cyc));
 end);
 
+
+###########################
+# Finding nice quotients: #
+###########################
+
+InstallGlobalFunction( OrbitsStatisticOnVectorSpace,
+  function(gens,size,ti)
+  # gens must be a list of compressed matrices, size the order of the group
+  local len,nr,o,t,total,v;
+  v := ShallowCopy(gens[1][1]);
+  t := Runtime();
+  total := 0;
+  nr := 0;
+
+  while Runtime() < t + ti*1000 do
+      RandomizeVector(v);
+      o := InitOrbit(gens,v,OnRight,3*size,rec(grpsizebound := size,
+                                               report := 0));
+      Enumerate(o);
+      len := Length(o!.orbit);
+      total := total + len;
+      nr := nr + 1;
+      Print("Found length ",String(Length(o!.orbit),9),", have now ",
+            String(nr,4)," orbits, average length: ",
+            QuoInt(total+QuoInt(nr,2),nr),"     \r");
+  od;
+  Print("\n");
+end);
+

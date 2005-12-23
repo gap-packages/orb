@@ -12,4 +12,4 @@
 ReadPackage("orb","gap/hash.gi");
 ReadPackage("orb","gap/orbits.gi");
 ReadPackage("orb","gap/search.gi");
-
+ReadPackage("orb","gap/bysuborbit.gi");
