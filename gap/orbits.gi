@@ -23,6 +23,7 @@ InstallValue( OrbitsType, NewType( OrbitsFamily, IsOrbit ) );
 #  .report
 #  .stabchainrandom
 #  .permbase
+#  .stab
 
 # Outputs:
 #  .gens
@@ -71,11 +72,23 @@ InstallGlobalFunction( InitOrbit,
     # Now set some default options:
     if IsBound( o.permgens ) then 
         filts := filts and WithSchreierTree and WithPermStabilizer;
-        o.stab := Group(o.permgens[1]^0);
+        if IsBound(o.stab) then
+            # We know already part of the stabilizer:
+            if IsBound(o.stabchainrandom) then
+                o.stabsize := Size(StabChain( o.stab, 
+                                       rec( random := o.stabchainrandom ) ) );
+            else
+                o.stabsize := Size( o.stab );
+            fi;
+            Info(InfoOrb,1,"Already have partial stabilizer of size ",
+                           o.stabsize,".");
+        else
+            o.stab := Group(o.permgens[1]^0);
+            o.stabsize := 1;
+        fi;
         o.permgensi := List(o.permgens,x->x^-1);
         o.schreier := true;   # we need a Schreier tree for the stabilizer
         o.stabcomplete := false;
-        o.stabsize := 1;
         if not IsBound( o.onlystab ) then
             o.onlystab := false;
         fi;
@@ -114,6 +127,12 @@ InstallGlobalFunction( InitOrbit,
     fi;
     if not(IsBound(o.stabsizebound)) and IsBound(o.grpsizebound) then
         o.stabsizebound := o.grpsizebound;
+    fi;
+    if IsBound(o.stabsizebound) and IsBound(o.stabsize) then
+        if o.stabsize >= o.stabsizebound then
+            Info(InfoOrb,1,"Stabilizer complete.");
+            o.stabcomplete := true;
+        fi;
     fi;
     
     # Now take this record as our orbit record and return:
@@ -325,7 +344,7 @@ InstallMethod( Enumerate,
         limit := o!.orbsizebound; 
     fi;
     rep := o!.report;
-    while nr <= limit and i <= nr do
+    while nr <= limit and i <= nr and not(o!.stabcomplete and o!.onlystab) do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
             pos := ValueHT(o!.ht,yy);
@@ -351,10 +370,6 @@ InstallMethod( Enumerate,
                     if Length(o!.orbit)*o!.stabsize*2 >= o!.grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,1,"Stabilizer complete.");
-                        if o!.onlystab then
-                            o!.pos := i;
-                            return o;
-                        fi;
                     fi;
                 fi;
             else
@@ -398,10 +413,6 @@ InstallMethod( Enumerate,
                              o!.stabsize >= o!.stabsizebound then
                               o!.stabcomplete := true;
                               Info(InfoOrb,1,"Stabilizer complete.");
-                              if o!.onlystab then
-                                  o!.pos := i;
-                                  return o;
-                              fi;
                           fi;
                       fi;
                     fi;
@@ -526,7 +537,7 @@ InstallMethod( Enumerate,
         limit := o!.orbsizebound; 
     fi;
     rep := o!.report;
-    while nr <= limit and i <= nr do
+    while nr <= limit and i <= nr and not(o!.stabcomplete and o!.onlystab) do
         for j in [1..o!.nrgens] do
             yy := o!.op(orb[i],o!.gens[j]);
             if tab[yy] = 0 then
@@ -551,10 +562,6 @@ InstallMethod( Enumerate,
                     if Length(o!.orbit)*o!.stabsize*2 >= o!.grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,1,"Stabilizer complete.");
-                        if o!.onlystab then
-                            o!.pos := i;
-                            return o;
-                        fi;
                     fi;
                 fi;
             else
@@ -597,10 +604,6 @@ InstallMethod( Enumerate,
                            o!.stabsize >= o!.stabsizebound then
                             o!.stabcomplete := true;
                             Info(InfoOrb,1,"Stabilizer complete.");
-                            if o!.onlystab then
-                                o!.pos := i;
-                                return o;
-                            fi;
                         fi;
                       fi;
                     fi;

@@ -30,6 +30,9 @@ DeclareOperation( "Random", [IsRandomSource, IsList] );
 # For other objects:
 DeclareFilter( "HasRandomSource" );
 
+# For compressed vectors that know what they can contain:
+DeclareOperation( "Randomize", [IsObject] );
+DeclareOperation( "Randomize", [IsObject, IsRandomSource] );
 
 ######################
 # Product replacers: #

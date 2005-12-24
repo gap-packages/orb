@@ -27,7 +27,7 @@ Subtitle := "orb - Methods to enumerate Orbits",
 ##  See '?Extending: Version Numbers' in GAP help for an explanation
 ##  of valid version numbers. For an automatic package distribution update
 ##  you must provide a new version number even after small changes.
-Version := "0.0",
+Version := "0.1",
 ##  Please adjust also the VERSION file in the package directory when
 ##  changing this.
 
@@ -262,8 +262,7 @@ Dependencies := rec(
   # list of pairs [package name, (least) version],  package name is case
   # insensitive, least version denoted with '>=' prepended to version string.
   # without these, the package will not load
-  NeededOtherPackages := [["GAPDoc", ">= 0.99"],["CVec", ">= 1.0"],
-                          ["recog", ">= 0.9"]],
+  NeededOtherPackages := [["GAPDoc", ">= 0.99"]],
   # without these the package will issue a warning while loading
   # SuggestedOtherPackages := [],
   SuggestedOtherPackages := [],

@@ -27,9 +27,8 @@ end );
 
 InstallGlobalFunction( NewHT, function(sample,len)
   local eqfun,hfun,ht;
-  hfun := MakeHashFunction(sample,len);
+  hfun := ChooseHashFunction(sample,len);
   eqfun := ApplicableMethod(\=,[sample,sample]);
-  if eqfun = fail then eqfun := CVEC_EQINT; fi;
   ht := InitHT(len,hfun,eqfun);
   ht.cangrow := true;
   return ht;
@@ -124,7 +123,7 @@ InstallGlobalFunction( GrowHT, function(ht,x)
   ht.els := [];
   ht.vals := [];
   ht.len := ht.len * 2 + 1;
-  ht.hf := MakeHashFunction(x,ht.len);
+  ht.hf := ChooseHashFunction(x,ht.len);
   ht.hfd := ht.hf.data;
   ht.hf := ht.hf.func;
   ht.nr := 0;
@@ -141,4 +140,149 @@ InstallGlobalFunction( GrowHT, function(ht,x)
   od;
   Info(InfoOrb,1,"Done.");
 end );
+
+
+# Here comes stuff for hash functions:
+
+# First a few hash functions:
+
+InstallGlobalFunction( ORB_HashFunctionForShortGF2Vectors,
+function(v,data)
+  return NumberFFVector(v,2) mod data[1] + 1;
+end );
+
+InstallGlobalFunction( ORB_HashFunctionForShort8BitVectors,
+function(v,data)
+  return NumberFFVector(v,data[2]) mod data[1] + 1;
+end );
+
+InstallGlobalFunction( ORB_HashFunctionForGF2Vectors,
+function(v,data)
+  return HASHKEY_BAG(v,101,8,data[2]) mod data[1] + 1;
+end );
+
+InstallGlobalFunction( ORB_HashFunctionFor8BitVectors,
+function(v,data)
+  return HASHKEY_BAG(v,101,12,data[2]) mod data[1] + 1;
+end );
+
+# Now the choosing methods for compressed vectors:
+
+InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
+  [IsGF2VectorRep,IsInt],
+  function(p,hashlen)
+    local bytelen;
+    bytelen := QuoInt(Length(p),8);
+    # Note that unfortunately gf2 vectors are not "clean" after their
+    # "official" length, therefore we *must not* use the last, half-used
+    # byte. This inevitably leads to collisions!
+    if bytelen = 0 then
+        return rec( func := ORB_HashFunctionForShortGF2Vectors,
+                    data := [hashlen] );
+    else
+        return rec( func := ORB_HashFunctionForGF2Vectors,
+                    data := [hashlen,bytelen] );
+    fi;
+  end );
+
+InstallMethod( ChooseHashFunction, "for compressed 8bit vectors",
+  [Is8BitVectorRep,IsInt],
+  function(p,hashlen)
+    local bytelen,i,q,qq;
+    q := Q_VEC8BIT(p);
+    qq := q;
+    i := 0;
+    while qq <= 256 do
+        qq := qq * q;
+        i := i + 1;
+    od;
+    # i is now the number of field elements per byte
+    bytelen := QuoInt(Length(p),i);
+    # Note that unfortunately 8bit vectors are not "clean" after their
+    # "official" length, therefore we *must not* use the last, half-used
+    # byte. This inevitably leads to collisions!
+    if bytelen = 0 then
+        return rec( func := ORB_HashFunctionForShort8BitVectors,
+                    data := [hashlen,q] );
+    else
+        return rec( func := ORB_HashFunctionFor8BitVectors,
+                    data := [hashlen,bytelen] );
+    fi;
+  end );
+
+InstallGlobalFunction( ORB_HashFunctionForCompressedMats,
+function(x,data)
+  local i,res;
+  res := 0;
+  for i in [1..Length(x)] do
+      res := res + data[2].func(x[i],data[2].data);
+  od;
+  return res mod data[1] + 1;
+end );
+
+InstallMethod( ChooseHashFunction, "for compressed gf2 matrices",
+  [IsGF2MatrixRep,IsInt],
+  function(p,hashlen)
+    local data;
+    data := [hashlen,ChooseHashFunction(p[1],hashlen)];
+    return rec( func := ORB_HashFunctionForCompressedMats,
+                data := data );
+  end );
+
+InstallMethod( ChooseHashFunction, "for compressed 8bit matrices",
+  [Is8BitMatrixRep,IsInt],
+  function(p,hashlen)
+    local data;
+    data := [hashlen,ChooseHashFunction(p[1],hashlen)];
+    return rec( func := ORB_HashFunctionForCompressedMats,
+                data := data );
+  end );
+
+InstallGlobalFunction( ORB_HashFunctionForIntegers,
+function(x,data)
+  return x mod data[1] + 1;
+end );
+
+InstallMethod( ChooseHashFunction, "for integers", [IsInt,IsInt],
+  function(p,hashlen)
+    return rec( func := ORB_HashFunctionForIntegers, data := [hashlen] );
+  end );
+    
+InstallGlobalFunction( ORB_HashFunctionForMemory,
+function(x,data)
+  return data[1](x!.el,data[2]);
+end );
+
+InstallMethod( ChooseHashFunction, "for memory objects", 
+  [IsObjWithMemory, IsInt],
+  function(p,hashlen)
+    local hf;
+    hf := ChooseHashFunction(p!.el,hashlen);
+    return rec( func := ORB_HashFunctionForMemory, data := [hf.func,hf.data] );
+  end );
+
+InstallGlobalFunction( ORB_HashFunctionForPermutations,
+function(p,data)
+  local l;
+  l:=LARGEST_MOVED_POINT_PERM(p);
+  if IsPerm4Rep(p) then
+    # is it a proper 4byte perm?
+    if l>65536 then
+      return HashKeyBag(p,255,0,4*l) mod data[1] + 1;
+    else
+      # the permutation does not require 4 bytes. Trim in two
+      # byte representation (we need to do this to get consistent
+      # hash keys, regardless of representation.)
+      TRIM_PERM(p,l);
+    fi;
+   fi;
+   # now we have a Perm2Rep:
+   return HashKeyBag(p,255,0,2*l) mod data[1] + 1;
+end );
+
+InstallMethod( ChooseHashFunction, "for permutations", 
+  [IsPerm, IsInt],
+  function(p,hashlen)
+    return rec( func := ORB_HashFunctionForPermutations, data := hashlen );
+  end );
 
