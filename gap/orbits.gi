@@ -9,8 +9,6 @@
 ##
 #############################################################################
 
-InstallValue( OrbitsType, NewType( OrbitsFamily, IsOrbit ) );
-
 # Possible options:
 #  .grpsizebound
 #  .orbsizebound

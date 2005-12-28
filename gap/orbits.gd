@@ -15,7 +15,6 @@ SetInfoLevel( InfoOrb, 1 );
 
 BindGlobal( "OrbitsFamily", NewFamily( "OrbitsFamily" ) );
 DeclareCategory( "IsOrbit", IsComponentObjectRep );
-DeclareGlobalVariable( "OrbitsType" );
 DeclareFilter( "IsClosed", IsOrbit );
 DeclareRepresentation( "IsPermOnIntOrbitRep", IsOrbit, [] );
 DeclareRepresentation( "IsHashOrbitRep", IsOrbit, [] );
