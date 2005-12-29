@@ -476,6 +476,28 @@ InstallMethod( StoreSuborbit,
   return length;
 end );
 
+InstallMethod( LookupSuborbit, 
+  "for a (minimal) point and a std suborbit database",
+  [ IsObject, IsSuborbitDatabase and IsStdSuborbitDbRep ],
+  function( p, db )
+    return ValueHT( db!.mins, p );
+  end );
+
+InstallMethod( TotalLength, "for a std suborbit database",
+  [ IsSuborbitDatabase and IsStdSuborbitDbRep ],
+  function( db )
+    return db!.totallength;
+  end );
+
+InstallMethod( Representatives, "for a std suborbit database",
+  [ IsSuborbitDatabase and IsStdSuborbitDbRep ],
+  function( db )
+    return db!.reps;
+  end );
+
+###################################
+# The real thing: OrbitBySuborbit #
+###################################
 
 InstallGlobalFunction( OrbitBySuborbit,
 function(p,hashlen,size,setup,percentage)
@@ -530,19 +552,19 @@ function(p,hashlen,size,setup,percentage)
       for j in [firstgen..lastgen] do
         x := setup!.op[k+1](p,setup!.els[k+1][j]);   # ???
         x := ORB_ApplyWord(x,todo[i],setup!.els[k+1],
-                           setup!.elsinv[k+1],stab!.op[k+1]);   # ???
+                           setup!.elsinv[k+1],setup!.op[k+1]);   # ???
         mw := [];
         x := ORB_Minimalize(x,k+1,k,setup,stab,mw);
-        v := ValueHT(db!.mins,x);
+        v := LookupSuborbit(x,db);
         if v = fail then
           Add(words,Concatenation([j],todo[i]));
           Add(todo,Concatenation([j],todo[i]));
           Add(miniwords,mw);
           StoreSuborbit(db,x,stab);
-          Print("total: ",ORB_PrettyStringBigNumber(db!.totallength),
+          Print("total: ",ORB_PrettyStringBigNumber(TotalLength(db)),
                 " stab: ",ORB_PrettyStringBigNumber(fullstabsize),"       \r");
-          if 2 * db!.totallength * fullstabsize > size and
-             db!.totallength * fullstabsize >= QuoInt(size*percentage,100) then 
+          if 2 * TotalLength(db) * fullstabsize > size and
+             TotalLength(db) * fullstabsize >= QuoInt(size*percentage,100) then 
             Print("\nDone!\n");
             return rec(db := db,
                        words := words,
@@ -552,7 +574,7 @@ function(p,hashlen,size,setup,percentage)
                        percentage := percentage);
           fi;
         else
-          if db!.totallength * fullstabsize * 2 <= size then
+          if TotalLength(db) * fullstabsize * 2 <= size then
             # otherwise we know that we will not find more stabilizing els.
             # we know now that v is an integer and that
             # p*setup!.els[j]*todo[i]*U = p*words[v]*U
@@ -564,14 +586,13 @@ function(p,hashlen,size,setup,percentage)
             repeat
               sw := [];
               xx := ORB_ApplyStabElement(x,k+1,k,setup,stab,sw);
-              if xx = db!.reps[v] then  
+              if xx = Representatives(db)[v] then  
                 # we got a real stabilizer element of p
                 done := true;
                 newword := Concatenation([j],todo[i],mw,sw,
                             ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
                 newperm := ORB_ApplyWord((),newword,
                                  setup!.permgens,setup!.permgensinv,OnRight);
-                ###Print(".\c");
                 if not(IsOne(newperm)) then
                   if not(newperm in stabilizer) then
                     Add(stabgens,newword);
@@ -586,7 +607,7 @@ function(p,hashlen,size,setup,percentage)
                     fi;
                     fullstabsize := Size(stabilizer);
                     Print("done.\nNew stabilizer order: ",fullstabsize,"\n");
-                    if db!.totallength * fullstabsize 
+                    if TotalLength(db) * fullstabsize 
                        >= QuoInt(size*percentage,100) then 
                       Print("\nDone!\n");
                       return rec(db := db,
@@ -616,186 +637,111 @@ function(p,hashlen,size,setup,percentage)
   # this is never reached
 end );
 
-# FIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXME
-# VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
-
-InstallGlobalFunction( ORB_NextStabIterator2,
-function(stab)
+InstallMethod( Next, "for a stab iterator and a string",
+  [ IsStabIterator and IsStdStabIteratorRep, IsString ],
+function(stab,st)
   local i;
-  i := stab.i;
+  i := stab!.i;
   while true do
     if i < 1 then
       return true;   # finished with this iterator
     fi;
-    stab.pos[i] := stab.pos[i]+1;
-    #stab.point[i] := [];    # this is no longer valid
-    if stab.pos[i] <= Length(stab.info[i]) then
+    stab!.pos[i] := stab!.pos[i]+1;
+    stab!.point[i] := [];
+    if stab!.pos[i] <= Length(stab!.info[i]) then
       return false;  # next element found
     fi;
-    stab.pos[i] := 1;
+    stab!.pos[i] := 1;
     i := i - 1;
   od;
   # this is never reached
 end );
 
 InstallGlobalFunction( ORB_ApplyUElement,
-function(p,j,stabel,i,setup,stab,w)
+function(p,j,i,setup,stab,w)
   local ww;
   while i >= 1 do
-    ww := ShallowCopy(setup.trans[i][stab.info[i][stabel[i]]]);
+    ww := ShallowCopy(setup!.trans[i][stab!.info[i][stab!.pos[i]]]);
     if IsList(w) then Append(w,ww); fi;
-    p := ORB_ApplyWord(p,ww,setup.els[j],setup.elsinv[j],setup.op[j]); # FIXME
+    p := ORB_ApplyWord(p,ww,setup!.els[j],setup!.elsinv[j],setup!.op[j]);
     i := i - 1;
   od;
   return p;
 end );
 
 InstallGlobalFunction( OrbitBySuborbitWithKnownSize,
-function(p,gens,op,hashlen,size,setup,randels)
+function(p,hashlen,size,setup,randels)
   # Enumerates the orbit of p under the group G generated by "gens" by
   # suborbits for the subgroup U described in "setup". 
-  # "p" is a point
-  # "gens" is a list of generators for a group
-  # "op" is a function for the operation op(p,gens[...]) should be defined
-  # "hashlen" is an upper bound for the set of U-minimal points in the G-orbit
-  # "size" is the group order to stop when we are ready and as upper bound
-  #        for the orbit length
-  # "setup" is a record of data for the iterated quotient trick,
-  #         effectively enabling us to do minimalization with a subgroup
-  # "randels" number of random elements to use for recognising half orbits
-  # Returns a triple:
-  #   First entry is a list of U-minimal points in the orbit, one for 
-  #     each U-orbit in the G-orbit
-  #   Second entry is the length of each U-orbit in the G-orbit
-  #   Third entry is a list of words in gens which can be used to reach 
-  #     U-orbit in the G-orbit
-  local StoreSubOrbit,ht,i,ii,j,l,lengths,q,stab,suborbits,totallength,
-        trans,v,w,ww,x,y,z,Ucounter,g;
+  #   "p" is a point
+  #   "hashlen" is an upper bound for the set of U-minimal points in the G-orbit
+  #   "size" is the orbit length
+  #   "setup" is a record of data for the iterated quotient trick,
+  #           effectively enabling us to do minimalization with a subgroup
+  #   "randels" number of random elements to use for recognising half orbits
+  # Returns a record with components:
+  #   "db": suborbit database
+  #   "words": a list of words in gens which can be used to reach 
+  #            U-orbit in the G-orbit
+  local k,stab,q,trans,db,l,i,Ucounter,g,j,x,y,v,ii,w,z,firstgen,lastgen;
 
-  StoreSubOrbit := function(p,stab)
-    # "p" must be a U-minimal element, which is not yet known
-    # "stab" must be stabilizer information coming from minimalization
-    # all U-minimal elements in the same orbit are calculated and stored
-    # in the hash, in addition "p" is appended as representative to
-    # "suborbits" and the orbit length is calculated and appended to
-    # "lengths".
-    local firstgen,i,j,lastgen,li,length,nrmins,pp,stabsize,vv;
-    Add(suborbits,p);
-    AddHT(ht,p,Length(suborbits));
-    Print("[",Product(stab.info,Length),"\c");
-    if Product(stab.info,Length) = setup.size[setup.k] then
-      # better use a standard orbit algorithm:
-      if setup.k = 1 then
-        firstgen := 1;
-      else
-        firstgen := Length(setup.els[setup.k-1])+1;
-      fi;
-      lastgen := Length(setup.els[setup.k]);
-      li := [p];
-      i := 1;
-      while i <= Length(li) do
-        for j in [firstgen..lastgen] do
-          pp := op(li[i],setup.els[setup.k+1][j]);
-          vv := ValueHT(ht,pp);
-          if vv = fail then
-            AddHT(ht,pp,Length(suborbits));
-            Add(li,pp);
-          fi;
-        od;
-        i := i + 1;
-      od;
-      nrmins := Length(li);
-      length := nrmins;
-    else
-      Reset(stab);
-      nrmins := 1;
-      stabsize := 0;
-      repeat
-        pp := ORB_ApplyStabElement(p,setup.k+1,setup.k,setup,stab,false);
-        if p = pp then  # we got a real stabilizer element of p
-          stabsize := stabsize + 1;
-        else  # we could have stepped to some other U-minimal element
-          vv := ValueHT(ht,pp);
-          if vv = fail then 
-            if AddHT(ht,pp,Length(suborbits)) = fail then
-              Error("Hash table full!");
-            fi;
-            nrmins := nrmins+1;
-          fi;
-        fi;
-      until Next(stab);
-      length := setup.size[setup.k] / stabsize;
-    fi;
-    Add(lengths,length);
-    Print("]\rStored new suborbit #",Length(suborbits),
-          " of size ",ORB_PrettyStringBigNumber(length),
-          " NrMins: ",nrmins," ");
-    return length;
-  end;
+  k := setup!.k;
+  firstgen := Length(setup!.els[k])+1;
+  lastgen := Length(setup!.els[k+1]);
 
   # First we U-minimalize p:
-  stab := rec();
-  q := ORB_Minimalize(p,setup.k+1,setup.k,setup,stab,false);
+  stab := StabIterator();
+  q := ORB_Minimalize(p,k+1,k,setup,stab,false);
 
-  suborbits := [];  # here we collect U-minimal elements for the U-suborbits
-  lengths := [];    # here we collect U-suborbit lengths
   trans := [[]];    # words for getting to the U-suborbits
   
-  # was: ht := InitHT(hashlen,hashfunc,EQ);
-  ht := NewHT(q,hashlen);
-  totallength := StoreSubOrbit(q,stab);
+  # Start a database with the first U-suborbit:
+  db := SuborbitDatabase(setup,hashlen);
+  StoreSuborbit(db,q,stab);
 
   l := [p];
   i := 1;   # counts elements in l
   # use a stabilizer info, which describes all of U:
-  Ucounter := rec();
-  Ucounter.i := setup.k;
-  Ucounter.info := List([1..setup.k],i->[1..setup.index[i]]);
-  Ucounter.pos := List([1..setup.k],i->1);
+  Ucounter := StabIterator();
+  Ucounter!.i := k;
+  Ucounter!.info := List([1..k],i->[1..setup!.index[i]]);
+  Ucounter!.pos := List([1..k],i->1);
 
   # Throw in some vectors gotten by applying random elements:
-  g := Group(gens);
+  g := GroupWithGenerators(setup!.els[k+1]{[firstgen..lastgen]});
   for j in [1..randels] do
       Print("Applying random element ",j," (",randels,") ...\n");
       x := p * PseudoRandom(g);
-      y := ORB_Minimalize(x,setup.k+1,setup.k,setup,stab,false);
-      v := ValueHT(ht,y);
+      y := ORB_Minimalize(x,k+1,k,setup,stab,false);
+      v := LookupSuborbit(y,db);
       if v = fail then
           Add(l,x);
           Add(trans,[fail]);
-          totallength := totallength + StoreSubOrbit(y,stab);
-          Print("total: ",ORB_PrettyStringBigNumber(totallength),"      \n");
+          StoreSuborbit(db,y,stab);
+          Print("total: ",ORB_PrettyStringBigNumber(TotalLength(db)),"     \n");
       fi;
-      if totallength >= size then 
+      if TotalLength(db) >= size then 
         Print("\nDone.\n");
-        return rec( minreps := suborbits,
-                    reps := l,
-                    lengths := lengths,
-                    words := trans,
-                    ht := ht ); 
+        return rec( db := db, words := trans ); 
       fi;
   od;
   Unbind(g);
    
-  ORB_NextStabIterator2(Ucounter);
+  Reset(Ucounter);
   repeat
     while i <= Length(l) do
-      for j in [1..Length(gens)] do
-        x := op(l[i],gens[j]);
-        y := ORB_Minimalize(x,setup.k+1,setup.k,setup,stab,false);
-        v := ValueHT(ht,y);
+      for j in [firstgen..lastgen] do
+        x := setup!.op[k+1](l[i],setup!.els[k+1][j]);
+        y := ORB_Minimalize(x,k+1,k,setup,stab,false);
+        v := LookupSuborbit(y,db);
         if v = fail then
           Add(trans,Concatenation(trans[i],[j]));
           Add(l,x);
-          totallength := totallength + StoreSubOrbit(y,stab);
-          Print("total: ",ORB_PrettyStringBigNumber(totallength),"      \r");
-          if totallength >= size then 
+          StoreSuborbit(db,y,stab);
+          Print("total: ",ORB_PrettyStringBigNumber(TotalLength(db)),"     \r");
+          if TotalLength(db) >= size then 
             Print("\nDone.\n");
-            return rec( minreps := suborbits,
-                        reps := l,
-                        lengths := lengths,
-                        words := trans,
-                        ht := ht ); 
+            return rec( db := db, words := trans ); 
           fi;
         fi;
       od;
@@ -805,41 +751,30 @@ function(p,gens,op,hashlen,size,setup,randels)
     Print(".\c");
     for ii in [1..Length(l)] do
       w := [];
-      z := ORB_ApplyUElement(l[ii],setup.k+1,Ucounter.pos,setup.k,
-                             setup,Ucounter,w);
-      for j in [1..Length(gens)] do
-        x := op(z,gens[j]);
-        y := ORB_Minimalize(x,setup.k+1,setup.k,setup,stab,false);
-        v := ValueHT(ht,y);
+      z := ORB_ApplyUElement(l[ii],k+1,k,setup,Ucounter,w);
+      for j in [firstgen..lastgen] do
+        x := setup!.op[k+1](z,setup!.els[k+1][j]);
+        y := ORB_Minimalize(x,k+1,k,setup,stab,false);
+        v := LookupSuborbit(y,db);
         if v = fail then
           Add(trans,Concatenation(trans[ii],w,[j]));
           Add(l,x);
-          totallength := totallength + StoreSubOrbit(y,stab);
-          Print("total: ",ORB_PrettyStringBigNumber(totallength),"       \r");
-          if totallength >= size then 
+          StoreSuborbit(db,y,stab);
+          Print("total: ",ORB_PrettyStringBigNumber(TotalLength(db)),"     \r");
+          if TotalLength(db) >= size then 
             Print("\nDone.\n");
-            return rec( minreps := suborbits,
-                        reps := l,
-                        lengths := lengths,
-                        words := trans,
-                        ht := ht ); 
+            return rec( db := db, words := trans ); 
           fi;
         fi;
       od;
     od;
-  until ORB_NextStabIterator2(Ucounter);
+  until Next(Ucounter,"fromabove");
 
   Print("Warning! Orbit not complete!!!\n");
   # this should never happen!
-  return rec( minreps := suborbits,
-              reps := l,
-              lengths := lengths,
-              words := trans,
-              ht := ht ); 
+  return rec( db := db, words := trans );
 end );
 
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# FIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXMEFIXME
 
 ############################
 # Convenient preparations: #
@@ -855,7 +790,7 @@ function(gens,permgens,sizes,codims)
   # note that the basis must be changed to make projection easy!
   # That is, projection is taking the components [1..codim].
 
-  local dim,doConversions,f,i,j,k,nrgens,nrgenssum,o,regvec,setup,sum,v;
+  local dim,doConversions,f,i,j,k,nrgens,nrgenssum,o,regvec,sample,setup,sum,v;
 
   # For the old compressed matrices:
   if IsGF2MatrixRep(gens[1][1]) or Is8BitMatrixRep(gens[1][1]) then
@@ -878,6 +813,8 @@ function(gens,permgens,sizes,codims)
       sum := sum + nrgens[i];
   od;
   nrgenssum[k+2] := sum;
+
+  sample := gens[1][1][1];  # first vector of first generator
 
   # Do the first step:
   setup := rec(k := 1);
@@ -903,16 +840,17 @@ function(gens,permgens,sizes,codims)
   fi;
   setup.elsinv := List(setup.els,l->List(l,x->x^-1));
   f := BaseField(gens[1][1]);
-  regvec := ZeroVector(gens[1][1],codims[1]);  
+  regvec := ZeroVector(sample,codims[1]);  
             # a new empty vector over same field
   Print("Looking for regular U1-orbit...\n");
   repeat
       Randomize(regvec);
-      o := Enumerate(InitOrbit(setup.els[1],regvec,OnRight,sizes[1]*2));
+      o := Enumerate(InitOrbit(setup.els[1],regvec,OnRight,sizes[1]*2,
+                               rec(schreier := true)));
       Print("Found length: ",Length(o!.orbit),"        \r");
   until Length(o!.orbit) = sizes[1];
   Print("\nFound!\n");
-  setup.trans := List([1..Length(o!.orbit)],i->TraceSchreierTreeForward(o,i));
+  setup.trans := [List([1..Length(o!.orbit)],i->TraceSchreierTreeForward(o,i))];
 
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
@@ -927,6 +865,8 @@ function(gens,permgens,sizes,codims)
   setup.regvecs := [regvec];
   setup.cosetinfo := [];
   setup.cosetrecog := [];
+  setup.op := [OnRight,OnRight];
+  setup.sample := [regvec,gens[1][1][1]];
 
   Objectify( NewType( OrbitBySuborbitSetupFamily,
                       IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep ),
@@ -938,17 +878,14 @@ function(gens,permgens,sizes,codims)
       # First find a vector the orbit of which identifies the U_{j-1}-cosets
       # of U_j, i.e. Stab_{U_j}(v) <= U_{j-1}, 
       # we can use the j-1 infrastructure!
-      v := ZeroVector(v,codims[j]);
       Print("Looking for U",j-1,"-coset-recognising U",j,"-orbit\n");
+      regvec := ZeroVector(sample,codims[j]);
       repeat
           Print("Trying vector...\n");
-          regvec := ShallowCopy(v);
           Randomize(regvec);
-          o := OrbitBySuborbit(regvec,
-                   setup!.els[j]{[nrgenssum[j]+1..nrgenssum[j]+nrgens[j]]},
-                   OnRight,sizes[j]*2+1,sizes[j],setup);
-      until Sum(o[2]) = sizes[j];
-      Print("Found regular orbit!\n");
+          o := OrbitBySuborbit(regvec,sizes[j]*2+1,sizes[j],setup,100);
+      until Length(Representatives(o.db)) = sizes[j]/sizes[j-1];
+      Print("Found U",j-1,"-coset-recognising U",j,"-orbit!\n");
       setup!.k := j;
       setup!.size[j] := sizes[j];
       setup!.index[j] := sizes[j]/sizes[j-1];
@@ -957,33 +894,38 @@ function(gens,permgens,sizes,codims)
           if j = k then
               Append(setup!.els[j+1],gens[i]);
           else
+              # The following prepares for the next stage:
               Append(setup!.els[j+1],
-                List(gens[i],x->x{[dim-codims[j+1]+1..dim]}
-                                 {[dim-codims[j+1]+1..dim]}));
+                List(gens[i],x->ExtractSubMatrix(x,[1..codims[j+1]],
+                                                   [1..codims[j+1]])));
           fi;
       od;
-      for i in setup!.els[j+1] do
-          ConvertToMatrixRep(i);
-      od;
+      if doConversions then
+          for i in setup!.els[j+1] do ConvertToMatrixRep(i); od;
+      fi;
       setup!.elsinv[j+1] := List(setup!.els[j+1],x->x^-1);
-      setup!.pi[j+1] := [];
-      for i in [1..j] do
-          setup!.pi[j+1][i] := [codims[j+1]-codims[i]+1..codims[j+1]];
-      od;
-      setup!.trans[j] := List(o[3],x->x + nrgenssum[j]);
+      setup!.pi[j+1] := List([1..j],i->[1..codims[i]]);
+      setup!.pifunc[j+1] := List([1..j],i->\{\});
+      setup!.trans[j] := o!.words;
       setup!.suborbnr[j] := 0;
       setup!.sumstabl[j] := 0;
       setup!.info[j] :=
-NewHT(regvec,QuoInt(Size(f)^(codims[j]),sizes[j-1])*30+1); # fixme!
+            NewHT(regvec,QuoInt(Size(f)^(codims[j]),sizes[j-1])*3+1); # fixme!
       setup!.regvecs[j] := regvec;
-      setup!.cosetinfo[j] := o[4];   # the hash table
-      setup!.cosetrecog[j] := function(w,s)
-        local x;
-        x := ORB_ApplyWord(s.regvecs[j],w,s.els[j],s.elsinv[j],OnRight);
-        x := ORB_Minimalize(x,j,j-1,s,false,false);
-        return ValueHT(s.cosetinfo[j],x);
-      end;
+      setup!.cosetinfo[j] := o.db;   # the hash table
+      setup!.cosetrecog[j] := ORB_CosetRecogGeneric;
+      Add(setup!.op,OnRight);
+      setup!.sample[j] := ZeroVector(sample,codims[j]);
+      setup!.sample[j+1] := sample;
   od;
   return setup;
 end );
+
+InstallGlobalFunction( ORB_CosetRecogGeneric,
+  function( j, w, s )
+    local x;
+    x := ORB_ApplyWord(s!.regvecs[j],w,s!.els[j],s!.elsinv[j],s!.op[j]);
+    x := ORB_Minimalize(x,j,j-1,s,false,false);
+    return LookupSuborbit(x,s!.cosetinfo[j]);
+  end );
 

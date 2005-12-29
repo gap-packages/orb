@@ -50,6 +50,7 @@ BindGlobal( "StdStabIteratorsType",
 DeclareOperation( "StabIterator", [] );   # the constructor
 DeclareOperation( "Reset", [ IsStabIterator ] );
 DeclareOperation( "Next", [ IsStabIterator ] );
+DeclareOperation( "Next", [ IsStabIterator, IsString ] );
 DeclareGlobalFunction( "ORB_ApplyStabElement" );
 
 
@@ -162,11 +163,14 @@ BindGlobal( "StdSuborbitDatabasesType",
 DeclareOperation( "SuborbitDatabase", [ IsOrbitBySuborbitSetup, IsPosInt ] );
 DeclareOperation( "StoreSuborbit", 
                   [ IsSuborbitDatabase, IsObject, IsStabIterator ] );
-
+DeclareOperation( "LookupSuborbit", [ IsObject, IsSuborbitDatabase ] );
+DeclareOperation( "TotalLength", [ IsSuborbitDatabase ] );
+DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );
 
 DeclareGlobalFunction( "OrbitBySuborbit" );
 
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
+DeclareGlobalFunction( "ORB_CosetRecogGeneric" );
 
 DeclareGlobalFunction( "ORB_NextStabIterator2" );
 DeclareGlobalFunction( "ORB_ApplyUElement" );

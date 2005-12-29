@@ -93,3 +93,17 @@ ii := SmallerDegreePermutationRepresentation(Group(ngensp));
 ngensp := GeneratorsOfGroup(Image(ii));
 sygensp := ResultOfStraightLineProgram(syslp,ngensp);
 lll := CalcChain(sygensp,sychain,[]);
+
+for i in [1..Length(u1gens)] do
+    u1gens[i] := Reversed(List(u1gens[i],Reversed));
+    ConvertToMatrixRep(u1gens[i]);
+od;
+for i in [1..Length(u2gens)] do
+    u2gens[i] := Reversed(List(u2gens[i],Reversed));
+    ConvertToMatrixRep(u2gens[i]);
+od;
+for i in [1..Length(ngens)] do
+    ngens[i] := Reversed(List(ngens[i],Reversed));
+    ConvertToMatrixRep(ngens[i]);
+od;
+
