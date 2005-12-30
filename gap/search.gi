@@ -478,7 +478,7 @@ end);
 # Finding nice quotients: #
 ###########################
 
-InstallGlobalFunction( OrbitsStatisticOnVectorSpace,
+InstallGlobalFunction( OrbitStatisticOnVectorSpace,
   function(gens,size,ti)
   # gens must be a list of compressed matrices, size the order of the group
   local len,nr,o,t,total,v;
@@ -501,4 +501,123 @@ InstallGlobalFunction( OrbitsStatisticOnVectorSpace,
   od;
   Print("\n");
 end);
+
+###############################################
+# Finding nice generating sets for subgroups: #
+###############################################
+
+InstallGlobalFunction( ORB_PowerSet,
+function(s)
+  local i,l,le,ll;
+  if Length(s) = 0 then
+      return [[]];
+  elif Length(s) = 1 then
+      return [[],[s[1]]];
+  else
+      l := ORB_PowerSet(s{[1..Length(s)-1]});
+      le := Length(l);
+      for i in [1..le] do
+          ll := ShallowCopy(l[i]);
+          Add(ll,s[Length(s)]);
+          Add(l,ll);
+      od;
+      return l;
+  fi;
+end );
+
+InstallGlobalFunction( ORB_SLPLineFromWord, 
+function(wo)
+  local li,i,j;
+  li := [];
+  i := 1;
+  while i <= Length(wo) do
+      j := i+1;
+      while j <= Length(wo) and wo[j] = wo[i] do
+          j := j + 1;
+      od;
+      Add(li,wo[i]);
+      Add(li,j-i);
+      i := j;
+  od;
+  return li;
+end );
+
+InstallGlobalFunction( FindShortGeneratorsOfSubgroup,
+function(G,U,membershiptest)
+  local su,o,si,s,ps,min,minsi,subgens,subwords,i,l;
+  su := Size(U);
+  if su = 1 then   # the trivial subgroup is easy to generate:
+      return rec( gens := [One(U)], 
+                  slp := StraightLineProgram( [[[1,0]]],
+                                              Length(GeneratorsOfGroup(G)) ) );
+  fi;
+  o := InitOrbit(GeneratorsOfGroup(G),One(G),OnRight,10000, # initial hash size
+                 rec( lookingfor := x -> membershiptest(x,U), 
+                      schreier := true ) );
+  Enumerate(o);
+  subgens := [o!.orbit[o!.found]];
+  subwords := [TraceSchreierTreeForward(o,o!.found)];
+  l := 1;   # will always be the length of subgens and subwords
+  si := Size(Group(ShallowCopy(subgens)));
+  Info(InfoOrb,2,"Found subgroup of size ",si,":",subwords);
+  if si = su then
+      # Cyclic subgroup
+      s := StraightLineProgram([[ORB_SLPLineFromWord(subwords[1])]],
+                               Length(GeneratorsOfGroup(G)));
+      return rec( gens := subgens, slp := s );
+  fi;
+  while true do
+      Enumerate(o);
+      Add(subgens,o!.orbit[o!.found]);
+      Add(subwords,TraceSchreierTreeForward(o,o!.found));
+      l := l + 1;
+      if l <> Length(subgens) or l <> Length(subwords) then
+          Error();
+      fi;
+      s := Size(Group(ShallowCopy(subgens)));
+      if s = su then
+          # OK, we have got a generating set:
+          # Now try shortening generating set:
+          Info(InfoOrb,2,"Found ",l," generators.");
+          if l <= 8 then
+              ps := ORB_PowerSet([1..l]);
+              min := Length(ps);
+              minsi := l;
+              for i in [2..Length(ps)-1] do
+                  s := Size(Group(subgens{ps[i]}));
+                  if s = su and Length(ps[i]) < minsi then
+                      min := i;
+                      minsi := Length(ps[i]);
+                      Info(InfoOrb,2,"Found ",minsi," generators.");
+                  fi;
+              od;
+              subgens := subgens{ps[min]};
+              subwords := subwords{ps[min]};
+          else
+              i := 1;
+              while i <= Length(subgens) do
+                  s := Size(Group(subgens{Concatenation([1..i-1],[i+1..l])}));
+                  if s = su then  # we do not need generator i
+                      Remove(subgens,i);
+                      Remove(subwords,i);
+                      l := l - 1;
+                  else
+                      i := i + 1;
+                  fi;
+              od;
+          fi;
+          l := List(subwords,ORB_SLPLineFromWord);
+          s := StraightLineProgram([l],Length(GeneratorsOfGroup(G)));
+          return rec( gens := subgens, slp := s );
+      fi;
+      if s=si then
+          Unbind(subgens[l]);
+          Unbind(subwords[l]);
+          l := l - 1;
+      else
+          si := s;
+          Info(InfoOrb,2,"Found subgroup of size ",si,":",subwords);
+      fi;
+  od;
+end );
 

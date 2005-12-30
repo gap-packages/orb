@@ -83,5 +83,13 @@ DeclareGlobalFunction( "ClassMaker" );
 # Finding nice quotients: #
 ###########################
 
-DeclareGlobalFunction( "OrbitsStatisticOnVectorSpace" );
+DeclareGlobalFunction( "OrbitStatisticOnVectorSpace" );
 
+
+############################################
+# Finding short generators of a subgroup : #
+############################################
+
+DeclareGlobalFunction( "ORB_PowerSet" );
+DeclareGlobalFunction( "ORB_SLPLineFromWord" );
+DeclareGlobalFunction( "FindShortGeneratorsOfSubgroup" );

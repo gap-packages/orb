@@ -29,6 +29,7 @@ InstallGlobalFunction( NewHT, function(sample,len)
   local eqfun,hfun,ht;
   hfun := ChooseHashFunction(sample,len);
   eqfun := ApplicableMethod(\=,[sample,sample]);
+  if eqfun = fail then eqfun := EQ; fi;
   ht := InitHT(len,hfun,eqfun);
   ht.cangrow := true;
   return ht;
@@ -268,7 +269,7 @@ function(p,data)
   if IsPerm4Rep(p) then
     # is it a proper 4byte perm?
     if l>65536 then
-      return HashKeyBag(p,255,0,4*l) mod data[1] + 1;
+      return HashKeyBag(p,255,0,4*l) mod data + 1;
     else
       # the permutation does not require 4 bytes. Trim in two
       # byte representation (we need to do this to get consistent
@@ -277,7 +278,7 @@ function(p,data)
     fi;
    fi;
    # now we have a Perm2Rep:
-   return HashKeyBag(p,255,0,2*l) mod data[1] + 1;
+   return HashKeyBag(p,255,0,2*l) mod data + 1;
 end );
 
 InstallMethod( ChooseHashFunction, "for permutations", 
