@@ -170,7 +170,8 @@ DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );
 DeclareGlobalFunction( "OrbitBySuborbit" );
 
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
-DeclareGlobalFunction( "ORB_CosetRecogGeneric" );
+DeclareGlobalFunction( "ORB_CosetRecogGenericFactorSpace" );
+DeclareGlobalFunction( "ORB_CosetRecogGenericFullSpace" );
 
 DeclareGlobalFunction( "ORB_NextStabIterator2" );
 DeclareGlobalFunction( "ORB_ApplyUElement" );

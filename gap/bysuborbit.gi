@@ -609,7 +609,7 @@ function(p,hashlen,size,setup,percentage)
                     Print("done.\nNew stabilizer order: ",fullstabsize,"\n");
                     if TotalLength(db) * fullstabsize 
                        >= QuoInt(size*percentage,100) then 
-                      Print("\nDone!\n");
+                      Print("Done!\n");
                       return rec(db := db,
                                  words := words,
                                  fullstabsize := fullstabsize,
@@ -790,7 +790,8 @@ function(gens,permgens,sizes,codims)
   # note that the basis must be changed to make projection easy!
   # That is, projection is taking the components [1..codim].
 
-  local dim,doConversions,f,i,j,k,nrgens,nrgenssum,o,regvec,sample,setup,sum,v;
+  local dim,doConversions,f,i,j,k,nrgens,nrgenssum,o,regvec,sample,setup,sum,v,
+        counter,merk,neededfullspace;
 
   # For the old compressed matrices:
   if IsGF2MatrixRep(gens[1][1]) or Is8BitMatrixRep(gens[1][1]) then
@@ -823,49 +824,70 @@ function(gens,permgens,sizes,codims)
   setup.permgens := Concatenation(permgens);
   setup.permgensinv := List(setup.permgens,x->x^-1);
   setup.els := [];
+  setup.els[k+1] := Concatenation(gens);
+  setup.elsinv := [];
+  setup.elsinv[k+1] := List(setup.els[k+1],x->x^-1);
   dim := Length(gens[1][1]);
   codims[k+1] := dim;   # for the sake of completeness!
-  setup.els[1] := List(gens[1],x->ExtractSubMatrix(x,[1..codims[1]],
-                                                     [1..codims[1]]));
-  if k = 1 then   # only one step to prepare!
-      setup.els[2] := Concatenation(gens[1],gens[2]);
-  else
-      setup.els[2] := Concatenation(
-          List(gens[1],x->ExtractSubMatrix(x,[1..codims[2]],[1..codims[2]])),
-          List(gens[2],x->ExtractSubMatrix(x,[1..codims[2]],[1..codims[2]])));
-  fi;
-  if doConversions then
-      for i in setup.els[1] do ConvertToMatrixRep(i); od;
-      for i in setup.els[2] do ConvertToMatrixRep(i); od;
-  fi;
-  setup.elsinv := List(setup.els,l->List(l,x->x^-1));
+  for j in [1..k] do
+      setup.els[j] := List(Concatenation(gens{[1..j]}),
+                           x->ExtractSubMatrix(x,[1..codims[j]],
+                                                 [1..codims[j]]));
+      if doConversions then
+          for i in setup.els[j] do ConvertToMatrixRep(i); od;
+      fi;
+      setup.elsinv[j] := List(setup.els[j],x->x^-1);
+  od;
   f := BaseField(gens[1][1]);
   regvec := ZeroVector(sample,codims[1]);  
             # a new empty vector over same field
-  Print("Looking for regular U1-orbit...\n");
+  Info(InfoOrb,2,"Looking for regular U1-orbit in factor space...");
+  counter := 0;
   repeat
+      counter := counter + 1;
       Randomize(regvec);
       o := Enumerate(InitOrbit(setup.els[1],regvec,OnRight,sizes[1]*2,
                                rec(schreier := true)));
-      Print("Found length: ",Length(o!.orbit),"        \r");
-  until Length(o!.orbit) = sizes[1];
-  Print("\nFound!\n");
+      Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
+  until Length(o!.orbit) = sizes[1] or counter >= 10;
+  if Length(o!.orbit) < sizes[1] then   # Bad luck, try something else:
+    regvec := ZeroMutable(sample);
+    Info(InfoOrb,2,"Looking for regular U1-orbit in full space...");
+    counter := 0;
+    repeat
+        counter := counter + 1;
+        Randomize(regvec);
+        o := Enumerate(InitOrbit(gens[1],regvec,OnRight,sizes[1]*2,
+                                 rec(schreier := true)));
+        Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
+    until Length(o!.orbit) = sizes[1] or counter >= 10;
+    if Length(o!.orbit) < sizes[1] then   # Again bad luck, try the regular rep
+        Info(InfoOrb,2,"Using the regular permutation representation...");
+        o := Enumerate(InitOrbit(gens[1],gens[1]^0,OnRight,sizes[1]*2,
+                                 rec(schreier := true)));
+    fi;
+  fi;
+  Info(InfoOrb,2,"Found!");
   setup.trans := [List([1..Length(o!.orbit)],i->TraceSchreierTreeForward(o,i))];
 
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
-  setup.pi[2] := [];
-  setup.pi[2][1] := [1..codims[1]];
   setup.pifunc := [];
-  setup.pifunc[2] := [];
-  setup.pifunc[2][1] := \{\};
+  for j in [2..k+1] do
+      setup.pi[j] := [];
+      setup.pifunc[j] := [];
+      for i in [1..j-1] do
+          setup.pi[j][i] := [1..codims[i]];
+          setup.pifunc[j][i] := \{\};
+      od;
+  od;
   setup.info := [NewHT(regvec,Size(f)^(codims[1]) * 2)];
   setup.suborbnr := [0];
   setup.sumstabl := [0];
   setup.regvecs := [regvec];
   setup.cosetinfo := [];
   setup.cosetrecog := [];
-  setup.op := [OnRight,OnRight];
+  setup.op := List([1..k+1],i->OnRight);
   setup.sample := [regvec,gens[1][1][1]];
 
   Objectify( NewType( OrbitBySuborbitSetupFamily,
@@ -873,59 +895,97 @@ function(gens,permgens,sizes,codims)
              setup );
   # From now on we can use it and it is an object!
 
+  neededfullspace := false;
+
   # Now do the other steps:
   for j in [2..k] do
       # First find a vector the orbit of which identifies the U_{j-1}-cosets
       # of U_j, i.e. Stab_{U_j}(v) <= U_{j-1}, 
       # we can use the j-1 infrastructure!
-      Print("Looking for U",j-1,"-coset-recognising U",j,"-orbit\n");
-      regvec := ZeroVector(sample,codims[j]);
-      repeat
-          Print("Trying vector...\n");
-          Randomize(regvec);
-          o := OrbitBySuborbit(regvec,sizes[j]*2+1,sizes[j],setup,100);
-      until Length(Representatives(o.db)) = sizes[j]/sizes[j-1];
-      Print("Found U",j-1,"-coset-recognising U",j,"-orbit!\n");
+      if not(neededfullspace) then
+        # if we have needed the full space somewhere, we need it everywhere
+        # else, because OrbitBySuborbit is only usable for big vectors!
+        Info(InfoOrb,2,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+             "in factor space...");
+        regvec := ZeroVector(sample,codims[j]);
+        counter := 0;
+        repeat
+            Randomize(regvec);
+            counter := counter + 1;
+            o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
+                                 setup,100);
+            Info(InfoOrb,2,"Found ",Length(Representatives(o.db)),
+                 " suborbits (need ",sizes[j]/sizes[j-1],")");
+        until Length(Representatives(o.db)) = sizes[j]/sizes[j-1] or 
+              counter >= 3;
+      fi;
+      if neededfullspace or
+         Length(Representatives(o.db)) < sizes[j]/sizes[j-1] then
+        neededfullspace := true;
+        # Bad luck, try the full space:
+        Info(InfoOrb,2,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+             "in full space...");
+        regvec := ZeroMutable(sample);
+        counter := 0;
+        # Go to the original generators, using the infrastructure for k=j-1:
+        merk := [setup!.els[j],setup!.elsinv[j]];
+        setup!.els[j] := Concatenation(gens{[1..j]});
+        setup!.elsinv[j] := List(setup!.els[j],x->x^-1);
+        repeat
+            Randomize(regvec);
+            counter := counter + 1;
+            o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
+                                 setup,100);
+            Info(InfoOrb,2,"Found ",Length(Representatives(o.db)),
+                 " suborbits (need ",sizes[j]/sizes[j-1],")");
+        until Length(Representatives(o.db)) = sizes[j]/sizes[j-1] or
+              counter >= 20;
+        if Length(Representatives(o.db)) < sizes[j]/sizes[j-1] then
+            Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
+            return;
+        fi;
+        setup!.els[j] := merk[1];
+        setup!.elsinv[j] := merk[2];
+      fi;
+
+      Info(InfoOrb,2,"Found U",j-1,"-coset-recognising U",j,"-orbit!");
       setup!.k := j;
       setup!.size[j] := sizes[j];
       setup!.index[j] := sizes[j]/sizes[j-1];
-      setup!.els[j+1] := [];
-      for i in [1..j+1] do
-          if j = k then
-              Append(setup!.els[j+1],gens[i]);
-          else
-              # The following prepares for the next stage:
-              Append(setup!.els[j+1],
-                List(gens[i],x->ExtractSubMatrix(x,[1..codims[j+1]],
-                                                   [1..codims[j+1]])));
-          fi;
-      od;
-      if doConversions then
-          for i in setup!.els[j+1] do ConvertToMatrixRep(i); od;
-      fi;
-      setup!.elsinv[j+1] := List(setup!.els[j+1],x->x^-1);
-      setup!.pi[j+1] := List([1..j],i->[1..codims[i]]);
-      setup!.pifunc[j+1] := List([1..j],i->\{\});
       setup!.trans[j] := o!.words;
       setup!.suborbnr[j] := 0;
       setup!.sumstabl[j] := 0;
       setup!.info[j] :=
             NewHT(regvec,QuoInt(Size(f)^(codims[j]),sizes[j-1])*3+1); # fixme!
       setup!.regvecs[j] := regvec;
-      setup!.cosetinfo[j] := o.db;   # the hash table
-      setup!.cosetrecog[j] := ORB_CosetRecogGeneric;
-      Add(setup!.op,OnRight);
+      if not(neededfullspace) then
+          setup!.cosetrecog[j] := ORB_CosetRecogGenericFactorSpace;
+          setup!.cosetinfo[j] := o.db;   # the hash table
+      else
+          setup!.cosetrecog[j] := ORB_CosetRecogGenericFullSpace;
+          setup!.cosetinfo[j] := [o.db,k];   # the hash table
+      fi;
       setup!.sample[j] := ZeroVector(sample,codims[j]);
       setup!.sample[j+1] := sample;
   od;
   return setup;
 end );
 
-InstallGlobalFunction( ORB_CosetRecogGeneric,
+InstallGlobalFunction( ORB_CosetRecogGenericFactorSpace,
   function( j, w, s )
     local x;
     x := ORB_ApplyWord(s!.regvecs[j],w,s!.els[j],s!.elsinv[j],s!.op[j]);
     x := ORB_Minimalize(x,j,j-1,s,false,false);
     return LookupSuborbit(x,s!.cosetinfo[j]);
+  end );
+
+InstallGlobalFunction( ORB_CosetRecogGenericFullSpace,
+  function( j, w, s )
+    local x,k;
+    k := s!.cosetinfo[j][2];
+    x := ORB_ApplyWord(s!.regvecs[j],w,s!.els[k+1],s!.elsinv[k+1],
+                       s!.op[k+1]);
+    x := ORB_Minimalize(x,k+1,j-1,s,false,false);
+    return LookupSuborbit(x,s!.cosetinfo[j][1]);
   end );
 
