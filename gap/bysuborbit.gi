@@ -516,7 +516,14 @@ function(p,hashlen,size,setup,percentage)
   # a list of words in gens which can be used to reach U-orbit in the G-orbit
 
   local k,firstgen,lastgen,stab,miniwords,db,stabgens,stabperms,stabilizer,
-        fullstabsize,words,todo,i,j,x,mw,done,newperm,newword,oldtodo,sw,xx,v;
+        fullstabsize,words,todo,i,j,x,mw,done,newperm,newword,oldtodo,sw,xx,v,
+        pleaseexitnow;
+
+  pleaseexitnow := false;  # set this to true in a break loop to
+                           # let this function exit gracefully
+  assumestabcomplete := false;  # set this to true in a break loop to
+                                # let this function assume that the 
+                                # stabilizer is complete
 
   # Setup some shortcuts:
   k := setup!.k;
@@ -549,6 +556,8 @@ function(p,hashlen,size,setup,percentage)
 
     i := 1;
     while i <= Length(todo) do
+      if pleaseexitnow = true then return; fi;
+
       for j in [firstgen..lastgen] do
         x := setup!.op[k+1](p,setup!.els[k+1][j]);   # ???
         x := ORB_ApplyWord(x,todo[i],setup!.els[k+1],
@@ -574,7 +583,8 @@ function(p,hashlen,size,setup,percentage)
                        percentage := percentage);
           fi;
         else
-          if TotalLength(db) * fullstabsize * 2 <= size then
+          if assumestabcomplete = false and
+             TotalLength(db) * fullstabsize * 2 <= size then
             # otherwise we know that we will not find more stabilizing els.
             # we know now that v is an integer and that
             # p*setup!.els[j]*todo[i]*U = p*words[v]*U

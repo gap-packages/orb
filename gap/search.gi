@@ -535,8 +535,13 @@ function(wo)
       while j <= Length(wo) and wo[j] = wo[i] do
           j := j + 1;
       od;
-      Add(li,wo[i]);
-      Add(li,j-i);
+      if wo[i] > 0 then
+          Add(li,wo[i]);
+          Add(li,j-i);
+      else
+          Add(li,-wo[i]);
+          Add(li,-(j-i));
+      fi;
       i := j;
   od;
   return li;
