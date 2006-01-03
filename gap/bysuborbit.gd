@@ -172,6 +172,7 @@ DeclareGlobalFunction( "OrbitBySuborbit" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
 DeclareGlobalFunction( "ORB_CosetRecogGenericFactorSpace" );
 DeclareGlobalFunction( "ORB_CosetRecogGenericFullSpace" );
+DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines" );
 
 DeclareGlobalFunction( "ORB_NextStabIterator2" );
 DeclareGlobalFunction( "ORB_ApplyUElement" );
