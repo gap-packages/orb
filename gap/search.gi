@@ -502,6 +502,34 @@ InstallGlobalFunction( OrbitStatisticOnVectorSpace,
   Print("\n");
 end);
 
+InstallGlobalFunction( OrbitStatisticOnVectorSpaceLines,
+  function(gens,size,ti)
+  # gens must be a list of compressed matrices, size the order of the group
+  local len,nr,o,t,total,v,c;
+  v := ShallowCopy(gens[1][1]);
+  t := Runtime();
+  total := 0;
+  nr := 0;
+
+  while Runtime() < t + ti*1000 do
+      Randomize(v);
+      c := PositionNonZero(v);
+      if c <= Length(v) then
+          v := v / v[c];
+      fi;
+      o := InitOrbit(gens,v,OnLines,3*size,rec(grpsizebound := size,
+                                               report := 0));
+      Enumerate(o);
+      len := Length(o!.orbit);
+      total := total + len;
+      nr := nr + 1;
+      Print("Found length ",String(Length(o!.orbit),9),", have now ",
+            String(nr,4)," orbits, average length: ",
+            QuoInt(total+QuoInt(nr,2),nr),"     \r");
+  od;
+  Print("\n");
+end);
+
 ###############################################
 # Finding nice generating sets for subgroups: #
 ###############################################
@@ -625,4 +653,33 @@ function(G,U,membershiptest)
       fi;
   od;
 end );
+
+##############################################################
+# Helpers for permutation characters for certain operations: #
+##############################################################
+
+InstallGlobalFunction( NumberFixedVectors,
+  function( mat )
+    local f,n,q;
+    n := NullspaceMat(mat - mat^0);
+    f := BaseField(mat);
+    q := Size(f);
+    return q^Length(n);
+  end );
+
+InstallGlobalFunction( NumberFixedLines,
+  function( mat )
+    local el,f,n,nr,q;
+    f := BaseField(mat);
+    q := Size(f);
+    nr := 0;
+    for el in f do
+        if not(IsZero(el)) then
+            n := NullspaceMat(mat - el*mat^0);
+            nr := nr + (q^Length(n)-1)/(q-1);
+        fi;
+    od;
+    return nr;
+  end );
+
 

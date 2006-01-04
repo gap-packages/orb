@@ -136,6 +136,7 @@ DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
     "stabchainrandom",   # if bound, the value for the "random" option of
                   # "StabChain"
   ] );
+DeclareOperation( "Memory", [IsOrbitBySuborbitSetup] );
 
 
 ############################################
@@ -166,6 +167,23 @@ DeclareOperation( "StoreSuborbit",
 DeclareOperation( "LookupSuborbit", [ IsObject, IsSuborbitDatabase ] );
 DeclareOperation( "TotalLength", [ IsSuborbitDatabase ] );
 DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );
+DeclareOperation( "Memory", [IsSuborbitDatabase] );
+
+DeclareCategory( "IsOrbitBySuborbit", IsComponentObjectRep );
+DeclareRepresentation( "IsStdOrbitBySuborbitRep", IsOrbitBySuborbit,
+  [ "db",           # a suborbit database object
+    "words",        # a list of words to reach the suborbits
+    "stabsize",     # size of the stabilizer
+    "stab",         # the stabilizer in the permutation rep
+    "groupsize",    # the full group size
+    "orbitlength",  # the length of the orbit
+    "percentage",   # percentage (as an int) that the user asked for
+  ] );
+BindGlobal( "StdOrbitBySuborbitsType",
+  NewType( OrbitsFamily, IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ) );
+DeclareOperation( "SuborbitsDb", [IsOrbitBySuborbit] );
+DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
+DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 
 DeclareGlobalFunction( "OrbitBySuborbit" );
 

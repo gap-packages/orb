@@ -161,9 +161,22 @@ end );
 ############################################
 
 InstallMethod( ViewObj, "for an orbit-by-suborbit setup object",
-  [ IsOrbitBySuborbitSetup ],
+  [ IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep ],
   function( setup )
     Print("<setup for an orbit-by-suborbit enumeration, k=",setup!.k,">");
+  end );
+
+InstallMethod( Memory, "for an orbit-by-suborbit setup object",
+  [ IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep ],
+  function( setup )
+    local k,m,p,i;
+    k := setup!.k;
+    m := 0;
+    for i in [1..k] do
+        p := SHALLOW_SIZE(setup!.sample[i]) + 3 * GAPInfo.BytesPerVariable;
+        m := m + p * setup!.info[i].nr + 2 * SHALLOW_SIZE(setup!.info[i].els);
+    od;
+    return m;
   end );
 
 InstallGlobalFunction( ORB_Minimalize,
@@ -470,7 +483,7 @@ InstallMethod( StoreSuborbit,
   Add(db!.lengths,length);
   db!.totallength := db!.totallength + length;
   ###Print("]\r");
-  Print("]\rNew #",Length(db!.reps),
+  Print("\rNew #",Length(db!.reps),
         ", size ",ORB_PrettyStringBigNumber(length),", ");
   Print("NrMins: ",nrmins,", ");
   return length;
@@ -495,9 +508,77 @@ InstallMethod( Representatives, "for a std suborbit database",
     return db!.reps;
   end );
 
+InstallMethod( Memory, "for a std suborbit database",
+  [ IsSuborbitDatabase and IsStdSuborbitDbRep ],
+  function( db )
+    local m,p;
+    # The lists:
+    m := 2 * SHALLOW_SIZE(db!.reps) + 2 * SHALLOW_SIZE(db!.mins!.els);
+    #  (db!.reps and db!.lengths   and    els and vals in db!.mins)
+    # Now the points (this assumes vectors!):
+    p := SHALLOW_SIZE(db!.setup!.sample[db!.setup!.k+1])
+         + 3 * GAPInfo.BytesPerVariable;   # for the bag
+    m := m + db!.mins!.nr * p;  # the reps are also in mins!
+    return m;
+  end );
+
+
 ###################################
 # The real thing: OrbitBySuborbit #
 ###################################
+
+# First a few methods for IsOrbitBySuborbit objects:
+
+InstallMethod( ViewObj, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    Print( "<orbit-by-suborbit size=",o!.orbitlength," stabsize=",
+           o!.stabsize );
+    if o!.percentage < 100 then
+        Print(" (",o!.percentage,"%)");
+    fi;
+    if o!.db!.mins!.nr <> 0 then
+        Print(" saving factor=", QuoInt(o!.db!.totallength,o!.db!.mins!.nr));
+    fi;
+    Print(">");
+  end );
+
+InstallOtherMethod( Size, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return o!.orbitlength;
+  end );
+
+InstallOtherMethod( StabilizerOfExternalSet, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return o!.stab;
+  end );
+
+InstallMethod( SuborbitsDb, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return o!.db;
+  end );
+
+InstallMethod( WordsToSuborbits, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return o!.words;
+  end );
+  
+InstallMethod( Memory, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    local m1,m2;
+    m1 := Memory(o!.db);
+    m2 := Memory(o!.db!.setup);
+    Info(InfoOrb,1,"Memory for suborbits database : ",
+         ORB_PrettyStringBigNumber(m1));
+    Info(InfoOrb,1,"Memory for setup (factor maps): ",
+         ORB_PrettyStringBigNumber(m2));
+    return [m1,m2];
+  end );
 
 InstallGlobalFunction( OrbitBySuborbit,
 function(p,hashlen,size,setup,percentage)
@@ -530,6 +611,12 @@ function(p,hashlen,size,setup,percentage)
   firstgen := Length(setup!.els[k])+1;
   lastgen := Length(setup!.els[k+1]);
 
+  # A security check:
+  if p <> setup!.op[k+1](p,setup!.els[k+1][1]^0) then
+      Error("Warning: The identity does not preserve the starting point!\n",
+            "Did you normalize your vector?");
+  fi;
+
   # First we U-minimalize p:
   stab := StabIterator();
   p := ORB_Minimalize(p,k+1,k,setup,stab,false);
@@ -556,7 +643,7 @@ function(p,hashlen,size,setup,percentage)
 
     i := 1;
     while i <= Length(todo) do
-      if pleaseexitnow = true then return rec(message:="didnotfinish"); fi;
+      if pleaseexitnow = true then return "didnotfinish"; fi;
 
       for j in [firstgen..lastgen] do
         x := setup!.op[k+1](p,setup!.els[k+1][j]);   # ???
@@ -575,12 +662,14 @@ function(p,hashlen,size,setup,percentage)
           if 2 * TotalLength(db) * fullstabsize > size and
              TotalLength(db) * fullstabsize >= QuoInt(size*percentage,100) then 
             Print("\nDone!\n");
-            return rec(db := db,
+            return Objectify( StdOrbitBySuborbitsType,
+                       rec(db := db,
                        words := words,
-                       fullstabsize := fullstabsize,
+                       stabsize := fullstabsize,
+                       stab := stabilizer,
                        groupsize := size,
                        orbitlength := size/fullstabsize,
-                       percentage := percentage);
+                       percentage := percentage) );
           fi;
         else
           if assumestabcomplete = false and
@@ -620,12 +709,14 @@ function(p,hashlen,size,setup,percentage)
                     if TotalLength(db) * fullstabsize 
                        >= QuoInt(size*percentage,100) then 
                       Print("Done!\n");
-                      return rec(db := db,
+                      return Objectify( StdOrbitBySuborbitsType,
+                             rec(db := db,
                                  words := words,
-                                 fullstabsize := fullstabsize,
+                                 stabsize := fullstabsize,
+                                 stab := stabilizer,
                                  groupsize := size,
                                  orbitlength := size/fullstabsize,
-                                 percentage := percentage);
+                                 percentage := percentage) );
                     fi;
                   fi;
                 fi;
@@ -851,7 +942,7 @@ function(gens,permgens,sizes,codims)
   f := BaseField(gens[1][1]);
   regvec := ZeroVector(sample,codims[1]);  
             # a new empty vector over same field
-  Info(InfoOrb,2,"Looking for regular U1-orbit in factor space...");
+  Info(InfoOrb,1,"Looking for regular U1-orbit in factor space...");
   counter := 0;
   repeat
       counter := counter + 1;
@@ -862,7 +953,7 @@ function(gens,permgens,sizes,codims)
   until Length(o!.orbit) = sizes[1] or counter >= 10;
   if Length(o!.orbit) < sizes[1] then   # Bad luck, try something else:
     regvec := ZeroMutable(sample);
-    Info(InfoOrb,2,"Looking for regular U1-orbit in full space...");
+    Info(InfoOrb,1,"Looking for regular U1-orbit in full space...");
     counter := 0;
     repeat
         counter := counter + 1;
@@ -872,7 +963,7 @@ function(gens,permgens,sizes,codims)
         Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
     until Length(o!.orbit) = sizes[1] or counter >= 10;
     if Length(o!.orbit) < sizes[1] then   # Again bad luck, try the regular rep
-        Info(InfoOrb,2,"Using the regular permutation representation...");
+        Info(InfoOrb,1,"Using the regular permutation representation...");
         o := Enumerate(InitOrbit(gens[1],gens[1]^0,OnRight,sizes[1]*2,
                                  rec(schreier := true)));
     fi;
@@ -915,7 +1006,7 @@ function(gens,permgens,sizes,codims)
       if not(neededfullspace) then
         # if we have needed the full space somewhere, we need it everywhere
         # else, because OrbitBySuborbit is only usable for big vectors!
-        Info(InfoOrb,2,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+        Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
              "in factor space...");
         regvec := ZeroVector(sample,codims[j]);
         counter := 0;
@@ -924,16 +1015,16 @@ function(gens,permgens,sizes,codims)
             counter := counter + 1;
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
-            Info(InfoOrb,2,"Found ",Length(Representatives(o.db)),
+            Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
                  " suborbits (need ",sizes[j]/sizes[j-1],")");
-        until Length(Representatives(o.db)) = sizes[j]/sizes[j-1] or 
+        until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or 
               counter >= 3;
       fi;
       if neededfullspace or
-         Length(Representatives(o.db)) < sizes[j]/sizes[j-1] then
+         Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
         neededfullspace := true;
         # Bad luck, try the full space:
-        Info(InfoOrb,2,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+        Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
              "in full space...");
         regvec := ZeroMutable(sample);
         counter := 0;
@@ -946,11 +1037,11 @@ function(gens,permgens,sizes,codims)
             counter := counter + 1;
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
-            Info(InfoOrb,2,"Found ",Length(Representatives(o.db)),
+            Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
                  " suborbits (need ",sizes[j]/sizes[j-1],")");
-        until Length(Representatives(o.db)) = sizes[j]/sizes[j-1] or
+        until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or
               counter >= 20;
-        if Length(Representatives(o.db)) < sizes[j]/sizes[j-1] then
+        if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
             return;
         fi;
@@ -958,7 +1049,7 @@ function(gens,permgens,sizes,codims)
         setup!.elsinv[j] := merk[2];
       fi;
 
-      Info(InfoOrb,2,"Found U",j-1,"-coset-recognising U",j,"-orbit!");
+      Info(InfoOrb,1,"Found U",j-1,"-coset-recognising U",j,"-orbit!");
       setup!.k := j;
       setup!.size[j] := sizes[j];
       setup!.index[j] := sizes[j]/sizes[j-1];
@@ -970,10 +1061,10 @@ function(gens,permgens,sizes,codims)
       setup!.regvecs[j] := regvec;
       if not(neededfullspace) then
           setup!.cosetrecog[j] := ORB_CosetRecogGenericFactorSpace;
-          setup!.cosetinfo[j] := o.db;   # the hash table
+          setup!.cosetinfo[j] := o!.db;   # the hash table
       else
           setup!.cosetrecog[j] := ORB_CosetRecogGenericFullSpace;
-          setup!.cosetinfo[j] := [o.db,k];   # the hash table
+          setup!.cosetinfo[j] := [o!.db,k];   # the hash table
       fi;
       setup!.sample[j] := ZeroVector(sample,codims[j]);
       setup!.sample[j+1] := sample;
@@ -1060,29 +1151,37 @@ function(gens,permgens,sizes,codims)
   f := BaseField(gens[1][1]);
   regvec := ZeroVector(sample,codims[1]);  
             # a new empty vector over same field
-  Info(InfoOrb,2,"Looking for regular U1-orbit in factor space...");
+  Info(InfoOrb,1,"Looking for regular U1-orbit in factor space...");
   counter := 0;
   repeat
       counter := counter + 1;
       Randomize(regvec);
-      o := Enumerate(InitOrbit(setup.els[1],regvec,OnRight,sizes[1]*2,
+      c := PositionNonZero( regvec );
+      if c <= Length( regvec )  then
+          regvec := Inverse( regvec[c] ) * regvec;
+      fi;
+      o := Enumerate(InitOrbit(setup.els[1],regvec,OnLines,sizes[1]*2,
                                rec(schreier := true)));
       Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
   until Length(o!.orbit) = sizes[1] or counter >= 10;
   if Length(o!.orbit) < sizes[1] then   # Bad luck, try something else:
     regvec := ZeroMutable(sample);
-    Info(InfoOrb,2,"Looking for regular U1-orbit in full space...");
+    Info(InfoOrb,1,"Looking for regular U1-orbit in full space...");
     counter := 0;
     repeat
         counter := counter + 1;
         Randomize(regvec);
-        o := Enumerate(InitOrbit(gens[1],regvec,OnRight,sizes[1]*2,
+        c := PositionNonZero( regvec );
+        if c <= Length( regvec )  then
+            regvec := Inverse( regvec[c] ) * regvec;
+        fi;
+        o := Enumerate(InitOrbit(gens[1],regvec,OnLines,sizes[1]*2,
                                  rec(schreier := true)));
         Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
     until Length(o!.orbit) = sizes[1] or counter >= 10;
     if Length(o!.orbit) < sizes[1] then   # Again bad luck, try the regular rep
-        Info(InfoOrb,2,"Using the regular permutation representation...");
-        o := Enumerate(InitOrbit(gens[1],gens[1]^0,OnRight,sizes[1]*2,
+        Info(InfoOrb,1,"Using the permutation representation...");
+        o := Enumerate(InitOrbit(permgens[1],permgens[1]^0,OnRight,sizes[1]*2,
                                  rec(schreier := true)));
     fi;
   fi;
@@ -1124,7 +1223,7 @@ function(gens,permgens,sizes,codims)
       if not(neededfullspace) then
         # if we have needed the full space somewhere, we need it everywhere
         # else, because OrbitBySuborbit is only usable for big vectors!
-        Info(InfoOrb,2,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+        Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
              "in factor space...");
         regvec := ZeroVector(sample,codims[j]);
         counter := 0;
@@ -1137,16 +1236,16 @@ function(gens,permgens,sizes,codims)
             counter := counter + 1;
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
-            Info(InfoOrb,2,"Found ",Length(Representatives(o.db)),
+            Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
                  " suborbits (need ",sizes[j]/sizes[j-1],")");
-        until Length(Representatives(o.db)) = sizes[j]/sizes[j-1] or 
+        until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or 
               counter >= 3;
       fi;
       if neededfullspace or
-         Length(Representatives(o.db)) < sizes[j]/sizes[j-1] then
+         Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
         neededfullspace := true;
         # Bad luck, try the full space:
-        Info(InfoOrb,2,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+        Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
              "in full space...");
         regvec := ZeroMutable(sample);
         counter := 0;
@@ -1156,14 +1255,18 @@ function(gens,permgens,sizes,codims)
         setup!.elsinv[j] := List(setup!.els[j],x->x^-1);
         repeat
             Randomize(regvec);
+            c := PositionNonZero( regvec );
+            if c <= Length( regvec )  then
+                regvec := Inverse( regvec[c] ) * regvec;
+            fi;
             counter := counter + 1;
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
-            Info(InfoOrb,2,"Found ",Length(Representatives(o.db)),
+            Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
                  " suborbits (need ",sizes[j]/sizes[j-1],")");
-        until Length(Representatives(o.db)) = sizes[j]/sizes[j-1] or
+        until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or
               counter >= 20;
-        if Length(Representatives(o.db)) < sizes[j]/sizes[j-1] then
+        if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
             return;
         fi;
@@ -1183,10 +1286,10 @@ function(gens,permgens,sizes,codims)
       setup!.regvecs[j] := regvec;
       if not(neededfullspace) then
           setup!.cosetrecog[j] := ORB_CosetRecogGenericFactorSpace;
-          setup!.cosetinfo[j] := o.db;   # the hash table
+          setup!.cosetinfo[j] := o!.db;   # the hash table
       else
           setup!.cosetrecog[j] := ORB_CosetRecogGenericFullSpace;
-          setup!.cosetinfo[j] := [o.db,k];   # the hash table
+          setup!.cosetinfo[j] := [o!.db,k];   # the hash table
       fi;
       setup!.sample[j] := ZeroVector(sample,codims[j]);
       setup!.sample[j+1] := sample;

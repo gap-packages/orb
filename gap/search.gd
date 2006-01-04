@@ -84,6 +84,7 @@ DeclareGlobalFunction( "ClassMaker" );
 ###########################
 
 DeclareGlobalFunction( "OrbitStatisticOnVectorSpace" );
+DeclareGlobalFunction( "OrbitStatisticOnVectorSpaceLines" );
 
 
 ############################################
@@ -93,3 +94,12 @@ DeclareGlobalFunction( "OrbitStatisticOnVectorSpace" );
 DeclareGlobalFunction( "ORB_PowerSet" );
 DeclareGlobalFunction( "ORB_SLPLineFromWord" );
 DeclareGlobalFunction( "FindShortGeneratorsOfSubgroup" );
+
+
+##############################################################
+# Helpers for permutation characters for certain operations: #
+##############################################################
+
+DeclareGlobalFunction( "NumberFixedVectors" );
+DeclareGlobalFunction( "NumberFixedLines" );
+
