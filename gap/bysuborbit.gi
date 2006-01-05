@@ -667,9 +667,11 @@ function(p,hashlen,size,setup,percentage)
                        words := words,
                        stabsize := fullstabsize,
                        stab := stabilizer,
+                       stabwords := stabgens,
                        groupsize := size,
                        orbitlength := size/fullstabsize,
-                       percentage := percentage) );
+                       percentage := percentage,
+                       seed := p ) );
           fi;
         else
           if assumestabcomplete = false and
@@ -714,9 +716,11 @@ function(p,hashlen,size,setup,percentage)
                                  words := words,
                                  stabsize := fullstabsize,
                                  stab := stabilizer,
+                                 stabwords := stabgens,
                                  groupsize := size,
                                  orbitlength := size/fullstabsize,
-                                 percentage := percentage) );
+                                 percentage := percentage,
+                                 seed := p) );
                     fi;
                   fi;
                 fi;
@@ -1297,3 +1301,61 @@ function(gens,permgens,sizes,codims)
   return setup;
 end );
 
+
+####################################################################
+# Functions to administrate lists of (halves of) orbitbysuborbits: #
+####################################################################
+
+InstallGlobalFunction( InitOrbitBySuborbitList,
+function( setup, nrrandels )
+  local firstgen,i,lastgen,obsol,pr;
+  obsol := rec( obsos := [], nrrandels := nrrandels, randels := [],
+                setup := setup );
+  firstgen := Length(setup!.els[setup!.k])+1;
+  lastgen := Length(setup!.els[setup!.k+1]);
+  pr := ProductReplacer( setup!.els[setup!.k+1]{[firstgen..lastgen]} );
+  for i in [1..nrrandels] do
+      Add(obsol.randels,Next(pr));
+  od;
+  return obsol;
+end );
+
+InstallGlobalFunction( IsVectorInOrbitBySuborbitList,
+function(v,obsol)
+  local i,j,k,res,s,x;
+  s := obsol.setup;
+  k := s!.k;
+  for j in [1..obsol.nrrandels] do
+      x := s!.op[k+1](v,obsol.randels[j]);
+      x := ORB_Minimalize(x,k+1,k,s,false,false);
+      for i in [1..Length(obsol.obsos)] do
+          res := LookupSuborbit(x,obsol.obsos[i]!.db);
+          if res <> fail then  # we know this N-orbit
+              return i;  # is in orbit number i
+          fi;
+      od;
+  od;
+  return fail;
+end );
+
+InstallGlobalFunction( OrbitsFromSeedsToOrbitList,
+function( obsol, li, hashsize, grpsize )
+  local o,orb,v;
+  for v in li do
+      orb := IsVectorInOrbitBySuborbitList(v,obsol);
+      if orb = fail then
+          o := OrbitBySuborbit(v,hashsize,grpsize,obsol.setup,50);
+          if o <> "didnotfinish" then
+              Add(obsol.obsos,o);
+              Print("New suborbit:\n");
+              ViewObj(o);
+              Print("\nHave now ",Length(obsol.obsos),
+                    " orbits with a total of ",
+                    ORB_PrettyStringBigNumber(Sum(obsol.obsos,Size)),
+                    " elements.\n");
+          fi;
+      else
+          Info(InfoOrb,2,"Already know orbit ",orb);
+      fi;
+  od;
+end );

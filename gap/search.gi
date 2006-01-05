@@ -149,6 +149,60 @@ InstallMethod( Randomize,
     return m;
   end );
 
+InstallGlobalFunction( MakeRandomVectors,
+  function( arg )
+    local i,l,number,randomsource,sample;
+    
+    if Length(arg) <= 1 or Length(arg) > 3 then
+        Print("Usage: MakeRandomVectors( sample, number [,randomsource] )\n");
+        return;
+    fi;
+    sample := arg[1];
+    number := arg[2];
+    if Length(arg) = 3 then
+        randomsource := arg[3];
+    else
+        randomsource := RandomSource("global");
+    fi;
+    
+    l := [];
+    for i in [number,number-1..1] do
+        sample := ShallowCopy(sample);
+        Randomize(sample,randomsource);
+        l[i] := sample;
+    od;
+    return l;
+  end );
+
+InstallGlobalFunction( MakeRandomLines,
+  function( arg )
+    local i,l,number,pos,randomsource,sample;
+    
+    if Length(arg) <= 1 or Length(arg) > 3 then
+        Print("Usage: MakeRandomLines( sample, number [,randomsource] )\n");
+        return;
+    fi;
+    sample := arg[1];
+    number := arg[2];
+    if Length(arg) = 3 then
+        randomsource := arg[3];
+    else
+        randomsource := RandomSource("global");
+    fi;
+    
+    l := [];
+    for i in [number,number-1..1] do
+        sample := ShallowCopy(sample);
+        repeat
+            Randomize(sample,randomsource);
+            pos := PositionNonZero(sample);
+        until pos <= Length(sample);
+        MultRowVector(sample,sample[pos]^-1);
+        l[i] := sample;
+    od;
+    return l;
+  end );
+
 # Product replacers:
 
 InstallValue( ProductReplacersType, 
@@ -682,4 +736,21 @@ InstallGlobalFunction( NumberFixedLines,
     return nr;
   end );
 
+InstallGlobalFunction( SpacesOfFixedLines,
+  function( mats )
+    local el,f,i,n,q,spcs;
+    f := BaseField(mats);
+    q := Size(f);
+    spcs := List(mats,i->[]);
+    for i in [1..Length(mats)] do
+        for el in f do
+            if not(IsZero(el)) then
+                n := NullspaceMat(mats[i] - el*mats[i]^0);
+                Add(spcs[i],n);
+            fi;
+        od;
+    od;
+    # to be continued...
+    return spcs;
+  end );
 

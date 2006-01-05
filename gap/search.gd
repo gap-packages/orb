@@ -34,6 +34,11 @@ DeclareFilter( "HasRandomSource" );
 DeclareOperation( "Randomize", [IsObject] );
 DeclareOperation( "Randomize", [IsObject, IsRandomSource] );
 
+# Making lists of random vectors:
+DeclareGlobalFunction( "MakeRandomVectors" );
+DeclareGlobalFunction( "MakeRandomLines" );
+
+
 ######################
 # Product replacers: #
 ######################
@@ -102,4 +107,5 @@ DeclareGlobalFunction( "FindShortGeneratorsOfSubgroup" );
 
 DeclareGlobalFunction( "NumberFixedVectors" );
 DeclareGlobalFunction( "NumberFixedLines" );
+DeclareGlobalFunction( "SpacesOfFixedLines" );
 

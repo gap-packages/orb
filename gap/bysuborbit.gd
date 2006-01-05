@@ -197,6 +197,10 @@ DeclareGlobalFunction( "ORB_ApplyUElement" );
 
 DeclareGlobalFunction( "OrbitBySuborbitWithKnownSize" );
 
+DeclareGlobalFunction( "InitOrbitBySuborbitList" );
+DeclareGlobalFunction( "IsVectorInOrbitBySuborbitList" );
+DeclareGlobalFunction( "OrbitsFromSeedsToOrbitList" );
+
 # Still missing:
 # RepresentativeActionForVectorsPrepare (write memory full)
 # SearchBackward (depth first)
