@@ -4,7 +4,7 @@
 ##                                                           Max Neunhoeffer
 ##                                                              Felix Noeske
 ##
-##  Copyright 2005 Lehrstuhl D fÃ¼r Mathematik, RWTH Aachen
+##  Copyright 2005 Lehrstuhl D für Mathematik, RWTH Aachen
 ##
 ##  Implementation stuff for fast orbit enumeration by suborbits.
 ##
@@ -191,9 +191,10 @@ function(p,j,i,setup,stab,w)
   # be filled with information for an iterator object for 
   # Stab_{U_i}(pi[j][i](q)) (see above).
   # If w is a list the word which is applied is appended.
-  local m,minpoint,minstab,minstablen,minword,n,q,qq,qqq,ret,stablen,
+  local m,minpoint,minstab,minstablen,minword,n,oldp,q,qq,qqq,ret,stablen,
         tempstab,v,vv,vvv,ww,www;
 #Print("Mini:",j," ",i,"\n");
+  oldp := p;  # to make debugging easier!
   if i = 1 then    # this is the smallest helper subgroup
 
     # go to P_1:
@@ -357,7 +358,7 @@ function(p,j,i,setup,stab,w)
       if IsInt(v) then    # this is the number of a word
         if IsList(w) then 
           Append(w,setup!.trans[i][v]);   # remember what we did
-        fi;
+        fi; 
         p := ORB_ApplyWord(p,setup!.trans[i][v],setup!.els[j],
                            setup!.elsinv[j],setup!.op[j]);
         # we again do a U_{i-1}-minimalization:
@@ -483,9 +484,9 @@ InstallMethod( StoreSuborbit,
   Add(db!.lengths,length);
   db!.totallength := db!.totallength + length;
   ###Print("]\r");
-  Print("\rNew #",Length(db!.reps),
-        ", size ",ORB_PrettyStringBigNumber(length),", ");
-  Print("NrMins: ",nrmins,", ");
+  Print("\r#",Length(db!.reps),
+        ",S:",ORB_PrettyStringBigNumber(length),",\c");
+  Print("M:",nrmins,"  \c");
   return length;
 end );
 
@@ -646,9 +647,9 @@ function(p,hashlen,size,setup,percentage)
       if pleaseexitnow = true then return "didnotfinish"; fi;
 
       for j in [firstgen..lastgen] do
-        x := setup!.op[k+1](p,setup!.els[k+1][j]);   # ???
+        x := setup!.op[k+1](p,setup!.els[k+1][j]);
         x := ORB_ApplyWord(x,todo[i],setup!.els[k+1],
-                           setup!.elsinv[k+1],setup!.op[k+1]);   # ???
+                           setup!.elsinv[k+1],setup!.op[k+1]);
         mw := [];
         x := ORB_Minimalize(x,k+1,k,setup,stab,mw);
         v := LookupSuborbit(x,db);
@@ -657,8 +658,8 @@ function(p,hashlen,size,setup,percentage)
           Add(todo,Concatenation([j],todo[i]));
           Add(miniwords,mw);
           StoreSuborbit(db,x,stab);
-          Print("total: ",ORB_PrettyStringBigNumber(TotalLength(db)),
-                " stab: ",ORB_PrettyStringBigNumber(fullstabsize),"       \r");
+          Print("t:",ORB_PrettyStringBigNumber(TotalLength(db)),
+                " st:",ORB_PrettyStringBigNumber(fullstabsize),"       \r");
           if 2 * TotalLength(db) * fullstabsize > size and
              TotalLength(db) * fullstabsize >= QuoInt(size*percentage,100) then 
             Print("\nDone!\n");
@@ -1017,6 +1018,9 @@ function(gens,permgens,sizes,codims)
         repeat
             Randomize(regvec);
             counter := counter + 1;
+            # Now U_{j-1}-minimalize it, such that the transversal-words
+            # returned reach the U_{j-1}-suborbits we find next:
+            regvec := ORB_Minimalize(regvec,j,j-1,setup,false,false);
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
             Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
@@ -1036,9 +1040,14 @@ function(gens,permgens,sizes,codims)
         merk := [setup!.els[j],setup!.elsinv[j]];
         setup!.els[j] := Concatenation(gens{[1..j]});
         setup!.elsinv[j] := List(setup!.els[j],x->x^-1);
+        setup!.sample[j] := ShallowCopy(regvec);  # now a longer vector!
+        # this is corrected later on!
         repeat
             Randomize(regvec);
             counter := counter + 1;
+            # Now U_{j-1}-minimalize it, such that the transversal-words
+            # returned reach the U_{j-1}-suborbits we find next:
+            regvec := ORB_Minimalize(regvec,j,j-1,setup,false,false);
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
             Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
@@ -1237,6 +1246,9 @@ function(gens,permgens,sizes,codims)
             if c <= Length( regvec )  then
                 regvec := Inverse( regvec[c] ) * regvec;
             fi;
+            # Now U_{j-1}-minimalize it, such that the transversal-words
+            # returned reach the U_{j-1}-suborbits we find next:
+            regvec := ORB_Minimalize(regvec,j,j-1,setup,false,false);
             counter := counter + 1;
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
@@ -1257,12 +1269,17 @@ function(gens,permgens,sizes,codims)
         merk := [setup!.els[j],setup!.elsinv[j]];
         setup!.els[j] := Concatenation(gens{[1..j]});
         setup!.elsinv[j] := List(setup!.els[j],x->x^-1);
+        setup!.sample[j] := ShallowCopy(regvec);  # now a longer vector
+        # this will be corrected later on
         repeat
             Randomize(regvec);
             c := PositionNonZero( regvec );
             if c <= Length( regvec )  then
                 regvec := Inverse( regvec[c] ) * regvec;
             fi;
+            # Now U_{j-1}-minimalize it, such that the transversal-words
+            # returned reach the U_{j-1}-suborbits we find next:
+            regvec := ORB_Minimalize(regvec,j,j-1,setup,false,false);
             counter := counter + 1;
             o := OrbitBySuborbit(regvec,(sizes[j]/sizes[j-1])*2+1,sizes[j],
                                  setup,100);
@@ -1358,4 +1375,28 @@ function( obsol, li, hashsize, grpsize )
           Info(InfoOrb,2,"Already know orbit ",orb);
       fi;
   od;
+end );
+
+InstallGlobalFunction( VerifyDisjointness,
+function( obsol )
+  local disjoint,i,j,v;
+  disjoint := true; # up to now
+  for i in [1..Length(obsol.obsos)-1] do
+      Info(InfoOrb,2,"Checking orbit number ",i,"...");
+      if Size(obsol.obsos[i]) >= 2 * TotalLength(obsol.obsos[i]!.db) then
+          Print("WARNING: Orbit number ",i,"not enumerated >50%!\n");
+      fi;
+      for j in [i+1..Length(obsol.obsos)] do
+          if Size(obsol.obsos[i]) = Size(obsol.obsos[j]) then
+              for v in Representatives(obsol.obsos[i]!.db) do
+                  # They are already U-minimal!
+                  if LookupSuborbit(v,obsol.obsos[j]!.db) <> fail then
+                      Print("ATTENTION: Orbits ",i," and ",j," are equal!\n");
+                      disjoint := false;
+                  fi;
+              od;
+          fi;
+      od;
+  od;
+  return disjoint;
 end );

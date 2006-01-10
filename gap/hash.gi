@@ -30,6 +30,7 @@ InstallGlobalFunction( NewHT, function(sample,len)
   hfun := ChooseHashFunction(sample,len);
   eqfun := ApplicableMethod(\=,[sample,sample]);
   if eqfun = fail then eqfun := EQ; fi;
+  if len < 11 then len := 11; fi;  # to avoid complete fillup! 
   ht := InitHT(len,hfun,eqfun);
   ht.cangrow := true;
   return ht;

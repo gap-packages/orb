@@ -4,7 +4,7 @@
 ##                                                           Max Neunhoeffer
 ##                                                              Felix Noeske
 ##
-##  Copyright 2005 Lehrstuhl D fÃ¼r Mathematik, RWTH Aachen
+##  Copyright 2005 Lehrstuhl D für Mathematik, RWTH Aachen
 ##
 ##  Declaration stuff for fast orbit enumeration by suborbits.
 ##
@@ -200,6 +200,8 @@ DeclareGlobalFunction( "OrbitBySuborbitWithKnownSize" );
 DeclareGlobalFunction( "InitOrbitBySuborbitList" );
 DeclareGlobalFunction( "IsVectorInOrbitBySuborbitList" );
 DeclareGlobalFunction( "OrbitsFromSeedsToOrbitList" );
+DeclareGlobalFunction( "VerifyDisjointness" );
+
 
 # Still missing:
 # RepresentativeActionForVectorsPrepare (write memory full)

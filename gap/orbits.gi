@@ -73,11 +73,9 @@ InstallGlobalFunction( InitOrbit,
         if IsBound(o.stab) then
             # We know already part of the stabilizer:
             if IsBound(o.stabchainrandom) then
-                o.stabsize := Size(StabChain( o.stab, 
-                                       rec( random := o.stabchainrandom ) ) );
-            else
-                o.stabsize := Size( o.stab );
+                StabChain( o.stab, rec( random := o.stabchainrandom ) );
             fi;
+            o.stabsize := Size( o.stab );
             Info(InfoOrb,1,"Already have partial stabilizer of size ",
                            o.stabsize,".");
         else
@@ -394,7 +392,8 @@ InstallMethod( Enumerate,
                       if not(IsOne(sgen)) and not(sgen in o!.stab) then
                           if IsBound(o!.stabchainrandom) then
                             if o!.stabsize = 1 then
-                                o!.stab := Group(sgen);
+                                o!.stab := Group(sgen,sgen);
+                                SetSize(o!.stab,Order(sgen));
                             else
                                 o!.stab := Group(Concatenation(
                                                    GeneratorsOfGroup(o!.stab),
@@ -585,16 +584,18 @@ InstallMethod( Enumerate,
                               EvaluateWord(o!.permgensi,wordb);
                       if not(IsOne(sgen)) and not(sgen in o!.stab) then
                         if IsBound(o!.stabchainrandom) then
-                          if o!.stabsize = 1 then
-                              o!.stab := Group(sgen);
-                          else
-                              o!.stab := Group(Concatenation(
-                                                 GeneratorsOfGroup(o!.stab),
-                                                 [sgen]));
-                          fi;
-                          StabChain(o!.stab,rec(random := o!.stabchainrandom));
+                            if o!.stabsize = 1 then
+                                o!.stab := Group(sgen,sgen);
+                                SetSize(o!.stab,Order(sgen));
+                            else
+                                o!.stab := Group(Concatenation(
+                                                   GeneratorsOfGroup(o!.stab),
+                                                   [sgen]));
+                            fi;
+                            StabChain(o!.stab,
+                                      rec(random := o!.stabchainrandom));
                         else
-                          o!.stab := ClosureGroup(o!.stab,sgen);
+                            o!.stab := ClosureGroup(o!.stab,sgen);
                         fi;
                         o!.stabsize := Size(o!.stab);
                         Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
