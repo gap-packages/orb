@@ -37,6 +37,7 @@
 #  .schreiergen
 #  .schreierpos
 #  .found
+#  .stabwords
 
 InstallGlobalFunction( InitOrbit, 
   function( arg )
@@ -85,6 +86,7 @@ InstallGlobalFunction( InitOrbit,
         o.permgensi := List(o.permgens,x->x^-1);
         o.schreier := true;   # we need a Schreier tree for the stabilizer
         o.stabcomplete := false;
+        o.stabwords := [];
         if not IsBound( o.onlystab ) then
             o.onlystab := false;
         fi;
@@ -246,6 +248,10 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
+    if i = 1 and LookFor(o,o!.orbit[1]) then
+        o!.found := 1;
+        return o;
+    fi;
     rep := o!.report;
     while nr <= limit and i <= nr do
         for j in [1..o!.nrgens] do
@@ -290,6 +296,10 @@ InstallMethod( Enumerate,
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
+    fi;
+    if i = 1 and LookFor(o,o!.orbit[1]) then
+        o!.found := 1;
+        return o;
     fi;
     rep := o!.report;
     while nr <= limit and i <= nr do
@@ -338,6 +348,10 @@ InstallMethod( Enumerate,
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
+    fi;
+    if i = 1 and LookFor(o,o!.orbit[1]) then
+        o!.found := 1;
+        return o;
     fi;
     rep := o!.report;
     while nr <= limit and i <= nr and not(o!.stabcomplete and o!.onlystab) do
@@ -392,7 +406,7 @@ InstallMethod( Enumerate,
                       if not(IsOne(sgen)) and not(sgen in o!.stab) then
                           if IsBound(o!.stabchainrandom) then
                             if o!.stabsize = 1 then
-                                o!.stab := Group(sgen,sgen);
+                                o!.stab := Group(sgen);
                                 SetSize(o!.stab,Order(sgen));
                             else
                                 o!.stab := Group(Concatenation(
@@ -404,6 +418,7 @@ InstallMethod( Enumerate,
                           else
                             o!.stab := ClosureGroup(o!.stab,sgen);
                           fi;
+                          Add(o!.stabwords,Concatenation(wordf,[j],-wordb));
                           o!.stabsize := Size(o!.stab);
                           Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
                           if IsBound(o!.stabsizebound) and
@@ -439,6 +454,10 @@ InstallMethod( Enumerate,
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
+    fi;
+    if i = 1 and LookFor(o,o!.orbit[1]) then
+        o!.found := 1;
+        return o;
     fi;
     rep := o!.report;
     while nr <= limit and i <= nr do
@@ -484,6 +503,10 @@ InstallMethod( Enumerate,
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
+    fi;
+    if i = 1 and LookFor(o,o!.orbit[1]) then
+        o!.found := 1;
+        return o;
     fi;
     rep := o!.report;
     while nr <= limit and i <= nr do
@@ -532,6 +555,10 @@ InstallMethod( Enumerate,
     nr := Length(orb);
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
+    fi;
+    if i = 1 and LookFor(o,o!.orbit[1]) then
+        o!.found := 1;
+        return o;
     fi;
     rep := o!.report;
     while nr <= limit and i <= nr and not(o!.stabcomplete and o!.onlystab) do
@@ -597,6 +624,8 @@ InstallMethod( Enumerate,
                         else
                             o!.stab := ClosureGroup(o!.stab,sgen);
                         fi;
+                        Add(o!.stabwords,
+                            Concatenation(wordf,[j],-Reversed(wordb)));
                         o!.stabsize := Size(o!.stab);
                         Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
                         if IsBound(o!.stabsizebound) and

@@ -72,7 +72,7 @@ BindGlobal( "OrbitBySuborbitSetupFamily",
 DeclareCategory( "IsOrbitBySuborbitSetup", IsComponentObjectRep );
 DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
   [ "k",          # number of helper subgroups U_1 < U_2 < ... < U_k
-    "size",       # sizes of those groups (i:1..k)
+    "size",       # sizes of those groups (i:1..k+1)
     "index",      # index of U_{i-1} in U_i (i:1..k)
     "els",        # els stores a list of l group elements of G, 
                   # they all are stored in their action on P, P_1, ..., P_k
@@ -135,6 +135,9 @@ DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
                   # functions
     "stabchainrandom",   # if bound, the value for the "random" option of
                   # "StabChain"
+    "wordhash",   # a hash storing word numbers
+    "wordcache",  # a list of words used somewhere
+    "hashlen",    # initial length of hashes for minimal vectors (i:1..k+1)
   ] );
 DeclareOperation( "Memory", [IsOrbitBySuborbitSetup] );
 
@@ -144,6 +147,8 @@ DeclareOperation( "Memory", [IsOrbitBySuborbitSetup] );
 ############################################
 
 DeclareGlobalFunction( "ORB_Minimalize" );
+DeclareGlobalFunction( "ORB_StoreWordInCache" );
+DeclareGlobalFunction( "ORB_Minimalize2" );
 
 
 #######################
@@ -162,8 +167,12 @@ BindGlobal( "StdSuborbitDatabasesType",
   NewType( OrbitsFamily, IsSuborbitDatabase and IsStdSuborbitDbRep ) );
 
 DeclareOperation( "SuborbitDatabase", [ IsOrbitBySuborbitSetup, IsPosInt ] );
+DeclareOperation( "SuborbitDatabase2", 
+                  [ IsOrbitBySuborbitSetup, IsPosInt, IsPosInt, IsPosInt ] );
 DeclareOperation( "StoreSuborbit", 
                   [ IsSuborbitDatabase, IsObject, IsStabIterator ] );
+DeclareOperation( "StoreSuborbit2", 
+                  [ IsSuborbitDatabase, IsObject, IsRecord, IsPosInt ] );
 DeclareOperation( "LookupSuborbit", [ IsObject, IsSuborbitDatabase ] );
 DeclareOperation( "TotalLength", [ IsSuborbitDatabase ] );
 DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );
@@ -186,11 +195,15 @@ DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
 DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 
 DeclareGlobalFunction( "OrbitBySuborbit" );
+DeclareGlobalFunction( "OrbitBySuborbit2" );
 
+DeclareGlobalFunction( "ORB_NormalizeVector" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
 DeclareGlobalFunction( "ORB_CosetRecogGenericFactorSpace" );
 DeclareGlobalFunction( "ORB_CosetRecogGenericFullSpace" );
+DeclareGlobalFunction( "ORB_CosetRecogGeneric" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines" );
+DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines2" );
 
 DeclareGlobalFunction( "ORB_NextStabIterator2" );
 DeclareGlobalFunction( "ORB_ApplyUElement" );

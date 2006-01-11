@@ -26,5 +26,5 @@ DeclareGlobalFunction( "ORB_HashFunctionForCompressedMats" );
 DeclareGlobalFunction( "ORB_HashFunctionForIntegers" );
 DeclareGlobalFunction( "ORB_HashFunctionForMemory" );
 DeclareGlobalFunction( "ORB_HashFunctionForPermutations" );
-
+DeclareGlobalFunction( "ORB_HashFunctionForIntList" );
 

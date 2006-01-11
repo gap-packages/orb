@@ -288,3 +288,22 @@ InstallMethod( ChooseHashFunction, "for permutations",
     return rec( func := ORB_HashFunctionForPermutations, data := hashlen );
   end );
 
+InstallGlobalFunction( ORB_HashFunctionForIntList,
+function(v,data)
+  local i,res;
+  res := 0;
+  for i in v do
+      res := (res * data[1] + i) mod data[2];
+  od;
+  return res+1;
+end );
+
+InstallMethod( ChooseHashFunction, "for short int lists",
+  [IsList, IsInt],
+  function(p,hashlen)
+    if ForAll(p,IsInt) then
+        return rec(func := ORB_HashFunctionForIntList, data := [101,hashlen]);
+    fi;
+    TryNextMethod();
+  end );
+
