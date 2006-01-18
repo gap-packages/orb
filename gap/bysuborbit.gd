@@ -213,6 +213,8 @@ DeclareGlobalFunction( "OrbitBySuborbitWithKnownSize" );
 DeclareGlobalFunction( "InitOrbitBySuborbitList" );
 DeclareGlobalFunction( "IsVectorInOrbitBySuborbitList" );
 DeclareGlobalFunction( "OrbitsFromSeedsToOrbitList" );
+DeclareGlobalFunction( "IsVectorInOrbitBySuborbitList2" );
+DeclareGlobalFunction( "OrbitsFromSeedsToOrbitList2" );
 DeclareGlobalFunction( "VerifyDisjointness" );
 
 

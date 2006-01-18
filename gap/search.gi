@@ -754,3 +754,81 @@ InstallGlobalFunction( SpacesOfFixedLines,
     return spcs;
   end );
 
+##################################################
+# Helpers for making short SLPs from word lists: #
+##################################################
+
+InstallGlobalFunction( SLPForWordList,
+  function( wordlist, nrgens )
+    local bestlen,bestn,bestword,havewords,i,j,l,line,n,p,slp,w,where,wo,
+          wordset,writepos,ww;
+    havewords := [[]];
+    where := [0];
+    for i in [1..nrgens] do
+        Add(havewords,[i]);
+        Add(where,i);
+        Add(havewords,[-i]);
+        Add(where,-i);
+    od;
+    wordset := Set(wordlist);
+    slp := [];
+    writepos := nrgens+1;
+    for w in wordset do
+      if not(w in havewords) then
+        wo := ShallowCopy(w);
+        line := [];
+        while Length(wo) > 0 do
+            # Look through all havewords and see which one helps most:
+            bestlen := 0;
+            bestword := 0;
+            bestn := 0;
+            for j in [2..Length(havewords)] do
+                ww := havewords[j];
+                l := Length(ww);
+                if l <= Length(wo) and wo{[1..l]} = ww then
+                    # How often does it fit here?
+                    n := 1;
+                    while (n+1) * l <= Length(wo) and
+                          ww = wo{[n*l+1..(n+1)*l]} do
+                        n := n + 1;
+                    od;
+                    if n*l > bestlen then
+                        bestlen := n*l;
+                        bestword := j;
+                        bestn := n;
+                    fi;
+                fi;
+            od;
+            if where[bestword] > 0 then
+                Add(line,where[bestword]);
+                Add(line,bestn);
+            else
+                Add(line,-where[bestword]);
+                Add(line,-bestn);
+            fi;
+            l := Length(havewords[bestword]);
+            wo := wo{[l*bestn+1..Length(wo)]};
+        od;
+        Add(slp,line);
+        Add(havewords,w);
+        Add(where,writepos);
+        Add(havewords,-Reversed(w));
+        Add(where,-writepos);
+        writepos := writepos+1;
+      fi;
+    od;
+    line := [];
+    for w in wordlist do
+        p := Position(havewords,w);
+        if where[p] > 0 then
+            Add(line,[where[p],1]);
+        elif where[p] = 0 then   # The empty word
+            Add(line,[1,0]);
+        else
+            Add(line,[-where[p],-1]);
+        fi;
+    od;
+    Add(slp,line);
+    return [StraightLineProgram(slp,nrgens),havewords,where];
+end );
+

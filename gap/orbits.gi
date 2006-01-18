@@ -73,7 +73,7 @@ InstallGlobalFunction( InitOrbit,
         filts := filts and WithSchreierTree and WithPermStabilizer;
         if IsBound(o.stab) then
             # We know already part of the stabilizer:
-            if IsBound(o.stabchainrandom) then
+            if IsBound(o.stabchainrandom) and o.stabchainrandom <> false then
                 StabChain( o.stab, rec( random := o.stabchainrandom ) );
             fi;
             o.stabsize := Size( o.stab );
@@ -107,8 +107,8 @@ InstallGlobalFunction( InitOrbit,
             Error("opt.lookingfor must be a list or a hash table or a",
                   " function");
         fi;
-        o.found := false; 
     fi;
+    o.found := false; 
     if not (IsBound( o.schreiergen ) or IsBound( o.schreier ) ) then 
         o.schreiergen := fail; 
         o.schreierpos := fail;
@@ -248,7 +248,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
-    if i = 1 and LookFor(o,o!.orbit[1]) then
+    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
         o!.found := 1;
         return o;
     fi;
@@ -297,7 +297,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
-    if i = 1 and LookFor(o,o!.orbit[1]) then
+    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
         o!.found := 1;
         return o;
     fi;
@@ -349,7 +349,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
-    if i = 1 and LookFor(o,o!.orbit[1]) then
+    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
         o!.found := 1;
         return o;
     fi;
@@ -404,7 +404,8 @@ InstallMethod( Enumerate,
                       sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
                               EvaluateWord(o!.permgensi,wordb);
                       if not(IsOne(sgen)) and not(sgen in o!.stab) then
-                          if IsBound(o!.stabchainrandom) then
+                          if IsBound(o!.stabchainrandom) and
+                             o!.stabchainrandom <> false then
                             if o!.stabsize = 1 then
                                 o!.stab := Group(sgen);
                                 SetSize(o!.stab,Order(sgen));
@@ -455,7 +456,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
-    if i = 1 and LookFor(o,o!.orbit[1]) then
+    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
         o!.found := 1;
         return o;
     fi;
@@ -504,7 +505,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
-    if i = 1 and LookFor(o,o!.orbit[1]) then
+    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
         o!.found := 1;
         return o;
     fi;
@@ -556,7 +557,7 @@ InstallMethod( Enumerate,
     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
         limit := o!.orbsizebound; 
     fi;
-    if i = 1 and LookFor(o,o!.orbit[1]) then
+    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
         o!.found := 1;
         return o;
     fi;
@@ -610,7 +611,8 @@ InstallMethod( Enumerate,
                       sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
                               EvaluateWord(o!.permgensi,wordb);
                       if not(IsOne(sgen)) and not(sgen in o!.stab) then
-                        if IsBound(o!.stabchainrandom) then
+                        if IsBound(o!.stabchainrandom) and
+                           o!.stabchainrandom <> false then
                             if o!.stabsize = 1 then
                                 o!.stab := Group(sgen,sgen);
                                 SetSize(o!.stab,Order(sgen));
@@ -752,4 +754,20 @@ TestFunc2 := function(gens,p,hashlen)
   od;
   return orb;
 end;
+
+InstallMethod( ActionOnOrbit, "for a closed orbit and a list of elements",
+  [ IsOrbit and IsClosed, IsList ],
+  function( o, gens )
+    local ht,i,res;
+    ht := NewHT( o!.orbit[1], Length(o!.orbit)*2+1 );
+    for i in [1..Length(o!.orbit)] do
+        AddHT(ht,o!.orbit[i],i);
+    od;
+    res := [];
+    for i in [1..Length(gens)] do
+      Add(res,PermList(
+       List([1..Length(o!.orbit)],j->ValueHT(ht,o!.op(o!.orbit[j],gens[i])))));
+    od;
+    return res;
+  end );
 

@@ -109,3 +109,11 @@ DeclareGlobalFunction( "NumberFixedVectors" );
 DeclareGlobalFunction( "NumberFixedLines" );
 DeclareGlobalFunction( "SpacesOfFixedLines" );
 
+
+##################################################
+# Helpers for making short SLPs from word lists: #
+##################################################
+
+DeclareGlobalFunction( "SLPForWordList" );
+
+
