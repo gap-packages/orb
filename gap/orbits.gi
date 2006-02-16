@@ -22,6 +22,7 @@
 #  .stabchainrandom
 #  .permbase
 #  .stab
+#  .storenumbers
 
 # Outputs:
 #  .gens
@@ -87,6 +88,7 @@ InstallGlobalFunction( InitOrbit,
         o.schreier := true;   # we need a Schreier tree for the stabilizer
         o.stabcomplete := false;
         o.stabwords := [];
+        o.storenumbers := true;
         if not IsBound( o.onlystab ) then
             o.onlystab := false;
         fi;
@@ -119,6 +121,9 @@ InstallGlobalFunction( InitOrbit,
     fi;
     if not(IsBound(o.report)) then
         o.report := 0;
+    fi;
+    if not(IsBound(o.storenumbers)) then
+        o.storenumbers := false;
     fi;
     if not(IsBound(o.orbsizebound)) and IsBound(o.grpsizebound) then
         o.orbsizebound := o.grpsizebound;
@@ -153,7 +158,7 @@ InstallGlobalFunction( InitOrbit,
         fi;
     else
         o.ht := NewHT(x,hashlen);
-        if IsBound(o.stab) then
+        if IsBound(o.stab) or o.storenumbers then
             AddHT(o.ht,x,1);
         else
             AddHT(o.ht,x,true);
@@ -260,7 +265,11 @@ InstallMethod( Enumerate,
             if pos = fail then
                 nr := nr + 1;
                 orb[nr] := yy;
-                AddHT(o!.ht,yy,true);
+                if o!.storenumbers then
+                    AddHT(o!.ht,yy,nr);
+                else
+                    AddHT(o!.ht,yy,true);
+                fi;
                 if LookFor(o,yy) = true then
                     o!.pos := i;
                     o!.found := nr;
@@ -309,7 +318,11 @@ InstallMethod( Enumerate,
             if pos = fail then
                 nr := nr + 1;
                 orb[nr] := yy;
-                AddHT(o!.ht,yy,true);
+                if o!.storenumbers then
+                    AddHT(o!.ht,yy,nr);
+                else
+                    AddHT(o!.ht,yy,true);
+                fi;
                 o!.schreiergen[nr] := j;
                 o!.schreierpos[nr] := i;
                 if LookFor(o,yy) = true then
@@ -361,7 +374,11 @@ InstallMethod( Enumerate,
             if pos = fail then
                 nr := nr + 1;
                 orb[nr] := yy;
-                AddHT(o!.ht,yy,nr);
+                if o!.storenumbers then
+                    AddHT(o!.ht,yy,nr);
+                else
+                    AddHT(o!.ht,yy,true);
+                fi;
                 o!.schreiergen[nr] := j;
                 o!.schreierpos[nr] := i;
                 if LookFor(o,yy) = true then

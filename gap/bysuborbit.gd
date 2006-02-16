@@ -196,6 +196,7 @@ DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 
 DeclareGlobalFunction( "OrbitBySuborbit" );
 DeclareGlobalFunction( "OrbitBySuborbit2" );
+DeclareGlobalFunction( "OrbitBySuborbit3" );
 
 DeclareGlobalFunction( "ORB_NormalizeVector" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );

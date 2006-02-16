@@ -933,7 +933,7 @@ function(p,hashlen,size,setup,percentage)
           Print("t:",ORB_PrettyStringBigNumber(TotalLength(db)),
                 " st:",ORB_PrettyStringBigNumber(fullstabsize),"       \r");
           if 2 * TotalLength(db) * fullstabsize > size and
-             TotalLength(db) * fullstabsize >= QuoInt(size*percentage,100) then 
+             TotalLength(db) * fullstabsize * 100 >= size*percentage then 
             Print("\nDone!\n");
             return Objectify( StdOrbitBySuborbitsType,
                        rec(db := db,
@@ -982,8 +982,8 @@ function(p,hashlen,size,setup,percentage)
                     fi;
                     fullstabsize := Size(stabilizer);
                     Print("done.\nNew stabilizer order: ",fullstabsize,"\n");
-                    if TotalLength(db) * fullstabsize 
-                       >= QuoInt(size*percentage,100) then 
+                    if TotalLength(db) * fullstabsize * 100
+                       >= size*percentage then 
                       Print("Done!\n");
                       return Objectify( StdOrbitBySuborbitsType,
                              rec(db := db,
@@ -1102,8 +1102,8 @@ function(setup,p,j,l,i,percentage)
           Add(miniwords,mw);
           StoreSuborbit2(db,x,stab,fullstabsize);
           if 2 * TotalLength(db) * fullstabsize > setup!.size[l] and
-             TotalLength(db) * fullstabsize >= 
-                             QuoInt(setup!.size[l]*percentage,100) then 
+             TotalLength(db) * fullstabsize * 100 >= 
+                             setup!.size[l]*percentage then 
             Info(InfoOrb,2,"Leaving OrbitBySuborbit2");
             return Objectify( StdOrbitBySuborbitsType,
                        rec(db := db,
@@ -1155,8 +1155,8 @@ function(setup,p,j,l,i,percentage)
                 fi;
                 fullstabsize := Size(stabilizer);
                 Info(InfoOrb,1,"New stabilizer order: ",fullstabsize);
-                if TotalLength(db) * fullstabsize 
-                   >= QuoInt(setup!.size[l]*percentage,100) then 
+                if TotalLength(db) * fullstabsize * 100
+                   >= setup!.size[l]*percentage then 
                   Info(InfoOrb,2,"Leaving OrbitBySuborbit2");
                   return Objectify( StdOrbitBySuborbitsType,
                          rec(db := db,
@@ -1182,6 +1182,184 @@ function(setup,p,j,l,i,percentage)
     todo := [];
     for ii in [1..Length(stabgens)] do
       Append(todo,List(oldtodo,w->Concatenation(stabgens[ii],w)));
+    od;
+    Info(InfoOrb,1,"Length of next todo: ",Length(todo));
+  od;
+  # this is never reached
+end );
+
+InstallGlobalFunction( OrbitBySuborbit3,
+function(setup,p,j,l,i,percentage)
+  # Enumerates the orbit of p under the group U_j (with G=U_{k+1}) by
+  # suborbits for the subgroup U_i described in "setup". 
+  # "setup" is a setup object for the iterated quotient trick,
+  #         effectively enabling us to do minimalization with a subgroup
+  # "p" is a point
+  # "l", "j" and "i" are integers with k+1 >= j >= l > i >= 1
+  # "j" indicates in which representation we work,
+  # "i" indicates how many helper subgroups we use
+  # "l" indicates which group we enumerate
+  # "percentage" is a number between 50 and 100 and gives a stopping criterium.
+  #         We stop if percentage of the orbit is enumerated.
+  #         Only over 50% we know that the stabilizer is correct!
+  # Returns a suborbit database with additional field "words" which is
+  # a list of words in gens which can be used to reach U-orbit in the G-orbit
+  local assumestabcomplete,db,firstgen,fullstabsize,ii,lastgen,m,miniwords,
+        mw,newperm,newword,o,oldtodo,pleaseexitnow,stab,stabg,stabgens,
+        stabilizer,stabperms,sw,todo,v,words,x,firstgenU,lastgenU;
+
+  Info(InfoOrb,2,"Entering OrbitBySuborbit3 j=",j," l=",l," i=",i);
+
+  if not(j >= l and l > i and i >= 1) then
+      Error("Need j >= l > i >= 1");
+      return;
+  fi;
+
+  pleaseexitnow := false;  # set this to true in a break loop to
+                           # let this function exit gracefully
+  assumestabcomplete := false;  # set this to true in a break loop to
+                                # let this function assume that the 
+                                # stabilizer is complete
+
+  # Setup some shortcuts:
+  firstgen := Length(setup!.els[l-1])+1;
+  lastgen := Length(setup!.els[l]);
+  if i = 1 then
+      firstgenU := 1;
+  else
+      firstgenU := Length(setup!.els[i-1])+1;
+  fi;
+  lastgenU := Length(setup!.els[i]);
+
+  # A security check:
+  if p <> setup!.op[j](p,setup!.els[j][1]^0) then
+      Error("Warning: The identity does not preserve the starting point!\n",
+            "Did you normalize your vector?");
+  fi;
+
+  # First we U_i-minimalize p:
+  stab := rec();
+  p := ORB_Minimalize2(p,j,i,setup,stab,false);
+
+  miniwords := [[]];  # here we collect U-minimalizing elements
+  
+  # Start a database with the first U-suborbit:
+  db := SuborbitDatabase2(setup,j,l,i);
+  StoreSuborbit2(db,p,stab,1);
+
+  stabgens := [];
+  stabperms := [];
+  stabilizer := Group(setup!.permgens[l][1]^0);
+  if IsBound( setup!.stabchainrandom ) and setup!.stabchainrandom <> false then
+      StabChain( stabilizer, rec( random := setup!.stabchainrandom ) );
+  else
+      StabChain(stabilizer);
+  fi;
+  fullstabsize := 1;
+  
+  words := [[]];
+  todo := [[]];
+  while true do
+
+    ii := 1;
+    while ii <= Length(todo) do
+      if pleaseexitnow = true then 
+          return ["didnotfinish",db,fullstabsize]; 
+      fi;
+
+      for m in [firstgen..lastgen] do
+        x := ORB_ApplyWord(p,todo[ii],setup!.els[j],
+                           setup!.elsinv[j],setup!.op[j]);
+        x := setup!.op[j](x,setup!.els[j][m]);
+        mw := [];
+        x := ORB_Minimalize2(x,j,i,setup,stab,mw);
+        v := LookupSuborbit(x,db);
+        if v = fail then   # a new suborbit
+          Add(words,Concatenation(todo[ii],[m]));
+          Add(todo,Concatenation(todo[ii],[m]));
+          Add(miniwords,mw);
+          StoreSuborbit2(db,x,stab,fullstabsize);
+          if 2 * TotalLength(db) * fullstabsize > setup!.size[l] and
+             TotalLength(db) * fullstabsize * 100 >= 
+                             setup!.size[l]*percentage then 
+            Info(InfoOrb,2,"Leaving OrbitBySuborbit3");
+            return Objectify( StdOrbitBySuborbitsType,
+                       rec(db := db,
+                       words := words,
+                       stabsize := fullstabsize,
+                       stab := stabilizer,
+                       stabwords := stabgens,
+                       groupsize := setup!.size[l],
+                       orbitlength := setup!.size[l]/fullstabsize,
+                       percentage := percentage,
+                       seed := p ) );
+          fi;
+        else
+          if assumestabcomplete = false and
+             TotalLength(db) * fullstabsize * 2 <= setup!.size[l] then
+            # otherwise we know that we will not find more stabilizing els.
+            # we know now that v is an integer and that
+            # p*todo[ii]*setup!.els[m]*U = p*words[v]*U
+            # p*todo[ii]*setup!.els[m]*mw is our new vector
+            # p*words[v]*miniwords[v] is our old vector
+            # they differ by an element in Stab_U(...)
+            stabg := List(stab.gens,
+                          w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
+                                           setup!.elsinv[j], OnRight ));
+            o := Enumerate(InitOrbit(stabg,x,setup!.op[j],setup!.hashlen[j],
+                   rec( lookingfor := [Representatives(db)[v]],
+                        schreier := true )));
+            sw := TraceSchreierTreeForward(o,o!.found);
+            sw := Concatenation( stab.gens{sw} );
+            newword := Concatenation(todo[ii],[m],mw,sw,
+                            ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
+            Print("[\c");
+            newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
+                            setup!.permgens[l],setup!.permgensinv[l],OnRight);
+            if not(IsOne(newperm)) then
+              Print(".\c");
+              if not(newperm in stabilizer) then
+                Print(".\c");
+                Add(stabgens,newword);
+                Add(stabperms,newperm);
+                stabilizer := GroupWithGenerators(stabperms);
+                Info(InfoOrb,1,"Calculating new estimate of the stabilizer...");
+                if IsBound(setup!.stabchainrandom) and
+                   setup!.stabchainrandom <> false then
+                    StabChain(stabilizer, 
+                              rec(random := setup!.stabchainrandom));
+                else
+                    StabChain(stabilizer);
+                fi;
+                fullstabsize := Size(stabilizer);
+                Info(InfoOrb,1,"New stabilizer order: ",fullstabsize);
+                if TotalLength(db) * fullstabsize * 100
+                   >= setup!.size[l]*percentage then 
+                  Info(InfoOrb,2,"Leaving OrbitBySuborbit3");
+                  return Objectify( StdOrbitBySuborbitsType,
+                         rec(db := db,
+                             words := words,
+                             stabsize := fullstabsize,
+                             stab := stabilizer,
+                             stabwords := stabgens,
+                             groupsize := setup!.size[l],
+                             orbitlength := setup!.size[l]/fullstabsize,
+                             percentage := percentage,
+                             seed := p) );
+                fi;
+              fi;
+            fi;
+            Print("]\c");
+          fi;
+        fi;
+      od;   # for m in [firstgen..lastgen]
+      ii := ii + 1;
+    od;
+  
+    oldtodo := todo;
+    todo := [];
+    for ii in [firstgenU..lastgenU] do
+      Append(todo,List(oldtodo,w->Concatenation(w,[ii])));
     od;
     Info(InfoOrb,1,"Length of next todo: ",Length(todo));
   od;

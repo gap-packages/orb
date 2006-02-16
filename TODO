@@ -1,8 +1,22 @@
-ProductReplacers
-Searchers
-OrbitBySuborbits
-Helper dafuer
-All orbits
-Double cosets
+For bysuborbit:
+  Entscheide fuer OrbitBySuborbit2 oder 3
+  permbase einbauen
+  bei OrbitBySuborbit3 einbauen, dass rep vektoren gespeichert werden?
+    todo koennte liste von Vektoren sein?
+  nur ein return in OrbitBySuborbit3
+  aufraeumen: 2 weg, ganz alten code raus
+  neuen Bootstrap fuer Vektoren
+  beidseitig Elemente von G applizieren?
+  OrbitBySuborbit schaltbar?
+  OrbitBySuborbitWithKnownSize?
+  Heuristik zum an/abschalten von assumestabcomplete
+  Printing aufraeumen
+ 
 
+Testen mit Suz mod 13 lines/vectors, Co1 mod 5 lines/vectors
 
+Co1 mod 2, Co1 mod 3?
+
+Beispiele in example folder
+
+Doku
