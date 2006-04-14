@@ -159,13 +159,14 @@ InstallGlobalFunction( InitOrbit,
     else
         o.ht := NewHT(x,hashlen);
         if IsBound(o.stab) or o.storenumbers then
+            filts := filts and WithStoringNumbers;
             AddHT(o.ht,x,1);
         else
             AddHT(o.ht,x,true);
         fi;
         filts := filts and IsHashOrbitRep;
     fi;
-    Objectify( NewType(OrbitsFamily,filts), o );
+    Objectify( NewType(CollectionsFamily(FamilyObj(x)),filts), o );
     return o;
 end );
 
@@ -191,6 +192,90 @@ InstallMethod( ViewObj, "for an orbit", [IsOrbit],
         Print(" looking for sth.");
     fi;
     Print(">");
+  end );
+
+InstallMethod( ELM_LIST, "for an orbit object, and a positive integer", 
+  [IsOrbit and IsDenseList, IsPosInt],
+  function( orb, pos )
+    return orb!.orbit[pos];
+  end );
+
+InstallMethod( ELMS_LIST, "for an orbit object, and a list of integers",
+  [IsOrbit and IsDenseList, IsList],
+  function( orb, poss )
+    return orb!.orbit{poss};
+  end );
+
+InstallMethod( Length, "for an orbit object",
+  [IsOrbit and IsDenseList],
+  function( orb )
+    return Length(orb!.orbit);
+  end );
+
+InstallMethod( Position, "for an orbit object, an object, and an integer",
+  [IsOrbit and IsDenseList, IsObject, IsInt],
+  function( orb, ob, pos )
+    return Position( orb!.orbit, ob, pos );
+  end );
+
+InstallMethod( Position, 
+  "for an orbit object storing numbers, an object, and an integer",
+  [IsOrbit and IsHashOrbitRep and IsDenseList and WithStoringNumbers, 
+   IsObject, IsInt],
+  function( orb, ob, pos )
+    local p;
+    p := ValueHT(orb!.ht,ob);
+    if p = fail then
+        return fail;
+    else
+        if p > pos then
+            return p;
+        else
+            return fail;
+        fi;
+    fi;
+  end );
+
+InstallMethod( Position, 
+  "for an orbit object perm on ints, an object, and an integer",
+  [IsOrbit and IsDenseList and IsPermOnIntOrbitRep, IsInt, IsInt],
+  function( orb, ob, pos )
+    local p;
+    if IsBound(orb!.tab[ob]) then
+        p := orb!.tab[ob];
+        if p > pos then
+            return p;
+        else
+            return fail;
+        fi;
+    else
+        return fail;
+    fi;
+  end );
+
+InstallMethod( \in, 
+  "for an object and an orbit object",
+  [IsObject, IsOrbit and IsHashOrbitRep and IsDenseList and WithStoringNumbers],
+  function( ob, orb )
+    local p;
+    p := ValueHT( orb!.ht, ob );
+    if p = fail then
+      return false;
+    else
+      return true;
+    fi;
+  end );
+
+InstallMethod( \in,
+  "for an object and an orbit object perms on int",
+  [IsInt, IsOrbit and IsDenseList and IsPermOnIntOrbitRep],
+  function( ob, orb )
+    local p;
+    if IsBound(orb!.tab[ob]) then
+        return true;
+    else
+        return false;
+    fi;
   end );
 
 InstallMethod( EvaluateWord, "for a list of generators and a word",

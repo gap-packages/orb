@@ -13,11 +13,11 @@
 DeclareInfoClass( "InfoOrb" );
 SetInfoLevel( InfoOrb, 1 );
 
-BindGlobal( "OrbitsFamily", NewFamily( "OrbitsFamily" ) );
-DeclareCategory( "IsOrbit", IsComponentObjectRep );
+DeclareCategory( "IsOrbit", IsComponentObjectRep and IsDenseList );
 DeclareFilter( "IsClosed", IsOrbit );
 DeclareRepresentation( "IsPermOnIntOrbitRep", IsOrbit, [] );
 DeclareRepresentation( "IsHashOrbitRep", IsOrbit, [] );
+DeclareFilter( "WithStoringNumbers" );
 DeclareFilter( "WithSchreierTree" );
 DeclareFilter( "WithPermStabilizer" );
 DeclareFilter( "WithMatStabilizer" );
