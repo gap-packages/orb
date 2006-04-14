@@ -178,7 +178,7 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
     # Note that unfortunately gf2 vectors are not "clean" after their
     # "official" length, therefore we *must not* use the last, half-used
     # byte. This inevitably leads to collisions!
-    if bytelen = 0 then
+    if bytelen <= 2 then
         return rec( func := ORB_HashFunctionForShortGF2Vectors,
                     data := [hashlen] );
     else
@@ -203,7 +203,7 @@ InstallMethod( ChooseHashFunction, "for compressed 8bit vectors",
     # Note that unfortunately 8bit vectors are not "clean" after their
     # "official" length, therefore we *must not* use the last, half-used
     # byte. This inevitably leads to collisions!
-    if bytelen = 0 then
+    if bytelen <= 2 then
         return rec( func := ORB_HashFunctionForShort8BitVectors,
                     data := [hashlen,q] );
     else
@@ -217,7 +217,7 @@ function(x,data)
   local i,res;
   res := 0;
   for i in [1..Length(x)] do
-      res := res + data[2].func(x[i],data[2].data);
+      res := (res * 10001 + data[2].func(x[i],data[2].data)) mod data[1] + 1;
   od;
   return res mod data[1] + 1;
 end );
