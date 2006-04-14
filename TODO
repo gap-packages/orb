@@ -21,12 +21,3 @@ Beispiele in example folder
 
 Doku
 
-Make orbits behave like lists:
-  ELM_LIST
-  ELMS_LIST
-  Length
-  IS_BOUND_LIST
-  Position
-  
-  IsDenseList and IsList
-  not IsMutable
