@@ -35,3 +35,5 @@ DeclareOperation( "TraceSchreierTreeForward", [ IsOrbit, IsPosInt ] );
 DeclareOperation( "EvaluateWord", [ IsList, IsList ] );
 DeclareOperation( "ActWithWord", [IsList, IsList, IsFunction, IsObject] );
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );
+
+DeclareGlobalFunction( "LoadQuotFinder" );

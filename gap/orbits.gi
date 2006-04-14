@@ -788,3 +788,13 @@ InstallMethod( ActionOnOrbit, "for a closed orbit and a list of elements",
     return res;
   end );
 
+
+InstallGlobalFunction( LoadQuotFinder, function()
+  if LoadPackage("chop") <> true then
+      Error("Could not load the required chop package");
+      return;
+  fi;
+  ReadPackage("orb","gap/quotfinder.gd");
+  ReadPackage("orb","gap/quotfinder.gi");
+end );
+
