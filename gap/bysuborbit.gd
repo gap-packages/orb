@@ -163,8 +163,11 @@ DeclareRepresentation( "IsStdSuborbitDbRep", IsSuborbitDatabase,
     "setup",       # a reference to the setup object
     "totallength", # total length
   ] );
+BindGlobal( "SuborbitDatabasesFamily", 
+  NewFamily( "SuborbitDatabasesFamily", IsSuborbitDatabase ) );
 BindGlobal( "StdSuborbitDatabasesType",
-  NewType( OrbitsFamily, IsSuborbitDatabase and IsStdSuborbitDbRep ) );
+  NewType( SuborbitDatabasesFamily, 
+           IsSuborbitDatabase and IsStdSuborbitDbRep ) );
 
 DeclareOperation( "SuborbitDatabase", [ IsOrbitBySuborbitSetup, IsPosInt ] );
 DeclareOperation( "SuborbitDatabase2", 
@@ -188,8 +191,11 @@ DeclareRepresentation( "IsStdOrbitBySuborbitRep", IsOrbitBySuborbit,
     "orbitlength",  # the length of the orbit
     "percentage",   # percentage (as an int) that the user asked for
   ] );
+BindGlobal( "OrbitBySuborbitFamily", 
+            NewFamily( "OrbitBySuborbitFamily", IsOrbitBySuborbit ) );
 BindGlobal( "StdOrbitBySuborbitsType",
-  NewType( OrbitsFamily, IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ) );
+  NewType( OrbitBySuborbitFamily, 
+           IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ) );
 DeclareOperation( "SuborbitsDb", [IsOrbitBySuborbit] );
 DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
 DeclareOperation( "Memory", [IsOrbitBySuborbit] );
