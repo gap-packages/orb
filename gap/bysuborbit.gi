@@ -365,7 +365,12 @@ InstallMethod( StoreSuborbit,
   length := setup!.size[i] / (stab.size / Length(o!.orbit));
   Add(db!.lengths,length);
   db!.totallength := db!.totallength + length;
-  Info(InfoOrb,2,"j=",j," l=",l," i=",i," #",Length(db!.reps),
+  if Length(db!.reps) mod ORB.REPORTSUBORBITS = 0 then
+      infolevel := 1;
+  else
+      infolevel := 2;
+  fi;
+  Info(InfoOrb,infolevel,"j=",j," l=",l," i=",i," #",Length(db!.reps),
        " Size:",ORB_PrettyStringBigNumber(length),
        "\c Mins:",Length(o!.orbit)," \cTotal:",
        ORB_PrettyStringBigNumber(db!.totallength),
@@ -465,6 +470,7 @@ InstallMethod( Memory, "for an orbit-by-suborbit",
   end );
 
 ORB.PATIENCEFORSTAB := 200;
+ORB.REPORTSUBORBITS := 1000;
 
 InstallGlobalFunction( OrbitBySuborbit,
 function(setup,p,j,l,i,percentage)
