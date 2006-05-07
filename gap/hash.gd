@@ -10,11 +10,21 @@
 ##
 #############################################################################
 
+
+########################
+# Generic hashing code:
+########################
+
 DeclareGlobalFunction( "InitHT" );
 DeclareGlobalFunction( "NewHT" );
 DeclareGlobalFunction( "AddHT" );
 DeclareGlobalFunction( "ValueHT" );
 DeclareGlobalFunction( "GrowHT" );
+
+
+#########################################################################
+# Infrastructure for choosing hash functions looking at example objects:
+#########################################################################
 
 DeclareOperation( "ChooseHashFunction", [IsObject, IsInt] );
 

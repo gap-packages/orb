@@ -1,17 +1,9 @@
 For bysuborbit:
-  Entscheide fuer OrbitBySuborbit2 oder 3
   permbase einbauen
+  neuen Bootstrap fuer Vektoren testen
+  Profiling: Probleme identifizieren
   bei OrbitBySuborbit3 einbauen, dass rep vektoren gespeichert werden?
     todo koennte liste von Vektoren sein?
-  nur ein return in OrbitBySuborbit3
-  aufraeumen: 2 weg, ganz alten code raus
-  neuen Bootstrap fuer Vektoren
-  beidseitig Elemente von G applizieren?
-  OrbitBySuborbit schaltbar?
-  OrbitBySuborbitWithKnownSize?
-  Heuristik zum an/abschalten von assumestabcomplete
-  Printing aufraeumen
- 
 
 Testen mit Suz mod 13 lines/vectors, Co1 mod 5 lines/vectors
 
@@ -21,3 +13,9 @@ Beispiele in example folder
 
 Doku
 
+
+Zukunft:
+  Heuristik zum anschalten von assumestabcomplete
+  OrbitBySuborbit schaltbar? was war das nochmal???
+  OrbitBySuborbitWithKnownSize? wozu?
+  beidseitig Elemente von G applizieren? ==> eher nicht, geht auch so.

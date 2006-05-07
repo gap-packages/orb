@@ -1,6 +1,6 @@
 # Here are some straight line programs that help to enumerate Co1 orbits
 # on P(F_2^{24}).
-# See the file "Co1OrbitPF2d24.g" for usage.
+# See the file "Co1OrbitOnPF2d24.g" for usage.
 
 sinvcen := StraightLineProgram( [ [ 1, 1, 2, 1 ], [ 3, 1, 2, 1 ], 
   [ 3, 1, 4, 1 ], [ 3, 1, 5, 1 ], [ 5, 1, 6, 1 ], [ 6, 1, 7, 1 ], 
@@ -48,56 +48,56 @@ slpc4b := StraightLineProgram( [ [ 3, -1 ], [ 4, -1 ], [ 6, -1 ], [ 7, -1 ],
   [ 34, 1, 36, 1 ], [ 4, 1, 14, 1 ], [ 38, 1, 15, 1 ], [ 24, 1, 23, 1 ], 
   [ 39, 1, 40, 1 ], [ [ 29, 1 ], [ 29, 1 ], [ 32, 1 ], [ 37, 1 ], [ 41, 1 ] ] 
  ], 19 );
-chainmax5 := SubgroupChain(589824,17,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 3, 1 ], [ 5, 1, 4, 1 ] ] ], 5 ),[ fail, 4 ],[ fail, 1 ],
- SubgroupChain(294912,16,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 3 ], [ 3, 1, 1, 1, 3, 2 ], [ 3, 1, 2, 1, 3, 2 ] 
-     ] ], 3 ),[ fail, 3, 3 ],[ fail, 1, 2 ],
- SubgroupChain(98304,15,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 3, 1 ], [ 4, 1 ], [ 2, 2, 5, 1 ], [ 2, 1, 5, 1, 2, 1 ], 
-      [ 2, 1, 1, 1, 2, 2 ], [ 2, 2, 3, 1, 2, 1 ], [ 2, 2, 4, 1, 2, 1 ] ] ], 
-5 ),[ fail, 2, 2 ],[ fail, 1, 2 ],
- SubgroupChain(32768,14,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 6, 1 ], [ 7, 1 ], [ 8, 1 ], 
-      [ 4, 1, 5, 1 ] ] ], 8 ),[ fail, 4 ],[ fail, 1 ],
- SubgroupChain(16384,13,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 6, 1 ], [ 7, 2 ], 
-      [ 7, 1, 2, 1, 7, 1 ], [ 7, 1, 3, 1, 7, 1 ] ] ], 7 ),[ fail, 7 ],
-[ fail, 1 ],
- SubgroupChain(8192,12,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 2, 1 ], [ 4, 1 ], [ 5, 1 ], [ 8, 1 ], [ 9, 1 ], 
-      [ 3, 1, 6, 1 ], [ 3, 1, 7, 1 ] ] ], 9 ),[ fail, 3 ],[ fail, 1 ],
- SubgroupChain(4096,11,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 3, 1 ], [ 6, 1 ], [ 7, 1 ], [ 8, 1 ], [ 2, 1, 4, 1 ], 
-      [ 2, 1, 5, 1 ] ] ], 8 ),[ fail, 2 ],[ fail, 1 ],
- SubgroupChain(2048,10,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 6, 1 ] ] ], 7 ),
-[ fail, 7 ],[ fail, 1 ],
- SubgroupChain(1024,9,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 3, 1 ], [ 5, 1 ], [ 2, 1, 4, 1 ], [ 2, 1, 6, 1 ], 
-      [ 4, 1, 2, 1 ] ] ], 6 ),[ fail, 2 ],[ fail, 1 ],
- SubgroupChain(512,8,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 6, 1 ] ] ], 6 ),[ fail, 5 ],
-[ fail, 1 ],
- SubgroupChain(256,7,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 2, 2 ] ] ], 5 ),[ fail, 2 ],
-[ fail, 1 ],
- SubgroupChain(128,6,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 2, 2 ] ] ], 5 ),[ fail, 2 ],
-[ fail, 1 ],
- SubgroupChain(64,5,StraightLineProgram( 
-[ [ [ 1, 1 ], [ 4, 1 ], [ 5, 1 ], [ 2, 1, 3, 1 ], [ 2, 1, 1, 1, 2, 1 ] ] ], 
-5 ),[ fail, 2 ],[ fail, 1 ],
- SubgroupChain(32,4,StraightLineProgram( 
-[ [ [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 1, 1, 5, 1 ] ] ], 5 ),[ fail, 1 ],
-[ fail, 1 ],
- SubgroupChain(16,3,StraightLineProgram( 
-[ [ [ 2, 1 ], [ 4, 1 ], [ 1, 1, 3, 1 ] ] ], 4 ),[ fail, 1 ],[ fail, 1 ],
- SubgroupChain(8,2,StraightLineProgram( [ [ [ 2, 1 ], [ 3, 1 ] ] ], 3 ),
-[ fail, 1 ],[ fail, 1 ],
- SubgroupChain(4,1,StraightLineProgram( [ [ [ 1, 1 ] ] ], 2 ),[ fail, 2 ],
-[ fail, 1 ],
- SubgroupChain(2,0,false,[ fail, 1 ],[ fail, 1 ],false))))))))))))))))));
+#chainmax5 := SubgroupChain(589824,17,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 3, 1 ], [ 5, 1, 4, 1 ] ] ], 5 ),[ fail, 4 ],[ fail, 1 ],
+# SubgroupChain(294912,16,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 3 ], [ 3, 1, 1, 1, 3, 2 ], [ 3, 1, 2, 1, 3, 2 ] 
+#     ] ], 3 ),[ fail, 3, 3 ],[ fail, 1, 2 ],
+# SubgroupChain(98304,15,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 3, 1 ], [ 4, 1 ], [ 2, 2, 5, 1 ], [ 2, 1, 5, 1, 2, 1 ], 
+#      [ 2, 1, 1, 1, 2, 2 ], [ 2, 2, 3, 1, 2, 1 ], [ 2, 2, 4, 1, 2, 1 ] ] ], 
+#5 ),[ fail, 2, 2 ],[ fail, 1, 2 ],
+# SubgroupChain(32768,14,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 6, 1 ], [ 7, 1 ], [ 8, 1 ], 
+#      [ 4, 1, 5, 1 ] ] ], 8 ),[ fail, 4 ],[ fail, 1 ],
+# SubgroupChain(16384,13,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 6, 1 ], [ 7, 2 ], 
+#      [ 7, 1, 2, 1, 7, 1 ], [ 7, 1, 3, 1, 7, 1 ] ] ], 7 ),[ fail, 7 ],
+#[ fail, 1 ],
+# SubgroupChain(8192,12,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 2, 1 ], [ 4, 1 ], [ 5, 1 ], [ 8, 1 ], [ 9, 1 ], 
+#      [ 3, 1, 6, 1 ], [ 3, 1, 7, 1 ] ] ], 9 ),[ fail, 3 ],[ fail, 1 ],
+# SubgroupChain(4096,11,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 3, 1 ], [ 6, 1 ], [ 7, 1 ], [ 8, 1 ], [ 2, 1, 4, 1 ], 
+#      [ 2, 1, 5, 1 ] ] ], 8 ),[ fail, 2 ],[ fail, 1 ],
+# SubgroupChain(2048,10,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 6, 1 ] ] ], 7 ),
+#[ fail, 7 ],[ fail, 1 ],
+# SubgroupChain(1024,9,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 3, 1 ], [ 5, 1 ], [ 2, 1, 4, 1 ], [ 2, 1, 6, 1 ], 
+#      [ 4, 1, 2, 1 ] ] ], 6 ),[ fail, 2 ],[ fail, 1 ],
+# SubgroupChain(512,8,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 6, 1 ] ] ], 6 ),[ fail, 5 ],
+#[ fail, 1 ],
+# SubgroupChain(256,7,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 2, 2 ] ] ], 5 ),[ fail, 2 ],
+#[ fail, 1 ],
+# SubgroupChain(128,6,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 3, 1 ], [ 4, 1 ], [ 5, 1 ], [ 2, 2 ] ] ], 5 ),[ fail, 2 ],
+#[ fail, 1 ],
+# SubgroupChain(64,5,StraightLineProgram( 
+#[ [ [ 1, 1 ], [ 4, 1 ], [ 5, 1 ], [ 2, 1, 3, 1 ], [ 2, 1, 1, 1, 2, 1 ] ] ], 
+#5 ),[ fail, 2 ],[ fail, 1 ],
+# SubgroupChain(32,4,StraightLineProgram( 
+#[ [ [ 2, 1 ], [ 3, 1 ], [ 4, 1 ], [ 1, 1, 5, 1 ] ] ], 5 ),[ fail, 1 ],
+#[ fail, 1 ],
+# SubgroupChain(16,3,StraightLineProgram( 
+#[ [ [ 2, 1 ], [ 4, 1 ], [ 1, 1, 3, 1 ] ] ], 4 ),[ fail, 1 ],[ fail, 1 ],
+# SubgroupChain(8,2,StraightLineProgram( [ [ [ 2, 1 ], [ 3, 1 ] ] ], 3 ),
+#[ fail, 1 ],[ fail, 1 ],
+# SubgroupChain(4,1,StraightLineProgram( [ [ [ 1, 1 ] ] ], 2 ),[ fail, 2 ],
+#[ fail, 1 ],
+# SubgroupChain(2,0,false,[ fail, 1 ],[ fail, 1 ],false))))))))))))))))));
 slpmax5 := StraightLineProgram( [ [ 1, 1, 2, 1 ], [ 3, 1, 2, 1 ], 
   [ 3, 1, 4, 1 ], [ 3, 1, 5, 1 ], [ 5, 1, 6, 1 ], [ 6, 1, 7, 1 ], 
   [ 6, 1, 8, 1 ], [ 7, 1, 9, 1 ], [ 4, 1, 9, 1 ], [ 10, 1, 11, 1 ], 

@@ -9,6 +9,11 @@
 ##
 #############################################################################
 
+
+# A central place for configuration variables:
+
+InstallValue( ORB, rec( ) );
+
 # Possible options:
 #  .grpsizebound
 #  .orbsizebound
@@ -40,7 +45,13 @@
 #  .found
 #  .stabwords
 
-InstallGlobalFunction( InitOrbit, 
+InstallGlobalFunction( InitOrbit,
+  function( arg )
+    Print("Please rename your function call from \"InitOrbit\" to \"Orb\"!\n");
+    return CallFuncList(Orb,arg);
+  end );
+
+InstallGlobalFunction( Orb, 
   function( arg )
     local filts,gens,hashlen,lmp,o,op,opt,x;
 
@@ -52,7 +63,7 @@ InstallGlobalFunction( InitOrbit,
         gens := arg[1]; x := arg[2]; op := arg[3]; hashlen := arg[4];
         opt := arg[5];
     else
-        Print("Usage: InitOrbit( gens, point, action, hashlen [,options] )\n");
+        Print("Usage: Orb( gens, point, action, hashlen [,options] )\n");
         return;
     fi;
 
@@ -251,6 +262,13 @@ InstallMethod( Position,
     else
         return fail;
     fi;
+  end );
+
+InstallMethod( PositionCanonical,
+  "for an orbit object and an object",
+  [IsOrbit, IsObject],
+  function( o, ob )
+    return Position(o,ob);
   end );
 
 InstallMethod( \in, 
@@ -813,52 +831,35 @@ InstallOtherMethod( StabilizerOfExternalSet,
     return fail;
   end );
 
-TestFunc := function(gens,p)
-  local g,i,l,nr,orb,tab;
-  l := LargestMovedPoint(gens);
-  orb := [p];
-  tab := 0*[1..l];
-  tab[p] := 1;
-  nr := 1;
-  i := 1;
-  while i <= nr do
-      for g in gens do
-          p := orb[i]^g;
-          if tab[p] = 0 then
-              nr := nr + 1;
-              orb[nr] := p;
-              tab[p] := nr;
-          fi;
-      od;
-      i := i + 1;
-  od;
-  return orb;
-end;
-
-TestFunc2 := function(gens,p,hashlen)
-  local g,ht,i,l,nr,orb;
-  l := LargestMovedPoint(gens);
-  orb := [p];
-  ht := NewHT(p,hashlen);
-  AddHT(ht,p,true);
-  nr := 1;
-  i := 1;
-  while i <= nr do
-      for g in gens do
-          p := orb[i]^g;
-          if ValueHT(ht,p) = fail then
-              nr := nr + 1;
-              orb[nr] := p;
-              AddHT(ht,p,true);
-          fi;
-      od;
-      i := i + 1;
-  od;
-  return orb;
-end;
-
+InstallMethod( ActionOnOrbit,
+  "for a closed orbit on integers and a list of elements",
+  [ IsOrbit and IsPermOnIntOrbitRep and IsClosed, IsList ],
+  function( o, gens )
+    local res,i;
+    res := [];
+    for i in [1..Length(gens)] do
+      Add(res,PermList( List([1..Length(o!.orbit)],
+                             j->o!.tab[o!.op(o!.orbit[j],gens[i])])));
+    od;
+    return res;
+  end );
+    
+InstallMethod( ActionOnOrbit, 
+  "for a closed orbit with numbers and a list of elements",
+  [ IsOrbit and IsHashOrbitRep and WithStoringNumbers and IsClosed, IsList ],
+  function( o, gens )
+    local res,i;
+    res := [];
+    for i in [1..Length(gens)] do
+      Add(res,PermList(
+       List([1..Length(o!.orbit)],
+            j->ValueHT(o!.ht,o!.op(o!.orbit[j],gens[i])))));
+    od;
+    return res;
+  end );
+ 
 InstallMethod( ActionOnOrbit, "for a closed orbit and a list of elements",
-  [ IsOrbit and IsClosed, IsList ],
+  [ IsOrbit and IsHashOrbitRep and IsClosed, IsList ],
   function( o, gens )
     local ht,i,res;
     ht := NewHT( o!.orbit[1], Length(o!.orbit)*2+1 );
@@ -873,6 +874,12 @@ InstallMethod( ActionOnOrbit, "for a closed orbit and a list of elements",
     return res;
   end );
 
+
+#######################################################################
+# The following loads the sub-package "QuotFinder":
+# Note that this requires other GAP packages, which are automatically
+# loaded by this command if available.
+#######################################################################
 
 InstallGlobalFunction( LoadQuotFinder, function()
   if LoadPackage("chop") <> true then

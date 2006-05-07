@@ -19,41 +19,6 @@ DeclareGlobalFunction( "ORB_InvWord" );
 DeclareGlobalFunction( "ORB_ApplyWord" );
 
 
-#########################
-# Stabilizer Iterators: #
-#########################
-
-#
-# For stabilizers Stab_{U_i}(q) for an U_i-minimal q in P_i the following
-# data structure can be used to iterate through the stabilizer:
-#
-#  stab is a component object with the following components:
-#
-BindGlobal( "StabIteratorsFamily", NewFamily( "StabIteratorsFamily" ) );
-DeclareCategory( "IsStabIterator", IsComponentObjectRep );
-DeclareRepresentation( "IsStdStabIteratorRep", IsStabIterator,
-  [ "i",     # number of the subgroup in question
-    "info",  # a list of length i, at position j we have a list of elements
-             # in the transversal of U_{j-1} in U_j. These elements are stored
-             # as numbers indexing words in setup.trans[j].
-    "pos",   # a list of length i, at position j there is a number indexing
-             # an element in info[j]. This is set to all 1 when Reset
-             # is called and is incremented after a call to Next
-    "cache", # intermediate results to reuse, a list of length i (as above,
-             # height of stabilizer, each element is again a list of length
-             # k+1 (for each representation), each element 
-             # in there is an intermediate result)
-    "point", # list of starting points to verify whether cache is valid
-  ] );
-BindGlobal( "StdStabIteratorsType", 
-  NewType( StabIteratorsFamily, IsStabIterator and IsStdStabIteratorRep ) );
-DeclareOperation( "StabIterator", [] );   # the constructor
-DeclareOperation( "Reset", [ IsStabIterator ] );
-DeclareOperation( "Next", [ IsStabIterator ] );
-DeclareOperation( "Next", [ IsStabIterator, IsString ] );
-DeclareGlobalFunction( "ORB_ApplyStabElement" );
-
-
 ########################################################################
 # Documentation of a data structure for a step of the "quotient trick":
 ########################################################################
@@ -146,9 +111,8 @@ DeclareOperation( "Memory", [IsOrbitBySuborbitSetup] );
 # The heart of the method: Minimalization: #
 ############################################
 
-DeclareGlobalFunction( "ORB_Minimalize" );
 DeclareGlobalFunction( "ORB_StoreWordInCache" );
-DeclareGlobalFunction( "ORB_Minimalize2" );
+DeclareGlobalFunction( "ORB_Minimalize" );
 
 
 #######################
@@ -169,17 +133,19 @@ BindGlobal( "StdSuborbitDatabasesType",
   NewType( SuborbitDatabasesFamily, 
            IsSuborbitDatabase and IsStdSuborbitDbRep ) );
 
-DeclareOperation( "SuborbitDatabase", [ IsOrbitBySuborbitSetup, IsPosInt ] );
-DeclareOperation( "SuborbitDatabase2", 
+DeclareOperation( "SuborbitDatabase", 
                   [ IsOrbitBySuborbitSetup, IsPosInt, IsPosInt, IsPosInt ] );
 DeclareOperation( "StoreSuborbit", 
-                  [ IsSuborbitDatabase, IsObject, IsStabIterator ] );
-DeclareOperation( "StoreSuborbit2", 
                   [ IsSuborbitDatabase, IsObject, IsRecord, IsPosInt ] );
 DeclareOperation( "LookupSuborbit", [ IsObject, IsSuborbitDatabase ] );
 DeclareOperation( "TotalLength", [ IsSuborbitDatabase ] );
 DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );
 DeclareOperation( "Memory", [IsSuborbitDatabase] );
+
+
+#######################################################
+# Objects representing orbits enumerated by suborbits:
+#######################################################
 
 DeclareCategory( "IsOrbitBySuborbit", IsComponentObjectRep );
 DeclareRepresentation( "IsStdOrbitBySuborbitRep", IsOrbitBySuborbit,
@@ -200,28 +166,31 @@ DeclareOperation( "SuborbitsDb", [IsOrbitBySuborbit] );
 DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
 DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 
+
+##################
+# The real thing:
+##################
+
 DeclareGlobalFunction( "OrbitBySuborbit" );
-DeclareGlobalFunction( "OrbitBySuborbit2" );
-DeclareGlobalFunction( "OrbitBySuborbit3" );
+
+
+###############################
+# And helpers for preparation:
+###############################
 
 DeclareGlobalFunction( "ORB_NormalizeVector" );
-DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
-DeclareGlobalFunction( "ORB_CosetRecogGenericFactorSpace" );
-DeclareGlobalFunction( "ORB_CosetRecogGenericFullSpace" );
 DeclareGlobalFunction( "ORB_CosetRecogGeneric" );
+DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines" );
-DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines2" );
 
-DeclareGlobalFunction( "ORB_NextStabIterator2" );
-DeclareGlobalFunction( "ORB_ApplyUElement" );
 
-DeclareGlobalFunction( "OrbitBySuborbitWithKnownSize" );
+#############################################
+# Administrate lists of orbits by suborbits:
+#############################################
 
 DeclareGlobalFunction( "InitOrbitBySuborbitList" );
 DeclareGlobalFunction( "IsVectorInOrbitBySuborbitList" );
 DeclareGlobalFunction( "OrbitsFromSeedsToOrbitList" );
-DeclareGlobalFunction( "IsVectorInOrbitBySuborbitList2" );
-DeclareGlobalFunction( "OrbitsFromSeedsToOrbitList2" );
 DeclareGlobalFunction( "VerifyDisjointness" );
 
 

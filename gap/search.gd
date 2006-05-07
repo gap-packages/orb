@@ -84,6 +84,7 @@ DeclareGlobalFunction( "ReduceNumberOfGeneratorsUsingRecog" );
 
 DeclareGlobalFunction( "ClassMaker" );
 
+
 ###########################
 # Finding nice quotients: #
 ###########################
