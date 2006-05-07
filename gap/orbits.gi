@@ -144,7 +144,7 @@ InstallGlobalFunction( Orb,
     fi;
     if IsBound(o.stabsizebound) and IsBound(o.stabsize) then
         if o.stabsize >= o.stabsizebound then
-            Info(InfoOrb,1,"Stabilizer complete.");
+            Info(InfoOrb,2,"Stabilizer complete.");
             o.stabcomplete := true;
         fi;
     fi;
@@ -499,7 +499,7 @@ InstallMethod( Enumerate,
                 if IsBound(o!.grpsizebound) and not(o!.stabcomplete) then
                     if Length(o!.orbit)*o!.stabsize*2 >= o!.grpsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,1,"Stabilizer complete.");
+                        Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
                 fi;
             else
@@ -545,7 +545,7 @@ InstallMethod( Enumerate,
                           if IsBound(o!.stabsizebound) and
                              o!.stabsize >= o!.stabsizebound then
                               o!.stabcomplete := true;
-                              Info(InfoOrb,1,"Stabilizer complete.");
+                              Info(InfoOrb,2,"Stabilizer complete.");
                           fi;
                       fi;
                     fi;
@@ -706,7 +706,7 @@ InstallMethod( Enumerate,
                 if IsBound(o!.grpsizebound) and not(o!.stabcomplete) then
                     if Length(o!.orbit)*o!.stabsize*2 >= o!.grpsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,1,"Stabilizer complete.");
+                        Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
                 fi;
             else
@@ -753,7 +753,7 @@ InstallMethod( Enumerate,
                         if IsBound(o!.stabsizebound) and
                            o!.stabsize >= o!.stabsizebound then
                             o!.stabcomplete := true;
-                            Info(InfoOrb,1,"Stabilizer complete.");
+                            Info(InfoOrb,2,"Stabilizer complete.");
                         fi;
                       fi;
                     fi;
