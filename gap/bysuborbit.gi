@@ -481,7 +481,7 @@ function(setup,p,j,l,i,percentage)
         mw,newperm,newword,o,oldtodo,pleaseexitnow,stab,stabg,stabgens,
         stabilizer,stabperms,sw,todo,v,words,x,firstgenU,lastgenU,
         triedstabgens,haveappliedU,MakeReturnObj,y,repforsuborbit,
-        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs;
+        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx;
 
   Info(InfoOrb,2,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
 
@@ -566,17 +566,21 @@ function(setup,p,j,l,i,percentage)
       fi;
 
       for m in [firstgen..lastgen] do
+        if todovecs[ii] <> ORB_ApplyWord(p,todo[ii],setup!.els[j],
+                                         setup!.elsinv[j],setup!.op[j]) then
+            Error();
+        fi;
         #xx := ORB_ApplyWord(p,todo[ii],setup!.els[j],
         #                    setup!.elsinv[j],setup!.op[j]);
         xx := todovecs[ii];
-        x := setup!.op[j](xx,setup!.els[j][m]);
+        xxx := setup!.op[j](xx,setup!.els[j][m]);
         mw := [];
-        x := ORB_Minimalize(x,j,i,setup,stab,mw);
+        x := ORB_Minimalize(xxx,j,i,setup,stab,mw);
         v := LookupSuborbit(x,db);
         if v = fail then   # a new suborbit
           Add(words,Concatenation(todo[ii],[m]));
           Add(todo,Concatenation(todo[ii],[m]));
-          Add(todovecs,xx);
+          Add(todovecs,xxx);
           Add(miniwords,mw);
           StoreSuborbit(db,x,stab,fullstabsize);
           Add(repforsuborbit,Length(db!.reps));
@@ -704,7 +708,7 @@ function(setup,p,j,l,i,percentage)
     repforsuborbit := [];
     for ii in [firstgenU..lastgenU] do
       Append(todo,List(oldtodo,w->Concatenation(w,[ii])));
-      Append(todo,List(oldtodovecs,w->setup!.op[j](w,setup!.els[j][ii])));
+      Append(todovecs,List(oldtodovecs,w->setup!.op[j](w,setup!.els[j][ii])));
       Append(repforsuborbit,oldrepforsuborbit);
     od;
     Info(InfoOrb,2,"Length of next todo: ",Length(todo));
