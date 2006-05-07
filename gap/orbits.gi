@@ -181,7 +181,7 @@ InstallGlobalFunction( Orb,
     return o;
 end );
 
-InstallMethod( ViewObj, "for an orbit", [IsOrbit],
+InstallMethod( ViewObj, "for an orbit", [IsOrbit and IsList and IsFinite],
   function( o )
     Print("<");
     if IsClosed(o) then Print("closed "); else Print("open "); fi;
@@ -497,7 +497,7 @@ InstallMethod( Enumerate,
                     return o;
                 fi;
                 if IsBound(o!.grpsizebound) and not(o!.stabcomplete) then
-                    if Length(o!.orbit)*o!.stabsize*2 >= o!.grpsizebound then
+                    if Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
@@ -704,7 +704,7 @@ InstallMethod( Enumerate,
                     return o;
                 fi;
                 if IsBound(o!.grpsizebound) and not(o!.stabcomplete) then
-                    if Length(o!.orbit)*o!.stabsize*2 >= o!.grpsizebound then
+                    if Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
