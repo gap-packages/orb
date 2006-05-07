@@ -4,6 +4,8 @@ For bysuborbit:
   Profiling: Probleme identifizieren
   bei OrbitBySuborbit3 einbauen, dass rep vektoren gespeichert werden?
     todo koennte liste von Vektoren sein?
+  pleaseexitnow aufraeumen, "interne" OrbitBySuborbits duerfen nicht
+    abbrechen!
 
 Testen mit Suz mod 13 lines/vectors, Co1 mod 5 lines/vectors
 

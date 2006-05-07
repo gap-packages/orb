@@ -117,7 +117,6 @@ function(p,j,i,setup,stab,w)
   # If w is a list the word which is applied is appended.
   local cos,m,mm,o,oldp,oo,q,qq,tempstab,tempstabgens,v,ww,www;
   
-  #Print("Entering ORB_Minimalize j=",j," i=",i,"\n");
   oldp := p;  # to make debugging easier!
   if i = 1 then    # this is the smallest helper subgroup
 
@@ -129,14 +128,12 @@ function(p,j,i,setup,stab,w)
     fi;
     v := ValueHT(setup!.info[1],q);
     if v = fail then    # we do not yet know this point
-      #Print("<\c");
       o := Enumerate(Orb(setup!.els[1],q,setup!.op[1],setup!.size[1]*2,
                          rec( schreier := true, 
                               grpsizebound := setup!.size[1],
                               stabchainrandom := setup!.stabchainrandom,
                               permgens := setup!.permgens[1],
                               permbase := setup!.permbase[1] )));
-      #Print(">\c");
       v := rec( gens := o!.stabwords, size := o!.stabsize );
       AddHT(setup!.info[1],q,v);
       # Now we have to store backward words via the wordcache:
@@ -183,7 +180,6 @@ function(p,j,i,setup,stab,w)
 
     if v = fail then    # we do not yet know this U_{i-1}-suborbit
 
-      #Print("Precalc...\c");
       # we define q*U_{i-1} to be the U_i-minimal U_{i-1}-orbit,
       # and q to be the U_i-minimal point in there.
       # now find the other U_{i-1}-orbits:
@@ -193,15 +189,13 @@ function(p,j,i,setup,stab,w)
       AddHT(setup!.info[i],q,v);
       # Now find all U_{i-1}-minimal elements in q*U_{i-1}, note that
       # tempstab contains generators for Stab_{U_{i-1}}(q)!
-      Print("[[[\c");
+      Info(InfoOrb,1,"Starting on-the-fly precomputation (i>1) ...");
       tempstabgens := List(tempstab.gens,
                            w->ORB_ApplyWord(One(setup!.els[i][1]),w,
                                             setup!.els[i],setup!.elsinv[i],
                                             OnRight));
-      Print("<<<\c");
       oo := Enumerate(Orb(tempstabgens,q,setup!.op[i],
                           setup!.hashlen[i],rec(schreier := true)));
-      Print(Length(oo!.orbit),"|||\c");
       for m in [2..Length(oo!.orbit)] do
           ww := TraceSchreierTreeForward(oo,m);
           ww := ORB_InvWord(Concatenation( tempstab.gens{ww} ));
@@ -211,13 +205,12 @@ function(p,j,i,setup,stab,w)
           fi;
           AddHT(setup!.info[i],oo!.orbit[m],-ww);
       od;
-      Print(">>>\c");
       
       # Now store all U_{i-1}-minimal elements in the other U_{i-1}-orbits
       # of q*U_i together with a number of a transversal element to reach
       # the minimal U_{i-1}-orbit q*U_{i-1}:
 
-      Print("len:",Length(o!.words),"\c");
+      Info(InfoOrb,3,"Have to go through ",Length(o!.words)-1," suborbits...");
       for m in [2..Length(o!.words)] do
           qq := ORB_ApplyWord(q,o!.words[m],setup!.els[i],setup!.elsinv[i],
                               setup!.op[i]);
@@ -228,10 +221,8 @@ function(p,j,i,setup,stab,w)
                                w->ORB_ApplyWord(One(setup!.els[i][1]),w,
                                                 setup!.els[i],setup!.elsinv[i],
                                                 OnRight));
-          Print("<<<\c");
           oo := Enumerate(Orb(tempstabgens,qq,setup!.op[i],
                               setup!.hashlen[i],rec(schreier := true)));
-          Print(Length(oo!.orbit),"|||\c");
           for mm in [1..Length(oo!.orbit)] do
               www := TraceSchreierTreeForward(oo,mm);
               www := Concatenation( tempstab.gens{www} );
@@ -242,9 +233,9 @@ function(p,j,i,setup,stab,w)
               fi;
               AddHT(setup!.info[i],oo!.orbit[mm],cos);
           od;
-          Print(">>>\c");
+          Info(InfoOrb,3,"done 1 suborbit.");
       od;
-      Print("]]]\c");
+      Info(InfoOrb,3,"ready with on-the-fly precomputation.");
 
       # Now the U_{i-1}-orbit of the vector q is the U_i-minimal 
       # U_{i-1}-orbit and q is the U_i-minimal vector
@@ -253,8 +244,6 @@ function(p,j,i,setup,stab,w)
       # v its setup!.info[i], i.e. [true,stabilizer information]
       setup!.suborbnr[i] := setup!.suborbnr[i] + 1;
       setup!.sumstabl[i] := setup!.sumstabl[i] + o!.stabsize;
-
-      #Print("done.\n");
 
     else   # we already knew this U_{i-1}-suborbit
 
@@ -492,7 +481,7 @@ function(setup,p,j,l,i,percentage)
         mw,newperm,newword,o,oldtodo,pleaseexitnow,stab,stabg,stabgens,
         stabilizer,stabperms,sw,todo,v,words,x,firstgenU,lastgenU,
         triedstabgens,haveappliedU,MakeReturnObj,y,repforsuborbit,
-        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2;
+        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs;
 
   Info(InfoOrb,2,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
 
@@ -545,6 +534,7 @@ function(setup,p,j,l,i,percentage)
   
   words := [[]];
   todo := [[]];
+  todovecs := [p];
   repforsuborbit := [1];
   
   triedstabgens := 0;     # this counts only the "failed" ones in a row
@@ -552,7 +542,7 @@ function(setup,p,j,l,i,percentage)
 
   MakeReturnObj := function()
     # This is used twice below, it just gathers some information.
-    Info(InfoOrb,1,"OrbitBySuborbit found ",percentage,"% of an U",l,"
+    Info(InfoOrb,1,"OrbitBySuborbit found ",percentage,"% of a U",l,
          "-orbit of size ",
          ORB_PrettyStringBigNumber(setup!.size[l]/fullstabsize));
     return Objectify( StdOrbitBySuborbitsType,
@@ -576,8 +566,9 @@ function(setup,p,j,l,i,percentage)
       fi;
 
       for m in [firstgen..lastgen] do
-        xx := ORB_ApplyWord(p,todo[ii],setup!.els[j],
-                            setup!.elsinv[j],setup!.op[j]);
+        #xx := ORB_ApplyWord(p,todo[ii],setup!.els[j],
+        #                    setup!.elsinv[j],setup!.op[j]);
+        xx := todovecs[ii];
         x := setup!.op[j](xx,setup!.els[j][m]);
         mw := [];
         x := ORB_Minimalize(x,j,i,setup,stab,mw);
@@ -585,6 +576,7 @@ function(setup,p,j,l,i,percentage)
         if v = fail then   # a new suborbit
           Add(words,Concatenation(todo[ii],[m]));
           Add(todo,Concatenation(todo[ii],[m]));
+          Add(todovecs,xx);
           Add(miniwords,mw);
           StoreSuborbit(db,x,stab,fullstabsize);
           Add(repforsuborbit,Length(db!.reps));
@@ -612,29 +604,28 @@ function(setup,p,j,l,i,percentage)
             # representative for p*todo[ii]*U, thus we can directly
             # make a Schreier generator:
             if not(haveappliedU) then
-              #o := Enumerate(Orb(stabg,Representatives(db)[v],
-              #               setup!.op[j],setup!.hashlen[j],
-              #               rec( lookingfor := [x],
-              #                    schreier := true )));
-              #sw := TraceSchreierTreeForward(o,o!.found);
-              #sw := Concatenation( stab.gens{sw} );
-              #newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
-              #                ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
-              o := Enumerate(Orb(stabg,x,
+              o := Enumerate(Orb(stabg,Representatives(db)[v],
                              setup!.op[j],setup!.hashlen[j],
-                             rec( lookingfor := [Representatives(db)[v]],
+                             rec( lookingfor := [x],
                                   schreier := true )));
               sw := TraceSchreierTreeForward(o,o!.found);
               sw := Concatenation( stab.gens{sw} );
-              newword := Concatenation(todo[ii],[m],mw,sw,
+              newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
                               ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
+              #o := Enumerate(Orb(stabg,x,
+              #               setup!.op[j],setup!.hashlen[j],
+              #               rec( lookingfor := [Representatives(db)[v]],
+              #                    schreier := true )));
+              #sw := TraceSchreierTreeForward(o,o!.found);
+              #sw := Concatenation( stab.gens{sw} );
+              #newword := Concatenation(todo[ii],[m],mw,sw,
+              #                ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
             else
               # in this case todo[ii] is not the chosen representative for
               # p*todo[ii]*U because we have already applied elements of
               # U from the right to those chosen representatives. Thus we
               # have to calculate the chosen representative:
               # First take xx and minimalize it:
-   Print("Warning!!! New code!\n");
               mw2 := [];
               stab2 := rec();
               xx := ORB_Minimalize(xx,j,i,setup,stab2,mw2);
@@ -682,6 +673,10 @@ function(setup,p,j,l,i,percentage)
                 fi;
                 fullstabsize := Size(stabilizer);
                 Info(InfoOrb,1,"New stabilizer order: ",fullstabsize);
+                #guck := ORB_ApplyWord(p,newword,setup!.els[j],setup!.elsinv[j],OnLines);
+                #if guck <> p then
+                #    Error();
+                #fi;
                 if TotalLength(db) * fullstabsize * 100
                    >= setup!.size[l]*percentage then 
                   Info(InfoOrb,2,"Leaving OrbitBySuborbit");
@@ -702,11 +697,14 @@ function(setup,p,j,l,i,percentage)
     od;
   
     oldtodo := todo;
+    oldtodovecs := todovecs;
     todo := [];
+    todovecs := [];
     oldrepforsuborbit := repforsuborbit;
     repforsuborbit := [];
     for ii in [firstgenU..lastgenU] do
       Append(todo,List(oldtodo,w->Concatenation(w,[ii])));
+      Append(todo,List(oldtodovecs,w->setup!.op[j](w,setup!.els[j][ii])));
       Append(repforsuborbit,oldrepforsuborbit);
     od;
     Info(InfoOrb,2,"Length of next todo: ",Length(todo));
