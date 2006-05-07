@@ -608,22 +608,22 @@ function(setup,p,j,l,i,percentage)
             # representative for p*todo[ii]*U, thus we can directly
             # make a Schreier generator:
             if not(haveappliedU) then
-              o := Enumerate(Orb(stabg,Representatives(db)[v],
-                             setup!.op[j],setup!.hashlen[j],
-                             rec( lookingfor := [x],
-                                  schreier := true )));
-              sw := TraceSchreierTreeForward(o,o!.found);
-              sw := Concatenation( stab.gens{sw} );
-              newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
-                              ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
-              #o := Enumerate(Orb(stabg,x,
+              #o := Enumerate(Orb(stabg,Representatives(db)[v],
               #               setup!.op[j],setup!.hashlen[j],
-              #               rec( lookingfor := [Representatives(db)[v]],
+              #               rec( lookingfor := [x],
               #                    schreier := true )));
               #sw := TraceSchreierTreeForward(o,o!.found);
               #sw := Concatenation( stab.gens{sw} );
-              #newword := Concatenation(todo[ii],[m],mw,sw,
+              #newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
               #                ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
+              o := Enumerate(Orb(stabg,x,
+                             setup!.op[j],setup!.hashlen[j],
+                             rec( lookingfor := [Representatives(db)[v]],
+                                  schreier := true )));
+              sw := TraceSchreierTreeForward(o,o!.found);
+              sw := Concatenation( stab.gens{sw} );
+              newword := Concatenation(todo[ii],[m],mw,sw,
+                              ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
             else
               # in this case todo[ii] is not the chosen representative for
               # p*todo[ii]*U because we have already applied elements of
@@ -1072,7 +1072,7 @@ function(gens,permgens,sizes,codims)
           regvec := ORB_Minimalize(regvec,j,j-1,setup,false,false);
           counter := counter + 1;
           o := OrbitBySuborbit(setup,regvec,j,j,j-1,100);
-          Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
+          Info(InfoOrb,1,"Found ",Length(Representatives(o!.db)),
                " suborbits (need ",sizes[j]/sizes[j-1],")");
       until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or 
             counter >= 3;
@@ -1092,7 +1092,7 @@ function(gens,permgens,sizes,codims)
             regvec := ORB_Minimalize(regvec,k+1,j-1,setup,false,false);
             counter := counter + 1;
             o := OrbitBySuborbit(setup,regvec,k+1,j,j-1,100);
-            Info(InfoOrb,2,"Found ",Length(Representatives(o!.db)),
+            Info(InfoOrb,1,"Found ",Length(Representatives(o!.db)),
                  " suborbits (need ",sizes[j]/sizes[j-1],")");
         until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or
               counter >= 20;
