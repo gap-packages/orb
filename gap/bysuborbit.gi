@@ -552,7 +552,8 @@ function(setup,p,j,l,i,percentage)
 
   MakeReturnObj := function()
     # This is used twice below, it just gathers some information.
-    Info(InfoOrb,1,"OrbitBySuborbit found ",percentage,"% of an orbit of size ",
+    Info(InfoOrb,1,"OrbitBySuborbit found ",percentage,"% of an U",l,"
+         "-orbit of size ",
          ORB_PrettyStringBigNumber(setup!.size[l]/fullstabsize));
     return Objectify( StdOrbitBySuborbitsType,
                rec(db := db,
