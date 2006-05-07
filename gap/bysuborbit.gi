@@ -346,7 +346,7 @@ InstallMethod( StoreSuborbit,
   # in the hash, in addition "p" is appended as representative to
   # "suborbits" and the orbit length is calculated and appended to
   # "lengths".
-  local i,j,l,length,m,o,setup,stabgens;
+  local i,j,l,length,m,o,setup,stabgens,infolevel;
         
   setup := db!.setup;
   i := db!.i;
