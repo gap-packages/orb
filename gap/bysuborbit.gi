@@ -481,7 +481,7 @@ function(setup,p,j,l,i,percentage)
         mw,newperm,newword,o,oldtodo,pleaseexitnow,stab,stabg,stabgens,
         stabilizer,stabperms,sw,todo,v,words,x,firstgenU,lastgenU,
         triedstabgens,haveappliedU,MakeReturnObj,y,repforsuborbit,
-        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs;
+        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs;
 
   Info(InfoOrb,2,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
 
