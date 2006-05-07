@@ -611,13 +611,21 @@ function(setup,p,j,l,i,percentage)
             # representative for p*todo[ii]*U, thus we can directly
             # make a Schreier generator:
             if not(haveappliedU) then
-              o := Enumerate(Orb(stabg,Representatives(db)[v],
+              #o := Enumerate(Orb(stabg,Representatives(db)[v],
+              #               setup!.op[j],setup!.hashlen[j],
+              #               rec( lookingfor := [x],
+              #                    schreier := true )));
+              #sw := TraceSchreierTreeForward(o,o!.found);
+              #sw := Concatenation( stab.gens{sw} );
+              #newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
+              #                ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
+              o := Enumerate(Orb(stabg,x,
                              setup!.op[j],setup!.hashlen[j],
-                             rec( lookingfor := [x],
+                             rec( lookingfor := [Representatives(db)[v]],
                                   schreier := true )));
               sw := TraceSchreierTreeForward(o,o!.found);
               sw := Concatenation( stab.gens{sw} );
-              newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
+              newword := Concatenation(todo[ii],[m],mw,sw,
                               ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
             else
               # in this case todo[ii] is not the chosen representative for
@@ -625,13 +633,14 @@ function(setup,p,j,l,i,percentage)
               # U from the right to those chosen representatives. Thus we
               # have to calculate the chosen representative:
               # First take xx and minimalize it:
+   Print("Warning!!! New code!\n");
               mw2 := [];
               stab2 := rec();
               xx := ORB_Minimalize(xx,j,i,setup,stab2,mw2);
               stabg2 := List(stab2.gens,
                           w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
                                            setup!.elsinv[j], OnRight ));
-              y := db!.reps[repforsuborbit[ii]];
+              y := Representatives(db)[repforsuborbit[ii]];
               o := Enumerate(Orb(stabg2,y,setup!.op[j],setup!.hashlen[j],
                      rec( lookingfor := [xx], schreier := true ) ));
               sw2 := TraceSchreierTreeForward(o,o!.found);
