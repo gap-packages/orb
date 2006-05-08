@@ -1,9 +1,4 @@
 For bysuborbit:
-  permbase einbauen
-  neuen Bootstrap fuer Vektoren testen
-  Profiling: Probleme identifizieren
-  pleaseexitnow aufraeumen, "interne" OrbitBySuborbits duerfen nicht
-    abbrechen!
 
 Testen mit Suz mod 13 lines/vectors, Co1 mod 5 lines/vectors
 
@@ -19,3 +14,6 @@ Zukunft:
   OrbitBySuborbit schaltbar? was war das nochmal???
   OrbitBySuborbitWithKnownSize? wozu?
   beidseitig Elemente von G applizieren? ==> eher nicht, geht auch so.
+  pleaseexitnow aufraeumen, "interne" OrbitBySuborbits duerfen nicht
+    abbrechen!
+  permbase einbauen (lohnt sich das???)
