@@ -569,13 +569,9 @@ function(setup,p,j,l,i,percentage)
       fi;
 
       for m in [firstgen..lastgen] do
-        # THROWMEOUT
-        #if todovecs[ii] <> ORB_ApplyWord(p,todo[ii],setup!.els[j],
-        #                                 setup!.elsinv[j],setup!.op[j]) then
-        #    Error();
-        #fi;
-        #xx := ORB_ApplyWord(p,todo[ii],setup!.els[j],
-        #                    setup!.elsinv[j],setup!.op[j]);
+        # old code:
+        # xx := ORB_ApplyWord(p,todo[ii],setup!.els[j],
+        #                     setup!.elsinv[j],setup!.op[j]);
         xx := todovecs[ii];
         xxx := setup!.op[j](xx,setup!.els[j][m]);
         mw := [];
@@ -594,121 +590,104 @@ function(setup,p,j,l,i,percentage)
             Info(InfoOrb,2,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
             return MakeReturnObj();
           fi;
-        else
-          if assumestabcomplete = false and
-             TotalLength(db) * fullstabsize * 2 <= setup!.size[l] then
-            # otherwise we know that we will not find more stabilizing els.
-            # we know now that v is an integer and that
-            # p*todo[ii]*setup!.els[m]*U = p*words[v]*U
-            # p*todo[ii]*setup!.els[m]*mw is our new vector
-            # p*words[v]*miniwords[v] is our old vector
-            # they differ by an element in Stab_U(...)
-            #
-            stabg := List(stab.gens,
-                          w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
-                                           setup!.elsinv[j], OnRight ));
-            # Now we distinguish two cases: if haveappliedU is false, we
-            # are in the first phase, that is, todo[ii] is the chosen
-            # representative for p*todo[ii]*U, thus we can directly
-            # make a Schreier generator:
-            if not(haveappliedU) then
-              #o := Enumerate(Orb(stabg,Representatives(db)[v],
-              #               setup!.op[j],setup!.hashlen[j],
-              #               rec( lookingfor := [x],
-              #                    schreier := true )));
-              #sw := TraceSchreierTreeForward(o,o!.found);
-              #sw := Concatenation( stab.gens{sw} );
-              #newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
-              #                ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
-              o := Enumerate(Orb(stabg,x,
-                             setup!.op[j],setup!.hashlen[j],
-                             rec( lookingfor := [Representatives(db)[v]],
-                                  schreier := true )));
-              sw := TraceSchreierTreeForward(o,o!.found);
-              sw := Concatenation( stab.gens{sw} );
-              newword := Concatenation(todo[ii],[m],mw,sw,
-                              ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
-              # THROWMEOUT
-              #o := Enumerate(Orb(stabg,x,
-              #               setup!.op[j],setup!.hashlen[j],
-              #               rec( lookingfor := [Representatives(db)[v]],
-              #                    schreier := true )));
-              #sw := TraceSchreierTreeForward(o,o!.found);
-              #sw := Concatenation( stab.gens{sw} );
-              #newword := Concatenation(todo[ii],[m],mw,sw,
-              #                ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
-            else
-              # in this case todo[ii] is not the chosen representative for
-              # p*todo[ii]*U because we have already applied elements of
-              # U from the right to those chosen representatives. Thus we
-              # have to calculate the chosen representative:
-              # First take xx and minimalize it:
-              mw2 := [];
-              stab2 := rec();
-              xx := ORB_Minimalize(xx,j,i,setup,stab2,mw2);
-              stabg2 := List(stab2.gens,
-                          w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
-                                           setup!.elsinv[j], OnRight ));
-              y := Representatives(db)[repforsuborbit[ii]];
-              o := Enumerate(Orb(stabg2,y,setup!.op[j],setup!.hashlen[j],
-                     rec( lookingfor := [xx], schreier := true ) ));
-              sw2 := TraceSchreierTreeForward(o,o!.found);
-              sw2 := Concatenation( stab.gens{sw2} );
-              # Now Concatenation(words[repforsuborbit[ii]],
-              #                   miniwords[repforsuborbit[ii]],sw2,mw2^-1)
-              # is the transversal element for the original xx
-              # Now as in the simpler case:
-              o := Enumerate(Orb(stabg,Representatives(db)[v],
-                             setup!.op[j],setup!.hashlen[j],
-                             rec( lookingfor := [x],
-                                  schreier := true )));
-              sw := TraceSchreierTreeForward(o,o!.found);
-              sw := Concatenation( stab.gens{sw} );
-              newword := Concatenation(words[repforsuborbit[ii]],
-                                       miniwords[repforsuborbit[ii]],sw2,
-                                       ORB_InvWord(mw2),[m],mw,ORB_InvWord(sw),
-                                       ORB_InvWord(miniwords[v]),
-                                       ORB_InvWord(words[v]));
-            fi;
-            Info(InfoOrb,3,"Calculated Schreier generator");
-            newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
-                            setup!.permgens[l],setup!.permgensinv[l],OnRight);
-            if not(IsOne(newperm)) then
-              Info(InfoOrb,3,"Schreier generator was non-trivial");
-              if not(newperm in stabilizer) then
-                triedstabgens := 0;   # we actually found a new one!
-                Add(stabgens,newword);
-                Add(stabperms,newperm);
-                stabilizer := GroupWithGenerators(stabperms);
-                Info(InfoOrb,1,"Calculating new estimate of the stabilizer...");
-                if IsBound(setup!.stabchainrandom) and
-                   setup!.stabchainrandom <> false then
-                    StabChain(stabilizer, 
-                              rec(random := setup!.stabchainrandom));
-                else
-                    StabChain(stabilizer);
-                fi;
-                fullstabsize := Size(stabilizer);
-                Info(InfoOrb,1,"New stabilizer order: ",fullstabsize);
-                # THROWMEOUT
-                #guck := ORB_ApplyWord(p,newword,setup!.els[j],
-                #                                setup!.elsinv[j],OnLines);
-                #if guck <> p then
-                #    Error();
-                #fi;
-                if TotalLength(db) * fullstabsize * 100
-                   >= setup!.size[l]*percentage then 
-                  Info(InfoOrb,2,"Leaving OrbitBySuborbit");
-                  return MakeReturnObj();
-                fi;
+          if haveappliedU then   
+              # In this case we still want to calculate a Schreier gen,
+              # thus we need v to be the number of the newly stored suborbit
+              v := Length(db!.reps);
+              # Note that stab is still OK.
+          fi;
+        fi;
+        if v <> fail and   # fail happens only for not(haveappliedU)
+           assumestabcomplete = false and
+           TotalLength(db) * fullstabsize * 2 <= setup!.size[l] then
+          # otherwise we know that we will not find more stabilizing els.
+          # we know now that v is an integer and that
+          # p*todo[ii]*setup!.els[m]*U = p*words[v]*U
+          # p*todo[ii]*setup!.els[m]*mw is our new vector
+          # p*words[v]*miniwords[v] is our old vector
+          # they differ by an element in Stab_U(...)
+          #
+          stabg := List(stab.gens,
+                        w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
+                                         setup!.elsinv[j], OnRight ));
+          # Now we distinguish two cases: if haveappliedU is false, we
+          # are in the first phase, that is, todo[ii] is the chosen
+          # representative for p*todo[ii]*U, thus we can directly
+          # make a Schreier generator:
+          if not(haveappliedU) then
+            o := Enumerate(Orb(stabg,x,
+                           setup!.op[j],setup!.hashlen[j],
+                           rec( lookingfor := [Representatives(db)[v]],
+                                schreier := true )));
+            sw := TraceSchreierTreeForward(o,o!.found);
+            sw := Concatenation( stab.gens{sw} );
+            newword := Concatenation(todo[ii],[m],mw,sw,
+                            ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
+          else
+            # in this case todo[ii] is not the chosen representative for
+            # p*todo[ii]*U because we have already applied elements of
+            # U from the right to those chosen representatives. Thus we
+            # have to calculate the chosen representative:
+            # First take xx and minimalize it:
+            mw2 := [];
+            stab2 := rec();
+            xx := ORB_Minimalize(xx,j,i,setup,stab2,mw2);
+            stabg2 := List(stab2.gens,
+                        w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
+                                         setup!.elsinv[j], OnRight ));
+            y := Representatives(db)[repforsuborbit[ii]];
+            o := Enumerate(Orb(stabg2,y,setup!.op[j],setup!.hashlen[j],
+                   rec( lookingfor := [xx], schreier := true ) ));
+            sw2 := TraceSchreierTreeForward(o,o!.found);
+            sw2 := Concatenation( stab.gens{sw2} );
+            # Now Concatenation(words[repforsuborbit[ii]],
+            #                   miniwords[repforsuborbit[ii]],sw2,mw2^-1)
+            # is the transversal element for the original xx
+            # Now as in the simpler case:
+            o := Enumerate(Orb(stabg,Representatives(db)[v],
+                           setup!.op[j],setup!.hashlen[j],
+                           rec( lookingfor := [x],
+                                schreier := true )));
+            sw := TraceSchreierTreeForward(o,o!.found);
+            sw := Concatenation( stab.gens{sw} );
+            newword := Concatenation(words[repforsuborbit[ii]],
+                                     miniwords[repforsuborbit[ii]],sw2,
+                                     ORB_InvWord(mw2),[m],mw,ORB_InvWord(sw),
+                                     ORB_InvWord(miniwords[v]),
+                                     ORB_InvWord(words[v]));
+          fi;
+          Info(InfoOrb,3,"Calculated Schreier generator");
+          newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
+                          setup!.permgens[l],setup!.permgensinv[l],OnRight);
+          if not(IsOne(newperm)) then
+            Info(InfoOrb,3,"Schreier generator was non-trivial");
+            if not(newperm in stabilizer) then
+              triedstabgens := 0;   # we actually found a new one!
+              Add(stabgens,newword);
+              Add(stabperms,newperm);
+              stabilizer := GroupWithGenerators(stabperms);
+              Info(InfoOrb,1,"Calculating new estimate of the stabilizer...");
+              if IsBound(setup!.stabchainrandom) and
+                 setup!.stabchainrandom <> false then
+                  StabChain(stabilizer, 
+                            rec(random := setup!.stabchainrandom));
+              else
+                  StabChain(stabilizer);
+              fi;
+              fullstabsize := Size(stabilizer);
+              Info(InfoOrb,1,"New stabilizer order: ",fullstabsize);
+              if TotalLength(db) * fullstabsize * 100
+                 >= setup!.size[l]*percentage then 
+                Info(InfoOrb,2,"Leaving OrbitBySuborbit");
+                return MakeReturnObj();
               fi;
             fi;
-            triedstabgens := triedstabgens + 1;
-            if triedstabgens > ORB.PATIENCEFORSTAB then  # this is heuristics!
-              Info(InfoOrb,1,"Lost patience with stabiliser, assuming it is ",
-                   "complete...");
-              assumestabcomplete := true;
-            fi;
+          fi;
+          triedstabgens := triedstabgens + 1;
+          if triedstabgens > ORB.PATIENCEFORSTAB then  # this is heuristics!
+            Info(InfoOrb,1,"Lost patience with stabiliser, assuming it is ",
+                 "complete...");
+            assumestabcomplete := true;
           fi;
         fi;
       od;   # for m in [firstgen..lastgen]
