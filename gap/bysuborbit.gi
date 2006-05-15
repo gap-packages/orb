@@ -128,9 +128,10 @@ function(p,j,i,setup,stab,w)
     fi;
     v := ValueHT(setup!.info[1],q);
     if v = fail then    # we do not yet know this point
-      o := Enumerate(Orb(setup!.els[1],q,setup!.op[1],setup!.size[1]*2,
+      o := Enumerate(Orb(setup!.els[1],q,setup!.op[1],
                          rec( schreier := true, 
                               grpsizebound := setup!.size[1],
+                              hashlen := setup!.size[1]*2,
                               stabchainrandom := setup!.stabchainrandom,
                               permgens := setup!.permgens[1],
                               permbase := setup!.permbase[1] )));
@@ -195,7 +196,7 @@ function(p,j,i,setup,stab,w)
                                             setup!.els[i],setup!.elsinv[i],
                                             OnRight));
       oo := Enumerate(Orb(tempstabgens,q,setup!.op[i],
-                          setup!.hashlen[i],rec(schreier := true)));
+                          rec(hashlen := setup!.hashlen[i],schreier := true)));
       for m in [2..Length(oo!.orbit)] do
           ww := TraceSchreierTreeForward(oo,m);
           ww := ORB_InvWord(Concatenation( tempstab.gens{ww} ));
@@ -222,7 +223,8 @@ function(p,j,i,setup,stab,w)
                                                 setup!.els[i],setup!.elsinv[i],
                                                 OnRight));
           oo := Enumerate(Orb(tempstabgens,qq,setup!.op[i],
-                              setup!.hashlen[i],rec(schreier := true)));
+                              rec(hashlen := setup!.hashlen[i],
+                                  schreier := true)));
           for mm in [1..Length(oo!.orbit)] do
               www := TraceSchreierTreeForward(oo,mm);
               www := Concatenation( tempstab.gens{www} );
@@ -346,8 +348,8 @@ InstallMethod( StoreSuborbit,
   stabgens := List(stab.gens,
                    w->ORB_ApplyWord( setup!.els[j][1]^0, w, setup!.els[j],
                                      setup!.elsinv[j], OnRight ));
-  o := Enumerate(Orb(stabgens,p,setup!.op[j],setup!.hashlen[j],
-                     rec(schreier := true)));
+  o := Enumerate(Orb(stabgens,p,setup!.op[j],
+                     rec(hashlen := setup!.hashlen[j],schreier := true)));
   for m in [2..Length(o!.orbit)] do
       AddHT( db!.mins, o!.orbit[m], Length(db!.reps) );
   od;
@@ -616,8 +618,9 @@ function(setup,p,j,l,i,percentage)
           # make a Schreier generator:
           if not(haveappliedU) then
             o := Enumerate(Orb(stabg,x,
-                           setup!.op[j],setup!.hashlen[j],
+                           setup!.op[j],
                            rec( lookingfor := [Representatives(db)[v]],
+                                hashlen := setup!.hashlen[j], 
                                 schreier := true )));
             sw := TraceSchreierTreeForward(o,o!.found);
             sw := Concatenation( stab.gens{sw} );
@@ -636,8 +639,9 @@ function(setup,p,j,l,i,percentage)
                         w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
                                          setup!.elsinv[j], OnRight ));
             y := Representatives(db)[repforsuborbit[ii]];
-            o := Enumerate(Orb(stabg2,y,setup!.op[j],setup!.hashlen[j],
-                   rec( lookingfor := [xx], schreier := true ) ));
+            o := Enumerate(Orb(stabg2,y,setup!.op[j],
+                   rec( hashlen := setup!.hashlen[j], 
+                        lookingfor := [xx], schreier := true ) ));
             sw2 := TraceSchreierTreeForward(o,o!.found);
             sw2 := Concatenation( stab.gens{sw2} );
             # Now Concatenation(words[repforsuborbit[ii]],
@@ -645,8 +649,8 @@ function(setup,p,j,l,i,percentage)
             # is the transversal element for the original xx
             # Now as in the simpler case:
             o := Enumerate(Orb(stabg,Representatives(db)[v],
-                           setup!.op[j],setup!.hashlen[j],
-                           rec( lookingfor := [x],
+                           setup!.op[j],
+                           rec( hashlen := setup!.hashlen[j], lookingfor := [x],
                                 schreier := true )));
             sw := TraceSchreierTreeForward(o,o!.found);
             sw := Concatenation( stab.gens{sw} );

@@ -543,8 +543,8 @@ InstallGlobalFunction( OrbitStatisticOnVectorSpace,
 
   while Runtime() < t + ti*1000 do
       Randomize(v);
-      o := Orb(gens,v,OnRight,3*size,rec(grpsizebound := size,
-                                         report := 0));
+      o := Orb(gens,v,OnRight,rec(grpsizebound := size,
+                                  hashlen := 3*size, report := 0));
       Enumerate(o);
       len := Length(o!.orbit);
       total := total + len;
@@ -571,8 +571,8 @@ InstallGlobalFunction( OrbitStatisticOnVectorSpaceLines,
       if c <= Length(v) then
           v := v / v[c];
       fi;
-      o := Orb(gens,v,OnLines,3*size,rec(grpsizebound := size,
-                                         report := 0));
+      o := Orb(gens,v,OnLines,rec(grpsizebound := size,
+                                  hashlen := 3*size, report := 0));
       Enumerate(o);
       len := Length(o!.orbit);
       total := total + len;
@@ -638,7 +638,7 @@ function(G,U,membershiptest)
                   slp := StraightLineProgram( [[[1,0]]],
                                               Length(GeneratorsOfGroup(G)) ) );
   fi;
-  o := Orb(GeneratorsOfGroup(G),One(G),OnRight,10000, # initial hash size
+  o := Orb(GeneratorsOfGroup(G),One(G),OnRight,
            rec( lookingfor := x -> membershiptest(x,U), 
                 schreier := true ) );
   Enumerate(o);

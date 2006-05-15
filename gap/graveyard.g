@@ -605,8 +605,8 @@ function(gens,permgens,sizes,codims)
   repeat
       counter := counter + 1;
       Randomize(regvec);
-      o := Enumerate(Orb(setup.els[1],regvec,OnRight,sizes[1]*2,
-                         rec(schreier := true)));
+      o := Enumerate(Orb(setup.els[1],regvec,OnRight,
+                         rec(hashlen := sizes[1]*2, schreier := true)));
       Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
   until Length(o!.orbit) = sizes[1] or counter >= 10;
   if Length(o!.orbit) < sizes[1] then   # Bad luck, try something else:
@@ -616,14 +616,14 @@ function(gens,permgens,sizes,codims)
     repeat
         counter := counter + 1;
         Randomize(regvec);
-        o := Enumerate(Orb(gens[1],regvec,OnRight,sizes[1]*2,
-                           rec(schreier := true)));
+        o := Enumerate(Orb(gens[1],regvec,OnRight,
+                           rec(hashlen := sizes[1]*2, schreier := true)));
         Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
     until Length(o!.orbit) = sizes[1] or counter >= 10;
     if Length(o!.orbit) < sizes[1] then   # Again bad luck, try the regular rep
         Info(InfoOrb,1,"Using the regular permutation representation...");
-        o := Enumerate(Orb(gens[1],gens[1]^0,OnRight,sizes[1]*2,
-                                 rec(schreier := true)));
+        o := Enumerate(Orb(gens[1],gens[1]^0,OnRight,
+                                 rec(hashlen := sizes[1]*2, schreier := true)));
     fi;
   fi;
   Info(InfoOrb,2,"Found!");
@@ -827,8 +827,8 @@ function(gens,permgens,sizes,codims)
       if c <= Length( regvec )  then
           regvec := Inverse( regvec[c] ) * regvec;
       fi;
-      o := Enumerate(Orb(setup.els[1],regvec,OnLines,sizes[1]*2,
-                         rec(schreier := true)));
+      o := Enumerate(Orb(setup.els[1],regvec,OnLines,
+                         rec(hashlen := sizes[1]*2, schreier := true)));
       Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
   until Length(o!.orbit) = sizes[1] or counter >= 10;
   if Length(o!.orbit) < sizes[1] then   # Bad luck, try something else:
@@ -842,14 +842,14 @@ function(gens,permgens,sizes,codims)
         if c <= Length( regvec )  then
             regvec := Inverse( regvec[c] ) * regvec;
         fi;
-        o := Enumerate(Orb(gens[1],regvec,OnLines,sizes[1]*2,
-                                 rec(schreier := true)));
+        o := Enumerate(Orb(gens[1],regvec,OnLines,
+                                 rec(hashlen := sizes[1]*2, schreier := true)));
         Info(InfoOrb,2,"Found length: ",Length(o!.orbit));
     until Length(o!.orbit) = sizes[1] or counter >= 10;
     if Length(o!.orbit) < sizes[1] then   # Again bad luck, try the regular rep
         Info(InfoOrb,1,"Using the permutation representation...");
-        o := Enumerate(Orb(permgens[1],permgens[1]^0,OnRight,sizes[1]*2,
-                                 rec(schreier := true)));
+        o := Enumerate(Orb(permgens[1],permgens[1]^0,OnRight,
+                                 rec(hashlen := sizes[1]*2, schreier := true)));
     fi;
   fi;
   Info(InfoOrb,2,"Found!");
@@ -1312,8 +1312,9 @@ function(setup,p,j,l,i,percentage)
             stabg := List(stab.gens,
                           w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
                                            setup!.elsinv[j], OnRight ));
-            o := Enumerate(Orb(stabg,x,setup!.op[j],setup!.hashlen[j],
-                   rec( lookingfor := [Representatives(db)[v]],
+            o := Enumerate(Orb(stabg,x,setup!.op[j],
+                   rec( hashlen := setup!.hashlen[j],
+                        lookingfor := [Representatives(db)[v]],
                         schreier := true )));
             sw := TraceSchreierTreeForward(o,o!.found);
             sw := Concatenation( stab.gens{sw} );

@@ -28,6 +28,7 @@ InstallValue( ORB, rec( ) );
 #  .permbase
 #  .stab
 #  .storenumbers
+#  .hashlen
 
 # Outputs:
 #  .gens
@@ -56,14 +57,24 @@ InstallGlobalFunction( Orb,
     local filts,gens,hashlen,lmp,o,op,opt,x;
 
     # First parse the arguments:
-    if Length(arg) = 4 then
+    if Length(arg) = 3 then
+        gens := arg[1]; x := arg[2]; op := arg[3];
+        hashlen := 10000; opt := rec();
+    elif Length(arg) = 4 and IsInt(arg[4]) then
         gens := arg[1]; x := arg[2]; op := arg[3]; hashlen := arg[4];
         opt := rec();
+    elif Length(arg) = 4 then
+        gens := arg[1]; x := arg[2]; op := arg[3]; opt := arg[4];
+        if IsBound(opt.hashlen) then
+            hashlen := opt.hashlen;
+        else
+            hashlen := 10000;
+        fi;
     elif Length(arg) = 5 then
         gens := arg[1]; x := arg[2]; op := arg[3]; hashlen := arg[4];
         opt := arg[5];
     else
-        Print("Usage: Orb( gens, point, action, hashlen [,options] )\n");
+        Print("Usage: Orb( gens, point, action [,options] )\n");
         return;
     fi;
 
