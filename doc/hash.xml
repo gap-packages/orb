@@ -1,0 +1,33 @@
+<!-- 
+
+         hash.xml            orb package documentation             
+                                                               Max Neunhoeffer
+                                                                  Felix Noeske
+
+         Copyright (C) 2005, Lehrstuhl D für Mathematik, RWTH-Aachen
+
+This chapter explains functionality for hash lookups.
+
+-->
+
+<Chapter Label="hash">
+<Heading>Hashing techniques</Heading>
+
+<Section Label="hashidea">
+<Heading>The idea of hashing</Heading>
+
+</Section>
+
+<Section Label="hashfunc">
+<Heading>Hash functions</Heading>
+
+</Section>
+
+<Section Label="hashtables">
+<Heading>Using hash tables</Heading>
+
+</Section>
+
+<!-- ############################################################ -->
+
+</Chapter>
