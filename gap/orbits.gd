@@ -60,6 +60,8 @@ DeclareOperation( "TraceSchreierTreeBack", [ IsOrbit, IsPosInt ] );
 DeclareOperation( "TraceSchreierTreeForward", [ IsOrbit, IsPosInt ] );
 DeclareOperation( "EvaluateWord", [ IsList, IsList ] );
 DeclareOperation( "ActWithWord", [IsList, IsList, IsFunction, IsObject] );
+DeclareOperation( "StabWords", [ IsOrbit ] );
+DeclareOperation( "NumberOfFound", [ IsOrbit ] );
 
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );

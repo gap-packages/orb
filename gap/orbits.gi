@@ -824,6 +824,20 @@ InstallMethod( TraceSchreierTreeBack, "for an orbit and a position",
     return fail;
   end );
 
+InstallMethod( StabWords, "for an orbit with stabiliser",
+  [IsOrbit and WithPermStabilizer],
+  function( o ) return o!.stabwords; end );
+
+InstallMethod( NumberOfFound, "for an orbit looking for something with a list",
+  [IsOrbit and LookingForUsingList],
+  function( o ) return o!.found; end );
+InstallMethod( NumberOfFound, "for an orbit looking for something with a hash",
+  [IsOrbit and LookingForUsingHash],
+  function( o ) return o!.found; end );
+InstallMethod( NumberOfFound, "for an orbit looking for something with a func",
+  [IsOrbit and LookingForUsingFunc],
+  function( o ) return o!.found; end );
+
 InstallOtherMethod( StabilizerOfExternalSet, 
   "for an orbit with permutation stabilizer",
   [ IsOrbit and WithPermStabilizer ],

@@ -149,38 +149,169 @@ on this orbit as a permutation:
 <Subsection Label="orboptions">
     <Heading>Options for orbits</Heading>
 
-<List>
-    <Mark>hashlen</Mark>
-    <Item></Item>
-    <Mark>report</Mark>
-    <Item></Item>
-    <Mark>storenumbers</Mark>
-    <Item></Item>
-    <Mark>schreier</Mark>
-    <Item></Item>
-    <Mark>permgens</Mark>
-    <Item></Item>
-    <Mark>permbase</Mark>
-    <Item></Item>
-    <Mark>stab</Mark>
-    <Item></Item>
-    <Mark>matgens</Mark>
-    <Item></Item>
-    <Mark>onlystab</Mark>
-    <Item></Item>
-    <Mark>grpsizebound</Mark>
-    <Item></Item>
-    <Mark>orbsizebound</Mark>
-    <Item></Item>
-    <Mark>stabsizebound</Mark>
-    <Item></Item>
-    <Mark>lookingfor</Mark>
-    <Item></Item>
-    <Mark>stabchainrandom</Mark>
-    <Item></Item>
-</List>
+The optional fourth argument <A>opt</A> of the function <Ref Func="Orb"/>
+is a &GAP; record and its components change the behaviour of the orbit
+enumeration. In this subsection we explain the use of the components
+of this options record. All components are themselves optional. For
+every component we also describe the possible values in the following
+list:
 
+<List>
+<Mark><C>hashlen</C></Mark>
+<Item>Possible values are positive integers. This component determines
+the initial size of the hash used for the orbit enumeration. The
+default value is <M>10000</M>. If the hash table turns out not to
+be large enough, it is automatically increased by a factor of two
+during the calculation. Although this process is quite fast it still
+improves performance to give a sensible hash size in advance. </Item>
+<Mark><C>report</C></Mark>
+<Item>Possible values are non-negative integers. This value asks for
+a status report whenever the orbit enumeration has applied all generators
+to <C>opt.report</C> points. A value of <M>0</M>, which is the default,
+switches off this report. In each report, the total number of points
+already found are given.</Item>
+<Mark><C>storenumbers</C></Mark>
+<Item>This boolean flag decides, whether the positions of points in the
+orbit are stored in the hash. The memory requirement for this is one
+machine word (<M>4</M> or <M>8</M> bytes depending on the architecture)
+per point in the orbit. If you just need the orbit itself this is not
+necessary. If you however want to find the position of a point in the 
+orbit efficiently after enumeration, then you should switch this on.
+That is, the operation <C>&bslash;in</C> is always fast, but
+<C>Position(<A>orb</A>, <A>point</A>)</C> is only fast if
+<C>opt.storenumbers</C> was set to <K>true</K> or the orbit is
+<Q>permutations acting on positive integers</Q>. In the latter case
+this flag is ignored.</Item>
+<Mark><C>schreier</C></Mark>
+<Item>This boolean flag decides, whether a Schreier tree is stored
+together with the orbit. A Schreier tree just stores for each point,
+which generator was applied to which other point in the orbit to get it.
+Thus, having the Schreier tree enables the usage of
+the operations <Ref Oper="TraceSchreierTreeForward"/> and
+<Ref Oper="TraceSchreierTreeBack"/>. A Schreier tree needs two additional
+machine words of memory per point in the orbit. The <C>opt.schreier</C>
+flag is automatically set when a stabiliser is computed during 
+orbit enumeration (see components <C>opt.permgens</C> and
+<C>opt.matgens</C>).</Item>
+<Mark><C>permgens</C></Mark>
+<Item>If this component is set, it must be set to a list of permutations,
+that represent the same group as the generators used to define the orbit.
+This permutation representation is then used to calculate the stabiliser
+of the starting point. After the orbit enumeration is complete, you can
+call <C>Stabilizer(<A>orb</A>)</C> with <A>orb</A> being the orbit object
+and get the stabiliser as a permutation group. The stabiliser is also
+stored in the <C>stab</C> component of the orbit object. Furthermore,
+the size of the stabiliser is stored in the <C>stabsize</C> component
+of the orbit object and the component <C>stabwords</C> contains the 
+stabiliser generators as words in the original group generators. Access
+these words with <C>StabWords(orb)</C>. Here,
+a word is a list of integers, where positive integers are numbers of 
+generators and a negative integer <M>i</M> indicates the inverse of
+the generator with number <M>-i</M>. In this way, complete information
+about the stabiliser can be derived from the orbit object. </Item>
+<Mark><C>permbase</C></Mark>
+<Item>This component is used to tell the orbit enumerator that a
+certain list of points is a base of the permutation representation
+given in the <C>opt.permgens</C> component. This information is
+often available beforehand and can drastically speed up the calculation
+of Schreier generators, especially for the common case that they are
+trivial. The value is just a list of integers.</Item>
+<Mark><C>stabchainrandom</C></Mark>
+<Item>This value can be <K>false</K> or a positive integer between <M>1</M> 
+and <M>1000</M>. If <C>opt.permgens</C> is given, an integer value is
+used to set the <C>random</C> option when calculating a stabiliser
+chain to compute the size of the group generated by the Schreier
+generators. Although this size computation can be speeded up
+considerably, the user should be aware that this triggers
+a Monte Carlo algorithm that can produce wrong results with a
+certain error probability. A verification of the obtained
+results is advisable. </Item>
+<Mark><C>stab</C></Mark>
+<Item>This component is used to tell the orbit enumerator that 
+a subgroup of the stabiliser of the starting point is already known.
+Store a subgroup of the group generated by the permutations in
+<C>opt.permgens</C> stabilising the starting point into this component.</Item>
+<Mark><C>matgens</C></Mark>
+<Item>This is not yet implemented. It will allow for stabiliser
+computations in matrix groups.</Item>
+<Mark><C>onlystab</C></Mark>
+<Item>If this boolean flag is set to <K>true</K> then the orbit enumeration
+stops once the stabiliser is completely determined. Note that this can
+only be known, if a bound for the group size is given in the
+<C>opt.grpsizebound</C> option and when more than half of the
+orbit is already found, or when <C>opt.stabsizebound</C> is given.</Item>
+<Mark><C>grpsizebound</C></Mark>
+<Item>Possible values for this component are positive integers. By setting
+this value one can help the orbit enumeration to complete earlier. The
+given number must be an upper bound for the order of the group. If the
+exact group order is given and the stabiliser is calculated during the
+orbit enumeration (see component <C>permgens</C>, then the orbit
+enumeration can stop as soon as the orbit is found completely and the
+stabiliser is complete, which is usually much earlier than after
+all generator are applied to all points in the orbit.</Item>
+<Mark><C>orbsizebound</C></Mark>
+<Item>Possible values for this component are positive integers. The
+given number must be an upper bound for the orbit length. Giving this
+number helps the orbit enumeration to stop earlier, when the orbit
+is found completely.</Item>
+<Mark><C>stabsizebound</C></Mark>
+<Item>Possible values for this component are positive integers. The 
+given number must be an upper bound for the size of the stabiliser. Giving
+this number helps the orbit enumeration to stop earlier, when also
+<C>opt.orbsizebound</C> or <C>opt.grpsizebound</C> are given or when
+<C>opt.onlystab</C> is set.</Item>
+<Mark><C>lookingfor</C></Mark>
+<Item>This component is used to search for something in the orbit. The
+idea is that the orbit enumeration is stopped when some condition is 
+met. This condition can be specified with a great flexibility. The first
+way is to store a list of points into <C>orb.lookingfor</C>. In that 
+case the orbit enumeration stops, when a point is found that is in
+that list. A second possiblity is to store a hash table object
+into <C>orb.lookingfor</C>. Then every newly found point in the
+orbit is looked up in that hash table and the orbit enumeration
+stops as soon as a point is found that is also in the hash table.
+The third possibility is functional: You can store a &GAP; function
+into <C>opt.lookingfor</C> which is called for every newly found
+point in the orbit. This function has to return <K>false</K> or <K>true</K> 
+and in the latter case the orbit enumeration is stopped.
+<P/>
+Whenever the orbit enumeration is stopped the component <C>found</C>
+is set to the number of the found point in the orbit. Access this
+information using <C>NumberOfFound(orb)</C>.
+</Item>
+</List>
+For some examples using these options see Chaper <Ref Chap="examples"/>.
 </Subsection>
+
+<ManSection>
+<Oper Name="TraceSchreierTreeForward" Arg="orb, nr"/>
+<Returns> A word in the generators </Returns>
+<Description>
+<A>orb</A> must be an orbit object with a Schreier tree, that is, the
+option <C>schreier</C> must have been set during creation, and <A>nr</A>
+must be the number of a point in the orbit. This operation traces the
+Schreier tree and returns a word in the generators that maps the starting
+point to the point with number <A>nr</A>. Here,
+a word is a list of integers, where positive integers are numbers of 
+generators and a negative integer <M>i</M> indicates the inverse of
+the generator with number <M>-i</M>. 
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="TraceSchreierTreeBack" Arg="orb, nr"/>
+<Returns> A word in the generators </Returns>
+<Description>
+<A>orb</A> must be an orbit object with a Schreier tree, that is, the
+option <C>schreier</C> must have been set during creation, and <A>nr</A>
+must be the number of a point in the orbit. This operation traces the
+Schreier tree and returns a word in the generators that maps the 
+point with number <A>nr</A> to the starting point. As above,
+a word is here a list of integers, where positive integers are numbers of 
+generators and a negative integer <M>i</M> indicates the inverse of
+the generator with number <M>-i</M>. 
+</Description>
+</ManSection>
 
 </Section>
 
