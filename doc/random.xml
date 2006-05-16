@@ -13,6 +13,207 @@ This chapter explains functionality for random elements.
 <Chapter Label="random">
 <Heading>Random elements</Heading>
 
+In this chapter we describe some fundamental mechanisms to produce
+(pseudo-) random elements that are used later in Chapter 
+<Ref Chap="search"/> about searching in groups and orbits.
+
+<Section Label="randomsources">
+<Heading>Random sources</Heading>
+
+When using pseudo random methods one often wants reproducability by
+using the same seed. Also it is handy if one can change
+the method of producing random numbers easily. In addition, instead of 
+using only one global random number generator for all objects, it is
+interesting to have different <Q>random sources</Q>, all having their
+own seed and possibly using different methods, for different applications
+in the same &GAP; job. These ideas have led to the following abstraction.
+
+<ManSection>
+<Filt Name="IsRandomSource" Arg="ob" Type="Category"/>
+<Returns> <K>true</K> or <K>false</K> </Returns>
+<Description>
+Objects in this category are <Q>random sources</Q> in the sense that
+they can produce random numbers using methods for the operation
+<Ref Meth="Random"/>.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Random" Arg="rs, from, to"/>
+<Meth Name="Random" Arg="rs, list"/>
+<Returns> an integer </Returns>
+<Description>
+<A>rs</A> must be an object in the category <Ref Filt="IsRandomSource"/>
+and <A>from</A> and <A>to</A> must be integers. In the second form
+<A>list</A> may be any list. This method returns
+a random integer in the range <C>[<A>from</A>..<A>to</A>]</C> for
+the first form or a random element of <A>list</A> in the second form. The
+random number generation depends on the random source object.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="RandomSource" Arg="type"/>
+<Returns> a random source </Returns>
+<Description>
+This operation creates a new random source object in the category
+<Ref Filt="IsRandomSource"/>. The type depends on the string value
+<A>type</A>. Possible values for <A>type</A> are at least <K>global</K>,
+meaning that the random source uses the global &GAP; random number generator,
+<K>random</K> and <K>urandom</K>, where the latter two mean that 
+the two special files <F>/dev/random</F> and <F>/dev/urandom</F>
+respectively are used. This functionality requires the <Package>IO</Package>
+to be installed on the system and most probably runs only on Linux
+operating systems. However, the produced numbers are truly random
+and unpredictable, thus this could be useful for cryptographic applications.
+
+<P/>
+Later there might be different methods for random sources. They can be
+installed by installing a method for this operation <Ref Oper="RandomSource"/>,
+testing for the string value and calling <C>TryNextMethod()</C> if
+the string is not equal to the type description of the new method.
+Usually one should create a new representation for the new random
+source and provide methods for the operations <Ref Meth="Random"/>
+above.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="Reset" Arg="rs"/>
+<Returns> nothing </Returns>
+<Description>
+Resets the random source <A>rs</A> if possible. That is, it will produce
+the same sequence of random numbers as before when called with the
+same sequence of <Ref Meth="Random"/> calls. Note that there might
+be types of random sources that do not support resetting like for
+example the <Q>real</Q> random sources.
+</Description>
+</ManSection>
+
+</Section>
+
+<Section>
+<Heading>Randomizing mutable objects</Heading>
+
+For certain types of mutable objects one can get a <Q>random one</Q>
+by calling the following operation:
+
+<ManSection>
+<Oper Name="Randomize" Arg="ob [,rs]"/>
+<Returns> nothing </Returns>
+<Description>
+The mutable object <A>ob</A> is changed in place. The value afterwards
+is random. The optional second argument <A>rs</A> must be a random
+source and the random numbers used to randomize <A>ob</A> are created
+using the random source <A>rs</A>. If <A>rs</A> is not given, then
+the global &GAP; random number generator is used.
+
+<P/>
+Currently, there are <Ref Oper="Randomize"/> methods for compressed
+vectors and compressed matrices over finite fields. See also the 
+<Package>cvec</Package> package for methods for <C>cvec</C>s and <C>cmat</C>s.
+</Description>
+</ManSection>
+
+For vectors and one-dimensional subspaces there are two special functions
+to create a list of random objects:
+
+<ManSection>
+<Func Name="MakeRandomVectors" Arg="sample, number [,rs]"/>
+<Returns> a list of random vectors </Returns>
+<Description>
+<A>sample</A> must be a vector for the mutable copies of which
+<Ref Oper="Randomize"/> is applicable and <A>number</A> must be a positive
+integer. If given, <A>rs</A> must be a random source. This function
+creates a list of <A>number</A> random vectors with the same type as 
+<A>sample</A> using <Ref Oper="Randomize"/>. For the creation of random
+numbers the random source <A>rs</A> is used or, if not given, the
+global &GAP; random number generator.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="MakeRandomLines" Arg="sample, number [,rs]"/>
+<Returns> a list of normalised random vectors </Returns>
+<Description>
+<A>sample</A> must be a vector for the mutable copies of which
+<Ref Oper="Randomize"/> is applicable and <A>number</A> must be a positive
+integer. If given, <A>rs</A> must be a random source. This function
+creates a list of <A>number</A> normalised random vectors with the same
+type as <A>sample</A> using <Ref Oper="Randomize"/>. <Q>Normalised</Q>
+here means that the first non-zero entry in the vector is equal to <M>1</M>.
+For the creation of random numbers the random source <A>rs</A> is used
+or, if not given, the global &GAP; random number generator.
+</Description>
+</ManSection>
+
+</Section>
+
+<Section>
+<Heading>Product replacement</Heading>
+
+For computations in finite groups product replacement algorithms
+are a viable method of generating pseudo-random elements. This section
+describes a framework and an object type to provide these algorithms.
+Roughly speaking a <Q>product replacer object</Q> is something that
+is created with a list of group generators and produces a sequence
+of pseudo random group elements using some random source for random numbers.
+
+<ManSection>
+<Oper Name="ProductReplacer" Arg="gens [,opt]"/>
+<Returns> a new product replacer object </Returns>
+<Description>
+<A>gens</A> must be a list of group generators. If given, <A>opt</A> is
+a &GAP; record with options. The operation creates a new product replacer
+object producing pseudo random elements in the group generated by the
+generators <A>gens</A>.
+<P/>
+The exact algorithm used is explained below after the description
+of the options.
+<P/>
+The following components in the options record have a defined meaning:
+<List>
+<Mark><C>randomsource</C></Mark>
+<Item>A random source object that is used to generate the random numbers
+    used. If none is specified the global &GAP; random number generator
+    is used.
+</Item>
+<Mark><C>scramble</C></Mark>
+<Item>The <C>scramble</C> value in the algorithm described below can be
+    set using this option. The default value is <M>100</M>.
+</Item>
+<Mark><C>scramblefactor</C></Mark>
+<Item>The <C>scramblefactor</C> value in the algorithm described below
+    can be set using this option. The default value is <M>10</M>.
+</Item>
+<Mark><C>addslots</C></Mark>
+<Item>The <C>addslots</C> value in the algorithm described below
+    can be set using this option. The default value is <M>10</M>.
+</Item>
+<Mark><C>maxdepth</C></Mark>
+<Item>If <C>maxdepth</C> is set, then the production of pseudo random
+    elements starts all over whenever <C>maxdepth</C> product replacements
+    have been performed. The rationale behind this is that the elements
+    created should be evenly distributed but that the expressions in
+    the generators should not be too long. A good compromise is usually
+    to set <C>maxdepth</C> to <M>200</M> or <M>300</M>.
+</Item>
+</List>
+
+The algorithm used does the following: A list of 
+<C>Length(</C><A>gens</A><C>)+addslots</C>
+elements is created that starts with the elements <A>gens</A> and is
+filled up with random generators from <A>gens</A>. Then 
+<C>Maximum(Length(</C><A>gens</A><C>)*scramblefactor,scramble)</C>
+product replacements are performed. After this initialisation
+for every random element requested one product replacement is
+done and the resulting element returned. A product replacement
+randomly chooses two elements in the list and replaces one of them
+by the product of the two.
+</Description>
+</ManSection>
+
+</Section>
 
 <!-- ############################################################ -->
 

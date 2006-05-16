@@ -62,3 +62,16 @@ InstallMethod( Random, "for a real random source and a list",
     return l[nr];
   end );
 
+InstallMethod( ViewObj, "for a real random source",
+  [IsRandomSource and IsRealRandomSourceRep],
+  function(rs)
+    Print("<a real random source>");
+  end );
+
+InstallMethod( Reset, "for a real random source",
+  [IsRandomSource and IsRealRandomSourceRep],
+  function(rs)
+    Error("Real random sources cannot be Reset by definition");
+  end );
+
+
