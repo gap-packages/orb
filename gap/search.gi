@@ -14,6 +14,20 @@
 
 InstallValue(RandomSourceType, NewType(RandomSourcesFamily, IsRandomSource));
 
+InstallMethod( RandomSource, "place holder if io package is not there",
+  [ IsString ],
+  function( type )
+    if type <> "random" and type <> "urandom" then TryNextMethod(); fi;
+    if TestPackageAvailability("io","1.1") = fail then
+        Error("Please install the IO package to use real random sources.");
+        return fail;
+    fi;
+    LoadPackage("io");
+    ReadPackage("orb","gap/realrandom.gd");
+    ReadPackage("orb","gap/realrandom.gi");
+    return RandomSource(type);
+  end );
+
 InstallMethod( RandomSource, "the global random source", [IsString],
   function( type )
     local r;
