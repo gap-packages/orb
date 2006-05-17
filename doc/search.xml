@@ -13,6 +13,248 @@ This chapter explains functionality for searching in groups and orbits.
 <Chapter Label="search">
 <Heading>Searching in groups and orbits</Heading>
 
+<Section>
+<Heading>Searching using orbit enumeration</Heading>
+
+As described in Subsection <Ref Subsect="orboptions"/> the standard
+orbit enumeration routines can perform search operations during orbit
+enumeration. If one is looking for a shortest word in the generators
+of a group to express a group element with a certain property, then
+this natural breadth-first search can be used, for example by letting
+the group act on its own elements, either by multiplication or by
+conjugation.
+
+<P/>
+All technical instructions to do this are already given in Subsection
+<Ref Subsect="orboptions"/>, so we are content to provide an example
+here. Assume you want to find the shortest way to express some
+<M>7</M>-cycle in the symmetric group <M>S_{{10}}</M> as a product of
+generators <M>a := </M><C>(1,2,3,4,5,6,7,8,9,10)</C> and 
+<M>b := </M><C>(1,2)</C>.
+Then you could do this in the following way:
+
+<Example><![CDATA[gap> gens := [(1,2,3,4,5,6,7,8,9,10),(1,2)];
+[ (1,2,3,4,5,6,7,8,9,10), (1,2) ]
+gap> o := Orb(gens,(),OnRight,rec( report := 2000,
+> lookingfor := x->NrMovedPoints(x) = 7 and Order(x)=7,                      
+> schreier := true ));
+<open orbit, 1 points with Schreier tree looking for sth.>
+gap> Enumerate(o);
+<open orbit, 614 points with Schreier tree looking for sth.>
+gap> TraceSchreierTreeForward(o,PositionOfFound(o));
+[ 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2 ]]]></Example>
+
+The result shows that <M>a^6 \cdot (a\cdot b)^3</M> is a <M>7</M>-cycle
+and that there is no word in <M>a</M> and <M>b</M> with fewer than <M>12</M>
+letters expressing a <M>7</M>-cycle.
+
+<P/>
+Note that we can go on with the above orbit enumeration to find further
+words to express <M>7</M>-cycles.
+</Section>
+
+<Section>
+<Heading>Random searches in groups</Heading>
+
+Another possibility to look for elements in a group satisfying certain
+properties is to look at random elements, usually obtained by doing
+product replacement (see Section <Ref Sect="prodrepl"/>). Although this
+can lead to very long expressions as words in the generators, one can
+cope with this problem by using the <C>maxdepth</C> option of the
+product replacer objects, which just reinitialises the product replacement
+table after a certain number of product replacements has been performed.
+To organise all this conveniently, there is the concept of
+<Q>random searcher objects</Q> described here.
+
+<ManSection>
+<Oper Name="RandomSearcher" Arg="gens, testfunc [,opt]"/>
+<Returns> a random searcher object </Returns>
+<Description>
+<A>gens</A> must be a list of group generators, <A>testfunc</A> a function
+taking as argument one group element and returning <K>true</K> or <K>false</K>.
+<A>opt</A> is an optional options record. For possible options see below.
+<P/>
+At first, the random searcher object is just initialised but no random
+searching is performed. The actual search is triggered by
+the <Ref Oper="Search"/> operation (see below). The idea of 
+random searcher objects is that a product replacer object is 
+created and during a search random elements are produced using
+this product replacer object, and for each group element produced
+the function <A>testfunc</A> is called. If this function returns
+<K>true</K>, the search stops and the group element found is returned.
+<P/>
+The following options can be bound in the options record <A>opt</A>:
+<List>
+<Mark><C>exceptions</C></Mark>
+<Item>This component can be a list to initialise the exception list
+    in the random searcher object. Group elements in this list are not
+    considered as successful searches. This list is also
+    used to continue search operations to found more suitable
+    group elements as every group element considered <Q>found</Q> is
+    added to that list before returning it. Thus every element will 
+    only be found once.
+</Item>
+<Mark><C>maxdepth</C></Mark>
+<Item>Sets the <C>maxdepth</C> option of the created product replacer object.
+    This limits the length of the expression as product of the generators
+    of the found group elements.
+</Item>
+<Mark><C>addslots</C></Mark>
+<Item>Sets the <C>addslots</C> option of the created product replacer object.
+</Item>
+<Mark><C>scramble</C></Mark>
+<Item>If this component is bound at all, then the created product replacer
+    object is created with options <C>scramble=100</C> and 
+    <C>scramblefactor=10</C> (the default values), otherwise the options
+    <C>scramble=0</C> and <C>scramblefactor=0</C> are used, leading to
+    no scrambling at all. See <Ref Oper="ProductReplacer"/> for
+    details on the product replacement algorithm.
+</Item>
+</List>
+Note that of course the generators in <A>gens</A> may have memory.
+However, the function <A>testfunc</A> is called with the group element
+with memory stripped off.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="Search" Arg="rs"/>
+<Returns> a group element </Returns>
+<Description>
+    Runs the search with the random searcher object <A>rs</A> and returns
+    with the first group element found.
+</Description>
+</ManSection>
+
+</Section>
+
+<Section>
+<Heading>The dihedral trick and applications</Heading>
+
+With the <Q>dihedral</Q> trick we mean the following: Two involutions
+<M>a</M> and <M>b</M> in a group always generate a dihedral group.
+Thus, to find a pseudo-random element in the centraliser of
+an involution <M>a</M>, we can proceed as follows: Create a 
+pseudo-random element <M>c</M>, then <M>b := a^c</M> is another
+involution. If then <M>ab</M> has order <M>2o</M>, we can use
+<M>(ab)^o</M>. Otherwise, if the order of <M>ab</M> is <M>2o-1</M>,
+then <M>(ab)^o \cdot c^{{-1}}</M> centralises <M>a</M>.
+
+<P/>
+This trick allows to efficiently produce elements in the centraliser
+of an involution and thus, with high probability, generators for the
+full centraliser.
+
+<P/>
+There are the following functions:
+
+<ManSection>
+<Func Name="FindInvolution" Arg="pr"/>
+<Returns> an involution </Returns>
+<Description>
+<A>pr</A> must be a product replacer object (see Section 
+<Ref Sect="prodrepl"/>). Searches an involution by finding a random
+element of even order and powering up. Returns the involution.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="FindCentralisingElementOfInvolution" Arg="pr, a"/>
+<Returns> a group element </Returns>
+<Description>
+<A>pr</A> must be a product replacer object (see Section
+<Ref Sect="prodrepl"/>). Produces one random element and builds
+an element the centralises the involution <A>a</A> using the
+dihedral trick described above.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="FindInvolutionCentralizer" Arg="pr, a, nr"/>
+<Returns> a list of <A>nr</A> group elements </Returns>
+<Description>
+<A>pr</A> must be a product replacer object (see Section
+<Ref Sect="prodrepl"/>) and <A>a</A> and involution. This function
+uses <Ref Func="FindCentralisingElementOfInvolution"/> <A>nr</A> times
+to produce an element centralising the involution <A>a</A> and returns
+the list of results.
+</Description>
+</ManSection>
+
+</Section>
+
+<Section>
+<Heading>Orbit statistics on vector spaces</Heading>
+
+The following two functions are tools to get a rough and quick estimate
+about the average orbit length of a group acting on a vector space.
+
+<ManSection>
+<Func Name="OrbitStatisticOnVectorSpace" Arg="gens, size, ti"/>
+<Returns> nothing </Returns>
+<Description>
+<A>gens</A> must be a list of matrix group generators and <A>size</A> an integer
+giving the order of the group generated by <A>gens</A>. <A>ti</A> is
+an integer specifying the number of seconds to run. This function
+enumerates orbits of random vectors in the natural space the group
+is acting on. The average length and some other information is
+printed on the screen.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="OrbitStatisticOnVectorSpaceLines" Arg="gens, size, ti"/>
+<Returns> nothing </Returns>
+<Description>
+<A>gens</A> must be a list of matrix group generators and <A>size</A> an integer
+giving the order of the group generated by <A>gens</A>. <A>ti</A> is
+an integer specifying the number of seconds to run. This function
+enumerates orbits of random one-dimensional subspaces in the natural
+space the group is acting on. The average length and some other
+information is printed on the screen.
+</Description>
+</ManSection>
+
+</Section>
+
+<Section>
+<Heading>Finding generating sets of subgroups</Heading>
+
+The following function can be used to find generators of a subgroup
+of a group $G$, expressed as a straight line program in the generators
+of $G$.
+
+<ManSection>
+<Func Name="FindShortGeneratorsOfSubgroup" Arg="G, U, membershiptest"/>
+<Returns> a record described below </Returns>
+<Description>
+    The arguments <A>U</A> and <A>G</A> must be &GAP; group objects with
+    <A>U</A> being a subgroup of <A>G</A>. The argument 
+    <A>membershiptest</A> must be a function taking two arguments, namely
+    a group element and a group, that checks, whether the group element
+    lies in the group or not, returning <K>true</K> or <K>false</K>
+    accordingly. You can usually just use the function <C>&bslash;in</C>
+    as third argument.
+    <P/>
+    This function does a breadth-first search to find elements in <A>U</A>
+    using the generators of <A>G</A>. It then uses calculates the size of
+    the group generated and proceeds in this way, until a generating
+    system for <A>U</A> is found in terms of the generators of <A>G</A>. Those
+    generators are guaranteed to be shortest words in the generators
+    of <A>G</A> lying in <A>U</A>.
+    <P/>
+    The function returns a record with two components bound: <C>gens</C>
+    is a list of generators for <A>U</A> and <C>slp</C> is a &GAP; straight
+    line program expressing exactly those generators in the generators
+    of <A>G</A>.
+    <P/>
+    Note that this function only performs satisfactorily when the index
+    of <A>U</A> in <A>G</A> is not to huge. It also helps if the groups
+    come in a representation in which &GAP; can compute efficiently for
+    example as permutation groups.
+</Description>
+</ManSection>
+</Section>
 
 <!-- ############################################################ -->
 

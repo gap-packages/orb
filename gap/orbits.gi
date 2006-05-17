@@ -828,13 +828,13 @@ InstallMethod( StabWords, "for an orbit with stabiliser",
   [IsOrbit and WithPermStabilizer],
   function( o ) return o!.stabwords; end );
 
-InstallMethod( NumberOfFound, "for an orbit looking for something with a list",
+InstallMethod( PositionOfFound,"for an orbit looking for something with a list",
   [IsOrbit and LookingForUsingList],
   function( o ) return o!.found; end );
-InstallMethod( NumberOfFound, "for an orbit looking for something with a hash",
+InstallMethod( PositionOfFound,"for an orbit looking for something with a hash",
   [IsOrbit and LookingForUsingHash],
   function( o ) return o!.found; end );
-InstallMethod( NumberOfFound, "for an orbit looking for something with a func",
+InstallMethod( PositionOfFound,"for an orbit looking for something with a func",
   [IsOrbit and LookingForUsingFunc],
   function( o ) return o!.found; end );
 

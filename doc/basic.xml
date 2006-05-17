@@ -277,7 +277,7 @@ and in the latter case the orbit enumeration is stopped.
 <P/>
 Whenever the orbit enumeration is stopped the component <C>found</C>
 is set to the number of the found point in the orbit. Access this
-information using <C>NumberOfFound(orb)</C>.
+information using <C>PositionOfFound(orb)</C>.
 </Item>
 </List>
 For some examples using these options see Chaper <Ref Chap="examples"/>.

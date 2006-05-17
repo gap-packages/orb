@@ -79,7 +79,7 @@ above.
 </ManSection>
 
 <ManSection>
-<Oper Name="Reset" Arg="rs"/>
+<Oper Name="Reset" Arg="rs" Label="rs"/>
 <Returns> nothing </Returns>
 <Description>
 Resets the random source <A>rs</A> if possible. That is, it will produce
@@ -149,7 +149,7 @@ or, if not given, the global &GAP; random number generator.
 
 </Section>
 
-<Section>
+<Section Label="prodrepl">
 <Heading>Product replacement</Heading>
 
 For computations in finite groups product replacement algorithms
@@ -210,6 +210,26 @@ for every random element requested one product replacement is
 done and the resulting element returned. A product replacement
 randomly chooses two elements in the list and replaces one of them
 by the product of the two.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="Next" Arg="pr"/>
+<Returns> a group elemeng </Returns>
+<Description>
+<A>pr</A> must be a product replacer object. This operation makes the
+object generate the next random element and return it.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="Reset" Arg="pr"/>
+<Returns> nothing </Returns>
+<Description>
+    <A>pr</A> must be a product replacer object. This operation resets the
+    object in the sense that it resets its random source 
+    (see <Ref Oper="Reset" Label="rs"/>) and reinitialises the
+    random element generation as described above.
 </Description>
 </ManSection>
 
