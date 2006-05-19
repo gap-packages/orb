@@ -617,14 +617,14 @@ function(setup,p,j,l,i,percentage)
           # representative for p*todo[ii]*U, thus we can directly
           # make a Schreier generator:
           if not(haveappliedU) then
-            o := Enumerate(Orb(stabg,x,
+            o := Enumerate(Orb(stabg,Representatives(db)[v],
                            setup!.op[j],
-                           rec( lookingfor := [Representatives(db)[v]],
+                           rec( lookingfor := [x],
                                 hashlen := setup!.hashlen[j], 
                                 schreier := true )));
             sw := TraceSchreierTreeForward(o,o!.found);
             sw := Concatenation( stab.gens{sw} );
-            newword := Concatenation(todo[ii],[m],mw,sw,
+            newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
                             ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
           else
             # in this case todo[ii] is not the chosen representative for
@@ -643,7 +643,7 @@ function(setup,p,j,l,i,percentage)
                    rec( hashlen := setup!.hashlen[j], 
                         lookingfor := [xx], schreier := true ) ));
             sw2 := TraceSchreierTreeForward(o,o!.found);
-            sw2 := Concatenation( stab.gens{sw2} );
+            sw2 := Concatenation( stab2.gens{sw2} );
             # Now Concatenation(words[repforsuborbit[ii]],
             #                   miniwords[repforsuborbit[ii]],sw2,mw2^-1)
             # is the transversal element for the original xx
