@@ -468,7 +468,7 @@ InstallMethod( Memory, "for an orbit-by-suborbit",
     return [m1,m2];
   end );
 
-ORB.PATIENCEFORSTAB := 200;
+ORB.PATIENCEFORSTAB := 1000;
 ORB.REPORTSUBORBITS := 1000;
 ORB.MINSHASHLEN := 257;
 ORB.ORBITBYSUBORBITDEPTH := 0;   # this means outside!
