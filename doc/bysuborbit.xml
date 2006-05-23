@@ -143,6 +143,42 @@ to <M>1</M>.
 <Section Label="obsodatastrucs">
 <Heading>Data structures for orbit-by-suborbits</Heading>
 
+The description in this section is necessarily technical. It is meant
+more as extended annotations to the source code than as user documentation.
+Usually it should not be necessary for the user to know the details
+presented here.
+
+The function <Ref Func="OrbitBySuborbit"/> needs an information record
+of the following form:
+
+<ManSection>
+<Filt Name="IsOrbitBySuborbitSetup" Arg="ob" Type="Category"/>
+<Returns> <K>true</K> or <K>false</K> </Returns>
+<Description>
+Objects in this category are also in <C>IsComponentObjRep</C>. We describe
+the components, refering to the setup at the beginning of this
+Chapter <Ref Chap="bysuborbit"/>.
+<List>
+<Mark><C>k</C></Mark>
+<Item> The number of helper subgroups.  </Item>
+<Mark><C>size</C></Mark>
+<Item> A list of length <M>k+1</M> containing the orders of the groups
+    <M>U_i</M>, including <M>U_{{k+1}} = G</M>.
+</Item>
+<Mark><C>index</C></Mark>
+<Item> A list of length <M>k</M> with the index <M>[U_i:U_{{i-1}}]</M>
+    in position <M>i</M> (<M>U_0 = \{1\}</M>).
+</Item>
+<Mark><C></C></Mark>
+<Item> 
+</Item>
+<Mark><C></C></Mark>
+<Item> 
+</Item>
+</List>
+</Description>
+</ManSection>
+
 </Section>
 
 <Section>

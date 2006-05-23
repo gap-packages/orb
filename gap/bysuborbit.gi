@@ -190,7 +190,8 @@ function(p,j,i,setup,stab,w)
       AddHT(setup!.info[i],q,v);
       # Now find all U_{i-1}-minimal elements in q*U_{i-1}, note that
       # tempstab contains generators for Stab_{U_{i-1}}(q)!
-      Info(InfoOrb,1,"Starting on-the-fly precomputation (i>1) ...");
+      Info(InfoOrb,2+ORB.ORBITBYSUBORBITDEPTH,
+           "Starting on-the-fly precomputation (i>1) ...");
       tempstabgens := List(tempstab.gens,
                            w->ORB_ApplyWord(One(setup!.els[i][1]),w,
                                             setup!.els[i],setup!.elsinv[i],
@@ -211,7 +212,8 @@ function(p,j,i,setup,stab,w)
       # of q*U_i together with a number of a transversal element to reach
       # the minimal U_{i-1}-orbit q*U_{i-1}:
 
-      Info(InfoOrb,3,"Have to go through ",Length(o!.words)-1," suborbits...");
+      Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
+           "Have to go through ",Length(o!.words)-1," suborbits...");
       for m in [2..Length(o!.words)] do
           qq := ORB_ApplyWord(q,o!.words[m],setup!.els[i],setup!.elsinv[i],
                               setup!.op[i]);
@@ -235,9 +237,10 @@ function(p,j,i,setup,stab,w)
               fi;
               AddHT(setup!.info[i],oo!.orbit[mm],cos);
           od;
-          Info(InfoOrb,3,"done 1 suborbit.");
+          Info(InfoOrb,4+ORB.ORBITBYSUBORBITDEPTH,"done 1 suborbit.");
       od;
-      Info(InfoOrb,3,"ready with on-the-fly precomputation.");
+      Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
+           "ready with on-the-fly precomputation.");
 
       # Now the U_{i-1}-orbit of the vector q is the U_i-minimal 
       # U_{i-1}-orbit and q is the U_i-minimal vector
@@ -361,7 +364,8 @@ InstallMethod( StoreSuborbit,
   else
       infolevel := 2;
   fi;
-  Info(InfoOrb,infolevel,"j=",j," l=",l," i=",i," #",Length(db!.reps),
+  Info(InfoOrb,infolevel+ORB.ORBITBYSUBORBITDEPTH,
+       "j=",j," l=",l," i=",i," #",Length(db!.reps),
        " Size:",ORB_PrettyStringBigNumber(length),
        "\c Mins:",Length(o!.orbit)," \cTotal:",
        ORB_PrettyStringBigNumber(db!.totallength),
@@ -463,6 +467,8 @@ InstallMethod( Memory, "for an orbit-by-suborbit",
 ORB.PATIENCEFORSTAB := 200;
 ORB.REPORTSUBORBITS := 1000;
 
+ORB.ORBITBYSUBORBITDEPTH := 0;   # outside!
+
 InstallGlobalFunction( OrbitBySuborbit,
 function(setup,p,j,l,i,percentage)
   # Enumerates the orbit of p under the group U_l (with G=U_{k+1}) by
@@ -486,9 +492,11 @@ function(setup,p,j,l,i,percentage)
         oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx;
 
   Info(InfoOrb,2,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
+  ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH + 1;
 
   if not(j >= l and l > i and i >= 1) then
       Error("Need j >= l > i >= 1");
+      ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
       return;
   fi;
 
@@ -512,6 +520,8 @@ function(setup,p,j,l,i,percentage)
   if p <> setup!.op[j](p,setup!.els[j][1]^0) then
       Error("Warning: The identity does not preserve the starting point!\n",
             "Did you normalize your vector?");
+      ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
+      return;
   fi;
 
   # First we U_i-minimalize p:
@@ -567,6 +577,7 @@ function(setup,p,j,l,i,percentage)
     ii := 1;
     while ii <= Length(todo) do
       if pleaseexitnow = true then 
+          ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
           return ["didnotfinish",db,fullstabsize]; 
       fi;
 
@@ -590,6 +601,7 @@ function(setup,p,j,l,i,percentage)
              TotalLength(db) * fullstabsize * 100 >= 
                              setup!.size[l]*percentage then 
             Info(InfoOrb,2,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
+            ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
             return MakeReturnObj();
           fi;
           if haveappliedU then   
@@ -660,17 +672,20 @@ function(setup,p,j,l,i,percentage)
                                      ORB_InvWord(miniwords[v]),
                                      ORB_InvWord(words[v]));
           fi;
-          Info(InfoOrb,3,"Calculated Schreier generator");
+          Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
+               "Calculated Schreier generator");
           newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
                           setup!.permgens[l],setup!.permgensinv[l],OnRight);
           if not(IsOne(newperm)) then
-            Info(InfoOrb,3,"Schreier generator was non-trivial");
+            Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
+                 "Schreier generator was non-trivial");
             if not(newperm in stabilizer) then
               triedstabgens := 0;   # we actually found a new one!
               Add(stabgens,newword);
               Add(stabperms,newperm);
               stabilizer := GroupWithGenerators(stabperms);
-              Info(InfoOrb,1,"Calculating new estimate of the stabilizer...");
+              Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+                   "Calculating new estimate of the stabilizer...");
               if IsBound(setup!.stabchainrandom) and
                  setup!.stabchainrandom <> false then
                   StabChain(stabilizer, 
@@ -679,18 +694,20 @@ function(setup,p,j,l,i,percentage)
                   StabChain(stabilizer);
               fi;
               fullstabsize := Size(stabilizer);
-              Info(InfoOrb,1,"New stabilizer order: ",fullstabsize);
+              Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+                   "New stabilizer order: ",fullstabsize);
               if TotalLength(db) * fullstabsize * 100
                  >= setup!.size[l]*percentage then 
                 Info(InfoOrb,2,"Leaving OrbitBySuborbit");
+                ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
                 return MakeReturnObj();
               fi;
             fi;
           fi;
           triedstabgens := triedstabgens + 1;
           if triedstabgens > ORB.PATIENCEFORSTAB then  # this is heuristics!
-            Info(InfoOrb,1,"Lost patience with stabiliser, assuming it is ",
-                 "complete...");
+            Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+                 "Lost patience with stabiliser, assuming it is complete...");
             assumestabcomplete := true;
           fi;
         fi;
@@ -709,7 +726,8 @@ function(setup,p,j,l,i,percentage)
       Append(todovecs,List(oldtodovecs,w->setup!.op[j](w,setup!.els[j][ii])));
       Append(repforsuborbit,oldrepforsuborbit);
     od;
-    Info(InfoOrb,2,"Length of next todo: ",Length(todo));
+    Info(InfoOrb,2+ORB.ORBITBYSUBORBITDEPTH,
+         "Length of next todo: ",Length(todo));
     haveappliedU := true;
   od;
   # this is never reached
