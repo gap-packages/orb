@@ -530,7 +530,7 @@ InstallMethod( Enumerate,
                         fi;
                     fi; 
                     if not(sgentrivial) then
-                      Info(InfoOrb,3,"Evaluating stabilizer element...");
+                      Info(InfoOrb,4,"Evaluating stabilizer element...");
                       # Calculate an element of the stabilizer:
                       sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
                               EvaluateWord(o!.permgensi,wordb);
@@ -737,7 +737,7 @@ InstallMethod( Enumerate,
                         fi;
                     fi; 
                     if not(sgentrivial) then
-                      Info(InfoOrb,3,"Evaluating stabilizer element...");
+                      Info(InfoOrb,4,"Evaluating stabilizer element...");
                       # Calculate an element of the stabilizer:
                       sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
                               EvaluateWord(o!.permgensi,wordb);

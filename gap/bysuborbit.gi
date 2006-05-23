@@ -131,7 +131,7 @@ function(p,j,i,setup,stab,w)
       o := Enumerate(Orb(setup!.els[1],q,setup!.op[1],
                          rec( schreier := true, 
                               grpsizebound := setup!.size[1],
-                              hashlen := setup!.size[1]*2,
+                              hashlen := NextPrimeInt(setup!.size[1]*2),
                               stabchainrandom := setup!.stabchainrandom,
                               permgens := setup!.permgens[1],
                               permbase := setup!.permbase[1] )));
@@ -197,7 +197,9 @@ function(p,j,i,setup,stab,w)
                                             setup!.els[i],setup!.elsinv[i],
                                             OnRight));
       oo := Enumerate(Orb(tempstabgens,q,setup!.op[i],
-                          rec(hashlen := setup!.hashlen[i],schreier := true)));
+                          rec(hashlen := ORB.MINSHASHLEN, 
+                                         # was: setup!.hashlen[i],
+                              schreier := true)));
       for m in [2..Length(oo!.orbit)] do
           ww := TraceSchreierTreeForward(oo,m);
           ww := ORB_InvWord(Concatenation( tempstab.gens{ww} ));
@@ -225,7 +227,8 @@ function(p,j,i,setup,stab,w)
                                                 setup!.els[i],setup!.elsinv[i],
                                                 OnRight));
           oo := Enumerate(Orb(tempstabgens,qq,setup!.op[i],
-                              rec(hashlen := setup!.hashlen[i],
+                              rec(hashlen := ORB.MINSHASHLEN, 
+                                             # was: setup!.hashlen[i],
                                   schreier := true)));
           for mm in [1..Length(oo!.orbit)] do
               www := TraceSchreierTreeForward(oo,mm);
@@ -352,7 +355,8 @@ InstallMethod( StoreSuborbit,
                    w->ORB_ApplyWord( setup!.els[j][1]^0, w, setup!.els[j],
                                      setup!.elsinv[j], OnRight ));
   o := Enumerate(Orb(stabgens,p,setup!.op[j],
-                     rec(hashlen := setup!.hashlen[j],schreier := true)));
+                     rec(hashlen := ORB.MINSHASHLEN,  # was: setup!.hashlen[j]
+                         schreier := true)));
   for m in [2..Length(o!.orbit)] do
       AddHT( db!.mins, o!.orbit[m], Length(db!.reps) );
   od;
@@ -466,8 +470,8 @@ InstallMethod( Memory, "for an orbit-by-suborbit",
 
 ORB.PATIENCEFORSTAB := 200;
 ORB.REPORTSUBORBITS := 1000;
-
-ORB.ORBITBYSUBORBITDEPTH := 0;   # outside!
+ORB.MINSHASHLEN := 257;
+ORB.ORBITBYSUBORBITDEPTH := 0;   # this means outside!
 
 InstallGlobalFunction( OrbitBySuborbit,
 function(setup,p,j,l,i,percentage)
@@ -491,7 +495,7 @@ function(setup,p,j,l,i,percentage)
         triedstabgens,haveappliedU,MakeReturnObj,y,repforsuborbit,
         oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx;
 
-  Info(InfoOrb,2,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
+  Info(InfoOrb,3,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
   ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH + 1;
 
   if not(j >= l and l > i and i >= 1) then
@@ -600,7 +604,7 @@ function(setup,p,j,l,i,percentage)
           if 2 * TotalLength(db) * fullstabsize > setup!.size[l] and
              TotalLength(db) * fullstabsize * 100 >= 
                              setup!.size[l]*percentage then 
-            Info(InfoOrb,2,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
+            Info(InfoOrb,3,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
             ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
             return MakeReturnObj();
           fi;
@@ -632,7 +636,8 @@ function(setup,p,j,l,i,percentage)
             o := Enumerate(Orb(stabg,Representatives(db)[v],
                            setup!.op[j],
                            rec( lookingfor := [x],
-                                hashlen := setup!.hashlen[j], 
+                                hashlen := ORB.MINSHASHLEN, 
+                                           # was: setup!.hashlen[j], 
                                 schreier := true )));
             sw := TraceSchreierTreeForward(o,o!.found);
             sw := Concatenation( stab.gens{sw} );
@@ -652,7 +657,8 @@ function(setup,p,j,l,i,percentage)
                                          setup!.elsinv[j], OnRight ));
             y := Representatives(db)[repforsuborbit[ii]];
             o := Enumerate(Orb(stabg2,y,setup!.op[j],
-                   rec( hashlen := setup!.hashlen[j], 
+                   rec( hashlen := ORB.MINSHASHLEN,
+                                   # was: setup!.hashlen[j], 
                         lookingfor := [xx], schreier := true ) ));
             sw2 := TraceSchreierTreeForward(o,o!.found);
             sw2 := Concatenation( stab2.gens{sw2} );
@@ -662,7 +668,9 @@ function(setup,p,j,l,i,percentage)
             # Now as in the simpler case:
             o := Enumerate(Orb(stabg,Representatives(db)[v],
                            setup!.op[j],
-                           rec( hashlen := setup!.hashlen[j], lookingfor := [x],
+                           rec( hashlen := ORB.MINSHASHLEN,
+                                           # was: setup!.hashlen[j], 
+                                lookingfor := [x],
                                 schreier := true )));
             sw := TraceSchreierTreeForward(o,o!.found);
             sw := Concatenation( stab.gens{sw} );
@@ -698,7 +706,7 @@ function(setup,p,j,l,i,percentage)
                    "New stabilizer order: ",fullstabsize);
               if TotalLength(db) * fullstabsize * 100
                  >= setup!.size[l]*percentage then 
-                Info(InfoOrb,2,"Leaving OrbitBySuborbit");
+                Info(InfoOrb,3,"Leaving OrbitBySuborbit");
                 ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
                 return MakeReturnObj();
               fi;
@@ -836,7 +844,9 @@ function(gens,permgens,sizes,codims)
   setup.elsinv[k+1] := List(setup.els[k+1],x->x^-1);
   setup.cosetinfo := [];
   setup.cosetrecog := [];
-  setup.hashlen := List([1..k+1],i->1000000);
+  setup.hashlen := [NextPrimeInt(3*sizes[1])];
+  Append(setup.hashlen,List([2..k+1],i->NextPrimeInt(
+              Minimum(3*(sizes[i]/sizes[i-1]),1000000))));
   setup.sample := [];
   setup.sample[k+1] := sample;
   dim := Length(sample);
@@ -857,7 +867,7 @@ function(gens,permgens,sizes,codims)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [NewHT(setup.sample[1],(q^codims[1]) * 3)];
+  setup.info := [NewHT(setup.sample[1],NextPrimeInt((q^codims[1]) * 3))];
   for j in [2..k+1] do
       setup.pi[j] := [];
       setup.pifunc[j] := [];
@@ -867,7 +877,8 @@ function(gens,permgens,sizes,codims)
       od;
       if j < k+1 then
           setup.info[j] :=
-             NewHT(setup.sample[j],QuoInt((q^codims[j])*3,sizes[j-1]));
+             NewHT(setup.sample[j],
+                   NextPrimeInt(QuoInt((q^codims[j])*3,sizes[j-1])));
       fi;
   od;
   setup.suborbnr := 0*[1..k];
@@ -1022,7 +1033,9 @@ function(gens,permgens,sizes,codims)
   setup.elsinv[k+1] := List(setup.els[k+1],x->x^-1);
   setup.cosetinfo := [];
   setup.cosetrecog := [];
-  setup.hashlen := List([1..k+1],i->1000000);
+  setup.hashlen := [NextPrimeInt(3*sizes[1])];
+  Append(setup.hashlen,List([2..k+1],i->NextPrimeInt(
+                Minimum(3*(sizes[i]/sizes[i-1]),1000000))));
   setup.sample := [];
   setup.sample[k+1] := sample;
   dim := Length(sample);
@@ -1043,7 +1056,8 @@ function(gens,permgens,sizes,codims)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [NewHT(setup.sample[1],(q^codims[1]-1)/(q-1) * 3)];
+  setup.info := [NewHT(setup.sample[1],
+                       NextPrimeInt((q^codims[1]-1)/(q-1) * 3))];
   for j in [2..k+1] do
       setup.pi[j] := [];
       setup.pifunc[j] := [];
@@ -1053,7 +1067,8 @@ function(gens,permgens,sizes,codims)
       od;
       if j < k+1 then
           setup.info[j] :=
-             NewHT(setup.sample[j],QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1]));
+             NewHT(setup.sample[j],
+                   NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])));
       fi;
   od;
   setup.suborbnr := 0*[1..k];

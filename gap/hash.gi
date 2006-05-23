@@ -58,7 +58,7 @@ InstallMethod(ViewObj, "for hash tables", [IsRecord],
   end);
 
 InstallGlobalFunction( AddHT, function(ht, x, val)
-  local h;
+  local h,g;
   ht.accesses := ht.accesses + 1;
   if ht.nr * 10 > ht.len * 9 then
     if IsBound(ht.cangrow) then
@@ -70,24 +70,26 @@ InstallGlobalFunction( AddHT, function(ht, x, val)
     fi;
   fi;
   h := ht.hf(x,ht.hfd);
-  while IsBound(ht.els[h]) do
-    h := h+1;
-    ht.collisions := ht.collisions + 1;
-    if h>ht.len then h:=1; fi;
-    if not(IsBound(ht.alert)) and QuoInt(ht.collisions,ht.accesses) > 100 then
-      # We have a problem!
-      Info(InfoOrb,1,"Alarm: Collision warning: ",
-           QuoInt(ht.collisions,ht.accesses),"!");
-      if not(IsBound(ht.cangrow)) then
-        Info(InfoOrb,1,"Alarm: Collision warning: ",
-             QuoInt(ht.collisions,ht.accesses),"!");
-        ht.alert := true;
-      else
-        GrowHT(ht,x);
-        return AddHT(ht,x,val);
+  if IsBound(ht.els[h]) then
+    g := GcdInt(ht.len,h);
+    if g = 1 then g := h; else g := 1; fi;
+    repeat
+      ht.collisions := ht.collisions + 1;
+      h := h+g;
+      if h>ht.len then h := h - ht.len; fi;
+      if not(IsBound(ht.alert)) and QuoInt(ht.collisions,ht.accesses) > 100 then
+        # We have a problem!
+        Info(InfoOrb,1,"Alarm: Collision warning: Collisions: ",
+             ht.collisions," Accesses: ",ht.accesses,"!");
+        if not(IsBound(ht.cangrow)) then
+          ht.alert := true;
+        else
+          GrowHT(ht,x);
+          return AddHT(ht,x,val);
+        fi;
       fi;
-    fi;
-  od;
+    until not(IsBound(ht.els[h]));
+  fi;
   ht.els[h] := x;
   if val <> true then ht.vals[h] := val; fi;
   ht.nr := ht.nr+1;
@@ -95,9 +97,10 @@ InstallGlobalFunction( AddHT, function(ht, x, val)
 end );
 
 InstallGlobalFunction( ValueHT, function(ht, x)
-  local h;
+  local h,g;
   ht.accesses := ht.accesses + 1;
   h := ht.hf(x,ht.hfd);
+  g := 0;
   while IsBound(ht.els[h]) do
     if ht.eqf(ht.els[h],x) then
         if IsBound(ht.vals[h]) then
@@ -106,9 +109,13 @@ InstallGlobalFunction( ValueHT, function(ht, x)
             return true;
         fi;
     fi;
-    h := h+1;
+    if g = 0 then
+      g := GcdInt(ht.len,h);
+      if g = 1 then g := h; else g := 1; fi;
+    fi;
     ht.collisions := ht.collisions + 1;
-    if h>ht.len then h:=1; fi;
+    h := h+g;
+    if h>ht.len then h := h - ht.len; fi;
   od;
   return fail;
 end );
@@ -124,12 +131,13 @@ InstallGlobalFunction( GrowHT, function(ht,x)
 
   ht.els := [];
   ht.vals := [];
-  ht.len := ht.len * 2 + 1;
+  ht.len := NextPrimeInt(ht.len * 2+1);
   ht.hf := ChooseHashFunction(x,ht.len);
   ht.hfd := ht.hf.data;
   ht.hf := ht.hf.func;
   ht.nr := 0;
   ht.collisions := 0;
+  ht.accesses := 0;
   # Now copy into new hash:
   for i in [1..oldlen] do
       if IsBound(oldels[i]) then
