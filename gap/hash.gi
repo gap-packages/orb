@@ -62,7 +62,7 @@ InstallGlobalFunction( AddHT, function(ht, x, val)
   ht.accesses := ht.accesses + 1;
   if ht.nr * 10 > ht.len * 9 then
     if IsBound(ht.cangrow) then
-      Info(InfoOrb,1,"Hash table too full, growing...");
+      Info(InfoOrb,3,"Hash table too full, growing...");
       GrowHT(ht,x);
     else
       Info(InfoOrb,1,"Hash table too full, cannot grow...");
@@ -147,7 +147,7 @@ InstallGlobalFunction( GrowHT, function(ht,x)
           fi;
       fi;
   od;
-  Info(InfoOrb,1,"Done.");
+  Info(InfoOrb,3,"Done.");
 end );
 
 

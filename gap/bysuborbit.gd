@@ -103,6 +103,8 @@ DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
     "wordhash",   # a hash storing word numbers
     "wordcache",  # a list of words used somewhere
     "hashlen",    # initial length of hashes for minimal vectors (i:1..k+1)
+    "staborblenlimit",   # limit, up to which orbits of stabilizers are
+                         # computed using word action
   ] );
 DeclareOperation( "Memory", [IsOrbitBySuborbitSetup] );
 
@@ -171,6 +173,8 @@ DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 # The real thing:
 ##################
 
+DeclareGlobalFunction( "ORB_WordOp" );
+DeclareGlobalFunction( "ORB_PrepareStabgens" );
 DeclareGlobalFunction( "OrbitBySuborbit" );
 
 

@@ -14,7 +14,7 @@ ReadPackage("orb","examples/slpco1.g");
 gens := AtlasGenerators("2.Co1",3).generators;
 cgens := List(gens,CMat);
 basech := CVEC_ReadMatFromFile(
-       Filename(DirectoriesPackageLibrary("orb",""),"examples/co1basech"));
+       Filename(DirectoriesPackageLibrary("orb",""),"examples/co1basech.cmat"));
 basechi := basech^-1;
 cgens := List(cgens,x->basech*x*basechi);
 cmax5 := ResultOfStraightLineProgram(slpmax5,cgens);
@@ -31,7 +31,7 @@ setup := OrbitBySuborbitBootstrapForVectors(
     [cu1,cu2,cu3,cgens],
     [pgu1,pgu2,pgu3,pg],
     [21504,743178240,178362777600,Size(2co1)],
-    [8,8,16]);
+    [8,8,16],rec());
 #setup!.stabchainrandom := 900;
 v := ZeroMutable(cgens[1][1]);
 Randomize(v);
