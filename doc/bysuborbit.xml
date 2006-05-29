@@ -38,7 +38,7 @@ objects and their administration. Note that there are quite a few
 examples in Chapter <Ref Chap="examples"/>.
 
 <Section>
-<Heading><C>OrbitBySuborbits</C> and its preparation functions</Heading>
+<Heading><C>OrbitBySuborbits</C> and its resulting objects</Heading>
 
 <ManSection>
 <Func Name="OrbitBySuborbit" Arg="setup, p, j, l, i, percentage"/>
@@ -63,7 +63,7 @@ examples in Chapter <Ref Chap="examples"/>.
     <P/>
     The integers <A>j</A>, <A>l</A>, and <A>i</A>, for which
     <M>k+1 \ge <A>j</A> \ge <A>l</A> &gt; <A>i</A> \ge 1</M> must hold,
-    determine the running mode. <A>j</A> indicates, in which set <M>X_j</M>
+    determine the running mode. <A>j</A> indicates in which set <M>X_j</M>
     the point <A>p</A> lies and thus in which set the orbit enumeration
     takes place, with <M>j=k+1</M> indicating the original set <M>X</M>. 
     The value <A>l</A> indicates which group to use for orbit enumeration.
@@ -82,12 +82,137 @@ examples in Chapter <Ref Chap="examples"/>.
     means the full orbit. Usually, only values greater than <M>50</M>
     are sensible, because one can only prove the size of the orbit
     after enumerating at least half of it.
+    <P/>
+    The result is an <Q>orbit-by-suborbit</Q> object. For such an object
+    in particular the operations <Ref Meth="Size"/>, <Ref Oper="Seed"/>,
+    <Ref Oper="SuborbitsDb"/>,
+    <Ref Oper="WordsToSuborbits"/>, <Ref Oper="Memory"/>,
+    <Ref Meth="Stabilizer" Label="obso"/>, and 
+    <Ref Oper="Seed"/> are defined, see below.
 </Description>
 </ManSection>
 
 <ManSection>
+<Meth Name="Size" Arg="orb"/>
+<Returns> an integer </Returns>
+<Description>
+Returns the number of points in the orbit-by-suborbit <A>orb</A>.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Seed" Arg="orb"/>
+<Returns> a point in the orbit </Returns>
+<Description>
+Returns the starting point of the orbit-by-suborbit <A>orb</A>. It is
+the <M>U_i</M>-minimalisation of the starting point given to
+<Ref Func="OrbitBySuborbit"/>.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="SuborbitsDb" Arg="orb"/>
+<Returns> a database of suborbits </Returns>
+<Description>
+Returns the data base of suborbits of the orbit-by-suborbit object
+<A>orb</A>. In particular, such a database object has methods
+for the operations
+<Ref Oper="Memory"/>, <Ref Oper="TotalLength"/>, and
+<Ref Oper="Representatives"/>. For descriptions see below.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="WordsToSuborbits" Arg="orb"/>
+<Returns> a list of words </Returns>
+<Description>
+Returns a list of words in the groups <M>U_*</M> reaching each of the
+suborbits in the orbit-by-suborbit <A>orb</A>. Here a word is
+a list of integers. Positive numbers index generators in following
+numbering: The first few numbers are numbers of generators of <M>U_1</M>
+the next few adjacent numbers index the generators of <M>U_2</M> and
+so on until the generators of <M>G</M> in the end. Negative numbers
+indicate the corresponding inverses of these generators.
+<P/>
+Note that <Ref Func="OrbitBySuborbit"/> takes the <M>U_i</M>-minimalisation
+of the starting point as its starting point and the words here are all
+relative to this new starting point.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="Memory" Arg="ob"/>
+<Returns> an integer or a list of two integers </Returns>
+<Description>
+Returns the amount of memory needed by the object <A>ob</A>, which can
+be either an orbit-by-suborbit object, a suborbit database object,
+or an object in the filter <Ref Filt="IsOrbitBySuborbitSetup"/>.
+The amount of memory used is given in bytes. Note that this includes
+all hashes, databases, and preparatory data of substantial size.
+For orbit-by-suborbits two numbers are returned, the first being the
+amount of memory needed for this orbit and the second being the
+amount of memory needed for the precalculation data that is stored
+in the setup object.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Stabilizer" Arg="orb" Label="obso"/>
+<Returns> a permutation group </Returns>
+<Description>
+Returns the stabiliser of the starting point of the orbit-by-suborbit
+in <A>orb</A> in form of a permutation group, using the given
+faithful permutation representation in the setup record.
+<P/>
+Note that <Ref Func="OrbitBySuborbit"/> takes the <M>U_i</M>-minimalisation
+of the starting point as its starting point and the stabiliser returned
+here is the one of this new starting point.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="StabWords" Arg="orb"/>
+<Returns> a list of words </Returns>
+<Description>
+Returns generators for the stabiliser of the starting point of the 
+orbit-by-suborbit
+in <A>orb</A> in form of words as described with the operation <Ref
+Oper="WordsToSuborbits"/>. Note again that <Ref Func="OrbitBySuborbit"/>
+takes the <M>U_i</M>-minimalisation of the starting point as its
+starting point and the stabiliser returned here is the one of this new
+starting point.
+</Description>
+</ManSection>
+
+The following operations apply to orbit-by-suborbit database objects:
+
+<ManSection>
+<Oper Name="TotalLength" Arg="db"/>
+<Returns> an integer </Returns>
+<Description>
+Returns the total number of points stored in all suborbits in the 
+orbit-by-suborbit database <A>db</A>.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="Representatives" Arg="db"/>
+<Returns> a list of points </Returns>
+<Description>
+Returns a list of representatives of the suborbits stored in the
+orbit-by-suborbit database <A>db</A>.
+</Description>
+</ManSection>
+
+</Section>
+
+
+<Section>
+<Heading>Preparation functions for <Ref Func="OrbitBySuborbit"/></Heading>
+
+<ManSection>
 <Func Name="OrbitBySuborbitBootstrapForVectors" 
-      Arg="gens, permgens, sizes, codims"/>
+      Arg="gens, permgens, sizes, codims, opt"/>
   <Returns> a setup record in the filter <Ref Filt="IsOrbitBySuborbitSetup"/>
   </Returns>
 <Description>
@@ -115,17 +240,37 @@ length <M>k+1</M> and entry <M>i</M> must be the group order of <M>U_i</M>
 with the <M>i</M>th entry being the codimension of the <M>U_i</M>-invariant
 subspace <M>Y_i</M> of <M>X</M> with <M>X_i = X/Y_i</M>. These
 codimensions must not decrease for obvious reasons, but some of them
-may be equal.
+may be equal. The last argument <A>opt</A> is an options record.
+See below for possible entries.
 <P/>
 The function does all necessary steps to fill a setup record
 (see <Ref Sect="obsodatastrucs"/>) to be used with 
 <Ref Func="OrbitBySuborbit"/>. For details see the code.
+<P/>
+Currently, the following components in the options record <A>opt</A>
+have a meaning:
+<List>
+<Mark>regvecfachints</Mark>
+<Item>If bound it must be a list. In position <M>i</M> for <M>i&gt;1</M>
+there may be a list of vectors in the <M>i</M>-th quotient space <M>X_i</M>
+that can be used to distinguish the left <M>U_{{i-1}}</M> cosets in
+<M>U_i</M>. All vectors in this list are tried and the first one that
+actually works is used.
+</Item>
+<Mark>regvecfullhints</Mark>
+<Item>If bound it must be a list. In position <M>i</M> for <M>i&gt;1</M>
+there may be a list of vectors in the full space <M>X</M>
+that can be used to distinguish the left <M>U_{{i-1}}</M> cosets in
+<M>U_i</M>. All vectors in this list are tried and the first one that
+actually works is used.
+</Item>
+</List>
 </Description>
 </ManSection>
     
 <ManSection>
 <Func Name="OrbitBySuborbitBootstrapForLines" 
-      Arg="gens, permgens, sizes, codims"/>
+      Arg="gens, permgens, sizes, codims, opt"/>
   <Returns> a setup record in the filter <Ref Filt="IsOrbitBySuborbitSetup"/>
   </Returns>
 <Description>
@@ -169,10 +314,78 @@ Chapter <Ref Chap="bysuborbit"/>.
 <Item> A list of length <M>k</M> with the index <M>[U_i:U_{{i-1}}]</M>
     in position <M>i</M> (<M>U_0 = \{1\}</M>).
 </Item>
-<Mark><C></C></Mark>
+<Mark><C>els</C></Mark>
+<Item> A list of length <M>k+1</M> containing generators of the groups
+in their action on various sets. In position <M>i</M> we store all the
+generators for all groups acting on <M>X_i</M>, that is for the groups
+<M>U_1, \ldots, U_i</M> (where position <M>k+1</M> includes the generators
+for <M>G</M>. In each position the generators of all those groups
+are concatentated starting with <M>U_1</M> and ending with <M>U_i</M>.
+</Item>
+<Mark><C>elsinv</C></Mark>
+<Item> The inverses of all the elements in the <C>els</C> component in the
+same arrangement.
+</Item>
+<Mark><C>trans</C></Mark>
+<Item> A list of length <M>k</M> in which position <M>i</M> contains 
+a list of words in the generators for a transversal of <M>U_{{i-1}}</M>
+in <M>U_i</M> (with <M>U_0 = 1</M>).
+</Item>
+<Mark><C>pifunc</C></Mark>
+<Item> Projection functions. This is a list of length <M>k+1</M> containing
+in position <M>j</M> a list of length <M>j-1</M> containing in position
+<M>i</M> a &GAP; function doing the projection <M>X_j \to X_i</M>.
+These &GAP; functions take two arguments, namely the point to map
+and secondly the value of the <C>pi</C> component at positions
+<C>[j][i]</C>. Usually <C>pifunc</C> is just the slicing operator
+in &GAP; and <C>pi</C> contains the components to project onto
+as a range object.
+</Item>
+<Mark><C>pi</C></Mark>
+<Item> See the description of the <C>pifunc</C> component.
+</Item>
+<Mark><C>op</C></Mark>
+<Item> A list of <M>k+1</M> &GAP; operation functions, each taking a point
+<M>p</M> and a generator <M>g</M> in the action given by the index and 
+returning <M>pg</M>.
+</Item>
+<Mark><C>info</C></Mark>
 <Item> 
 </Item>
-<Mark><C></C></Mark>
+<Mark><C>cosetrecog</C></Mark>
+<Item> 
+</Item>
+<Mark><C>cosetinfo</C></Mark>
+<Item> 
+</Item>
+<Mark><C>suborbnr</C></Mark>
+<Item> 
+</Item>
+<Mark><C>sumstabl</C></Mark>
+<Item> 
+</Item>
+<Mark><C>permgens</C></Mark>
+<Item> 
+</Item>
+<Mark><C>permgensinv</C></Mark>
+<Item> 
+</Item>
+<Mark><C>sample</C></Mark>
+<Item> 
+</Item>
+<Mark><C>stabchainrandom</C></Mark>
+<Item> 
+</Item>
+<Mark><C>wordhash</C></Mark>
+<Item> 
+</Item>
+<Mark><C>wordcache</C></Mark>
+<Item> 
+</Item>
+<Mark><C>hashlen</C></Mark>
+<Item> 
+</Item>
+<Mark><C>staborblenlimit</C></Mark>
 <Item> 
 </Item>
 </List>

@@ -450,6 +450,18 @@ InstallOtherMethod( Size, "for an orbit-by-suborbit",
     return o!.orbitlength;
   end );
 
+InstallMethod( Seed, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return o!.seed;
+  end );
+
+InstallMethod( StabWords, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return o!.stabwords;
+  end );
+
 InstallOtherMethod( StabilizerOfExternalSet, "for an orbit-by-suborbit",
   [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
   function( o )

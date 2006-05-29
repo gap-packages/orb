@@ -167,6 +167,8 @@ BindGlobal( "StdOrbitBySuborbitsType",
 DeclareOperation( "SuborbitsDb", [IsOrbitBySuborbit] );
 DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
 DeclareOperation( "Memory", [IsOrbitBySuborbit] );
+DeclareOperation( "Seed", [IsOrbitBySuborbit] );
+DeclareOperation( "StabWords", [IsOrbitBySuborbit] );
 
 
 ##################
