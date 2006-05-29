@@ -16,6 +16,19 @@ This chapter explains functionality for hash lookups.
 <Section Label="hashidea">
 <Heading>The idea of hashing</Heading>
 
+If one wants to store
+a certain set of similar objects and want to quickly access a given
+one (or come back with the result that it is unknown), the first idea
+would be to store them in a list, possibly sorted for faster access.
+This however still would need <M>\log(n)</M> comparisons to access
+a given element. 
+
+<P/>
+Therefore one uses a much bigger array and uses a function on the
+space of possible objects with integer values to decide, where in the
+array to store a certain object. If this so called hash function
+distributes the actually stored objects well enough over the array,
+in average the access time is contant.
 </Section>
 
 <Section Label="hashfunc">
