@@ -17,27 +17,310 @@ This chapter explains functionality for hash lookups.
 <Heading>The idea of hashing</Heading>
 
 If one wants to store
-a certain set of similar objects and want to quickly access a given
+a certain set of similar objects and wants to quickly access a given
 one (or come back with the result that it is unknown), the first idea
 would be to store them in a list, possibly sorted for faster access.
-This however still would need <M>\log(n)</M> comparisons to access
-a given element. 
+This however still would need <M>\log(n)</M> comparisons to find
+a given element or to decide that it is not yet stored. 
 
 <P/>
 Therefore one uses a much bigger array and uses a function on the
 space of possible objects with integer values to decide, where in the
 array to store a certain object. If this so called hash function
 distributes the actually stored objects well enough over the array,
-in average the access time is contant.
+the access time is constant in average. Of course, a hash function
+will usually not be injective, so one needs a strategy what to do
+in case of so-called <Q>collision</Q>, that is, if more than one
+object with the same hash value has to be stored.
+
+<P/>
+The basic functions to work with hash tables are <Ref Func="NewHT"/>,
+<Ref Func="AddHT"/>, and <Ref Func="ValueHT"/>. They are described
+in Section <Ref Sect="hashtables"/>. In the next section, we first
+describe the infrastructure for hash functions.
 </Section>
 
 <Section Label="hashfunc">
 <Heading>Hash functions</Heading>
 
+In the <Package>orb</Package> package hash functions are chosen
+automatically by giving a sample object together with the length
+of the hash table. This is done with the following operation:
+
+<ManSection>
+<Oper Name="ChooseHashFunction" Arg="ob, len"/>
+<Returns> a record </Returns>
+<Description>
+The first argument <A>ob</A> must be a sample object, that is, an object
+like those we want to store in the hash table later on. The argument
+<A>len</A> is an integer that gives the length of the hash table. Note
+that this might be called later on automatically, when a hash table
+is increased in size. The operation returns a record with two components.
+The component <C>func</C> is a &GAP; function taking two arguments, see
+below. The component <C>data</C> is some &GAP; object. Later on, the
+hash function will be called with two arguments, the first is the
+object for which it should call the hash value and the second argument
+must be the data stored in the <C>data</C> component. 
+<P/>
+The hash function has to return values between <M>1</M> and the 
+hash length <A>len</A> inclusively.
+<P/>
+This setup is chosen such that the hash functions can be global
+objects that are not created during the execution of <Ref
+Oper="ChooseHashFunction"/> but still can change their behaviour
+depending on the data.
+</Description>
+</ManSection>
+
+In the following we just document, for which types of objects there
+are hash functions that can be found using <Ref
+Oper="ChooseHashFunction"/>.
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="gf2vec"/>
+<Returns> a record </Returns>
+<Description>
+This method is for compressed vectors over the field <C>GF(2)</C> of
+two elements. Note that there is no hash function for non-compressed
+vectors over <C>GF(2)</C> because those objects cannot efficiently
+be recognised from their type.
+<P/>
+Note that you can only use the resulting hash functions for vectors
+of the same length.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="8bitvec"/>
+<Returns> a record </Returns>
+<Description>
+This method is for compressed vectors over a finite field with up
+to <M>256</M> elements. Note that there is no hash function for
+non-compressed such vectors because those objects cannot efficiently be
+recognised from their type.
+<P/>
+Note that you can only use the resulting hash functions for vectors
+of the same length.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="gf2mat"/>
+<Returns> a record </Returns>
+<Description>
+This method is for compressed matrices over the field <C>GF(2)</C> of
+two elements. Note that there is no hash function for non-compressed
+matrices over <C>GF(2)</C> because those objects cannot efficiently
+be recognised from their type.
+<P/>
+Note that you can only use the resulting hash functions for matrices
+of the same size.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="8bitmat"/>
+<Returns> a record </Returns>
+<Description>
+This method is for compressed matrices over a finite field with up
+to <M>256</M> elements. Note that there is no hash function for
+non-compressed such vectors because those objects cannot efficiently be
+recognised from their type.
+<P/>
+Note that you can only use the resulting hash functions for matrices
+of the same size.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="int"/>
+<Returns> a record </Returns>
+<Description>
+This method is for integers.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="perm"/>
+<Returns> a record </Returns>
+<Description>
+This method is for permutations.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="intlist"/>
+<Returns> a record </Returns>
+<Description>
+This method is for lists of integers.
+</Description>
+</ManSection>
+
 </Section>
 
 <Section Label="hashtables">
 <Heading>Using hash tables</Heading>
+
+The following functions are needed to use hash tables. For details
+about the data structures see Section <Ref Sect="hashdata"/>.
+
+<ManSection>
+<Func Name="NewHT" Arg="sample, len"/>
+<Returns> a new hash table object </Returns>
+<Description>
+A new hash table for objects like <A>sample</A> of length <A>len</A> 
+is created. Note that it is a good idea to choose a prime number as
+the hash length due to the algorithm for collision handling which 
+works particularly well in that case. The hash function is chosen
+automatically. The resulting object can be used with the functions
+<Ref Func="AddHT"/> and <Ref Func="ValueHT"/>. It will start with length
+<A>len</A> but will grow as necessary.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AddHT" Arg="ht, ob, val"/>
+<Returns> an integer or fail </Returns>
+<Description>
+Stores the object <A>ob</A> into the hash table <A>ht</A> and stores
+the value <A>val</A> together with <A>ob</A>. The result is
+<K>fail</K> if an error occurred, which can only be that the hash
+table is already full. This can only happen, if the hash table cannot
+grow automatically.
+<P/>
+If no error occurs, the result is an integer indicating the place in the
+hash table where the object is stored. Note that once the hash table
+grows automatically this number is no longer the same!
+<P/>
+If the value <A>val</A> is <K>true</K> for all objects in the hash,
+no extra memory is used for the values. All other values are stored
+in the hash. The value <K>fail</K> cannot be stored as it indicates
+that the object is not found in the hash.
+<P/>
+See Section <Ref Sect="hashdata"/> for details on the data structures and
+especially about memory requirements.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="ValueHT" Arg="ht, ob"/>
+<Returns> the stored value, <K>true</K>, or <K>fail</K> </Returns>
+<Description>
+Looks up the object <A>ob</A> in the hash table <A>ht</A>. If the object
+is not found, <K>fail</K> is returned. Otherwise, the value stored with
+the object is returned. Note that if this value was <K>true</K> 
+no extra memory is used for this.
+</Description>
+</ManSection>
+
+The following function is only documented for the sake of completeness
+and for emergency situations, where <Ref Func="NewHT"/> tries to be
+too intelligent.
+
+<ManSection>
+<Func Name="InitHT" Arg="len, hfun, eqfun"/>
+<Returns> a new hash table object </Returns>
+<Description>
+This is usually only an internal function. It is called from 
+<Ref Func="NewHT"/>. The argument <A>len</A> is the length of the
+hash table, <A>hfun</A> is the hash function record as returned
+by <Ref Oper="ChooseHashFunction"/> and <A>eqfun</A> is a comparison
+function taking two arguments and returning <K>true</K> or <K>false</K>.
+<P/>
+Note that automatic growing is switched on for the new hash table which
+means that if the hash table grows, a new hash function is chosen using
+<Ref Oper="ChooseHashFunction"/>. If you do not want this, change the
+component <C>cangrow</C> to <K>false</K> after creating the hash table.
+</Description>
+</ManSection>
+
+</Section>
+
+<Section Label="hashdata">
+<Heading> The data structures for hash tables </Heading>
+
+A hash table object is just a record with the following components:
+<List>
+<Mark><C>els</C></Mark>
+<Item> A &GAP; list storing the elements. Its length can be as long
+as the component <C>len</C> indicates but will only grow as necessary
+when elements are stored in the hash.
+</Item>
+<Mark><C>vals</C></Mark>
+<Item> A &GAP; list storing the corresponding values. If a value is
+<K>true</K> nothing is stored here to save memory.
+</Item>
+<Mark><C>len</C></Mark>
+<Item> Length of the hash table.</Item>
+<Mark><C>nr</C></Mark>
+<Item> Number of elements stored in the hash table.</Item>
+<Mark><C>hf</C></Mark>
+<Item> The hash function (value of the <C>func</C> component in the
+record returned by <Ref Oper="ChooseHashFunction"/>). </Item>
+<Mark><C>hfd</C></Mark>
+<Item> The data for the second argument of the hash function (value of
+the <C>data</C> component in the record returned by
+<Ref Oper="ChooseHashFunction"/>). </Item>
+<Mark><C>eqf</C></Mark>
+<Item> A comparison function taking two arguments and returning
+<K>true</K> for equality or <K>false</K> otherwise. </Item>
+<Mark><C>collisions</C></Mark>
+<Item> Number of collisions (see below). </Item>
+<Mark><C>accesses</C></Mark>
+<Item> Number of lookup or store accesses to the hash. </Item>
+<Mark><C>cangrow</C></Mark>
+<Item> A boolean value indicating whether the hash can grow automatically
+or not.</Item>
+<Mark><C>ishash</C></Mark>
+<Item> Is <K>true</K> to indicate that this is a hash table record.</Item>
+</List>
+
+<Subsection>
+<Heading> Memory requirements </Heading>
+
+Due to the data structure defined above the hash table
+will need one machine word (<M>4</M> bytes on 32bit machines and
+<M>8</M> bytes on 64bit machines) per possible entry in the hash if all values
+corresponding to objects in the hash are <K>true</K> and two machine
+words otherwise. This means that the memory requirement for the hash
+itself is proportional to the hash table length and not to the number
+of objects actually stored in the hash!
+<P/>
+In addition one of course needs the memory to store
+the objects themselves.
+</Subsection>
+
+<Subsection>
+<Heading> Handling of collisions </Heading>
+
+If two or more objects have the same hash value, the following is done:
+If the hash value is coprime to the hash length, the hash value is 
+taken as <Q>the
+increment</Q>, otherwise <M>1</M> is taken. The code to find the proper
+place for an object just repeatedly adds the increment to the current
+position modulo the hash length. Due to the choice of the increment this
+will eventually try all
+places in the hash table. Every such increment step is counted as
+a collision in the <C>collisions</C> component in the hash table.
+This algorithm explains why it is sensible to
+choose a prime number as the length of a hash table.
+</Subsection>
+
+<Subsection>
+<Heading> Efficiency </Heading>
+
+Hashing is efficient as long as there are not too many collisions.
+It is not a problem if the number of collisions (counted in the
+<C>collisions</C> component) is smaller than the number of accesses
+(counted in the <C>accesses</C> component). 
+
+<P/>
+A high number of collisions can be caused by a bad hash function, 
+because the hash table is too small (do not fill a hash table to
+more than about 80&percent;), or because the objects to store
+are just not well enough distributed. Hash tables will grow automatically
+if too many collisions are detected.
+</Subsection>
 
 </Section>
 

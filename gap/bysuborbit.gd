@@ -51,7 +51,7 @@ DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
                   # trans[i] describes a left transversal of U_{i-1}
                   # in U_i.
                   # trans[i][?] and els[j] together are suitable to be
-                  # used with "ORB_ApplyWord" (i:1..k)
+                  # used with "ORB_ApplyWord" (i:2..k)
     "pifunc",     # usually equal to \{\}
                   # (pifunc[j][i], for j:1..k+1, i:1..j-1)
     "pi",         # projection function P_j ->> P_i
@@ -60,26 +60,19 @@ DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
     "op",         # Action function/operation for each level (i:1..k+1)
                   # usually OnRight for vectors
     "info",       # the hash table for points x in P_i, that are
-                  # U_{i-1}-minimal,
-                  # if xU_{i-1} is not the U_i-minimal U_{i-1}-orbit in 
-                  #    xU_i, we store:
-                  #   - a number of an element t in trans[i] with 
-                  #     xtU_{i-1} is the U_i-minimal U_{i-1}-orbit in xU_i
-                  # if xU_{i-1} is the U_i-minimal U_{i-1}-orbit in xU_i, 
-                  # we store a pair:
-                  #   - first entry is boolean,
-                  #     - true means: this is the U_i-minimal element in
-                  #       xU_i, the second entry is then "stabilizer info":
-                  #       the list of numbers of elements t in trans[i] 
-                  #       with the property that xtU_{i-1}=xU_{i-1}, 
-                  #       which is used for stabs.
-                  #     - false means: this is not the U_i-minimal element
-                  #       in xU_i, the second entry then describes an
-                  #       element in Stab_{U_{i-1}}(pi[i][i-1](p)) to
-                  #       apply to get to the minimal one. It is stored
-                  #       as a word in the elements in elsinv
-                  #   for i=1 we omit the first component, only storing
-                  #   the list for the stabilizer info
+                  # for i=1 we store either the number of a word in the
+                  # wordcache mapping the point to the minimal point in the
+                  # same U_1 orbit or a record with components "gens" and
+                  # "size" describing the stabilizer. "gens" is a list of
+                  # words.
+                  # for i>1 there are 3 possibilities:
+                  # Let y be the U_i-minimal point in yU_i with y in P_i
+                  #   for z in yU_i \setminus xU_{i-1} we store a number
+                  #      of a transversal element mapping into yU_{i-1}
+                  #   for z in yU_{i-1} but z \neq y we store the negative
+                  #      of the number of a word in the wordcache
+                  #      mapping y to z
+                  #   for z = y we store a stabilizer record as above.
                   # info grows as we go, starts up empty
                   # (i:1..k)
     "cosetrecog", # a function that gets a word w in inverses of

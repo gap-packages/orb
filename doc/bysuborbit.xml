@@ -327,7 +327,8 @@ are concatentated starting with <M>U_1</M> and ending with <M>U_i</M>.
 same arrangement.
 </Item>
 <Mark><C>trans</C></Mark>
-<Item> A list of length <M>k</M> in which position <M>i</M> contains 
+<Item> A list of length <M>k</M> in which position <M>i</M> for <M>i>1</M>
+contains 
 a list of words in the generators for a transversal of <M>U_{{i-1}}</M>
 in <M>U_i</M> (with <M>U_0 = 1</M>).
 </Item>
@@ -351,42 +352,99 @@ returning <M>pg</M>.
 </Item>
 <Mark><C>info</C></Mark>
 <Item> 
+A list of length <M>k</M> containing a hash table with the minimalisation
+lookup data. These hash tables grow during orbit enumerations as
+precomputations are done behind the scenes.
+<P/>
+<C>info[1]</C> contains precomputation data for <M>X_1</M>. Assume
+<M>x \in X_1</M> to be <M>U_1</M>-minimal. For all <M>z \in xU_1</M>
+with <M>z \neq x</M> we store the number of an element in the
+<C>wordcache</C> mapping <M>z</M> to <M>x</M>. For <M>z=x</M> we
+store a record with two components <C>gens</C> and <C>size</C>, 
+where <C>gens</C> stores generators for the stabiliser
+Stab<M>_{{U_1}}(x)</M> as words in the group generators and
+<C>size</C> stores the size of that stabiliser.
+<P/>
+<C>info[i]</C> for <M>i>1</M> contains precomputation data for
+<M>X_i</M>. Assume <M>x \in X_i</M> to be <M>U_i</M>-minimal.
+For all <M>U_{{i-1}}</M>-minimal <M>z \in xU_i \setminus xU_{{i-1}}</M> 
+we store the number
+of an element in <C>trans[i]</C> mapping <M>z</M> into <M>xU_{{i-1}}</M>.
+For all <M>U_{{i-1}}</M>-minimal <M>z \in xU_{{i-1}}</M> with
+<M>z \neq x</M> 
+we store the negative of the number of a word in <C>wordcache</C> that
+is in the generators of <M>U_{{i-1}}</M> and maps <M>z</M> to <M>x</M>.
+For <M>z=x</M> we store the stabiliser information as in the case
+<M>i=1</M>.
+<P/>
+This information together with the information in the following
+componente allows the minimalisation function to do its job.
 </Item>
 <Mark><C>cosetrecog</C></Mark>
 <Item> 
+A list of length <M>k</M> beginning with the index <M>2</M>. The
+entry at position <M>i</M> is bound to a function taking <M>3</M> arguments, 
+namely <M>i</M> itself, a word in the inverses of the group generators,
+and the setup record. The function computes the number <C>j</C> of an element
+in <C>trans[i]</C>, such that the element of <M>U_i</M> described by
+the word in the inverses lies in <C>trans[i][j] U_{{i-1}}</C>.
 </Item>
 <Mark><C>cosetinfo</C></Mark>
 <Item> 
+A list of hash tables that can be used by the functions in
+<C>cosetrecog</C>.
 </Item>
 <Mark><C>suborbnr</C></Mark>
 <Item> 
+A list of length <M>k</M> that contains in position <M>i</M> the number
+of <M>U_i</M>-orbits in <M>X_i</M> archived in <C>info[i]</C> during
+precomputation.
 </Item>
 <Mark><C>sumstabl</C></Mark>
 <Item> 
+A list of length <M>k</M> that contains in position <M>i</M> the sum
+of the point stabiliser lengths of all <M>U_i</M>-orbits <M>X_i</M>
+archived in <C>info[i]</C> during precomputation.
 </Item>
 <Mark><C>permgens</C></Mark>
 <Item> 
+A list of length <M>k+1</M> containing in position <M>i</M> generators
+for <M>U_1, \ldots, U_i</M> in a faithful permutation representation
+of <M>U_i</M>. Generators fit to the generators in <C>els</C>.
 </Item>
 <Mark><C>permgensinv</C></Mark>
 <Item> 
+The inverses of the generators in <C>permgens</C> in the same arrangement.
 </Item>
 <Mark><C>sample</C></Mark>
 <Item> 
+A list of length <M>k+1</M> containing sample points in the sets
+<M>X_i</M>.
 </Item>
 <Mark><C>stabchainrandom</C></Mark>
 <Item> 
+If bound, the value is used as the value for the <C>random</C> option
+for <C>StabChain</C> calculations to determine stabiliser sizes.
+Note that the algorithms are randomized if you use this feature.
 </Item>
 <Mark><C>wordhash</C></Mark>
 <Item> 
+A hash to quickly recognise already used words.
 </Item>
 <Mark><C>wordcache</C></Mark>
 <Item> 
+A list of words in the wordcache for indexing purposes.
 </Item>
 <Mark><C>hashlen</C></Mark>
 <Item> 
+Initial length of hash tables used for the enumeration of lists
+of <M>U_i</M>-minimal points.
 </Item>
 <Mark><C>staborblenlimit</C></Mark>
 <Item> 
+This contains the limit, up to which orbits of stabilisers are computed
+using word action. After this limit, the stabiliser elements are actually
+evaluated in the group.
 </Item>
 </List>
 </Description>
@@ -396,6 +454,61 @@ returning <M>pg</M>.
 
 <Section>
 <Heading>Lists of orbit-by-suborbit objects</Heading>
+
+There are a few functions that help to administrate lists of
+orbit-by-suborbits.
+
+<ManSection>
+<Func Name="InitOrbitBySuborbitList" Arg="setup, nrrandels"/>
+<Returns> a list of orbit-by-suborbits object </Returns>
+<Description>
+Creates an object that stores a list of orbit-by-suborbits. The
+argument <A>setup</A> must be an orbit-by-suborbit setup record
+and <A>nrrandels</A> must be an integer. It indicates how many random
+elements in <M>G</M> should be used to do a probabilistic check for
+membership in case an orbit-by-suborbit is only partially known.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="IsVectorInOrbitBySuborbitList" Arg="v, obsol"/>
+<Returns> <K>fail</K> or an integer </Returns>
+<Description>
+Checks probabilistically, if the element <A>v</A> lies in one of
+the partially enumerated orbit-by-suborbits in the orbit-by-suborbit list
+object <A>obsol</A>. If yes, the number of that orbit-by-suborbit is
+returned and the answer is guaranteed to be correct. If the
+answer is <K>fail</K> there is a small probability that the point
+actually lies in one of the orbits but this could not be shown.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="OrbitsFromSeedsToOrbitList" Arg="obsol, li"/>
+<Returns> nothing </Returns>
+<Description>
+Takes the elements in the list <A>li</A> as seeds for orbit-by-suborbits.
+For each such seed it is first checked whether it lies in one of the
+orbit-by-suborbits in <A>obsol</A>, which must be an orbit-by-suborbit
+list object. If not found, 51&percent; of the orbit-by-suborbit of the 
+seed is enumerated and added to the list <A>obsol</A>.
+<P/>
+This function is a good way to quickly enumerate a greater number of 
+orbit-by-suborbits.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="VerifyDisjointness" Arg="obsol"/>
+<Returns> <K>true</K> or <K>false</K> </Returns>
+<Description>
+This function checks deterministically, whether the orbit-by-suborbits
+in the orbit-by-suborbit list object <A>obsol</A> are disjoint or not
+and returns the corresponding boolean value. This is not a 
+Monte-Carlo algorithm. If the answer is <K>false</K>, the function
+writes out, which orbits are in fact identical.
+</Description>
+</ManSection>
 
 </Section>
 
