@@ -458,6 +458,12 @@ InstallOtherMethod( Size, "for an orbit-by-suborbit",
     return o!.orbitlength;
   end );
 
+InstallMethod( TotalLength, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return TotalLength(o!.db);
+  end );
+
 InstallMethod( Seed, "for an orbit-by-suborbit",
   [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
   function( o )

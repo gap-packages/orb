@@ -1,4 +1,5 @@
-LoadPackage("chop");
+LoadPackage("orb");
+LoadPackage("cvec");
 SetInfoLevel(InfoOrb,2);
 ReadPackage("orb","examples/m11slps.g");
 gens := AtlasGenerators("M11",11).generators;

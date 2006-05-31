@@ -162,6 +162,7 @@ DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
 DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 DeclareOperation( "Seed", [IsOrbitBySuborbit] );
 DeclareOperation( "StabWords", [IsOrbitBySuborbit] );
+DeclareOperation( "TotalLength", [ IsOrbitBySuborbit ] );
 
 
 ##################
