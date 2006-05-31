@@ -156,6 +156,14 @@ This method is for lists of integers.
 </Description>
 </ManSection>
 
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="NBitsPcWord"/>
+<Returns> a record </Returns>
+<Description>
+This method is for kernel Pc words.
+</Description>
+</ManSection>
+
 </Section>
 
 <Section Label="hashtables">

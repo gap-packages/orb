@@ -346,6 +346,14 @@ InstallMethod( StoreSuborbit,
   local i,j,l,length,m,o,setup,stabgens,infolevel;
         
   setup := db!.setup;
+  if ORB.ORBITBYSUBORBITDEPTH = 1 and
+     IsBound(setup!.stabsizelimitnostore) and
+     stab.size > setup!.stabsizelimitnostore then
+      Info(InfoOrb,1,"Ignored suborbit because of stabsizelimitnostore, ",
+           "stabiliser size: ",stab.size);
+      return fail;
+  fi;
+
   i := db!.i;
   j := db!.j;
   l := db!.l;
@@ -583,7 +591,9 @@ function(setup,p,j,l,i,percentage)
   
   # Start a database with the first U-suborbit:
   db := SuborbitDatabase(setup,j,l,i);
-  StoreSuborbit(db,p,stab,1);
+  if StoreSuborbit(db,p,stab,1) = fail then
+      Error("Cannot store first suborbit");
+  fi;
 
   stabgens := [];
   stabperms := [];
@@ -643,24 +653,26 @@ function(setup,p,j,l,i,percentage)
         x := ORB_Minimalize(xxx,j,i,setup,stab,mw);
         v := LookupSuborbit(x,db);
         if v = fail then   # a new suborbit
-          Add(words,Concatenation(todo[ii],[m]));
-          Add(todo,Concatenation(todo[ii],[m]));
-          Add(todovecs,xxx);
-          Add(miniwords,mw);
-          StoreSuborbit(db,x,stab,fullstabsize);
-          Add(repforsuborbit,Length(db!.reps));
-          if 2 * TotalLength(db) * fullstabsize > setup!.size[l] and
-             TotalLength(db) * fullstabsize * 100 >= 
-                             setup!.size[l]*percentage then 
-            Info(InfoOrb,3,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
-            ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
-            return MakeReturnObj();
-          fi;
-          if haveappliedU then   
-              # In this case we still want to calculate a Schreier gen,
-              # thus we need v to be the number of the newly stored suborbit
-              v := Length(db!.reps);
-              # Note that stab is still OK.
+          # if StoreSuborbit fails, we just ignore this suborbit!
+          if StoreSuborbit(db,x,stab,fullstabsize) <> fail then
+            Add(words,Concatenation(todo[ii],[m]));
+            Add(todo,Concatenation(todo[ii],[m]));
+            Add(todovecs,xxx);
+            Add(miniwords,mw);
+            Add(repforsuborbit,Length(db!.reps));
+            if 2 * TotalLength(db) * fullstabsize > setup!.size[l] and
+               TotalLength(db) * fullstabsize * 100 >= 
+                               setup!.size[l]*percentage then 
+              Info(InfoOrb,3,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
+              ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
+              return MakeReturnObj();
+            fi;
+            if haveappliedU then   
+                # In this case we still want to calculate a Schreier gen,
+                # thus we need v to be the number of the newly stored suborbit
+                v := Length(db!.reps);
+                # Note that stab is still OK.
+            fi;
           fi;
         fi;
         if v <> fail and   # fail happens only for not(haveappliedU)

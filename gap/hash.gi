@@ -314,3 +314,16 @@ InstallMethod( ChooseHashFunction, "for short int lists",
     TryNextMethod();
   end );
 
+InstallGlobalFunction( ORB_HashFunctionForNBitsPcWord,
+function(v,data)
+  return ORB_HashFunctionForIntList(ExtRepOfObj(v),data);
+end );
+
+InstallMethod( ChooseHashFunction, "for N bits Pc word rep",
+  [IsNBitsPcWordRep, IsInt],
+  function(p,hashlen)
+    return rec(func := ORB_HashFunctionForNBitsPcWord, data := [101,hashlen]);
+  end );
+
+
+  
