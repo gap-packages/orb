@@ -284,7 +284,7 @@ InstallMethod( PositionCanonical,
 
 InstallMethod( \in, 
   "for an object and an orbit object",
-  [IsObject, IsOrbit and IsHashOrbitRep and IsDenseList and WithStoringNumbers],
+  [IsObject, IsOrbit and IsHashOrbitRep and IsDenseList],
   function( ob, orb )
     local p;
     p := ValueHT( orb!.ht, ob );
