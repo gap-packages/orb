@@ -27,13 +27,13 @@ Subtitle := "orb - Methods to enumerate Orbits",
 ##  See '?Extending: Version Numbers' in GAP help for an explanation
 ##  of valid version numbers. For an automatic package distribution update
 ##  you must provide a new version number even after small changes.
-Version := "0.99",
+Version := "1.00",
 ##  Please adjust also the VERSION file in the package directory when
 ##  changing this.
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-#Date := "20/06/2003",  # not yet released
+Date := "31/05/2003",
 
 ##  URL of the archive(s) of the current package release, but *without*
 ##  the format extension(s), like '.zoo', which are given next.
@@ -44,7 +44,7 @@ Version := "0.99",
 ##  example/init.g, ...    or  example-1.3/init.g, ...  )
 # 
 ArchiveURL := 
-          "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/orb/orb",
+"http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/orb",
 
 ##  All provided formats as list of file extensions, separated by white
 ##  space or commas.
@@ -119,6 +119,22 @@ ArchiveFormats := ".tar.gz",
 ##  
 Persons := [
   rec( 
+    LastName      := "Mueller",
+    FirstNames    := "Juergen",
+    IsAuthor      := true,
+    IsMaintainer  := true,
+    Email         := "juergen.mueller@math.rwth-aachen.de",
+    WWWHome       := "http://www.math.rwth-aachen.de/~Juergen.Mueller",
+    PostalAddress := Concatenation( [
+                       "Juergen Mueller\n",
+                       "Lehrstuhl D fuer Mathematik, RWTH Aachen\n",
+                       "Templergraben 64\n",
+                       "52056 Aachen\n",
+                       "Germany" ] ),
+    Place         := "Aachen",
+    Institution   := "RWTH Aachen"
+  ),
+  rec( 
     LastName      := "Neunhoeffer",
     FirstNames    := "Max",
     IsAuthor      := true,
@@ -184,9 +200,9 @@ Status := "dev",
 ##  and updating of the package in the GAP distribution.
 #
 README_URL := 
-  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/orb/README.orb",
+  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/orb/orb/README.orb",
 PackageInfoURL := 
-  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/orb/PackageInfo.g",
+  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/orb/orb/PackageInfo.g",
 
 ##  Here you  must provide a short abstract explaining the package content 
 ##  in HTML format (used on the package overview Web page) and an URL 
@@ -237,7 +253,7 @@ PackageDoc := rec(
   BookName  := "orb",
   # format/extension can be one of .zoo, .tar.gz, .tar.bz2, -win.zip
   Archive := 
-    "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/orb/orbdoc.tar.gz",
+    "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/orbdoc.tar.gz",
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
@@ -300,6 +316,8 @@ BannerString := Concatenation(
         " (", ~.Persons[1].WWWHome, ")\n",
   "   ", ~.Persons[2].FirstNames, " ", ~.Persons[2].LastName,
         " (", ~.Persons[2].WWWHome, ")\n",
+  "   ", ~.Persons[3].FirstNames, " ", ~.Persons[3].LastName,
+        " (", ~.Persons[3].WWWHome, ")\n",
   "For help, type: ?orb package \n",
   "----------------------------------------------------------------\n" ),
 

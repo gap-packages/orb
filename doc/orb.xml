@@ -19,6 +19,17 @@
     <Version>
       <#Include SYSTEM "../VERSION">
     </Version>
+    <Author>Jürgen Müller
+<Address>
+Lehrstuhl D für Mathematik,
+RWTH Aachen,
+Templergraben 64,
+52062 Aachen,
+Germany
+</Address>
+    <Email>juergen.mueller@math.rwth-aachen.de</Email>
+    <Homepage>http://www.math.rwth-aachen.de/&tilde;Juergen.Mueller</Homepage>
+    </Author>
     <Author>Max Neunhöffer
 <Address>
 Lehrstuhl D für Mathematik,
@@ -44,7 +55,7 @@ Germany
     <Date>May 2006</Date>
 
 <Copyright>
-  &copyright; 2006 by Max Neunhöffer and Felix Noeske<P/>
+  &copyright; 2006 by Juergen Mueller, Max Neunhöffer, and Felix Noeske<P/>
 
   This package may be distributed under the terms and conditions of the
   GNU Public License Version 2.
