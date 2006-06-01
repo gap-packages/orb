@@ -142,17 +142,15 @@ relative to this new starting point.
 
 <ManSection>
 <Oper Name="Memory" Arg="ob"/>
-<Returns> an integer or a list of two integers </Returns>
+<Returns> an integer </Returns>
 <Description>
 Returns the amount of memory needed by the object <A>ob</A>, which can
 be either an orbit-by-suborbit object, a suborbit database object,
 or an object in the filter <Ref Filt="IsOrbitBySuborbitSetup"/>.
 The amount of memory used is given in bytes. Note that this includes
 all hashes, databases, and preparatory data of substantial size.
-For orbit-by-suborbits two numbers are returned, the first being the
-amount of memory needed for this orbit and the second being the
-amount of memory needed for the precalculation data that is stored
-in the setup object.
+For orbit-by-suborbits the memory needed for the precomputation is
+not included, ask the setup object for that.
 </Description>
 </ManSection>
 
@@ -184,6 +182,17 @@ starting point.
 </Description>
 </ManSection>
 
+<ManSection>
+<Oper Name="SavingFactor" Arg="orb"/>
+<Returns> an integer </Returns>
+<Description>
+Returns the quotient of the total number of points stored in the
+orbit-by-suborbit <A>orb</A> and the total number of <M>U</M>-minimal points
+stored. Note that the memory for the precomputations is not considered
+here!
+</Description>
+</ManSection>
+
 The following operations apply to orbit-by-suborbit database objects:
 
 <ManSection>
@@ -201,6 +210,17 @@ orbit-by-suborbit database <A>db</A>.
 <Description>
 Returns a list of representatives of the suborbits stored in the
 orbit-by-suborbit database <A>db</A>.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="SavingFactor" Arg="db"/>
+<Returns> an integer </Returns>
+<Description>
+Returns the quotient of the total number of points stored in the
+suborbit database <A>db</A> and the total number of <M>U</M>-minimal points
+stored. Note that the memory for the precomputations is not considered
+here!
 </Description>
 </ManSection>
 
@@ -507,6 +527,46 @@ in the orbit-by-suborbit list object <A>obsol</A> are disjoint or not
 and returns the corresponding boolean value. This is not a 
 Monte-Carlo algorithm. If the answer is <K>false</K>, the function
 writes out, which orbits are in fact identical.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="Memory" Arg="obsol"/>
+<Returns> an integer </Returns>
+<Description>
+    Returns the total memory used for all orbit-by-suborbits in the 
+    orbit-by-suborbit-list <A>obsol</A>.
+    Precomputation data is not included, ask the setup object instead.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="TotalLength" Arg="obsol"/>
+<Returns> an integer </Returns>
+<Description>
+Returns the total number of points stored in all orbit-by-suborbits in the 
+orbit-by-suborbit-list <A>obsol</A>.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Size" Arg="obsol"/>
+<Returns> an integer </Returns>
+<Description>
+Returns the total number of points in the orbit-by-suborbit-list <A>obsol</A>.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="SavingFactor" Arg="obsol"/>
+<Returns> an integer </Returns>
+<Description>
+Returns the quotient of the total number of points stored in all 
+orbit-by-suborbits in the orbit-by-suborbit-list <A>obsol</A>
+and the total number of <M>U</M>-minimal points
+stored, which is the average saving factor considering all orbit-by-suborbits
+together. Note that the memory for the precomputations is not considered
+here!
 </Description>
 </ManSection>
 

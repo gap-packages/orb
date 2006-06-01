@@ -136,6 +136,7 @@ DeclareOperation( "LookupSuborbit", [ IsObject, IsSuborbitDatabase ] );
 DeclareOperation( "TotalLength", [ IsSuborbitDatabase ] );
 DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );
 DeclareOperation( "Memory", [IsSuborbitDatabase] );
+DeclareOperation( "SavingFactor", [ IsSuborbitDatabase ] );
 
 
 #######################################################
@@ -163,7 +164,7 @@ DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 DeclareOperation( "Seed", [IsOrbitBySuborbit] );
 DeclareOperation( "StabWords", [IsOrbitBySuborbit] );
 DeclareOperation( "TotalLength", [ IsOrbitBySuborbit ] );
-
+DeclareOperation( "SavingFactor", [ IsOrbitBySuborbit ] );
 
 ##################
 # The real thing:
@@ -188,6 +189,21 @@ DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines" );
 # Administrate lists of orbits by suborbits:
 #############################################
 
+DeclareCategory( "IsOrbitBySuborbitList", IsComponentObjectRep );
+DeclareRepresentation( "IsStdOrbitBySuborbitListRep", IsOrbitBySuborbitList,
+  [ "obsos",       # a list of orbit-by-suborbits
+    "nrrandels",   # number of random elements
+    "randels",     # a list of random elements
+    "setup",       # setup
+  ] );
+BindGlobal( "StdOrbitBySuborbitListType",
+  NewType( CollectionsFamily(OrbitBySuborbitFamily), 
+           IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep and
+           IsSmallList and IsList ) );
+
+DeclareOperation( "Memory", [IsOrbitBySuborbitList] );
+DeclareOperation( "TotalLength", [IsOrbitBySuborbitList] );
+DeclareOperation( "SavingFactor", [IsOrbitBySuborbitList] );
 DeclareGlobalFunction( "InitOrbitBySuborbitList" );
 DeclareGlobalFunction( "IsVectorInOrbitBySuborbitList" );
 DeclareGlobalFunction( "OrbitsFromSeedsToOrbitList" );

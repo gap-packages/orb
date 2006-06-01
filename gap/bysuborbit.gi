@@ -318,7 +318,7 @@ InstallMethod( SuborbitDatabase, "for an orbit by suborbit setup object",
     # l is the number of subgroup we enumerate
     local r;
     r := rec( reps := [], lengths := [], setup := setup, totallength := 0,
-              i := i, l := l, j := j );
+              i := i, l := l, j := j, nrmins := [] );
     r.mins := NewHT( setup!.sample[j], setup!.hashlen[j] );
     Objectify( StdSuborbitDatabasesType, r );
     return r;
@@ -383,6 +383,7 @@ InstallMethod( StoreSuborbit,
   od;
   length := setup!.size[i] / (stab.size / Length(o!.orbit));
   Add(db!.lengths,length);
+  Add(db!.nrmins,Length(o!.orbit));
   db!.totallength := db!.totallength + length;
   if Length(db!.reps) mod ORB.REPORTSUBORBITS = 0 then
       infolevel := 0;
@@ -431,6 +432,15 @@ InstallMethod( Memory, "for a std suborbit database",
     return m;
   end );
 
+InstallMethod( SavingFactor, "for a std suborbit database",
+  [ IsSuborbitDatabase and IsStdSuborbitDbRep ],
+  function( db )
+    if db!.mins!.nr > 0 then
+        return QuoInt(db!.totallength,db!.mins!.nr);
+    else
+        return fail;
+    fi;
+  end );
 
 ###################################
 # The real thing: OrbitBySuborbit #
@@ -498,13 +508,13 @@ InstallMethod( Memory, "for an orbit-by-suborbit",
   [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
   function( o )
     local m1,m2;
-    m1 := Memory(o!.db);
-    m2 := Memory(o!.db!.setup);
-    Info(InfoOrb,1,"Memory for suborbits database : ",
-         ORB_PrettyStringBigNumber(m1));
-    Info(InfoOrb,1,"Memory for setup (factor maps): ",
-         ORB_PrettyStringBigNumber(m2));
-    return [m1,m2];
+    return Memory(o!.db);
+  end );
+
+InstallMethod( SavingFactor, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return SavingFactor(o!.db);
   end );
 
 ORB.PATIENCEFORSTAB := 1000;
@@ -1264,19 +1274,76 @@ function( setup, nrrandels )
   for i in [1..nrrandels] do
       Add(obsol.randels,Next(pr));
   od;
-  return obsol;
+  return Objectify( StdOrbitBySuborbitListType, obsol );
 end );
+
+InstallMethod( ViewObj, "for a orbit-by-suborbit-list",
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  function( obsol )
+      local i;
+      Print("<obsol obsos=[\n");
+      for i in [1..Length(obsol!.obsos)] do
+          ViewObj(obsol!.obsos[i]);
+          Print(",\n");
+      od;
+      Print("] nrrandels:",obsol!.nrrandels," memory:",
+            Sum(obsol!.obsos,Memory)," setup-memory:",
+            Memory(obsol!.setup),"\n  total length: ",
+            ORB_PrettyStringBigNumber(TotalLength(obsol)),
+            " total size: ",ORB_PrettyStringBigNumber(Size(obsol)),">");
+  end );
+
+InstallOtherMethod( ELM_LIST, "for an orbit-by-suborbit-list and an int",
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep, IsInt ],
+  function( o,i )
+    return o!.obsos[i];
+  end );
+
+InstallOtherMethod( Size, "for an orbit-by-suborbit-list",
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  function(obsol)
+    return Sum(obsol!.obsos,Size);
+  end );
+
+InstallMethod( Memory, "for an orbit-by-suborbit-list",
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  function(obsol)
+    return Sum(obsol!.obsos,Memory);
+  end );
+
+InstallMethod( TotalLength, "for an orbit-by-suborbit-list",
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  function(obsol)
+    return Sum(obsol!.obsos,TotalLength);
+  end );
+
+InstallMethod( SavingFactor, "for an orbit-by-suborbit-list",
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  function( obsol )
+    if Length(obsol!.obsos) = 0 then
+        return fail;
+    else
+        return QuoInt(TotalLength(obsol),
+                      Sum(obsol!.obsos,o->o!.db!.mins!.nr));
+    fi;
+  end );
+
+InstallOtherMethod( Length, "for an orbit-by-suborbit-list",
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  function( obsol )
+    return Length(obsol!.obsos);
+  end );
 
 InstallGlobalFunction( IsVectorInOrbitBySuborbitList,
 function(v,obsol)
   local i,j,k,res,s,x;
-  s := obsol.setup;
+  s := obsol!.setup;
   k := s!.k;
-  for j in [1..obsol.nrrandels] do
-      x := s!.op[k+1](v,obsol.randels[j]);
+  for j in [1..obsol!.nrrandels] do
+      x := s!.op[k+1](v,obsol!.randels[j]);
       x := ORB_Minimalize(x,k+1,k,s,false,false);
-      for i in [1..Length(obsol.obsos)] do
-          res := LookupSuborbit(x,obsol.obsos[i]!.db);
+      for i in [1..Length(obsol!.obsos)] do
+          res := LookupSuborbit(x,obsol!.obsos[i]!.db);
           if res <> fail then  # we know this N-orbit
               return i;  # is in orbit number i
           fi;
@@ -1288,18 +1355,18 @@ end );
 InstallGlobalFunction( OrbitsFromSeedsToOrbitList,
 function( obsol, li )
   local o,orb,v,k;
-  k := obsol.setup!.k;
+  k := obsol!.setup!.k;
   for v in li do
       orb := IsVectorInOrbitBySuborbitList(v,obsol);
       if orb = fail then
-          o := OrbitBySuborbit(obsol.setup,v,k+1,k+1,k,51);
+          o := OrbitBySuborbit(obsol!.setup,v,k+1,k+1,k,51);
           if IsOrbitBySuborbit(o) then
-              Add(obsol.obsos,o);
+              Add(obsol!.obsos,o);
               Print("New suborbit:\n");
               ViewObj(o);
-              Print("\nHave now ",Length(obsol.obsos),
+              Print("\nHave now ",Length(obsol!.obsos),
                     " orbits with a total of ",
-                    ORB_PrettyStringBigNumber(Sum(obsol.obsos,Size)),
+                    ORB_PrettyStringBigNumber(Sum(obsol!.obsos,Size)),
                     " elements.\n");
           fi;
       else
@@ -1312,16 +1379,16 @@ InstallGlobalFunction( VerifyDisjointness,
 function( obsol )
   local disjoint,i,j,v;
   disjoint := true; # up to now
-  for i in [1..Length(obsol.obsos)-1] do
+  for i in [1..Length(obsol!.obsos)-1] do
       Info(InfoOrb,1,"Checking orbit number ",i,"...");
-      if Size(obsol.obsos[i]) >= 2 * TotalLength(obsol.obsos[i]!.db) then
+      if Size(obsol!.obsos[i]) >= 2 * TotalLength(obsol!.obsos[i]!.db) then
           Print("WARNING: Orbit number ",i,"not enumerated >50%!\n");
       fi;
-      for j in [i+1..Length(obsol.obsos)] do
-          if Size(obsol.obsos[i]) = Size(obsol.obsos[j]) then
-              for v in Representatives(obsol.obsos[i]!.db) do
+      for j in [i+1..Length(obsol!.obsos)] do
+          if Size(obsol!.obsos[i]) = Size(obsol!.obsos[j]) then
+              for v in Representatives(obsol!.obsos[i]!.db) do
                   # They are already U-minimal!
-                  if LookupSuborbit(v,obsol.obsos[j]!.db) <> fail then
+                  if LookupSuborbit(v,obsol!.obsos[j]!.db) <> fail then
                       Print("ATTENTION: Orbits ",i," and ",j," are equal!\n");
                       disjoint := false;
                   fi;

@@ -14,7 +14,7 @@ cu1 := ResultOfStraightLineProgram(s1,cu2);
 pgu2 := ResultOfStraightLineProgram(s2,pgens);
 pgu1 := ResultOfStraightLineProgram(s1,pgu2);
 setup := OrbitBySuborbitBootstrapForLines(
-    [cu1,cu2,cgens],[pgu1,pgu2,pgens],[20,720,7200],[1,1],rec());
+    [cu1,cu2,cgens],[pgu1,pgu2,pgens],[20,720,7920],[1,1],rec());
 setup!.stabchainrandom := 900;
 v := ZeroMutable(cgens[1][1]);
 Randomize(v);
