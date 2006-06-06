@@ -7,17 +7,8 @@ Co1 mod 2, Co1 mod 3?
 Beispiele in example folder
 
 Bessere Heuristik fuer assumestabcomplete?
-Operation von Worten an Stelle von Matrixprodukten fuer Stab-Berechnung?
-Hints fuer regulaere Orbits bei Praekalkulation per options-Record
-
-Doku
-
 
 Zukunft:
-  Heuristik zum anschalten von assumestabcomplete
   OrbitBySuborbit schaltbar? was war das nochmal???
   OrbitBySuborbitWithKnownSize? wozu?
-  beidseitig Elemente von G applizieren? ==> eher nicht, geht auch so.
-  pleaseexitnow aufraeumen, "interne" OrbitBySuborbits duerfen nicht
-    abbrechen!
   permbase einbauen (lohnt sich das???)
