@@ -1278,7 +1278,8 @@ function( setup, nrrandels )
 end );
 
 InstallMethod( ViewObj, "for a orbit-by-suborbit-list",
-  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep and IsList and
+    IsSmallList ],
   function( obsol )
       local i;
       Print("<obsol obsos=[\n");
@@ -1287,8 +1288,10 @@ InstallMethod( ViewObj, "for a orbit-by-suborbit-list",
           Print(",\n");
       od;
       Print("] nrrandels:",obsol!.nrrandels," memory:",
-            Sum(obsol!.obsos,Memory)," setup-memory:",
-            Memory(obsol!.setup),"\n  total length: ",
+            ORB_PrettyStringBigNumber(Sum(obsol!.obsos,Memory)),
+            " setup-memory:",
+            ORB_PrettyStringBigNumber(Memory(obsol!.setup)),
+            "\n  total length: ",
             ORB_PrettyStringBigNumber(TotalLength(obsol)),
             " total size: ",ORB_PrettyStringBigNumber(Size(obsol)),">");
   end );
@@ -1300,7 +1303,8 @@ InstallOtherMethod( ELM_LIST, "for an orbit-by-suborbit-list and an int",
   end );
 
 InstallOtherMethod( Size, "for an orbit-by-suborbit-list",
-  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep and IsList and
+    IsSmallList ],
   function(obsol)
     return Sum(obsol!.obsos,Size);
   end );
@@ -1329,7 +1333,8 @@ InstallMethod( SavingFactor, "for an orbit-by-suborbit-list",
   end );
 
 InstallOtherMethod( Length, "for an orbit-by-suborbit-list",
-  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep ],
+  [ IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep and IsList and
+    IsSmallList ],
   function( obsol )
     return Length(obsol!.obsos);
   end );

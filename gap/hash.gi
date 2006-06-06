@@ -224,16 +224,17 @@ function(x,data)
   local i,res;
   res := 0;
   for i in [1..Length(x)] do
-      res := (res * 10001 + data[2].func(x[i],data[2].data)) mod data[1] + 1;
+      res := (res * data[3] + data[2].func(x[i],data[2].data)) mod data[1];
   od;
-  return res mod data[1] + 1;
+  return res + 1;
 end );
 
 InstallMethod( ChooseHashFunction, "for compressed gf2 matrices",
   [IsGF2MatrixRep,IsInt],
   function(p,hashlen)
     local data;
-    data := [hashlen,ChooseHashFunction(p[1],hashlen)];
+    data := [hashlen,ChooseHashFunction(p[1],hashlen),
+             PowerMod(2,Length(p[1]),hashlen)];
     return rec( func := ORB_HashFunctionForCompressedMats,
                 data := data );
   end );
@@ -241,8 +242,10 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 matrices",
 InstallMethod( ChooseHashFunction, "for compressed 8bit matrices",
   [Is8BitMatrixRep,IsInt],
   function(p,hashlen)
-    local data;
-    data := [hashlen,ChooseHashFunction(p[1],hashlen)];
+    local data,q;
+    q := Q_VEC8BIT(p);
+    data := [hashlen,ChooseHashFunction(p[1],hashlen),
+             PowerMod(q,Length(p[1]),hashlen)];
     return rec( func := ORB_HashFunctionForCompressedMats,
                 data := data );
   end );

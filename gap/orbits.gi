@@ -103,7 +103,7 @@ InstallGlobalFunction( Orb,
             Info(InfoOrb,1,"Already have partial stabilizer of size ",
                            o.stabsize,".");
         else
-            o.stab := Group(o.permgens[1]^0);
+            o.stab := Group(One(o.permgens[1]));
             o.stabsize := 1;
         fi;
         o.permgensi := List(o.permgens,x->x^-1);
