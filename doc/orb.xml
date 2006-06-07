@@ -17,7 +17,7 @@
     <Title>GAP 4 Package <Package>orb</Package></Title>
     <Subtitle>orb --- Methods to enumerate Orbits</Subtitle>
     <Version>
-      <#Include SYSTEM "../VERSION">
+      Version <#Include SYSTEM "../VERSION">
     </Version>
     <Author>Jürgen Müller
 <Address>
