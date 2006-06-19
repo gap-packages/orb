@@ -890,7 +890,7 @@ function(gens,permgens,sizes,codims,opt)
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
   SetSize(g,sizes[k+1]);
-  setup.permbase[k+1] := BaseStabChain(StabChainOp(g));
+  setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
@@ -907,9 +907,9 @@ function(gens,permgens,sizes,codims,opt)
           g := Image(sm);
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
-      setup.permbase[i] := BaseStabChain(StabChainOp(g));
+      setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
   od;
-  setup.stabchainrandom := false;
+  setup.stabchainrandom := 1000;
 
   setup.els := [];
   setup.els[k+1] := Concatenation(gens);
@@ -1101,7 +1101,7 @@ function(gens,permgens,sizes,codims,opt)
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
   SetSize(g,sizes[k+1]);
-  setup.permbase[k+1] := BaseStabChain(StabChainOp(g));
+  setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
@@ -1118,9 +1118,9 @@ function(gens,permgens,sizes,codims,opt)
           g := Image(sm);
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
-      setup.permbase[i] := BaseStabChain(StabChainOp(g));
+      setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
   od;
-  setup.stabchainrandom := false;
+  setup.stabchainrandom := 1000;
 
   setup.els := [];
   setup.els[k+1] := Concatenation(gens);
