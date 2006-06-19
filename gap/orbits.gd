@@ -66,7 +66,11 @@ DeclareOperation( "PositionOfFound", [ IsOrbit ] );
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );
 
+# A helper function for base image computations:
+DeclareGlobalFunction( "ORB_SiftBaseImage" );
+DeclareGlobalFunction( "ORB_ComputeStabChain" );
 
+  
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically
