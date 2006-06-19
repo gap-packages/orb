@@ -563,10 +563,10 @@ function(setup,p,j,l,i,percentage)
   # Returns a suborbit database with additional field "words" which is
   # a list of words in gens which can be used to reach U-orbit in the G-orbit
   local assumestabcomplete,db,firstgen,fullstabsize,ii,lastgen,m,miniwords,
-        mw,newperm,newword,o,oldtodo,stab,stabg,stabgens,prep,
+        mw,newperm,newword,o,oldtodo,stab,stabg,stabgens,stabchain,prep,
         stabilizer,stabperms,sw,todo,v,words,x,firstgenU,lastgenU,
         triedstabgens,haveappliedU,MakeReturnObj,y,repforsuborbit,
-        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx;
+        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx,bi;
 
   Info(InfoOrb,3,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
   ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH + 1;
@@ -614,11 +614,9 @@ function(setup,p,j,l,i,percentage)
   stabgens := [];
   stabperms := [];
   stabilizer := Group(setup!.permgens[l][1]^0);
-  if IsBound( setup!.stabchainrandom ) and setup!.stabchainrandom <> false then
-      StabChain( stabilizer, rec( random := setup!.stabchainrandom ) );
-  else
-      StabChain(stabilizer);
-  fi;
+  stabchain := StabChainOp(stabilizer,rec( random := setup!.stabchainrandom,
+                                           base := setup!.permbase[l], 
+                                           reduced := false ));
   fullstabsize := 1;
   
   words := [[]];
@@ -758,27 +756,25 @@ function(setup,p,j,l,i,percentage)
                                      ORB_InvWord(words[v]));
           fi;
           Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
-               "Calculated Schreier generator");
-          newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
-                          setup!.permgens[l],setup!.permgensinv[l],OnRight);
-          if not(IsOne(newperm)) then
+               "Calculated Schreier generator as word");
+          bi := ORB_ApplyWord(setup!.permbase[l],newword,setup!.permgens[l],
+                              setup!.permgensinv[l],OnTuples);
+          if ORB_SiftBaseImage(stabchain,bi,1) = false then
             Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
-                 "Schreier generator was non-trivial");
-            if not(newperm in stabilizer) then
+                 "Schreier generator is new");
+              newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
+                            setup!.permgens[l],setup!.permgensinv[l],OnRight);
               triedstabgens := 0;   # we actually found a new one!
               Add(stabgens,newword);
               Add(stabperms,newperm);
               stabilizer := GroupWithGenerators(stabperms);
               Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
                    "Calculating new estimate of the stabilizer...");
-              if IsBound(setup!.stabchainrandom) and
-                 setup!.stabchainrandom <> false then
-                  StabChain(stabilizer, 
-                            rec(random := setup!.stabchainrandom));
-              else
-                  StabChain(stabilizer);
-              fi;
-              fullstabsize := Size(stabilizer);
+              stabchain := StabChainOp(stabilizer,
+                                       rec( random := setup!.stabchainrandom,
+                                            base := setup!.permbase[l], 
+                                            reduced := false ));
+              fullstabsize := SizeStabChain(stabchain);
               Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
                    "New stabilizer order: ",fullstabsize);
               if TotalLength(db) * fullstabsize * 100
@@ -787,7 +783,6 @@ function(setup,p,j,l,i,percentage)
                 ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
                 return MakeReturnObj();
               fi;
-            fi;
           fi;
           triedstabgens := triedstabgens + 1;
           if triedstabgens > ORB.PATIENCEFORSTAB then  # this is heuristics!
@@ -895,7 +890,7 @@ function(gens,permgens,sizes,codims,opt)
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
   SetSize(g,sizes[k+1]);
-  setup.permbase[k+1] := BaseStabChain(StabChain(g));
+  setup.permbase[k+1] := BaseStabChain(StabChainOp(g));
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
@@ -912,7 +907,7 @@ function(gens,permgens,sizes,codims,opt)
           g := Image(sm);
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
-      setup.permbase[i] := BaseStabChain(StabChain(g));
+      setup.permbase[i] := BaseStabChain(StabChainOp(g));
   od;
   setup.stabchainrandom := false;
 
@@ -1045,6 +1040,11 @@ function(gens,permgens,sizes,codims,opt)
           setup!.cosetinfo[j] := [o!.db,k+1];   # the hash table
       fi;
   od;
+  if IsBound(opt.stabchainrandom) then
+      setup!.stabchainrandom := opt.stabchainrandom;
+  else
+      setup!.stabchainrandom := 1000;  # no randomization by default
+  fi;
   return setup;
 end );
 
@@ -1101,7 +1101,7 @@ function(gens,permgens,sizes,codims,opt)
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
   SetSize(g,sizes[k+1]);
-  setup.permbase[k+1] := BaseStabChain(StabChain(g));
+  setup.permbase[k+1] := BaseStabChain(StabChainOp(g));
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
@@ -1118,7 +1118,7 @@ function(gens,permgens,sizes,codims,opt)
           g := Image(sm);
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
-      setup.permbase[i] := BaseStabChain(StabChain(g));
+      setup.permbase[i] := BaseStabChain(StabChainOp(g));
   od;
   setup.stabchainrandom := false;
 
@@ -1255,6 +1255,11 @@ function(gens,permgens,sizes,codims,opt)
           setup!.cosetinfo[j] := [o!.db,k+1];   # the hash table
       fi;
   od;
+  if IsBound(opt.stabchainrandom) then
+      setup!.stabchainrandom := opt.stabchainrandom;
+  else
+      setup!.stabchainrandom := 1000;  # no randomization by default
+  fi;
   return setup;
 end );
 

@@ -270,20 +270,23 @@ The function does all necessary steps to fill a setup record
 Currently, the following components in the options record <A>opt</A>
 have a meaning:
 <List>
-<Mark>regvecfachints</Mark>
+<Mark><C>regvecfachints</C></Mark>
 <Item>If bound it must be a list. In position <M>i</M> for <M>i&gt;1</M>
 there may be a list of vectors in the <M>i</M>-th quotient space <M>X_i</M>
 that can be used to distinguish the left <M>U_{{i-1}}</M> cosets in
 <M>U_i</M>. All vectors in this list are tried and the first one that
 actually works is used.
 </Item>
-<Mark>regvecfullhints</Mark>
+<Mark><C>regvecfullhints</C></Mark>
 <Item>If bound it must be a list. In position <M>i</M> for <M>i&gt;1</M>
 there may be a list of vectors in the full space <M>X</M>
 that can be used to distinguish the left <M>U_{{i-1}}</M> cosets in
 <M>U_i</M>. All vectors in this list are tried and the first one that
 actually works is used.
 </Item>
+<Mark><C>stabchainrandom</C></Mark>
+<Item>If bound the value is copied into the <C>stabchainrandom</C>
+component of the setup record.</Item>
 </List>
 </Description>
 </ManSection>
@@ -443,9 +446,10 @@ A list of length <M>k+1</M> containing sample points in the sets
 </Item>
 <Mark><C>stabchainrandom</C></Mark>
 <Item> 
-If bound, the value is used as the value for the <C>random</C> option
+The value is used as the value for the <C>random</C> option
 for <C>StabChain</C> calculations to determine stabiliser sizes.
-Note that the algorithms are randomized if you use this feature.
+Note that the algorithms are randomized if you use this feature with
+a value smaller than <M>1000</M>.
 </Item>
 <Mark><C>wordhash</C></Mark>
 <Item> 
