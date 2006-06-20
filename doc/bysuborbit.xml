@@ -470,6 +470,11 @@ This contains the limit, up to which orbits of stabilisers are computed
 using word action. After this limit, the stabiliser elements are actually
 evaluated in the group.
 </Item>
+<Mark><C>stabsizelimitnostore</C></Mark>
+<Item>
+    If the stabiliser in the quotient is larger than this limit, the
+    suborbit is not stored.
+</Item>
 </List>
 </Description>
 </ManSection>

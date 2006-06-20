@@ -131,7 +131,7 @@ BindGlobal( "StdSuborbitDatabasesType",
 DeclareOperation( "SuborbitDatabase", 
                   [ IsOrbitBySuborbitSetup, IsPosInt, IsPosInt, IsPosInt ] );
 DeclareOperation( "StoreSuborbit", 
-                  [ IsSuborbitDatabase, IsObject, IsRecord, IsPosInt ] );
+     [ IsSuborbitDatabase, IsObject, IsRecord, IsPosInt, IsPosInt ] );
 DeclareOperation( "LookupSuborbit", [ IsObject, IsSuborbitDatabase ] );
 DeclareOperation( "TotalLength", [ IsSuborbitDatabase ] );
 DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );

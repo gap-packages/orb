@@ -333,8 +333,9 @@ InstallMethod( ViewObj, "for a suborbit database",
 
 InstallMethod( StoreSuborbit, 
   "for a suborbit database, a point, a stabiterator, and a setup object",
-  [ IsSuborbitDatabase and IsStdSuborbitDbRep, IsObject, IsRecord, IsPosInt ],
-  function(db,p,stab,fullstabsize)
+  [ IsSuborbitDatabase and IsStdSuborbitDbRep, IsObject, IsRecord, IsPosInt,
+    IsPosInt ],
+  function(db,p,stab,fullstabsize,percentage)
   # "db" must be a suborbit database
   # "p" must be a U-minimal element, which is not yet known
   # "stab" must be stabilizer information coming from minimalization
@@ -346,10 +347,12 @@ InstallMethod( StoreSuborbit,
   local i,j,l,length,m,o,setup,stabgens,infolevel;
         
   setup := db!.setup;
-  if ORB.ORBITBYSUBORBITDEPTH = 1 and
+  if db!.l = setup!.k+1 and db!.i = setup!.k and
+     percentage < 100 and
      IsBound(setup!.stabsizelimitnostore) and
      stab.size > setup!.stabsizelimitnostore then
-      Info(InfoOrb,1,"Ignored suborbit because of stabsizelimitnostore, ",
+      # we always enumerate things in the quotient completely!
+      Info(InfoOrb,3,"Ignored suborbit because of stabsizelimitnostore, ",
            "stabiliser size: ",stab.size);
       return fail;
   fi;
@@ -607,7 +610,7 @@ function(setup,p,j,l,i,percentage)
   
   # Start a database with the first U-suborbit:
   db := SuborbitDatabase(setup,j,l,i);
-  if StoreSuborbit(db,p,stab,1) = fail then
+  if StoreSuborbit(db,p,stab,1,percentage) = fail then
       Error("Cannot store first suborbit");
   fi;
 
@@ -668,7 +671,7 @@ function(setup,p,j,l,i,percentage)
         v := LookupSuborbit(x,db);
         if v = fail then   # a new suborbit
           # if StoreSuborbit fails, we just ignore this suborbit!
-          if StoreSuborbit(db,x,stab,fullstabsize) <> fail then
+          if StoreSuborbit(db,x,stab,fullstabsize,percentage) <> fail then
             Add(words,Concatenation(todo[ii],[m]));
             Add(todo,Concatenation(todo[ii],[m]));
             Add(todovecs,xxx);
