@@ -840,6 +840,14 @@ InstallGlobalFunction( ORB_CosetRecogGeneric,
     return LookupSuborbit(x,s!.cosetinfo[i][1]);
   end );
 
+InstallGlobalFunction( ORB_CosetRecogPermgroup,
+  function( i, w, s )
+    # only for i=1 possible!
+    x := ORB_ApplyWord(s!.permbase[1],w,i
+                       s!.permgens[1],s!.permgensinv[1],OnTuples);
+    return Position(s!.cosetinfo[1],x);
+  end );
+
 InstallGlobalFunction( OrbitBySuborbitBootstrapForVectors,
 function(gens,permgens,sizes,codims,opt)
   # Returns a setup object for a list of helper subgroups
@@ -969,6 +977,14 @@ function(gens,permgens,sizes,codims,opt)
                      IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
              setup );
   # From now on we can use it and it is an object!
+
+  # We do the recognition of elements of U_1 by the permutation rep:
+  Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
+  setup!.cosetinfo[1] := Orb(setup!.permgens[1],setup!.permbase[1],OnTuples,
+                             3*setup!.sizes[1],rec( schreier := true,
+                                                    storenumbers := true ));
+  Enumerate(setup!.cosetinfo[1]);
+  setup!.cosetrecog[1] := ORB_CosetRecogPermgroup;
 
   # Now do the other steps:
   for j in [2..k] do
@@ -1181,6 +1197,14 @@ function(gens,permgens,sizes,codims,opt)
                      IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
              setup );
   # From now on we can use it and it is an object!
+
+  # We do the recognition of elements of U_1 by the permutation rep:
+  Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
+  setup!.cosetinfo[1] := Orb(setup!.permgens[1],setup!.permbase[1],OnTuples,
+                             3*setup!.sizes[1],rec( schreier := true,
+                                                    storenumbers := true ));
+  Enumerate(setup!.cosetinfo[1]);
+  setup!.cosetrecog[1] := ORB_CosetRecogPermgroup;
 
   # Now do the other steps:
   for j in [2..k] do
