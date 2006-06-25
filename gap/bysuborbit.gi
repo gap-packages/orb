@@ -506,15 +506,42 @@ InstallGlobalFunction( ORB_WordOp,
     return ORB_ApplyWord(p,w[1],w[2],w[3],w[4]);
   end );
 
+InstallGlobalFunction( ORB_GetTransversalElement,
+  function(setup,j,i,t)
+    # gets the t-th transversal element of U_{i-1} in U_i in rep. j >= i
+    # implements a caching mechanism
+    local cn,el,mem;
+    cn := ElmWPObj(setup!.transcache[j][i],t);
+    if cn <> fail then 
+        UseCacheObject(setup!.cache,cn);
+        return cn!.ob;
+    fi;
+    # Now we have to calculate it:
+    el := ORB_ApplyWord(setup!.els[j][1]^0,setup!.trans[i][t],
+                        setup!.els[j],setup!.elsinv[j],OnRight);
+    mem := Length(el)*SHALLOW_SIZE(el[1]);
+    cn := CacheObject(setup!.cache,el,mem);
+    SetElmWPObj(setup!.transcache[j][i],t,cn);
+    return el;
+  end );
+    
 InstallGlobalFunction( ORB_PrepareStabgens,
   function(stab,setup,j,big)
-    local r;
+    local gen,i,r,tup,w;
     if big then
-        r := rec( gens := List(stab.tups,
-                       t->ORB_ApplyWord(setup!.els[j][1]^0,
-                                        ORB_WordTuple(t),setup!.els[j],
-                                        setup!.elsinv[j], OnRight )),
-                  op := setup!.op[j] );
+        r := rec( gens := [], words := [], op := setup!.op[j] );
+        for tup in stab.tups do
+            i := Length(tup);
+            gen := ORB_GetTransversalElement(setup,j,i,tup[i]);
+            w := setup!.trans[i][tup[i]];
+            while i > 1 do
+                i := i - 1;
+                gen := gen * ORB_GetTransversalElement(setup,j,i,tup[i]);
+                Append(w,setup!.trans[i][tup[i]]);
+            od;
+            Add(r.gens,gen);
+            Add(r.words,w);
+        od;
     else
         r := rec( gens := 
                      List( stab.tups, t->[ORB_WordTuple(setup,t),
@@ -976,6 +1003,8 @@ function(gens,permgens,sizes,codims,opt)
   od;
   q := Size(BaseField(gens[1][1]));
   setup.trans := [];
+  setup.cache := LinkedListCache(100000000);  # 100 MB cache
+  setup.transcache := List([1..k+1],j->List([1..j],i->WeakPointerObj([])));
 
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
@@ -1198,6 +1227,8 @@ function(gens,permgens,sizes,codims,opt)
   od;
   q := Size(BaseField(gens[1][1]));
   setup.trans := [];
+  setup.cache := LinkedListCache(100000000);  # 100 MB cache
+  setup.transcache := List([1..k+1],j->List([1..j],i->WeakPointerObj([])));
 
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];

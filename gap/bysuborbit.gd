@@ -171,6 +171,7 @@ DeclareOperation( "SavingFactor", [ IsOrbitBySuborbit ] );
 ##################
 
 DeclareGlobalFunction( "ORB_WordOp" );
+DeclareGlobalFunction( "ORB_GetTransversalElement" );
 DeclareGlobalFunction( "ORB_PrepareStabgens" );
 DeclareGlobalFunction( "OrbitBySuborbit" );
 DeclareGlobalFunction( "ORB_SiftWord" );
