@@ -533,7 +533,7 @@ InstallGlobalFunction( ORB_PrepareStabgens,
         for tup in stab.tups do
             i := Length(tup);
             gen := ORB_GetTransversalElement(setup,j,i,tup[i]);
-            w := setup!.trans[i][tup[i]];
+            w := ShallowCopy(setup!.trans[i][tup[i]]);
             while i > 1 do
                 i := i - 1;
                 gen := gen * ORB_GetTransversalElement(setup,j,i,tup[i]);
