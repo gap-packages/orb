@@ -115,7 +115,7 @@ function(p,j,i,setup,stab,w)
   # generators of Stab_{U_i}(min(pi_i(p)) will be stored in stab.gens
   # and its size in stab.size.
   # If w is a list the word which is applied is appended.
-  local cos,m,mm,o,oldp,oo,q,qq,tempstab,tempstabgens,v,ww,www;
+  local cos,m,mm,o,oldp,oo,q,qq,tempstab,tups,v,ww,www;
   
   oldp := p;  # to make debugging easier!
   if i = 1 then    # this is the smallest helper subgroup
@@ -135,7 +135,8 @@ function(p,j,i,setup,stab,w)
                               stabchainrandom := setup!.stabchainrandom,
                               permgens := setup!.permgens[1],
                               permbase := setup!.permbase[1] )));
-      v := rec( gens := o!.stabwords, size := o!.stabsize );
+      tups := List(o!.stabwords,w->ORB_SiftWord(setup,1,w));
+      v := rec( tups := tups, size := o!.stabsize );
       AddHT(setup!.info[1],q,v);
       # Now we have to store backward words via the wordcache:
       for m in [2..Length(o!.orbit)] do
@@ -160,7 +161,7 @@ function(p,j,i,setup,stab,w)
       fi; # otherwise we are already U_1-minimal:
     fi;
     if IsRecord(stab) then 
-        stab.gens := v.gens;
+        stab.tups := v.tups;
         stab.size := v.size;
     fi;
     return p;
@@ -179,31 +180,26 @@ function(p,j,i,setup,stab,w)
     fi;
     v := ValueHT(setup!.info[i],q);
 
-    if v = fail then    # we do not yet know this U_{i-1}-suborbit
+    if v = fail then    # we do not yet know this U_i-suborbit
 
       # we define q*U_{i-1} to be the U_i-minimal U_{i-1}-orbit,
       # and q to be the U_i-minimal point in there.
       # now find the other U_{i-1}-orbits:
       o := OrbitBySuborbit(setup,q,i,i,i-1,100);
-
-      v := rec( gens := o!.stabwords, size := o!.stabsize );
+      tups := List(o!.stabwords,w->ORB_SiftWord(setup,i,w));
+      v := rec( tups := tups, size := o!.stabsize );
       AddHT(setup!.info[i],q,v);
       # Now find all U_{i-1}-minimal elements in q*U_{i-1}, note that
       # tempstab contains generators for Stab_{U_{i-1}}(q)!
       Info(InfoOrb,2+ORB.ORBITBYSUBORBITDEPTH,
            "Starting on-the-fly precomputation (i>1) ...");
-      tempstabgens := List(tempstab.gens,
-                           w->ORB_ApplyWord(One(setup!.els[i][1]),w,
-                                            setup!.els[i],setup!.elsinv[i],
-                                            OnRight));
-      oo := Enumerate(Orb(tempstabgens,q,setup!.op[i],
-                          rec(hashlen := ORB.MINSHASHLEN, 
-                                         # was: setup!.hashlen[i],
-                              schreier := true)));
+      oo := ORB_StabOrbitComplete(tempstab,setup,i,q);
       for m in [2..Length(oo!.orbit)] do
           ww := TraceSchreierTreeForward(oo,m);
-          ww := ORB_InvWord(Concatenation( tempstab.gens{ww} ));
+          ww := ORB_InvWord(Concatenation( oo!.bysuborbitstabgens.words{ww} ));
+          ww := ORB_WordTuple(setup,ORB_SiftWord(setup,i,ww));
           ww := ORB_StoreWordInCache(setup,ww);
+          # FIXME: Throw this out eventually?
           if ValueHT(setup!.info[i],oo!.orbit[m]) <> fail then
               Error(1);
           fi;
@@ -222,19 +218,13 @@ function(p,j,i,setup,stab,w)
           ww := ShallowCopy(o!.words[m]);
           tempstab := rec();
           qq := ORB_Minimalize(qq,i,i-1,setup,tempstab,ww);
-          tempstabgens := List(tempstab.gens,
-                               w->ORB_ApplyWord(One(setup!.els[i][1]),w,
-                                                setup!.els[i],setup!.elsinv[i],
-                                                OnRight));
-          oo := Enumerate(Orb(tempstabgens,qq,setup!.op[i],
-                              rec(hashlen := ORB.MINSHASHLEN, 
-                                             # was: setup!.hashlen[i],
-                                  schreier := true)));
+          oo := ORB_StabOrbitComplete(tempstab,setup,i,qq);
           for mm in [1..Length(oo!.orbit)] do
               www := TraceSchreierTreeForward(oo,mm);
-              www := Concatenation( tempstab.gens{www} );
+              www := Concatenation( oo!.bysuborbitstabgens.words{www} );
               cos := setup!.cosetrecog[i]
                         (i,ORB_InvWord(Concatenation(ww,www)),setup);
+              # FIXME: Throw this out eventually?
               if ValueHT(setup!.info[i],oo!.orbit[mm]) <> fail then
                   Error(2);
               fi;
@@ -273,6 +263,7 @@ function(p,j,i,setup,stab,w)
         v := ValueHT(setup!.info[i],q);
       fi;
       if IsInt(v) then
+        # FIXME: Throw this out eventually?
         if v > 0 then
             Error("This should never have happened!");
         fi;
@@ -296,7 +287,7 @@ function(p,j,i,setup,stab,w)
     fi;
 
     if IsRecord(stab) then 
-        stab.gens := v.gens;
+        stab.tups := v.tups;
         stab.size := v.size;
     fi;
 
@@ -344,7 +335,7 @@ InstallMethod( StoreSuborbit,
   # in the hash, in addition "p" is appended as representative to
   # "suborbits" and the orbit length is calculated and appended to
   # "lengths".
-  local i,j,l,length,m,o,setup,stabgens,infolevel;
+  local i,infolevel,j,l,length,m,o,setup;
         
   setup := db!.setup;
   if db!.l = setup!.k+1 and db!.i = setup!.k and
@@ -362,25 +353,7 @@ InstallMethod( StoreSuborbit,
   l := db!.l;
   Add(db!.reps,p);
   AddHT(db!.mins,p,Length(db!.reps));
-  stabgens := ORB_PrepareStabgens(stab,setup,j,false);
-  ##stabgens := List(stab.gens,
-  ##                 w->ORB_ApplyWord( setup!.els[j][1]^0, w, setup!.els[j],
-  ##                                   setup!.elsinv[j], OnRight ));
-  o := Enumerate(Orb(stabgens.gens,p,stabgens.op,
-                     rec(hashlen := ORB.MINSHASHLEN,
-                         schreier := true, grpsizebound := stab.size)),
-                 setup!.staborblenlimit);
-  if not(IsClosed(o)) then   # we prefer multiplying out the gens:
-      Info(InfoOrb,3,"Long stabiliser orbit found, multiplying out gens...");
-      stabgens := ORB_PrepareStabgens(stab,setup,j,true);
-      o!.gens := stabgens.gens;
-      o!.op := stabgens.op;
-      Enumerate(o);   # go on with other implementation of same operation!
-      #o := Enumerate(Orb(stabgens.gens,p,stabgens.op,
-      #                   rec(hashlen := ORB.MINSHASHLEN,
-      #                       schreier := true, grpsizebound := stab.size)));
-  fi;
-
+  o := ORB_StabOrbitComplete(stab,setup,j,p);
   for m in [2..Length(o!.orbit)] do
       AddHT( db!.mins, o!.orbit[m], Length(db!.reps) );
   od;
@@ -535,19 +508,92 @@ InstallGlobalFunction( ORB_WordOp,
 
 InstallGlobalFunction( ORB_PrepareStabgens,
   function(stab,setup,j,big)
+    local r;
     if big then
-        return rec( gens := List(stab.gens,
-                         w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
-                                          setup!.elsinv[j], OnRight )),
-                    op := setup!.op[j] );
+        r := rec( gens := List(stab.tups,
+                       t->ORB_ApplyWord(setup!.els[j][1]^0,
+                                        ORB_WordTuple(t),setup!.els[j],
+                                        setup!.elsinv[j], OnRight )),
+                  op := setup!.op[j] );
     else
-        return rec( gens := 
-                       List( stab.gens, 
-                         w->[w,setup!.els[j],setup!.elsinv[j],setup!.op[j]]),
-                    op := ORB_WordOp );
+        r := rec( gens := 
+                     List( stab.tups, t->[ORB_WordTuple(setup,t),
+                           setup!.els[j],setup!.elsinv[j],setup!.op[j]] ),
+                  op := ORB_WordOp );
+        r.words := List(r.gens,x->x[1]);
     fi;
+    return r;
   end );
 
+InstallGlobalFunction( ORB_StabOrbitComplete,
+  function(stab,setup,i,p)
+    local stabgens,o;
+    stabgens := ORB_PrepareStabgens(stab,setup,i,false);
+    o := Enumerate(Orb(stabgens.gens,p,stabgens.op,
+                       rec(hashlen := ORB.MINSHASHLEN,
+                           schreier := true, grpsizebound := stab.size)),
+                   setup!.staborblenlimit);
+    o!.bysuborbitstabgens := stabgens;   # trick to return this
+    if not(IsClosed(o)) then
+        Info(InfoOrb,3,"Long stabiliser orbit found, multiplying out gens...");
+        stabgens := ORB_PrepareStabgens(stab,setup,i,true);
+        o!.gens := stabgens.gens;
+        o!.op := stabgens.op;
+        Enumerate(o);   # go on with other implementation of same operation!
+    fi;
+    return o;
+  end );
+
+InstallGlobalFunction( ORB_StabOrbitSearch,
+  function(stab,setup,i,p,needle)
+    local stabgens,o;
+    stabgens := ORB_PrepareStabgens(stab,setup,i,false);
+    o := Enumerate(Orb(stabgens.gens,p,stabgens.op,
+                       rec(hashlen := ORB.MINSHASHLEN,
+                           schreier := true, grpsizebound := stab.size,
+                           lookingfor := [needle])),
+                   setup!.staborblenlimit);
+    o!.bysuborbitstabgens := stabgens;   # trick to return this
+    if o!.found = false then
+        Info(InfoOrb,3,"Long stabiliser orbit found, multiplying out gens...");
+        stabgens := ORB_PrepareStabgens(stab,setup,i,true);
+        o!.gens := stabgens.gens;
+        o!.op := stabgens.op;
+        Enumerate(o);   # go on with other implementation of same operation!
+    fi;
+    return o;
+  end );
+    
+InstallGlobalFunction( ORB_SiftWord,
+  function(setup,i,w)
+    # Assumes that w is a word in U_i and tries to write it as a 
+    # shorter word in the generators of U_1, ..., U_i.
+    # w may contain generators of U_j for j > i!
+    # Uses cosetrecog.
+    local l,x;
+    l := 0*[1..i];
+    while i > 0 do
+        x := setup!.cosetrecog[i](i,w,setup);
+        # now  w \in trans[i][x] U_{i-1}
+        # ==>  trans[i][x]^-1 w \in U_{i-1}
+        if x > 1 then
+            w := Concatenation(ORB_InvWord(setup!.trans[i][x]),w);
+        fi;
+        l[i] := x;
+        i := i - 1;
+    od;
+    return l;
+  end );
+
+InstallGlobalFunction( ORB_WordTuple,
+  function( setup, tup )
+    local i,w;
+    w := [];
+    for i in [Length(tup),Length(tup)-1..1] do
+        Append(w,setup!.trans[i][tup[i]]);
+    od;
+    return w;
+  end );
     
 InstallGlobalFunction( OrbitBySuborbit,
 function(setup,p,j,l,i,percentage)
@@ -702,24 +748,14 @@ function(setup,p,j,l,i,percentage)
           # p*words[v]*miniwords[v] is our old vector
           # they differ by an element in Stab_U(...)
           #
-          stabg := ORB_PrepareStabgens(stab,setup,j,false);
-          ##stabg := List(stab.gens,
-          ##              w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
-          ##                               setup!.elsinv[j], OnRight ));
           # Now we distinguish two cases: if haveappliedU is false, we
           # are in the first phase, that is, todo[ii] is the chosen
           # representative for p*todo[ii]*U, thus we can directly
           # make a Schreier generator:
           if not(haveappliedU) then
-            o := Enumerate(Orb(stabg.gens,Representatives(db)[v],stabg.op,
-                           ##setup!.op[j],
-                           rec( lookingfor := [x],
-                                hashlen := ORB.MINSHASHLEN, 
-                                           # was: setup!.hashlen[j], 
-                                schreier := true,
-                                grpsizebound := stab.size )));
+            o := ORB_StabOrbitSearch(stab,setup,j,Representatives(db)[v],x);
             sw := TraceSchreierTreeForward(o,o!.found);
-            sw := Concatenation( stab.gens{sw} );
+            sw := Concatenation( o!.bysuborbitstabgens.words{sw} );
             newword := Concatenation(todo[ii],[m],mw,ORB_InvWord(sw),
                             ORB_InvWord(miniwords[v]),ORB_InvWord(words[v]));
           else
@@ -731,27 +767,17 @@ function(setup,p,j,l,i,percentage)
             mw2 := [];
             stab2 := rec();
             xx := ORB_Minimalize(xx,j,i,setup,stab2,mw2);
-            stabg2 := ORB_PrepareStabgens(stab2,setup,j,false);
-            ##stabg2 := List(stab2.gens,
-            ##            w->ORB_ApplyWord(setup!.els[j][1]^0,w,setup!.els[j],
-            ##                             setup!.elsinv[j], OnRight ));
             y := Representatives(db)[repforsuborbit[ii]];
-            o := Enumerate(Orb(stabg2.gens,y,stabg2.op,
-                   rec( hashlen := ORB.MINSHASHLEN, grpsizebound := stab2.size,
-                        lookingfor := [xx], schreier := true ) ));
+            o := ORB_StabOrbitSearch(stab2,setup,j,y,xx);
             sw2 := TraceSchreierTreeForward(o,o!.found);
-            sw2 := Concatenation( stab2.gens{sw2} );
+            sw2 := Concatenation( o!.bysuborbitstabgens.words{sw2} );
             # Now Concatenation(words[repforsuborbit[ii]],
             #                   miniwords[repforsuborbit[ii]],sw2,mw2^-1)
             # is the transversal element for the original xx
             # Now as in the simpler case:
-            o := Enumerate(Orb(stabg.gens,Representatives(db)[v],stabg.op,
-                           rec( hashlen := ORB.MINSHASHLEN,
-                                           # was: setup!.hashlen[j], 
-                                lookingfor := [x], grpsizebound := stab.size,
-                                schreier := true )));
+            o := ORB_StabOrbitSearch(stab,setup,j,Representatives(db)[v],x);
             sw := TraceSchreierTreeForward(o,o!.found);
-            sw := Concatenation( stab.gens{sw} );
+            sw := Concatenation( o!.bysuborbitstabgens.words{sw} );
             newword := Concatenation(words[repforsuborbit[ii]],
                                      miniwords[repforsuborbit[ii]],sw2,
                                      ORB_InvWord(mw2),[m],mw,ORB_InvWord(sw),
@@ -843,8 +869,10 @@ InstallGlobalFunction( ORB_CosetRecogGeneric,
 InstallGlobalFunction( ORB_CosetRecogPermgroup,
   function( i, w, s )
     # only for i=1 possible!
-    x := ORB_ApplyWord(s!.permbase[1],w,i
-                       s!.permgens[1],s!.permgensinv[1],OnTuples);
+    local x,k;
+    k := s!.k;
+    x := ORB_ApplyWord(s!.permbase[k],w,
+                       s!.permgens[k],s!.permgensinv[k],OnTuples);
     return Position(s!.cosetinfo[1],x);
   end );
 
@@ -980,11 +1008,14 @@ function(gens,permgens,sizes,codims,opt)
 
   # We do the recognition of elements of U_1 by the permutation rep:
   Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
-  setup!.cosetinfo[1] := Orb(setup!.permgens[1],setup!.permbase[1],OnTuples,
-                             3*setup!.sizes[1],rec( schreier := true,
-                                                    storenumbers := true ));
+  setup!.cosetinfo[1] := Orb(setup!.permgens[k]{[1..nrgens[1]]},
+                             setup!.permbase[k],OnTuples,
+                             NextPrimeInt(3*sizes[1]+1),
+                             rec( schreier := true,storenumbers := true ));
   Enumerate(setup!.cosetinfo[1]);
   setup!.cosetrecog[1] := ORB_CosetRecogPermgroup;
+  setup!.trans[1] := List([1..Length(setup!.cosetinfo[1])],
+                          x->TraceSchreierTreeForward(setup!.cosetinfo[1],x));
 
   # Now do the other steps:
   for j in [2..k] do
@@ -996,7 +1027,7 @@ function(gens,permgens,sizes,codims,opt)
 
       Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
            "in factor space...");
-      regvec := ZeroVector(sample,codims[j]);
+      regvec := ZeroVector(sample,codims[k]);
       counter := 0;
       repeat
           if IsBound(opt.regvecfachints) and IsBound(opt.regvecfachints[j]) and
@@ -1009,9 +1040,9 @@ function(gens,permgens,sizes,codims,opt)
           fi;
           # Now U_{j-1}-minimalize it, such that the transversal-words
           # returned reach the U_{j-1}-suborbits we find next:
-          regvec := ORB_Minimalize(regvec,j,j-1,setup,false,false);
+          regvec := ORB_Minimalize(regvec,k,j-1,setup,false,false);
           counter := counter + 1;
-          o := OrbitBySuborbit(setup,regvec,j,j,j-1,100);
+          o := OrbitBySuborbit(setup,regvec,k,j,j-1,100);
           Info(InfoOrb,1,"Found ",Length(Representatives(o!.db)),
                " suborbits (need ",sizes[j]/sizes[j-1],")");
       until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or 
@@ -1054,7 +1085,7 @@ function(gens,permgens,sizes,codims,opt)
       setup!.regvecs[j] := regvec;
       setup!.cosetrecog[j] := ORB_CosetRecogGeneric;
       if not(neededfullspace) then
-          setup!.cosetinfo[j] := [o!.db,j];   # the hash table
+          setup!.cosetinfo[j] := [o!.db,k];   # the hash table
       else
           setup!.cosetinfo[j] := [o!.db,k+1];   # the hash table
       fi;
@@ -1200,11 +1231,14 @@ function(gens,permgens,sizes,codims,opt)
 
   # We do the recognition of elements of U_1 by the permutation rep:
   Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
-  setup!.cosetinfo[1] := Orb(setup!.permgens[1],setup!.permbase[1],OnTuples,
-                             3*setup!.sizes[1],rec( schreier := true,
-                                                    storenumbers := true ));
+  setup!.cosetinfo[1] := Orb(setup!.permgens[k]{[1..nrgens[1]]},
+                             setup!.permbase[k],OnTuples,
+                             NextPrimeInt(3*sizes[1]+1),
+                             rec( schreier := true,storenumbers := true ));
   Enumerate(setup!.cosetinfo[1]);
   setup!.cosetrecog[1] := ORB_CosetRecogPermgroup;
+  setup!.trans[1] := List([1..Length(setup!.cosetinfo[1])],
+                          x->TraceSchreierTreeForward(setup!.cosetinfo[1],x));
 
   # Now do the other steps:
   for j in [2..k] do
@@ -1216,7 +1250,7 @@ function(gens,permgens,sizes,codims,opt)
 
       Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
            "in factor space...");
-      regvec := ZeroVector(sample,codims[j]);
+      regvec := ZeroVector(sample,codims[k]);
       counter := 0;
       repeat
           if IsBound(opt.regvecfachints) and IsBound(opt.regvecfachints[j]) and
@@ -1231,9 +1265,9 @@ function(gens,permgens,sizes,codims,opt)
           ORB_NormalizeVector(regvec);
           # Now U_{j-1}-minimalize it, such that the transversal-words
           # returned reach the U_{j-1}-suborbits we find next:
-          regvec := ORB_Minimalize(regvec,j,j-1,setup,false,false);
+          regvec := ORB_Minimalize(regvec,k,j-1,setup,false,false);
           counter := counter + 1;
-          o := OrbitBySuborbit(setup,regvec,j,j,j-1,100);
+          o := OrbitBySuborbit(setup,regvec,k,j,j-1,100);
           Info(InfoOrb,1,"Found ",Length(Representatives(o!.db)),
                " suborbits (need ",sizes[j]/sizes[j-1],")");
       until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or 
@@ -1277,7 +1311,7 @@ function(gens,permgens,sizes,codims,opt)
       setup!.regvecs[j] := regvec;
       setup!.cosetrecog[j] := ORB_CosetRecogGeneric;
       if not(neededfullspace) then
-          setup!.cosetinfo[j] := [o!.db,j];   # the hash table
+          setup!.cosetinfo[j] := [o!.db,k];   # the hash table
       else
           setup!.cosetinfo[j] := [o!.db,k+1];   # the hash table
       fi;

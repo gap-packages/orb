@@ -405,16 +405,17 @@ componente allows the minimalisation function to do its job.
 </Item>
 <Mark><C>cosetrecog</C></Mark>
 <Item> 
-A list of length <M>k</M> beginning with the index <M>2</M>. The
+A list of length <M>k</M> beginning with the index <M>1</M>. The
 entry at position <M>i</M> is bound to a function taking <M>3</M> arguments, 
-namely <M>i</M> itself, a word in the inverses of the group generators,
+namely <M>i</M> itself, a word in the group generators of 
+<M>U_1, \ldots, U_k</M> which lies in <M>U_i</M>,
 and the setup record. The function computes the number <C>j</C> of an element
 in <C>trans[i]</C>, such that the element of <M>U_i</M> described by
-the word in the inverses lies in <C>trans[i][j] U_{{i-1}}</C>.
+the word lies in <C>trans[i][j] U_{{i-1}}</C>.
 </Item>
 <Mark><C>cosetinfo</C></Mark>
 <Item> 
-A list of hash tables that can be used by the functions in
+A list of things that can be used by the functions in
 <C>cosetrecog</C>.
 </Item>
 <Mark><C>suborbnr</C></Mark>

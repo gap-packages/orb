@@ -173,6 +173,10 @@ DeclareOperation( "SavingFactor", [ IsOrbitBySuborbit ] );
 DeclareGlobalFunction( "ORB_WordOp" );
 DeclareGlobalFunction( "ORB_PrepareStabgens" );
 DeclareGlobalFunction( "OrbitBySuborbit" );
+DeclareGlobalFunction( "ORB_SiftWord" );
+DeclareGlobalFunction( "ORB_WordTuple" );
+DeclareGlobalFunction( "ORB_StabOrbitComplete" );
+DeclareGlobalFunction( "ORB_StabOrbitSearch" );
 
 
 ###############################
@@ -181,6 +185,7 @@ DeclareGlobalFunction( "OrbitBySuborbit" );
 
 DeclareGlobalFunction( "ORB_NormalizeVector" );
 DeclareGlobalFunction( "ORB_CosetRecogGeneric" );
+DeclareGlobalFunction( "ORB_CosetRecogPermgroup" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines" );
 
