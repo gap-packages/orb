@@ -81,6 +81,7 @@ InstallGlobalFunction( CacheObject,
             c!.head := fail; 
         else
             s!.prev!.next := fail;
+            s!.mem := fail;   # mark node as unusable
         fi;
         c!.nrobs := c!.nrobs - 1;
     od;
@@ -98,6 +99,11 @@ InstallMethod( ViewObj, "for a linked list cache node",
 InstallGlobalFunction( UseCacheObject,
   function( c, r )
     local s;
+    if r!.mem = fail then
+        # we silently ignore this UseCacheObject call since the node
+        # is no longer in the cache
+        return;
+    fi;
     if r!.prev = fail then return; fi;   # nothing to do
     s := r!.prev;
     s!.next := r!.next;
