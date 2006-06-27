@@ -136,7 +136,8 @@ function(p,j,i,setup,stab,w)
                               permgens := setup!.permgens[1],
                               permbase := setup!.permbase[1] )));
       tups := List(o!.stabwords,w->ORB_SiftWord(setup,1,w));
-      v := rec( tups := tups, size := o!.stabsize );
+      v := rec( tups := tups, size := o!.stabsize, 
+                cache := List([1..setup!.k+1],i->WeakPointerObj([])) );
       AddHT(setup!.info[1],q,v);
       # Now we have to store backward words via the wordcache:
       for m in [2..Length(o!.orbit)] do
@@ -163,6 +164,7 @@ function(p,j,i,setup,stab,w)
     if IsRecord(stab) then 
         stab.tups := v.tups;
         stab.size := v.size;
+        stab.cache := v.cache;
     fi;
     return p;
 
@@ -185,9 +187,10 @@ function(p,j,i,setup,stab,w)
       # we define q*U_{i-1} to be the U_i-minimal U_{i-1}-orbit,
       # and q to be the U_i-minimal point in there.
       # now find the other U_{i-1}-orbits:
-      o := OrbitBySuborbit(setup,q,i,i,i-1,100);
+      o := OrbitBySuborbitInner(setup,q,i,i,i-1,100);
       tups := List(o!.stabwords,w->ORB_SiftWord(setup,i,w));
-      v := rec( tups := tups, size := o!.stabsize );
+      v := rec( tups := tups, size := o!.stabsize,
+                cache := List([1..setup!.k+1],i->WeakPointerObj([])) );
       AddHT(setup!.info[i],q,v);
       # Now find all U_{i-1}-minimal elements in q*U_{i-1}, note that
       # tempstab contains generators for Stab_{U_{i-1}}(q)!
@@ -289,6 +292,7 @@ function(p,j,i,setup,stab,w)
     if IsRecord(stab) then 
         stab.tups := v.tups;
         stab.size := v.size;
+        stab.cache := v.cache;
     fi;
 
     # now we are on the minimal element in the S-orbit
@@ -494,11 +498,12 @@ InstallMethod( SavingFactor, "for an orbit-by-suborbit",
   end );
 
 ORB.PATIENCEFORSTAB := 1000;
-ORB.REPORTSUBORBITS := 1000;
+ORB.REPORTSUBORBITS := 100;
 ORB.MINSHASHLEN := 257;
 ORB.ORBITBYSUBORBITDEPTH := 0;   # this means outside!
 ORB.PLEASEEXITNOW := false;
 ORB.TRIESINQUOTIENT := 3;
+ORB.TRIESINWHOLESPACE := 20;
 
 InstallGlobalFunction( ORB_WordOp,
   function(p,w)
@@ -527,20 +532,32 @@ InstallGlobalFunction( ORB_GetTransversalElement,
     
 InstallGlobalFunction( ORB_PrepareStabgens,
   function(stab,setup,j,big)
-    local gen,i,r,tup,w;
+    local gen,i,mem,r,t,tup,w,cn;
     if big then
         r := rec( gens := [], words := [], op := setup!.op[j] );
-        for tup in stab.tups do
-            i := Length(tup);
-            gen := ORB_GetTransversalElement(setup,j,i,tup[i]);
-            w := ShallowCopy(setup!.trans[i][tup[i]]);
-            while i > 1 do
-                i := i - 1;
-                gen := gen * ORB_GetTransversalElement(setup,j,i,tup[i]);
-                Append(w,setup!.trans[i][tup[i]]);
-            od;
-            Add(r.gens,gen);
-            Add(r.words,w);
+        for t in [1..Length(stab.tups)] do
+            tup := stab.tups[t];
+            cn := ElmWPObj(stab.cache[j],t);
+            if cn <> fail then
+                Add(r.gens,cn!.ob.gen);
+                Add(r.words,cn!.ob.w);
+                UseCacheObject(setup!.cache,cn);
+            else
+                i := Length(tup);
+                gen := ORB_GetTransversalElement(setup,j,i,tup[i]);
+                w := ShallowCopy(setup!.trans[i][tup[i]]);
+                while i > 1 do
+                    i := i - 1;
+                    gen := gen * ORB_GetTransversalElement(setup,j,i,tup[i]);
+                    Append(w,setup!.trans[i][tup[i]]);
+                od;
+                Add(r.gens,gen);
+                Add(r.words,w);
+                mem := Length(gen)*SHALLOW_SIZE(gen[1]);
+                # we ignore the memory for the word and the record!
+                SetElmWPObj(stab.cache[j],t,CacheObject(setup!.cache,
+                                               rec(gen := gen, w := w),mem));
+            fi;
         od;
     else
         r := rec( gens := 
@@ -621,8 +638,16 @@ InstallGlobalFunction( ORB_WordTuple,
     od;
     return w;
   end );
-    
+
+# The following is just a wrapper to get the ORBITBYSUBORBITDEPTH right!
+# Internally, we always use OrbitBySuborbitInner below.
 InstallGlobalFunction( OrbitBySuborbit,
+function(setup,p,j,l,i,percentage)
+  ORB.ORBITBYSUBORBITDEPTH := 0;
+  return OrbitBySuborbitInner(setup,p,j,l,i,percentage);
+end );
+
+InstallGlobalFunction( OrbitBySuborbitInner,
 function(setup,p,j,l,i,percentage)
   # Enumerates the orbit of p under the group U_l (with G=U_{k+1}) by
   # suborbits for the subgroup U_i described in "setup". 
@@ -831,7 +856,7 @@ function(setup,p,j,l,i,percentage)
                                             base := setup!.permbase[l], 
                                             reduced := false ));
               fullstabsize := SizeStabChain(stabchain);
-              Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+              Info(InfoOrb,ORB.ORBITBYSUBORBITDEPTH,
                    "New stabilizer order: ",fullstabsize);
               if TotalLength(db) * fullstabsize * 100
                  >= setup!.size[l]*percentage then 
@@ -842,7 +867,7 @@ function(setup,p,j,l,i,percentage)
           fi;
           triedstabgens := triedstabgens + 1;
           if triedstabgens > ORB.PATIENCEFORSTAB then  # this is heuristics!
-            Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+            Info(InfoOrb,ORB.ORBITBYSUBORBITDEPTH,
                  "Lost patience with stabiliser, assuming it is complete...");
             assumestabcomplete := true;
           fi;

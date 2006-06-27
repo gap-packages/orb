@@ -31,6 +31,7 @@ BindGlobal( "LinkedListCacheNodeType",
 DeclareOperation("LinkedListCache", [IsInt]);
 DeclareOperation("ClearCache", [IsCache]);
 DeclareGlobalFunction("CacheObject");
+DeclareGlobalFunction("EnforceCachelimit");
 DeclareGlobalFunction("UseCacheObject");
 
 

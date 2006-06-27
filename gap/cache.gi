@@ -61,7 +61,7 @@ InstallMethod( ClearCache, "for a linked list cache object",
 
 InstallGlobalFunction( CacheObject,
   function( c, ob, mem )
-    local r,s;
+    local r;
     r := rec( ob := ob, next := c!.head, prev := fail, mem := mem );
     Objectify( LinkedListCacheNodeType, r );
     c!.head := r;
@@ -72,7 +72,14 @@ InstallGlobalFunction( CacheObject,
         r!.next!.prev := r;
     fi;
     c!.nrobs := c!.nrobs + 1;
-    # Now delete something if memory usage too high:
+    EnforceCachelimit(c);
+    return r;
+  end );
+
+InstallGlobalFunction( EnforceCachelimit,
+  function(c)
+    local s;
+    # Delete something if memory usage too high:
     while c!.memory > c!.memorylimit do
         s := c!.tail;
         c!.memory := c!.memory - s!.mem;
@@ -81,12 +88,12 @@ InstallGlobalFunction( CacheObject,
             c!.head := fail; 
         else
             s!.prev!.next := fail;
-            s!.mem := fail;   # mark node as unusable
         fi;
+        s!.prev := false;   # mark node as no longer in cache
         c!.nrobs := c!.nrobs - 1;
     od;
-    return r;
   end );
+
 
 InstallMethod( ViewObj, "for a linked list cache node",
   [ IsCacheNode and IsLinkedListCacheNodeRep ],
@@ -99,9 +106,21 @@ InstallMethod( ViewObj, "for a linked list cache node",
 InstallGlobalFunction( UseCacheObject,
   function( c, r )
     local s;
-    if r!.mem = fail then
-        # we silently ignore this UseCacheObject call since the node
-        # is no longer in the cache
+    if r!.prev = false then
+        # the object is no longer in the cache, we cache it again:
+        # note that we cannot use CacheObject, because we want to retain
+        # the cache node r itself!
+        r!.prev := fail;
+        r!.next := c!.head;
+        c!.head := r;
+        c!.memory := c!.memory + r!.mem;
+        if c!.tail = fail then
+            c!.tail := r;
+        else
+            r!.next!.prev := r;
+        fi;
+        c!.nrobs := c!.nrobs + 1;
+        EnforceCachelimit(c);
         return;
     fi;
     if r!.prev = fail then return; fi;   # nothing to do

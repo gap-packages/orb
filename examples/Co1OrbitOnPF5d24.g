@@ -10,6 +10,7 @@
 #
 LoadPackage("cvec");
 #SetInfoLevel(InfoOrb,2);  # to see more
+#ReadPackage("orb","examples/froslp.g");
 ReadPackage("orb","examples/slpco1.g");
 gens := AtlasGenerators("2.Co1",3).generators;
 cgens := List(gens,CMat);

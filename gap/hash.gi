@@ -130,7 +130,7 @@ InstallGlobalFunction( GrowHT, function(ht,x)
   ht.els := [];
   ht.vals := [];
   ht.len := NextPrimeInt(ht.len * 2+1);
-  Info(InfoOrb,1,"Growing hash table to length ",ht.len," !!!");
+  Info(InfoOrb,2,"Growing hash table to length ",ht.len," !!!");
   ht.hf := ChooseHashFunction(x,ht.len);
   ht.hfd := ht.hf.data;
   ht.hf := ht.hf.func;
