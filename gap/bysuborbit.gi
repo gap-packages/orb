@@ -498,7 +498,7 @@ InstallMethod( SavingFactor, "for an orbit-by-suborbit",
   end );
 
 ORB.PATIENCEFORSTAB := 1000;
-ORB.REPORTSUBORBITS := 100;
+ORB.REPORTSUBORBITS := 1000;
 ORB.MINSHASHLEN := 257;
 ORB.ORBITBYSUBORBITDEPTH := 0;   # this means outside!
 ORB.PLEASEEXITNOW := false;
