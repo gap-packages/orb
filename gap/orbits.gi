@@ -39,6 +39,7 @@ InstallValue( ORB, rec( ) );
 #  .tab
 #  .ht
 #  .stab
+#  .stabchain
 #  .stabsize
 #  .stabcomplete
 #  .schreiergen
