@@ -50,6 +50,10 @@ DeclareGlobalFunction( "InitOrbit" );  # the original name, still works
 # Orbit enumeration is triggered by "Enumerate":
 DeclareOperation( "Enumerate", [ IsOrbit, IsCyclotomic ] );
 DeclareOperation( "Enumerate", [ IsOrbit ] );
+DeclareGlobalFunction( "ORB_MakeSchreierGeneratorPerm" );
+
+# Later addition of a generator to an orbit:
+DeclareOperation( "AddGeneratorToOrbit", [ IsOrbit, IsObject ] );
 
 # This is for the searching infrastructure, an operation to decide
 # whether a newly found is one of the points we are looking for:
