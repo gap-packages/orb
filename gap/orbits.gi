@@ -119,11 +119,11 @@ InstallGlobalFunction( Orb,
         o.storenumbers := true;
         # The following triggers the generation of Schreier generators:
         o.schreiergenaction := ORB_MakeSchreierGeneratorPerm;
-        if not IsBound( o.onlystab ) then
-            o.onlystab := false;
-        fi;
     else
         o.stabsize := 1;   # set this even if we do not compute stabiliser!
+    fi;
+    if not IsBound( o.onlystab ) then
+        o.onlystab := false;
     fi;
     # FIXME: check for matgensi here !
     if IsBound(o.stabsizebound) and IsBound(o.orbsizebound) and
@@ -480,50 +480,45 @@ end );
 InstallGlobalFunction(ORB_MakeSchreierGeneratorPerm,
   function( o, i, j, pos )
     local basimg,sgen,sgennew,wordb,wordf;
-    if not( o!.stabcomplete ) then
-        # Is stabilizer element trivial?
-        wordf := TraceSchreierTreeForward(o,i);
-        wordb := TraceSchreierTreeBack(o,pos);
-        if IsBound(o!.permbase) then
-            basimg := ActWithWord(o!.permgens,wordf,
-                                  OnTuples,o!.permbase);
-            basimg := OnTuples(basimg,o!.permgens[j]);
-            basimg := ActWithWord(o!.permgensi,wordb,
-                                  OnTuples,basimg);
-            if not(ORB_SiftBaseImage(o!.stabchain,basimg,1)) then
-                sgennew := true;
-                Info(InfoOrb,4,"Evaluating stabilizer element...");
-                sgen := EvaluateWord(o!.permgens,wordf)*
-                        o!.permgens[j] *
-                        EvaluateWord(o!.permgensi,wordb);
-            else
-                sgennew := false;
-            fi;
-        else
+    # Is stabilizer element trivial?
+    wordf := TraceSchreierTreeForward(o,i);
+    wordb := TraceSchreierTreeBack(o,pos);
+    if IsBound(o!.permbase) then
+        basimg := ActWithWord(o!.permgens,wordf,
+                              OnTuples,o!.permbase);
+        basimg := OnTuples(basimg,o!.permgens[j]);
+        basimg := ActWithWord(o!.permgensi,wordb,
+                              OnTuples,basimg);
+        if not(ORB_SiftBaseImage(o!.stabchain,basimg,1)) then
+            sgennew := true;
             Info(InfoOrb,4,"Evaluating stabilizer element...");
-            sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
+            sgen := EvaluateWord(o!.permgens,wordf)*
+                    o!.permgens[j] *
                     EvaluateWord(o!.permgensi,wordb);
-            sgennew := not(IsOne(sgen)) and not(sgen in o!.stab);
-        fi; 
-        if sgennew then
-            # Calculate an element of the stabilizer:
-            if o!.stabsize = 1 then
-                o!.stab := Group(sgen);
-            else
-                o!.stab := Group(Concatenation(
-                         GeneratorsOfGroup(o!.stab),[sgen]));
-            fi;
-            ORB_ComputeStabChain(o);
-            Add(o!.stabwords,Concatenation(wordf,[j],-wordb));
-            Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
-            if IsBound(o!.stabsizebound) and
-               o!.stabsize >= o!.stabsizebound then
-                o!.stabcomplete := true;
-                Info(InfoOrb,2,"Stabilizer complete.");
-            fi;
+        else
+            sgennew := false;
         fi;
+    else
+        Info(InfoOrb,4,"Evaluating stabilizer element...");
+        sgen := EvaluateWord(o!.permgens,wordf)*o!.permgens[j] *
+                EvaluateWord(o!.permgensi,wordb);
+        sgennew := not(IsOne(sgen)) and not(sgen in o!.stab);
+    fi; 
+    if sgennew then
+        # Calculate an element of the stabilizer:
+        if o!.stabsize = 1 then
+            o!.stab := Group(sgen);
+        else
+            o!.stab := Group(Concatenation(
+                     GeneratorsOfGroup(o!.stab),[sgen]));
+        fi;
+        ORB_ComputeStabChain(o);
+        Add(o!.stabwords,Concatenation(wordf,[j],-wordb));
+        Info(InfoOrb,2,"New stabilizer size: ",o!.stabsize);
+        return true;
+    else
+        return false;
     fi;
-    return;
   end );
 
 InstallMethod( Enumerate, 
@@ -575,9 +570,20 @@ InstallMethod( Enumerate,
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
                 fi;
-            elif o!.schreiergenaction <> false then
+            elif not(o!.stabcomplete) and o!.schreiergenaction <> false then
                 # Trigger some action usually to produce Schreier generator:
-                o!.schreiergenaction(o,i,j,pos);
+                if o!.schreiergenaction(o,i,j,pos) then
+                    if IsBound(o!.stabsizebound) and
+                       o!.stabsize >= o!.stabsizebound then
+                        o!.stabcomplete := true;
+                        Info(InfoOrb,2,"Stabilizer complete.");
+                    fi;
+                    if IsBound(o!.grpsizebound) and 
+                        Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
+                        o!.stabcomplete := true;
+                        Info(InfoOrb,2,"Stabilizer complete.");
+                    fi;
+                fi;
             fi;
         od;
         i := i + 1;
@@ -737,9 +743,20 @@ InstallMethod( Enumerate,
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
                 fi;
-            elif o!.schreiergenaction <> false then
+            elif not(o!.stabcomplete) and o!.schreiergenaction <> false then
                 # Trigger some action usually to produce Schreier generator:
-                o!.schreiergenaction(o,i,j,tab[yy]);
+                if o!.schreiergenaction(o,i,j,tab[yy]) then
+                    if IsBound(o!.stabsizebound) and
+                       o!.stabsize >= o!.stabsizebound then
+                        o!.stabcomplete := true;
+                        Info(InfoOrb,2,"Stabilizer complete.");
+                    fi;
+                    if IsBound(o!.grpsizebound) and 
+                        Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
+                        o!.stabcomplete := true;
+                        Info(InfoOrb,2,"Stabilizer complete.");
+                    fi;
+                fi;
             fi;
         od;
         i := i + 1;
@@ -762,8 +779,15 @@ InstallMethod( Enumerate, "for an orbit object", [IsOrbit],
 InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
   [ IsOrbit, IsObject ],
   function( o, gen )
+    local lmp;
     Add(o!.gens,gen);
     o!.nrgens := o!.nrgens + 1;
+    if IsPermOnIntOrbitRep(o) then
+        lmp := LargestMovedPoint(o!.gens);
+        if lmp > Length(o!.tab) then
+            Append(o!.tab,ListWithIdenticalEntries(lmp-Length(o!.tab),0));
+        fi;
+    fi;
     ResetFilterObj(o,IsClosed);
     o!.stopper := o!.pos;
     o!.pos := 1;
@@ -780,6 +804,7 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
 InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
   [ IsOrbit and WithPermStabilizer, IsObject ],
   function( o, gen )
+    local lmp;
     if not(IsList(gen)) or Length(gen) <> 2 then
         Error("Need a pair of generators as second argument.");
         return;
@@ -789,6 +814,12 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
     ResetFilterObj(o,IsClosed);
     Add(o!.permgens,gen[2]);
     Add(o!.permgensi,gen[2]^-1);
+    if IsPermOnIntOrbitRep(o) then
+        lmp := LargestMovedPoint(o!.gens);
+        if lmp > Length(o!.tab) then
+            Append(o!.tab,ListWithIdenticalEntries(lmp-Length(o!.tab),0));
+        fi;
+    fi;
     o!.stopper := o!.pos;
     o!.pos := 1;
     o!.genstoapply := [Length(o!.gens)];
