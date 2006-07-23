@@ -28,7 +28,9 @@ InstallValue( ORB, rec( ) );
 #  .permbase
 #  .stab
 #  .storenumbers
-#  .hashlen
+#  .hashlen      for the call version with 3 or 4 arguments with options
+#  .hashfunc     only together with next option, hashs cannot grow!
+#  .eqfunc
 
 # Outputs:
 #  .gens
@@ -192,7 +194,16 @@ InstallGlobalFunction( Orb,
         fi;
     else
         # The standard case using a hash:
-        o.ht := NewHT(x,hashlen);
+        if IsBound(o.eqfunc) and IsBound(o.hashfunc) then
+            o.ht := InitHT( hashlen, o.hashfunc, o.eqfunc );
+            if IsBound(o.hfbig) and IsBound(o.hfdbig) then
+                o.ht.hfbig := o.hfbig;
+                o.ht.hfdbig := o.hfdbig;
+                o.ht.cangrow := true;
+            fi;
+        else
+            o.ht := NewHT(x,hashlen);
+        fi;
         if IsBound(o.stab) or o.storenumbers then
             filts := filts and WithStoringNumbers;
             AddHT(o.ht,x,1);

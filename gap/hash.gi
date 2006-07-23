@@ -20,7 +20,7 @@ InstallGlobalFunction( InitHT, function(len, hfun, eqfun)
              eqf := eqfun,     # a comparison function
              collisions := 0,  # number of collisions
              accesses := 0,    # number of accesses
-             cangrow := true,  # flag, whether hash table may grow
+             cangrow := false, # flag, whether hash table may grow
              ishash := true,   # a "magic" entry
             );
 end );
@@ -131,9 +131,14 @@ InstallGlobalFunction( GrowHT, function(ht,x)
   ht.vals := [];
   ht.len := NextPrimeInt(ht.len * 2+1);
   Info(InfoOrb,2,"Growing hash table to length ",ht.len," !!!");
-  ht.hf := ChooseHashFunction(x,ht.len);
-  ht.hfd := ht.hf.data;
-  ht.hf := ht.hf.func;
+  if IsBound(ht.hfbig) and IsBound(ht.htdbig) then
+      ht.hf := ORB_HashFunctionModWrapper;
+      ht.hfd := [ht.hfbig,ht.hfdbig,ht.len];
+  else
+      ht.hf := ChooseHashFunction(x,ht.len);
+      ht.hfd := ht.hf.data;
+      ht.hf := ht.hf.func;
+  fi;
   ht.nr := 0;
   ht.collisions := 0;
   ht.accesses := 0;
@@ -328,5 +333,8 @@ InstallMethod( ChooseHashFunction, "for N bits Pc word rep",
     return rec(func := ORB_HashFunctionForNBitsPcWord, data := [101,hashlen]);
   end );
 
+InstallGlobalFunction( ORB_HashFunctionModWrapper,
+  function(p,data)
+    return data[1](p,data[2]) mod data[3];
+  end );
 
-  

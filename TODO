@@ -1,3 +1,8 @@
+Documentation:
+  eqfunc and hashfunc options for Orb
+  hfbig and hfdbig options for Orb
+  hfbig and hfdbig options for hash tables
+
 For bysuborbit:
 
 Testen mit Suz mod 13 lines/vectors, Co1 mod 5 lines/vectors
