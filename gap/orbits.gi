@@ -475,7 +475,7 @@ InstallMethod( Enumerate,
     local depth,depthmarks,gens,genstoapply,grpsizebound,ht,i,j,log,logind,
           logpos,lookfunc,looking,nr,onlystab,op,orb,orbsizebound,permgens,
           pos,rep,schreier,schreiergen,schreiergenaction,schreierpos,
-          stabsizebound,stopper,storenumbers,yy;
+          stabsizebound,stopper,storenumbers,suc,yy;
 
     # Set a few local variables for faster access:
     orb := o!.orbit;
@@ -507,8 +507,10 @@ InstallMethod( Enumerate,
         logind := o!.logind;
         logpos := o!.logpos;
     fi;
-    depth := o!.depth;
-    depthmarks := o!.depthmarks;
+    if o!.schreier or o!.log <> false then
+        depth := o!.depth;
+        depthmarks := o!.depthmarks;
+    fi;
 
     # Maybe we are looking for something and it is the start point:
     if i = 1 and o!.found = false and looking then
@@ -531,7 +533,7 @@ InstallMethod( Enumerate,
         if onlystab and o!.stabcomplete then break; fi;
 
         # Are we logging?
-        if log <> false then logind[i] := logpos; fi;
+        if log <> false then logind[i] := logpos; suc := false; fi;
 
         # Now apply generators:
         for j in genstoapply do
@@ -554,6 +556,7 @@ InstallMethod( Enumerate,
                 
                 # Handle logging if desired:
                 if log <> false then
+                    suc := true;
                     log[logpos] := j;
                     log[logpos+1] := nr;
                     logpos := logpos+2;
@@ -565,7 +568,9 @@ InstallMethod( Enumerate,
                     if lookfunc(o,yy) then
                         o!.pos := i;
                         o!.found := nr;
-                        o!.depth := depth;
+                        if o!.schreier or o!.log <> false then
+                            o!.depth := depth;
+                        fi;
                         return o;
                     fi;
                 fi;
@@ -578,7 +583,9 @@ InstallMethod( Enumerate,
                        log = false then
                         o!.pos := i;
                         SetFilterObj(o,IsClosed);
-                        o!.depth := depth;
+                        if o!.schreier or o!.log <> false then
+                            o!.depth := depth;
+                        fi;
                         return o;
                     fi;
                 fi;
@@ -609,6 +616,12 @@ InstallMethod( Enumerate,
                 fi;
             fi;
         od;
+        # Now close the log for this point:
+        if suc then
+            log[logpos-2] := -log[logpos-2];
+        else
+            logind[i] := 0;
+        fi;
         i := i + 1;
         if rep <> false then
             rep := rep - 1;
@@ -619,17 +632,12 @@ InstallMethod( Enumerate,
         fi;
     od;
     o!.pos := i;
-    o!.depth := depth;
-    if orbsizebound <> false and nr >= orbsizebound and log = false then
+    if o!.schreier or o!.log <> false then o!.depth := depth; fi;
+    if (orbsizebound <> false and nr >= orbsizebound and log = false) or
+       i > nr then
         # Only if not logging!
         SetFilterObj(o,IsClosed); 
-        return o;
-    fi;
-    if i > nr then 
-        SetFilterObj(o,IsClosed); 
-        # Close log:
         if log <> false then 
-            logind[nr+1] := logpos; 
             o!.orbind := [1..nr];
         fi;
     fi;
@@ -645,7 +653,7 @@ InstallMethod( Enumerate,
     local depth,depthmarks,gens,genstoapply,grpsizebound,i,j,log,logind,
           logpos,lookfunc,looking,nr,onlystab,orb,orbsizebound,permgens,
           rep,schreier,schreiergen,schreiergenaction,schreierpos,
-          stabsizebound,stopper,tab,yy;
+          stabsizebound,stopper,suc,tab,yy;
 
     orb := o!.orbit;
     i := o!.pos;  # we go on here
@@ -674,8 +682,10 @@ InstallMethod( Enumerate,
         logind := o!.logind;
         logpos := o!.logpos;
     fi;
-    depth := o!.depth;
-    depthmarks := o!.depthmarks;
+    if o!.schreier or o!.log <> false then
+        depth := o!.depth;
+        depthmarks := o!.depthmarks;
+    fi;
 
     # Maybe we are looking for something and it is the start point:
     if i = 1 and o!.found = false and looking then
@@ -698,7 +708,7 @@ InstallMethod( Enumerate,
         if onlystab and o!.stabcomplete then break; fi;
 
         # Are we logging?
-        if log <> false then logind[i] := logpos; fi;
+        if log <> false then logind[i] := logpos; suc := false; fi;
 
         # Now apply generators:
         for j in genstoapply do
@@ -716,6 +726,7 @@ InstallMethod( Enumerate,
 
                 # Handle logging if desired:
                 if log <> false then
+                    suc := true;
                     log[logpos] := j;
                     log[logpos+1] := nr;
                     logpos := logpos+2;
@@ -727,7 +738,9 @@ InstallMethod( Enumerate,
                     if lookfunc(o,yy) then
                         o!.pos := i;
                         o!.found := nr;
-                        o!.depth := depth;
+                        if o!.schreier or o!.log <> false then
+                            o!.depth := depth;
+                        fi;
                         return o;
                     fi;
                 fi;
@@ -739,7 +752,9 @@ InstallMethod( Enumerate,
                     if (permgens = false or o!.stabcomplete) and
                        log = false then
                         o!.pos := i;
-                        o!.depth := depth;
+                        if o!.schreier or o!.log <> false then
+                            o!.depth := depth;
+                        fi;
                         SetFilterObj(o,IsClosed);
                         return o;
                     fi;
@@ -771,6 +786,12 @@ InstallMethod( Enumerate,
                 fi;
             fi;
         od;
+        # Now close the log for this point:
+        if suc then
+            log[logpos-2] := -log[logpos-2];
+        else
+            logind[i] := 0;
+        fi;
         i := i + 1;
         if rep <> false then
             rep := rep - 1;
@@ -781,17 +802,12 @@ InstallMethod( Enumerate,
         fi;
     od;
     o!.pos := i;
-    o!.depth := depth;
-    if orbsizebound <> false and nr >= orbsizebound and log = false then
+    if o!.schreier or o!.log <> false then o!.depth := depth; fi;
+    if (orbsizebound <> false and nr >= orbsizebound and log = false) or
+       i > nr then
         # Only if not logging!
         SetFilterObj(o,IsClosed); 
-        return o;
-    fi;
-    if i > nr then 
-        SetFilterObj(o,IsClosed); 
-        # Close log:
         if log <> false then 
-            logind[nr+1] := logpos; 
             o!.orbind := [1..nr];
         fi;
     fi;
@@ -863,9 +879,10 @@ InstallMethod( AddGeneratorsToOrbit,
   function( o, newgens )
     # We basically reimplement the breadth-first orbit enumeration
     # without looking for something and generating Schreier generators:
-    local depth,depthmarks,gens,genstoapply,ht,i,ii,inneworbit,j,log,logind,
-          logpos,nr,nr2,nrgens,oldlog,oldlogind,oldnr,oldnrgens,op,orb,orbind,
-          pos,rep,schreier,schreiergen,schreierpos,storenumbers,yy;
+    local depth,depthmarks,gen,genabs,gens,genstoapply,ht,i,ii,inneworbit,j,
+          log,logind,logpos,nr,nr2,nrgens,oldlog,oldlogind,oldnr,oldnrgens,op,
+          orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,storenumbers,
+          suc,yy;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -891,12 +908,14 @@ InstallMethod( AddGeneratorsToOrbit,
     fi;
     oldlog := o!.log;
     oldlogind := o!.logind;
-    Unbind(o!.orbind);            # this is no longer used
     log := 0*[1..Length(oldlog)];
+    o!.log := log;
     logind := 0*[1..Length(oldlogind)];
+    o!.logind := logind;
     logpos := 1;
     orbind := 0*[1..nr];  # this will be at least as long as the old orbit
     orbind[1] := 1;       # the start point
+    o!.orbind := orbind;
     inneworbit := BlistList([1..nr],[1]);  # only first point is already there
 
     rep := o!.report;
@@ -905,6 +924,7 @@ InstallMethod( AddGeneratorsToOrbit,
     nr2 := 1;   # this is the counter for the length of the new orbit
     depth := 0; # we are at the beginning
     depthmarks := [2];   # depth 1 starts at new points number 2
+    o!.depthmarks := depthmarks;
     while ii <= nr2 do
         if ii >= depthmarks[depth+1] then
             depth := depth + 1;
@@ -913,28 +933,37 @@ InstallMethod( AddGeneratorsToOrbit,
         fi;
         i := orbind[ii];   # the official number
         logind[i] := logpos;  # note position on log
+        suc := false;
 
         # Is this a new point or an old one?
         if i <= oldnr then # an old point, distinguish between old and new gens
             # First "apply" old generators:
-            for j in [oldlogind[i],oldlogind[i]+2..oldlogind[i+1]-2] do
-                # We know that generator number oldlog[j] maps point number i
-                # to point number oldlog[j+1]:
-                # But is it perhaps already in the new orbit?
-                if not(inneworbit[oldlog[j+1]]) then
-                    nr2 := nr2 + 1;
-                    orbind[nr2] := oldlog[j+1];
-                    if schreier then
-                        schreiergen[oldlog[j+1]] := oldlog[j];
-                        schreierpos[oldlog[j+1]] := i;
+            j := oldlogind[i];
+            if j > 0 then   # there have been successful old gens
+                repeat
+                    gen := oldlog[j];  # negative indicates end
+                    genabs := AbsInt(gen);
+                    pt := oldlog[j+1];
+                    # We know that generator number genabs maps point number i
+                    # to point number pt:
+                    # But is it perhaps already in the new orbit?
+                    if not(inneworbit[pt]) then
+                        nr2 := nr2 + 1;
+                        orbind[nr2] := pt;
+                        if schreier then
+                            schreiergen[pt] := genabs;
+                            schreierpos[pt] := i;
+                        fi;
+                        suc := true;
+                        log[logpos] := genabs;
+                        log[logpos+1] := pt;
+                        logpos := logpos+2;
+                        # Mark old point to be in new orbit:
+                        inneworbit[pt] := true;
                     fi;
-                    log[logpos] := oldlog[j];
-                    log[logpos+1] := oldlog[j+1];
-                    logpos := logpos+2;
-                    # Mark old point to be in new orbit:
-                    inneworbit[oldlog[j+1]] := true;
-                fi;
-            od;
+                    j := j + 2;
+                until gen < 0;
+            fi;
             genstoapply := [oldnrgens+1..nrgens];
         else   # one of the new points, apply all generators:
             genstoapply := [1..nrgens];
@@ -963,6 +992,7 @@ InstallMethod( AddGeneratorsToOrbit,
                 fi;
                 
                 # Handle logging:
+                suc := true;
                 log[logpos] := j;
                 log[logpos+1] := nr;
                 logpos := logpos+2;
@@ -980,12 +1010,19 @@ InstallMethod( AddGeneratorsToOrbit,
                 fi;
                 
                 # Handle logging:
+                suc := true;
                 log[logpos] := j;
                 log[logpos+1] := pos;
                 logpos := logpos+2;
                 # Otherwise: nothing to do (we do not create Schreier gens
             fi;
         od;
+        # Now close the log for this point:
+        if suc then
+            log[logpos-2] := -log[logpos-2];
+        else
+            logind[i] := 0;
+        fi;
         ii := ii + 1;
         if rep <> false then
             rep := rep - 1;
@@ -996,9 +1033,8 @@ InstallMethod( AddGeneratorsToOrbit,
         fi;
     od;
     o!.pos := nr+1;  # orbit stays closed
-    o!.orbind := orbind;
+    o!.logpos := logpos;
     o!.depth := depth;   # the depth of the tree
-    o!.depthmarks := depthmarks;
     # Close log:
     logind[nr+1] := logpos;
     return o;
@@ -1010,9 +1046,9 @@ InstallMethod( AddGeneratorsToOrbit,
   function( o, newgens )
     # We basically reimplement the breadth-first orbit enumeration
     # without looking for something and generating Schreier generators:
-    local depth,depthmarks,gens,genstoapply,i,ii,inneworbit,j,log,logind,
-          logpos,nr,nr2,nrgens,oldlog,oldlogind,oldnr,oldnrgens,orb,orbind,
-          pos,rep,schreier,schreiergen,schreierpos,tab,yy;
+    local depth,depthmarks,gen,genabs,gens,genstoapply,i,ii,inneworbit,j,log,
+          logind,logpos,nr,nr2,nrgens,oldlog,oldlogind,oldnr,oldnrgens,orb,
+          orbind,pos,pt,rep,schreier,schreiergen,schreierpos,suc,tab,yy;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -1036,12 +1072,14 @@ InstallMethod( AddGeneratorsToOrbit,
     fi;
     oldlog := o!.log;
     oldlogind := o!.logind;
-    Unbind(o!.orbind);            # this is no longer used
     log := 0*[1..Length(oldlog)];
+    o!.log := log;
     logind := 0*[1..Length(oldlogind)];
+    o!.logind := logind;
     logpos := 1;
     orbind := 0*[1..nr];  # this will be at least as long as the old orbit
     orbind[1] := 1;       # the start point
+    o!.orbind := orbind;
     inneworbit := BlistList([1..nr],[1]);  # only first point is already there
 
     rep := o!.report;
@@ -1050,6 +1088,7 @@ InstallMethod( AddGeneratorsToOrbit,
     nr2 := 1;   # this is the counter for the length of the new orbit
     depth := 0; # we are at the beginning
     depthmarks := [2];   # depth 1 starts at new points number 2
+    o!.depthmarks := depthmarks;
     while ii <= nr2 do
         if ii >= depthmarks[depth+1] then
             depth := depth + 1;
@@ -1058,28 +1097,37 @@ InstallMethod( AddGeneratorsToOrbit,
         fi;
         i := orbind[ii];   # the official number
         logind[i] := logpos;  # note position on log
+        suc := false;
 
         # Is this a new point or an old one?
         if i <= oldnr then # an old point, distinguish between old and new gens
             # First "apply" old generators:
-            for j in [oldlogind[i],oldlogind[i]+2..oldlogind[i+1]-2] do
-                # We know that generator number oldlog[j] maps point number i
-                # to point number oldlog[j+1]:
-                # But is it perhaps already in the new orbit?
-                if not(inneworbit[oldlog[j+1]]) then
-                    nr2 := nr2 + 1;
-                    orbind[nr2] := oldlog[j+1];
-                    if schreier then
-                        schreiergen[oldlog[j+1]] := oldlog[j];
-                        schreierpos[oldlog[j+1]] := i;
+            j := oldlogind[i];
+            if j > 0 then   # there have been successful old gens
+                repeat
+                    gen := oldlog[j];  # negative indicates end
+                    genabs := AbsInt(gen);
+                    pt := oldlog[j+1];
+                    # We know that generator number genabs maps point number i
+                    # to point number pt:
+                    # But is it perhaps already in the new orbit?
+                    if not(inneworbit[pt]) then
+                        nr2 := nr2 + 1;
+                        orbind[nr2] := pt;
+                        if schreier then
+                            schreiergen[pt] := genabs;
+                            schreierpos[pt] := i;
+                        fi;
+                        suc := true;
+                        log[logpos] := genabs;
+                        log[logpos+1] := pt;
+                        logpos := logpos+2;
+                        # Mark old point to be in new orbit:
+                        inneworbit[pt] := true;
                     fi;
-                    log[logpos] := oldlog[j];
-                    log[logpos+1] := oldlog[j+1];
-                    logpos := logpos+2;
-                    # Mark old point to be in new orbit:
-                    inneworbit[oldlog[j+1]] := true;
-                fi;
-            od;
+                    j := j + 2;
+                until gen < 0;
+            fi;
             genstoapply := [oldnrgens+1..nrgens];
         else   # one of the new points, apply all generators:
             genstoapply := [1..nrgens];
@@ -1108,6 +1156,7 @@ InstallMethod( AddGeneratorsToOrbit,
                 fi;
                 
                 # Handle logging:
+                suc := true;
                 log[logpos] := j;
                 log[logpos+1] := nr;
                 logpos := logpos+2;
@@ -1125,12 +1174,19 @@ InstallMethod( AddGeneratorsToOrbit,
                 fi;
                 
                 # Handle logging:
+                suc := true;
                 log[logpos] := j;
                 log[logpos+1] := pos;
                 logpos := logpos+2;
                 # Otherwise: nothing to do (we do not create Schreier gens
             fi;
         od;
+        # Now close the log for this point:
+        if suc then
+            log[logpos-2] := -log[logpos-2];
+        else
+            logind[i] := 0;
+        fi;
         ii := ii + 1;
         if rep <> false then
             rep := rep - 1;
@@ -1141,18 +1197,17 @@ InstallMethod( AddGeneratorsToOrbit,
         fi;
     od;
     o!.pos := nr+1;  # orbit stays closed
-    o!.orbind := orbind;
+    o!.logpos := logpos;
     o!.depth := depth;   # the depth of the tree
-    o!.depthmarks := depthmarks;
     # Close log:
     logind[nr+1] := logpos;
     return o;
 end );
 
 InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
-  [ IsOrbit and IsClosed and IsOrbitWithLog ],
-  function( o )
-    local i,l,w,x;
+  [ IsOrbit and IsClosed and IsOrbitWithLog, IsPosInt ],
+  function( o, l )
+    local i,w,x;
     if not(o!.schreier) then
         Error("Orbit has no Schreier tree");
         return fail;
@@ -1160,20 +1215,25 @@ InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
     if Length(o) < 10 then 
         Info(InfoOrb,2,"Very small orbit, doing nothing.");
     fi;
-    l := LogInt(Length(o),2);
     while o!.depth > l do
         x := [];
-        for i in [1..QuoInt(o!.depth,l)] do
-            w := TraceSchreierTreeForward(o,Random(2,QuoInt(Length(o),5)));
+        for i in [1..Maximum(QuoInt(o!.depth,l),3)] do
+            w := TraceSchreierTreeForward(o,
+                          o!.orbind[Random(2,QuoInt(Length(o),5))]);
             Add(x,Product(o!.gens{w}));
         od;
         Info(InfoOrb,1,"Adding ",Length(x),
              " new generators to decrease depth...");
         AddGeneratorsToOrbit(o,x);
+        Info(InfoOrb,1,"Depth is now ",o!.depth);
     od;
-    Info(InfoOrb,1,"Depth is now ",o!.depth);
   end );
             
+InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
+  [ IsOrbit and IsClosed and IsOrbitWithLog ],
+  function( o )
+    MakeSchreierTreeShallow(o, LogInt(Length(o),2) );
+  end );
 
 InstallMethod( TraceSchreierTreeForward, "for an orbit and a position",
   [ IsOrbit, IsPosInt ],

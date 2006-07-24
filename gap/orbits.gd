@@ -47,6 +47,7 @@ DeclareGlobalFunction( "ORB_MakeSchreierGeneratorPerm" );
 # Later addition of generators to an orbit:
 DeclareOperation( "AddGeneratorToOrbit", [ IsOrbit, IsObject ] );
 DeclareOperation( "AddGeneratorsToOrbit", [ IsOrbit, IsList ] );
+DeclareOperation( "MakeSchreierTreeShallow", [ IsOrbit, IsPosInt ] );
 DeclareOperation( "MakeSchreierTreeShallow", [ IsOrbit ] );
 
 # This is for the searching infrastructure, some functions that check
