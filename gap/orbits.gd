@@ -34,6 +34,7 @@ DeclareFilter( "IsClosed", IsOrbit );
 DeclareRepresentation( "IsPermOnIntOrbitRep", IsOrbit, [] );
 DeclareRepresentation( "IsHashOrbitRep", IsOrbit, [] );
 DeclareRepresentation( "IsSlowOrbitRep", IsOrbit, [] );
+DeclareFilter( "IsOrbitWithLog" );
 
 # Now the constructor method:
 DeclareGlobalFunction( "Orb" );
@@ -43,8 +44,10 @@ DeclareOperation( "Enumerate", [ IsOrbit, IsCyclotomic ] );
 DeclareOperation( "Enumerate", [ IsOrbit ] );
 DeclareGlobalFunction( "ORB_MakeSchreierGeneratorPerm" );
 
-# Later addition of a generator to an orbit:
+# Later addition of generators to an orbit:
 DeclareOperation( "AddGeneratorToOrbit", [ IsOrbit, IsObject ] );
+DeclareOperation( "AddGeneratorsToOrbit", [ IsOrbit, IsList ] );
+DeclareOperation( "MakeSchreierTreeShallow", [ IsOrbit ] );
 
 # This is for the searching infrastructure, some functions that check
 # whether a newly found is one of the points we are looking for:
@@ -58,6 +61,7 @@ DeclareOperation( "EvaluateWord", [ IsList, IsList ] );
 DeclareOperation( "ActWithWord", [IsList, IsList, IsFunction, IsObject] );
 DeclareOperation( "StabWords", [ IsOrbit ] );
 DeclareOperation( "PositionOfFound", [ IsOrbit ] );
+DeclareOperation( "DepthOfSchreierTree", [ IsOrbit ] );
 
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );
