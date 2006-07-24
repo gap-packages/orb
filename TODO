@@ -1,13 +1,16 @@
-  finish AddGeneratorsToOrbit
-  test it
-  ShallowSchreierTrees
-  more test files
+  test AddGeneratorsToOrbit for orbits without log
+  more test files, what?
   adjust documentation
 
 Documentation:
   eqfunc and hashfunc options for Orb
   hfbig and hfdbig options for Orb
   hfbig and hfdbig options for hash tables
+  log
+  filters for orbits
+  MakeSchreierTreeShallow
+  stopper
+  schreiergenaction
 
 For bysuborbit:
 

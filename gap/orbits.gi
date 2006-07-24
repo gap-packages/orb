@@ -819,11 +819,12 @@ InstallMethod( Enumerate, "for an orbit object", [IsOrbit],
     return Enumerate(o,infinity);
   end );
     
-InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
-  [ IsOrbit, IsObject ],
-  function( o, gen )
-    local lmp;
-    Add(o!.gens,gen);
+InstallMethod( AddGeneratorsToOrbit, "for an orbit and a generator",
+  [ IsOrbit, IsList ],
+  function( o, gens )
+    local lmp,oldnrgens;
+    oldnrgens := Length(o!.gens);
+    Append(o!.gens,gens);
     if IsPermOnIntOrbitRep(o) then
         lmp := LargestMovedPoint(o!.gens);
         if lmp > Length(o!.tab) then
@@ -833,7 +834,7 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
     ResetFilterObj(o,IsClosed);
     o!.stopper := o!.pos;
     o!.pos := 1;
-    o!.genstoapply := [Length(o!.gens)];
+    o!.genstoapply := [oldnrgens+1..Length(o!.gens)];
     Enumerate(o);
     if o!.pos <> o!.stopper then
         Error("Unexpected case!");
@@ -843,18 +844,19 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
     return o;
   end );
 
-InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
-  [ IsOrbit, IsObject ],
-  function( o, gen )
-    local lmp;
-    if not(IsList(gen)) or Length(gen) <> 2 then
-        Error("Need a pair of generators as second argument.");
+InstallMethod( AddGeneratorsToOrbit, "for an orbit and a generator",
+  [ IsOrbit, IsList, IsList ],
+  function( o, gens, permgens )
+    local lmp,oldnrgens;
+    oldnrgens := Length(o!.gens);
+    if not(Length(gens) = Length(permgens)) then
+        Error("Need two lists of identical length as 2nd and 3rd argument.");
         return;
     fi;
-    Add(o!.gens,gen[1]);
+    Append(o!.gens,gens);
     ResetFilterObj(o,IsClosed);
-    Add(o!.permgens,gen[2]);
-    Add(o!.permgensi,gen[2]^-1);
+    Append(o!.permgens,permgens);
+    Append(o!.permgensi,List(permgens,x->x^-1));
     if IsPermOnIntOrbitRep(o) then
         lmp := LargestMovedPoint(o!.gens);
         if lmp > Length(o!.tab) then
@@ -863,7 +865,7 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
     fi;
     o!.stopper := o!.pos;
     o!.pos := 1;
-    o!.genstoapply := [Length(o!.gens)];
+    o!.genstoapply := [oldnrgens+1..Length(o!.gens)];
     Enumerate(o);
     if o!.pos <> o!.stopper then
         Error("Unexpected case!");

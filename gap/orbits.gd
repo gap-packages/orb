@@ -45,8 +45,8 @@ DeclareOperation( "Enumerate", [ IsOrbit ] );
 DeclareGlobalFunction( "ORB_MakeSchreierGeneratorPerm" );
 
 # Later addition of generators to an orbit:
-DeclareOperation( "AddGeneratorToOrbit", [ IsOrbit, IsObject ] );
 DeclareOperation( "AddGeneratorsToOrbit", [ IsOrbit, IsList ] );
+DeclareOperation( "AddGeneratorsToOrbit", [ IsOrbit, IsList, IsList ] );
 DeclareOperation( "MakeSchreierTreeShallow", [ IsOrbit, IsPosInt ] );
 DeclareOperation( "MakeSchreierTreeShallow", [ IsOrbit ] );
 
