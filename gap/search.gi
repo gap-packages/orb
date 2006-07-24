@@ -653,7 +653,7 @@ function(G,U,membershiptest)
                                               Length(GeneratorsOfGroup(G)) ) );
   fi;
   o := Orb(GeneratorsOfGroup(G),One(G),OnRight,
-           rec( lookingfor := x -> membershiptest(x,U), 
+           rec( lookingfor := function(o,x) return membershiptest(x,U); end, 
                 schreier := true ) );
   Enumerate(o);
   subgens := [o!.orbit[o!.found]];

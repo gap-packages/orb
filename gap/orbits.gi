@@ -31,10 +31,12 @@ InstallValue( ORB, rec( ) );
 #  .hashlen      for the call version with 3 or 4 arguments with options
 #  .hashfunc     only together with next option, hashs cannot grow!
 #  .eqfunc
+#  .storingnumbers  indicates whether positions are stored in the hash
+#  .looking
+#  .lookfunc
 
 # Outputs:
 #  .gens
-#  .nrgens
 #  .op
 #  .orbit
 #  .pos
@@ -49,15 +51,9 @@ InstallValue( ORB, rec( ) );
 #  .found
 #  .stabwords
 
-InstallGlobalFunction( InitOrbit,
-  function( arg )
-    Print("Please rename your function call from \"InitOrbit\" to \"Orb\"!\n");
-    return CallFuncList(Orb,arg);
-  end );
-
 InstallGlobalFunction( Orb, 
   function( arg )
-    local filts,gens,hashlen,lmp,o,op,opt,x;
+    local comp,filts,gens,hashlen,lmp,o,op,opt,x;
 
     # First parse the arguments:
     if Length(arg) = 3 then
@@ -81,8 +77,13 @@ InstallGlobalFunction( Orb,
         return;
     fi;
 
-    # We make a copy:
-    o := ShallowCopy(opt);
+    # We make a copy, the first two must be accessable very fast,
+    # so we assign them first:
+    o := rec( stabcomplete := false, stabsize := 1 );
+    for comp in RecFields(opt) do
+        o.(comp) := opt.(comp);
+    od;
+
     # Now get rid of the group object if necessary but preserve known size:
     if IsGroup(gens) then
         if HasSize(gens) then
@@ -95,15 +96,20 @@ InstallGlobalFunction( Orb,
     filts := IsOrbit;
 
     # Now set some default options:
-    o.stabcomplete := false;  # set this even if we do not compute stabiliser!
+
     if not(IsBound(o.schreiergenaction)) then
         o.schreiergenaction := false;
     fi;
 
+    # Maybe we have some permutations to compute the stabilizer:
     if IsBound( o.permgens ) then 
-        filts := filts and WithSchreierTree and WithPermStabilizer;
+        o.schreier := true;      # we need a Schreier tree
+        o.storenumbers := true;  # and have to index points
         if not(IsBound(o.stabchainrandom)) then
             o.stabchainrandom := 1000;  # no randomisation
+        fi;
+        if not(IsBound(o.permbase)) then
+            o.permbase := false;
         fi;
         if IsBound(o.stab) then
             # We know already part of the stabilizer:
@@ -116,70 +122,96 @@ InstallGlobalFunction( Orb,
             ORB_ComputeStabChain(o);
         fi;
         o.permgensi := List(o.permgens,x->x^-1);
-        o.schreier := true;   # we need a Schreier tree for the stabilizer
         o.stabwords := [];
-        o.storenumbers := true;
         # The following triggers the generation of Schreier generators:
         o.schreiergenaction := ORB_MakeSchreierGeneratorPerm;
     else
-        o.stabsize := 1;   # set this even if we do not compute stabiliser!
+        o.permgens := false;  # to indicate no permgens
+        o.permbase := false;
     fi;
+
+    # Only looking for stabilizer?
     if not IsBound( o.onlystab ) then
         o.onlystab := false;
     fi;
+
     # FIXME: check for matgensi here !
-    if IsBound(o.stabsizebound) and IsBound(o.orbsizebound) and
-       not(IsBound(o.grpsizebound)) then
-        o.grpsizebound := o.stabsizebound * o.orbsizebound;
-    fi;
+    o!.matgens := false;
+
+    # Are we looking for something?
     if IsBound(o.lookingfor) and o.lookingfor <> fail then 
+        o.looking := true;
         if IsList(o.lookingfor) then
-            filts := filts and LookingForUsingList;
+            o.lookfunc := ORB_LookForList;
         elif IsRecord(o.lookingfor) and IsBound(o.lookingfor.ishash) then
-            filts := filts and LookingForUsingHash;
+            o.lookfunc := ORB_LookForHash;
         elif IsFunction(o.lookingfor) then
-            filts := filts and LookingForUsingFunc;
+            o.lookfunc := o.lookingfor;
         else
             Error("opt.lookingfor must be a list or a hash table or a",
                   " function");
         fi;
+    else
+        o.looking := false;
     fi;
     o.found := false; 
-    if not (IsBound( o.schreiergen ) or IsBound( o.schreier ) ) then 
-        o.schreiergen := fail; 
-        o.schreierpos := fail;
+
+    # Are we building a Schreier tree?
+    if not(IsBound(o.schreier)) or o.schreier = false then 
+        o.schreier := false;
+        o.schreiergen := false; 
+        o.schreierpos := false;
     else
-        filts := filts and WithSchreierTree;
         o.schreiergen := [fail];
         o.schreierpos := [fail];
     fi;
+
+    # Should we print a progress report?
     if not(IsBound(o.report)) then
-        o.report := 0;
+        o.report := false;
     fi;
-    if not(IsBound(o.storenumbers)) then
-        o.storenumbers := false;
+
+    # Are we storing positions in the hash?
+    if not(IsBound(o.storenumbers)) then o.storenumbers := false; fi;
+
+    # Set grpsizebound if unset:
+    if not(IsBound(o.grpsizebound)) then o.grpsizebound := false; fi;
+
+    # Set orbsizebound if unset:
+    if not(IsBound(o.orbsizebound)) then o.orbsizebound := false; fi;
+
+    # Set stabsizebound if unset:
+    if not(IsBound(o.stabsizebound)) then o.stabsizebound := false; fi;
+    
+    # Can we learn from the grpsizebound?
+    if o.grpsizebound <> false then
+        # Can we learn an orbit length bound from a group order bound?
+        if o.orbsizebound = false then o.orbsizebound := o.grpsizebound; fi;
+        # Can we learn a stabiliser bound from a group order bound?
+        if o.stabsizebound = false then o.stabsizebound := o.grpsizebound; fi;
     fi;
-    if not(IsBound(o.orbsizebound)) and IsBound(o.grpsizebound) then
-        o.orbsizebound := o.grpsizebound;
-    fi;
-    if not(IsBound(o.stabsizebound)) and IsBound(o.grpsizebound) then
-        o.stabsizebound := o.grpsizebound;
-    fi;
-    if IsBound(o.stabsizebound) and IsBound(o.stabsize) then
+
+    # Do we already know the complete stabiliser?
+    # (by now stabsizebound and stabsize are bound)
+    if o.stabsizebound <> false then
         if o.stabsize >= o.stabsizebound then
             Info(InfoOrb,2,"Stabilizer complete.");
             o.stabcomplete := true;
         fi;
     fi;
     
+    # Do we have a stopper set?
+    if not(IsBound(o.stopper)) then
+        o.stopper := false;   # no stopping condition
+    fi;
+
     # Now take this record as our orbit record and return:
     o.gens := gens;
-    o.nrgens := Length(gens);
-    o.stopper := false;   # no stopping condition
     o.genstoapply := [1..Length(gens)];   # an internal trick!
     o.op := op;
     o.orbit := [x];
     o.pos := 1;
+    # We distinguish three cases, first permutations on integers:
     if ForAll(gens,IsPerm) and IsPosInt(x) and op = OnPoints then
         # A special case for permutation acting on integers:
         lmp := LargestMovedPoint(gens);
@@ -189,9 +221,10 @@ InstallGlobalFunction( Orb,
         o.tab := 0*[1..lmp];
         o.tab[x] := 1;
         filts := filts and IsPermOnIntOrbitRep;
-        if not(IsBound(o.orbsizebound)) then
+        if o.orbsizebound = false then
             o.orbsizebound := lmp;
         fi;
+        o.storenumbers := true;  # we do this anyway!
     else
         # The standard case using a hash:
         if IsBound(o.eqfunc) and IsBound(o.hashfunc) then
@@ -201,16 +234,23 @@ InstallGlobalFunction( Orb,
                 o.ht.hfdbig := o.hfdbig;
                 o.ht.cangrow := true;
             fi;
+            filts := filts and IsHashOrbitRep;
         else
             o.ht := NewHT(x,hashlen);
+            if o.ht = fail then    # probably we found no hash function
+                filts := filts and IsSlowOrbitRep;
+            else
+                filts := filts and IsHashOrbitRep;
+            fi;
         fi;
-        if IsBound(o.stab) or o.storenumbers then
-            filts := filts and WithStoringNumbers;
-            AddHT(o.ht,x,1);
-        else
-            AddHT(o.ht,x,true);
+        if o.ht <> fail then
+            # Store the first point, if it is a hash orbit:
+            if o.storenumbers then
+                AddHT(o.ht,x,1);
+            else
+                AddHT(o.ht,x,true);
+            fi;
         fi;
-        filts := filts and IsHashOrbitRep;
     fi;
     Objectify( NewType(CollectionsFamily(FamilyObj(x)),filts), o );
     return o;
@@ -224,17 +264,16 @@ InstallMethod( ViewObj, "for an orbit", [IsOrbit and IsList and IsFinite],
         Print("Int-");
     fi;
     Print("orbit, ", Length(o!.orbit), " points");
-    if WithSchreierTree(o) then
+    if o!.schreier then
         Print(" with Schreier tree");
     fi;
-    if WithPermStabilizer(o) or WithMatStabilizer(o) then
+    if o!.permgens <> false or o!.matgens <> false then
         Print(" and stabilizer");
         if o!.onlystab then
             Print(" going for stabilizer");
         fi;
     fi;
-    if LookingForUsingList(o) or LookingForUsingHash(o) or 
-       LookingForUsingFunc(o) then
+    if o!.looking then
         Print(" looking for sth.");
     fi;
     Print(">");
@@ -266,13 +305,14 @@ InstallMethod( Position, "for an orbit object, an object, and an integer",
 
 InstallMethod( Position, 
   "for an orbit object storing numbers, an object, and an integer",
-  [IsOrbit and IsHashOrbitRep and IsDenseList and WithStoringNumbers, 
-   IsObject, IsInt],
+  [IsOrbit and IsHashOrbitRep and IsDenseList, IsObject, IsInt],
   function( orb, ob, pos )
     local p;
     p := ValueHT(orb!.ht,ob);
     if p = fail then
         return fail;
+    elif p = true then   # we did not store numbers!
+        return Position( orb!.orbit, ob, pos );  # do it the slow way!
     else
         if p > pos then
             return p;
@@ -284,7 +324,7 @@ InstallMethod( Position,
 
 InstallMethod( Position, 
   "for an orbit object perm on ints, an object, and an integer",
-  [IsOrbit and IsDenseList and IsPermOnIntOrbitRep, IsInt, IsInt],
+  [IsOrbit and IsDenseList and IsPermOnIntOrbitRep, IsPosInt, IsInt],
   function( orb, ob, pos )
     local p;
     if IsBound(orb!.tab[ob]) then
@@ -321,7 +361,7 @@ InstallMethod( \in,
 
 InstallMethod( \in,
   "for an object and an orbit object perms on int",
-  [IsInt, IsOrbit and IsDenseList and IsPermOnIntOrbitRep],
+  [IsPosInt, IsOrbit and IsDenseList and IsPermOnIntOrbitRep],
   function( ob, orb )
     local p;
     if IsBound(orb!.tab[ob]) then
@@ -356,137 +396,16 @@ InstallMethod( ActWithWord,
     return p;
   end );
 
-InstallMethod( LookFor, "for an orbit with a list and a point",
-  [ IsOrbit and LookingForUsingList, IsObject ],
+InstallGlobalFunction( ORB_LookForList,
   function( o, p )
     return p in o!.lookingfor;
   end );
 
-InstallMethod( LookFor, "for an orbit with a hash and a point",
-  [ IsOrbit and LookingForUsingHash, IsObject ],
+InstallGlobalFunction( ORB_LookForHash,
   function( o, p )
     return ValueHT(o!.lookingfor,p) <> fail;
   end );
 
-InstallMethod( LookFor, "for an orbit with a function and a point",
-  [ IsOrbit and LookingForUsingFunc, IsObject ],
-  function( o, p )
-    return o!.lookingfor(p);
-  end );
-    
-InstallMethod( LookFor, "for an orbit not looking for something and a point",
-  [ IsOrbit, IsObject ],
-  function( o, p )
-    return false;
-  end );
-
-InstallMethod( Enumerate, 
-  "for a hash orbit without Schreier tree and a limit", 
-  [IsOrbit and IsHashOrbitRep, IsCyclotomic],
-  function( o, limit )
-    local i,j,nr,orb,pos,yy,rep;
-    i := o!.pos;  # we go on here
-    orb := o!.orbit;
-    nr := Length(orb);
-    if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
-        limit := o!.orbsizebound; 
-    fi;
-    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
-        o!.found := 1;
-        return o;
-    fi;
-    rep := o!.report;
-    while nr <= limit and i <= nr and i <> o!.stopper do
-        for j in o!.genstoapply do
-            yy := o!.op(orb[i],o!.gens[j]);
-            pos := ValueHT(o!.ht,yy);
-            if pos = fail then
-                nr := nr + 1;
-                orb[nr] := yy;
-                if o!.storenumbers then
-                    AddHT(o!.ht,yy,nr);
-                else
-                    AddHT(o!.ht,yy,true);
-                fi;
-                if LookFor(o,yy) = true then
-                    o!.pos := i;
-                    o!.found := nr;
-                    return o;
-                fi;
-                if IsBound(o!.orbsizebound) and 
-                   Length(o!.orbit) >= o!.orbsizebound then
-                    o!.pos := i;
-                    SetFilterObj(o,IsClosed);
-                    return o;
-                fi;
-            fi;
-        od;
-        i := i + 1;
-        rep := rep - 1;
-        if rep = 0 then
-            rep := o!.report;
-            Info(InfoOrb,1,"Have ",nr," points.");
-        fi;
-    od;
-    o!.pos := i;
-    if i > nr then SetFilterObj(o,IsClosed); fi;
-    return o;
-end );
-
-## InstallMethod( Enumerate, 
-##   "for a hash orbit with Schreier tree and a limit", 
-##   [IsOrbit and IsHashOrbitRep and WithSchreierTree, IsCyclotomic ],
-##   function( o, limit )
-##     local i,j,nr,orb,pos,yy,rep;
-##     i := o!.pos;  # we go on here
-##     orb := o!.orbit;
-##     nr := Length(orb);
-##     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
-##         limit := o!.orbsizebound; 
-##     fi;
-##     if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
-##         o!.found := 1;
-##         return o;
-##     fi;
-##     rep := o!.report;
-##     while nr <= limit and i <= nr and i <> o!.stopper do
-##         for j in o!.genstoapply do
-##             yy := o!.op(orb[i],o!.gens[j]);
-##             pos := ValueHT(o!.ht,yy);
-##             if pos = fail then
-##                 nr := nr + 1;
-##                 orb[nr] := yy;
-##                 if o!.storenumbers then
-##                     AddHT(o!.ht,yy,nr);
-##                 else
-##                     AddHT(o!.ht,yy,true);
-##                 fi;
-##                 o!.schreiergen[nr] := j;
-##                 o!.schreierpos[nr] := i;
-##                 if LookFor(o,yy) = true then
-##                     o!.pos := i;
-##                     o!.found := nr;
-##                     return o;
-##                 fi;
-##                 if IsBound(o!.orbsizebound) and 
-##                    Length(o!.orbit) >= o!.orbsizebound then
-##                     o!.pos := i;
-##                     SetFilterObj(o,IsClosed);
-##                     return o;
-##                 fi;
-##             fi;
-##         od;
-##         i := i + 1;
-##         rep := rep - 1;
-##         if rep = 0 then
-##             rep := o!.report;
-##             Info(InfoOrb,1,"Have ",nr," points.");
-##         fi;
-##     od;
-##     o!.pos := i;
-##     if i > nr then SetFilterObj(o,IsClosed); fi;
-##     return o;
-## end );
 
 InstallGlobalFunction(ORB_MakeSchreierGeneratorPerm,
   function( o, i, j, pos )
@@ -494,7 +413,7 @@ InstallGlobalFunction(ORB_MakeSchreierGeneratorPerm,
     # Is stabilizer element trivial?
     wordf := TraceSchreierTreeForward(o,i);
     wordb := TraceSchreierTreeBack(o,pos);
-    if IsBound(o!.permbase) then
+    if o!.permbase <> false then
         basimg := ActWithWord(o!.permgens,wordf,
                               OnTuples,o!.permbase);
         basimg := OnTuples(basimg,o!.permgens[j]);
@@ -533,64 +452,112 @@ InstallGlobalFunction(ORB_MakeSchreierGeneratorPerm,
   end );
 
 InstallMethod( Enumerate, 
-  "for a hash orbit with or without permutation stabilizer and a limit", 
-  [IsOrbit and IsHashOrbitRep and WithSchreierTree, IsCyclotomic],
+  "for a hash orbit and a limit", 
+  [IsOrbit and IsHashOrbitRep, IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,pos,rep,yy;
-    i := o!.pos;  # we go on here
+    # We have lots of local variables because we copy stuff from the
+    # record into locals to speed up the access.
+    local gens,genstoapply,grpsizebound,ht,i,j,lookfunc,looking,nr,
+          onlystab,op,orb,orbsizebound,permgens,pos,rep,schreier,schreiergen,
+          schreiergenaction,schreierpos,stabsizebound,stopper,storenumbers,yy;
+
+    # Set a few local variables for faster access:
     orb := o!.orbit;
+    i := o!.pos;  # we go on here
     nr := Length(orb);
-    if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
-        limit := o!.orbsizebound; 
+
+    # We copy a few things to local variables to speed up access:
+    looking := o!.looking;
+    if looking then lookfunc := o!.lookfunc; fi;
+    stopper := o!.stopper;
+    onlystab := o!.onlystab;
+    storenumbers := o!.storenumbers;
+    op := o!.op;
+    gens := o!.gens;
+    ht := o!.ht;
+    genstoapply := o!.genstoapply;
+    schreier := o!.schreier;
+    if schreier then
+        schreiergen := o!.schreiergen;
+        schreierpos := o!.schreierpos;
     fi;
-    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
-        o!.found := 1;
-        return o;
+    orbsizebound := o!.orbsizebound;
+    permgens := o!.permgens;
+    grpsizebound := o!.grpsizebound;
+    schreiergenaction := o!.schreiergenaction;
+    stabsizebound := o!.stabsizebound;
+
+    # Maybe we are looking for something and it is the start point:
+    if i = 1 and o!.found = false and looking then
+        if lookfunc(o,orb[1]) then
+            o!.found := 1;
+            return o;
+        fi;
     fi;
+
     rep := o!.report;
-    while nr <= limit and i <= nr and i <> o!.stopper and
-          not(o!.stabcomplete and o!.onlystab) do
-        for j in o!.genstoapply do
-            yy := o!.op(orb[i],o!.gens[j]);
-            pos := ValueHT(o!.ht,yy);
+    while nr <= limit and i <= nr and i <> stopper do
+        # Catch the case that we only want the stabilizer:
+        if onlystab and o!.stabcomplete then break; fi;
+
+        # Now apply generators:
+        for j in genstoapply do
+            yy := op(orb[i],gens[j]);
+            pos := ValueHT(ht,yy);
             if pos = fail then
                 nr := nr + 1;
                 orb[nr] := yy;
-                if o!.storenumbers then
-                    AddHT(o!.ht,yy,nr);
+                if storenumbers then
+                    AddHT(ht,yy,nr);
                 else
-                    AddHT(o!.ht,yy,true);
+                    AddHT(ht,yy,true);
                 fi;
-                o!.schreiergen[nr] := j;
-                o!.schreierpos[nr] := i;
-                if LookFor(o,yy) = true then
-                    o!.pos := i;
-                    o!.found := nr;
-                    return o;
+
+                # Handle Schreier tree if desired:
+                if schreier then
+                    schreiergen[nr] := j;
+                    schreierpos[nr] := i;
                 fi;
-                if IsBound(o!.orbsizebound) and 
-                   Length(o!.orbit) >= o!.orbsizebound and
-                   (not(WithPermStabilizer(o)) or o!.stabcomplete) then
-                    o!.pos := i;
-                    SetFilterObj(o,IsClosed);
-                    return o;
+                
+                # Are we looking for something?
+                if looking then
+                    if lookfunc(o,yy) then
+                        o!.pos := i;
+                        o!.found := nr;
+                        return o;
+                    fi;
                 fi;
-                if IsBound(o!.grpsizebound) and not(o!.stabcomplete) then
-                    if Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
+
+                # Do we have a bound for the orbit length?
+                if orbsizebound <> false and nr >= orbsizebound then
+                    # The orbit is ready, but do we have the stabiliser?
+                    if permgens = false or o!.stabcomplete then
+                        o!.pos := i;
+                        SetFilterObj(o,IsClosed);
+                        return o;
+                    fi;
+                fi;
+
+                # Do we have a bound for the group and a stabiliser?
+                if grpsizebound <> false and not o!.stabcomplete then
+                    if nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
                 fi;
-            elif not(o!.stabcomplete) and o!.schreiergenaction <> false then
+
+            elif schreiergenaction <> false and not(o!.stabcomplete) then
+
                 # Trigger some action usually to produce Schreier generator:
-                if o!.schreiergenaction(o,i,j,pos) then
-                    if IsBound(o!.stabsizebound) and
-                       o!.stabsize >= o!.stabsizebound then
+                if schreiergenaction(o,i,j,pos) then
+                    # o!.stabsize has changed:
+                    if stabsizebound <> false and
+                       o!.stabsize >= stabsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
-                    if IsBound(o!.grpsizebound) and 
-                        Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
+                    if grpsizebound <> false and
+                       nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
@@ -598,172 +565,118 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
-        rep := rep - 1;
-        if rep = 0 then
-            rep := o!.report;
-            Info(InfoOrb,1,"Have ",nr," points.");
-        fi;
-    od;
-    o!.pos := i;
-    if i > nr then SetFilterObj(o,IsClosed); fi;
-    return o;
-end );
-
-InstallMethod( Enumerate, 
-  "for a perm on int orbit without Schreier tree and a limit", 
-  [IsOrbit and IsPermOnIntOrbitRep, IsCyclotomic],
-  function( o, limit )
-    local i,j,nr,orb,tab,yy,rep;
-    i := o!.pos;  # we go on here
-    orb := o!.orbit;
-    tab := o!.tab;
-    nr := Length(orb);
-    if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
-        limit := o!.orbsizebound; 
-    fi;
-    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
-        o!.found := 1;
-        return o;
-    fi;
-    rep := o!.report;
-    while nr <= limit and i <= nr and i <> o!.stopper do
-        for j in o!.genstoapply do
-            yy := o!.op(orb[i],o!.gens[j]);
-            if tab[yy] = 0 then
-                nr := nr + 1;
-                orb[nr] := yy;
-                tab[yy] := nr;
-                if LookFor(o,yy) = true then
-                    o!.pos := i;
-                    o!.found := nr;
-                    return o;
-                fi;
-                if IsBound(o!.orbsizebound) and 
-                   Length(o!.orbit) >= o!.orbsizebound then
-                    o!.pos := i;
-                    SetFilterObj(o,IsClosed);
-                    return o;
-                fi;
+        if rep <> false then
+            rep := rep - 1;
+            if rep = 0 then
+                rep := o!.report;
+                Info(InfoOrb,1,"Have ",nr," points.");
             fi;
-        od;
-        i := i + 1;
-        rep := rep - 1;
-        if rep = 0 then
-            rep := o!.report;
-            Info(InfoOrb,1,"Have ",nr," points.");
         fi;
     od;
     o!.pos := i;
-    if i > nr then SetFilterObj(o,IsClosed); fi;
+    if i > nr or nr >= o!.orbsizebound then SetFilterObj(o,IsClosed); fi;
     return o;
 end );
-
-## InstallMethod( Enumerate, 
-##   "for a perm on int orbit with Schreier tree and a limit", 
-##   [IsOrbit and IsPermOnIntOrbitRep and WithSchreierTree, IsCyclotomic],
-##   function( o, limit )
-##     local i,j,nr,orb,tab,yy,rep;
-##     i := o!.pos;  # we go on here
-##     orb := o!.orbit;
-##     tab := o!.tab;
-##     nr := Length(orb);
-##     if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
-##         limit := o!.orbsizebound; 
-##     fi;
-##     if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
-##         o!.found := 1;
-##         return o;
-##     fi;
-##     rep := o!.report;
-##     while nr <= limit and i <= nr and i <> o!.stopper do
-##         for j in o!.genstoapply do
-##             yy := o!.op(orb[i],o!.gens[j]);
-##             if tab[yy] = 0 then
-##                 nr := nr + 1;
-##                 orb[nr] := yy;
-##                 tab[yy] := nr;
-##                 o!.schreiergen[nr] := j;
-##                 o!.schreierpos[nr] := i;
-##                 if LookFor(o,yy) = true then
-##                     o!.pos := i;
-##                     o!.found := nr;
-##                     return o;
-##                 fi;
-##                 if IsBound(o!.orbsizebound) and 
-##                    Length(o!.orbit) >= o!.orbsizebound then
-##                     o!.pos := i;
-##                     SetFilterObj(o,IsClosed);
-##                     return o;
-##                 fi;
-##             fi;
-##         od;
-##         i := i + 1;
-##         rep := rep - 1;
-##         if rep = 0 then
-##             rep := o!.report;
-##             Info(InfoOrb,1,"Have ",nr," points.");
-##         fi;
-##     od;
-##     o!.pos := i;
-##     if i > nr then SetFilterObj(o,IsClosed); fi;
-##     return o;
-## end );
 
 InstallMethod( Enumerate, 
   "for a perm on int orbit with or without permutation stabilizer and a limit", 
-  [IsOrbit and IsPermOnIntOrbitRep and WithSchreierTree, IsCyclotomic],
+  [IsOrbit and IsPermOnIntOrbitRep, IsCyclotomic],
   function( o, limit )
-    local i,j,nr,orb,rep,tab,yy;
-    i := o!.pos;  # we go on here
+    # We have lots of local variables because we copy stuff from the
+    # record into locals to speed up the access.
+    local gens,genstoapply,grpsizebound,i,j,lookfunc,looking,nr,onlystab,orb,
+          orbsizebound,permgens,rep,schreier,schreiergen,schreiergenaction,
+          schreierpos,stabsizebound,stopper,tab,yy;
+
     orb := o!.orbit;
+    i := o!.pos;  # we go on here
     tab := o!.tab;
     nr := Length(orb);
-    if IsBound(o!.orbsizebound) and o!.orbsizebound < limit then 
-        limit := o!.orbsizebound; 
+
+    # We copy a few things to local variables to speed up access:
+    looking := o!.looking;
+    if looking then lookfunc := o!.lookfunc; fi;
+    stopper := o!.stopper;
+    onlystab := o!.onlystab;
+    gens := o!.gens;
+    genstoapply := o!.genstoapply;
+    schreier := o!.schreier;
+    if schreier then
+        schreiergen := o!.schreiergen;
+        schreierpos := o!.schreierpos;
     fi;
-    if i = 1 and o!.found = false and LookFor(o,o!.orbit[1]) then
-        o!.found := 1;
-        return o;
+    orbsizebound := o!.orbsizebound;
+    permgens := o!.permgens;
+    grpsizebound := o!.grpsizebound;
+    schreiergenaction := o!.schreiergenaction;
+    stabsizebound := o!.stabsizebound;
+
+    # Maybe we are looking for something and it is the start point:
+    if i = 1 and o!.found = false and looking then
+        if lookfunc(o,o!.orbit[1]) then
+            o!.found := 1;
+            return o;
+        fi;
     fi;
+
     rep := o!.report;
-    while nr <= limit and i <= nr and i <> o!.stopper and
-          not(o!.stabcomplete and o!.onlystab) do
-        for j in o!.genstoapply do
-            yy := o!.op(orb[i],o!.gens[j]);
+    while nr <= limit and i <= nr and i <> stopper do
+        # Catch the case that we only want the stabilizer:
+        if onlystab and o!.stabcomplete then break; fi;
+
+        # Now apply generators:
+        for j in genstoapply do
+            yy := orb[i]^gens[j];
             if tab[yy] = 0 then
                 nr := nr + 1;
                 orb[nr] := yy;
                 tab[yy] := nr;
-                o!.schreiergen[nr] := j;
-                o!.schreierpos[nr] := i;
-                if LookFor(o,yy) = true then
-                    o!.pos := i;
-                    o!.found := nr;
-                    return o;
+
+                # Handle Schreier tree if desired:
+                if schreier then
+                    o!.schreiergen[nr] := j;
+                    o!.schreierpos[nr] := i;
                 fi;
-                if IsBound(o!.orbsizebound) and 
-                   Length(o!.orbit) >= o!.orbsizebound and
-                   (not(WithPermStabilizer(o)) or o!.stabcomplete) then
-                    o!.pos := i;
-                    SetFilterObj(o,IsClosed);
-                    return o;
+
+                # Are we looking for something?
+                if looking then
+                    if lookfunc(o,yy) then
+                        o!.pos := i;
+                        o!.found := nr;
+                        return o;
+                    fi;
                 fi;
-                if IsBound(o!.grpsizebound) and not(o!.stabcomplete) then
-                    if Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
+
+                # Do we have a bound for the orbit length?
+                if orbsizebound <> false and nr >= orbsizebound then
+                    # The orbit is ready, but do we have the stabiliser?
+                    if permgens = false or o!.stabcomplete then
+                        o!.pos := i;
+                        SetFilterObj(o,IsClosed);
+                        return o;
+                    fi;
+                fi;
+
+                # Do we have a bound for the group and a stabiliser?
+                if grpsizebound <> false and not o!.stabcomplete then
+                    if nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
                 fi;
-            elif not(o!.stabcomplete) and o!.schreiergenaction <> false then
+
+            elif schreiergenaction <> false and not(o!.stabcomplete) then
+
                 # Trigger some action usually to produce Schreier generator:
-                if o!.schreiergenaction(o,i,j,tab[yy]) then
-                    if IsBound(o!.stabsizebound) and
-                       o!.stabsize >= o!.stabsizebound then
+                if schreiergenaction(o,i,j,tab[yy]) then
+                    # o!.stabsize has changed:
+                    if stabsizebound <> false and
+                       o!.stabsize >= stabsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
-                    if IsBound(o!.grpsizebound) and 
-                        Length(o!.orbit)*o!.stabsize*2 > o!.grpsizebound then
+                    if grpsizebound <> false and 
+                       nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
                         Info(InfoOrb,2,"Stabilizer complete.");
                     fi;
@@ -771,10 +684,12 @@ InstallMethod( Enumerate,
             fi;
         od;
         i := i + 1;
-        rep := rep - 1;
-        if rep = 0 then
-            rep := o!.report;
-            Info(InfoOrb,1,"Have ",nr," points.");
+        if rep <> false then
+            rep := rep - 1;
+            if rep = 0 then
+                rep := o!.report;
+                Info(InfoOrb,1,"Have ",nr," points.");
+            fi;
         fi;
     od;
     o!.pos := i;
@@ -792,7 +707,6 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
   function( o, gen )
     local lmp;
     Add(o!.gens,gen);
-    o!.nrgens := o!.nrgens + 1;
     if IsPermOnIntOrbitRep(o) then
         lmp := LargestMovedPoint(o!.gens);
         if lmp > Length(o!.tab) then
@@ -813,7 +727,7 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
   end );
 
 InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
-  [ IsOrbit and WithPermStabilizer, IsObject ],
+  [ IsOrbit, IsObject ],
   function( o, gen )
     local lmp;
     if not(IsList(gen)) or Length(gen) <> 2 then
@@ -821,7 +735,6 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
         return;
     fi;
     Add(o!.gens,gen[1]);
-    o!.nrgens := o!.nrgens + 1;
     ResetFilterObj(o,IsClosed);
     Add(o!.permgens,gen[2]);
     Add(o!.permgensi,gen[2]^-1);
@@ -844,9 +757,13 @@ InstallMethod( AddGeneratorToOrbit, "for an orbit and a generator",
   end );
 
 InstallMethod( TraceSchreierTreeForward, "for an orbit and a position",
-  [ IsOrbit and WithSchreierTree, IsPosInt ],
+  [ IsOrbit, IsPosInt ],
   function( o, pos )
     local word;
+    if not(o!.schreier) then
+        Error("Orbit does not have a Schreier tree");
+        return fail;
+    fi;
     word := [];
     while pos > 1 do
         Add(word,o!.schreiergen[pos]);
@@ -854,17 +771,15 @@ InstallMethod( TraceSchreierTreeForward, "for an orbit and a position",
     od;
     return Reversed(word);
   end );
-InstallMethod( TraceSchreierTreeForward, "for an orbit and a position",
-  [ IsOrbit, IsPosInt ],
-  function( o, pos )
-    Info(InfoOrb,1,"this orbit does not have a Schreier tree");
-    return fail;
-  end );
 
 InstallMethod( TraceSchreierTreeBack, "for an orbit and a position",
-  [ IsOrbit and WithSchreierTree, IsPosInt ],
+  [ IsOrbit, IsPosInt ],
   function( o, pos )
     local word;
+    if not(o!.schreier) then
+        Error("Orbit does not have a Schreier tree");
+        return fail;
+    fi;
     word := [];
     while pos > 1 do
         Add(word,o!.schreiergen[pos]);
@@ -872,43 +787,39 @@ InstallMethod( TraceSchreierTreeBack, "for an orbit and a position",
     od;
     return word;
   end );
-InstallMethod( TraceSchreierTreeBack, "for an orbit and a position",
-  [ IsOrbit, IsPosInt ],
-  function( o, pos )
-    Info(InfoOrb,1,"this orbit does not have a Schreier tree");
-    return fail;
-  end );
 
 InstallMethod( StabWords, "for an orbit with stabiliser",
-  [IsOrbit and WithPermStabilizer],
-  function( o ) return o!.stabwords; end );
+  [IsOrbit],
+  function( o ) 
+    if not(IsBound(o!.stabwords)) then
+        Error("Orbit does not have stabiliser information");
+        return fail;
+    else
+        return o!.stabwords;
+    fi;
+  end );
 
-InstallMethod( PositionOfFound,"for an orbit looking for something with a list",
-  [IsOrbit and LookingForUsingList],
-  function( o ) return o!.found; end );
-InstallMethod( PositionOfFound,"for an orbit looking for something with a hash",
-  [IsOrbit and LookingForUsingHash],
-  function( o ) return o!.found; end );
-InstallMethod( PositionOfFound,"for an orbit looking for something with a func",
-  [IsOrbit and LookingForUsingFunc],
-  function( o ) return o!.found; end );
+InstallMethod( PositionOfFound,"for an orbit",
+  [IsOrbit],
+  function( o ) 
+    if not(o!.looking) then
+        Error("Orbit is not looking for something");
+        return fail;
+    else
+        return o!.found; 
+    fi;
+  end );
 
 InstallOtherMethod( StabilizerOfExternalSet, 
   "for an orbit with permutation stabilizer",
-  [ IsOrbit and WithPermStabilizer ],
-  function( o ) return o!.stab; end );
-
-InstallOtherMethod( StabilizerOfExternalSet, 
-  "for an orbit with matrix stabilizer",
-  [ IsOrbit and WithMatStabilizer ],
-  function( o ) return o!.stab; end );
-
-InstallOtherMethod( StabilizerOfExternalSet,
-  "for an orbit without stabilizer",
   [ IsOrbit ],
   function( o ) 
-    Info(InfoOrb,1, "this orbit does not have a stabilizer" ); 
-    return fail;
+    if not(IsBound(o!.stab)) then
+        Error("Orbit does not have stabiliser information");
+        return fail;
+    else
+        return o!.stab;
+    fi;
   end );
 
 InstallMethod( ActionOnOrbit,
@@ -926,9 +837,12 @@ InstallMethod( ActionOnOrbit,
     
 InstallMethod( ActionOnOrbit, 
   "for a closed orbit with numbers and a list of elements",
-  [ IsOrbit and IsHashOrbitRep and WithStoringNumbers and IsClosed, IsList ],
+  [ IsOrbit and IsHashOrbitRep and IsClosed, IsList ],
   function( o, gens )
     local res,i;
+    if not(o!.storenumbers) then
+        return ORB_ActionOnOrbitIntermediateHash(o,gens);
+    fi;
     res := [];
     for i in [1..Length(gens)] do
       Add(res,PermList(
@@ -938,8 +852,7 @@ InstallMethod( ActionOnOrbit,
     return res;
   end );
  
-InstallMethod( ActionOnOrbit, "for a closed orbit and a list of elements",
-  [ IsOrbit and IsHashOrbitRep and IsClosed, IsList ],
+InstallGlobalFunction( ORB_ActionOnOrbitIntermediateHash,
   function( o, gens )
     local ht,i,res;
     ht := NewHT( o!.orbit[1], Length(o!.orbit)*2+1 );
@@ -981,7 +894,7 @@ InstallGlobalFunction( ORB_ComputeStabChain,
   function( o )
     # stab must be a perm group, stabchainrandom a number, permbase either
     # a list of integers or fail
-    if IsBound(o!.permbase) then
+    if o!.permbase <> false then
         o!.stabchain := StabChainOp(o!.stab,rec(base := o!.permbase, 
                                                 reduced := false,
                                                 random := o!.stabchainrandom) );

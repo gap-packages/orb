@@ -28,6 +28,9 @@ end );
 InstallGlobalFunction( NewHT, function(sample,len)
   local eqfun,hfun,ht;
   hfun := ChooseHashFunction(sample,len);
+  if hfun = fail then
+      return fail;
+  fi;
   eqfun := ApplicableMethod(\=,[sample,sample]);
   if eqfun = fail then eqfun := EQ; fi;
   if len < 11 then len := 11; fi;  # to avoid complete fillup! 
@@ -181,6 +184,12 @@ function(v,data)
 end );
 
 # Now the choosing methods for compressed vectors:
+
+InstallMethod( ChooseHashFunction, "failure method if all fails",
+  [IsObject,IsInt],
+  function(p,hashlen)
+    return fail;
+  end );
 
 InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
   [IsGF2VectorRep,IsInt],

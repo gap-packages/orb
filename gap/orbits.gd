@@ -30,22 +30,13 @@ DeclareCategory( "IsOrbit", IsComponentObjectRep and IsDenseList and
 DeclareFilter( "IsClosed", IsOrbit );
 
 # We have different representations, because we handle the case of perms
-# on numbers differently:
+# on numbers differently and have a slow version for nasty cases:
 DeclareRepresentation( "IsPermOnIntOrbitRep", IsOrbit, [] );
 DeclareRepresentation( "IsHashOrbitRep", IsOrbit, [] );
-
-# The following filters indicate, what extra stuff is computed/stored:
-DeclareFilter( "WithStoringNumbers" );     # for later lookup of points
-DeclareFilter( "WithSchreierTree" );       # Schreier tree
-DeclareFilter( "WithPermStabilizer" );     # Stabiliser as perm group
-DeclareFilter( "WithMatStabilizer" );      # Stabiliser as matrix group
-DeclareFilter( "LookingForUsingList" );    # for searching
-DeclareFilter( "LookingForUsingHash" );    # for searching
-DeclareFilter( "LookingForUsingFunc" );    # for searching
+DeclareRepresentation( "IsSlowOrbitRep", IsOrbit, [] );
 
 # Now the constructor method:
 DeclareGlobalFunction( "Orb" );
-DeclareGlobalFunction( "InitOrbit" );  # the original name, still works
 
 # Orbit enumeration is triggered by "Enumerate":
 DeclareOperation( "Enumerate", [ IsOrbit, IsCyclotomic ] );
@@ -55,9 +46,10 @@ DeclareGlobalFunction( "ORB_MakeSchreierGeneratorPerm" );
 # Later addition of a generator to an orbit:
 DeclareOperation( "AddGeneratorToOrbit", [ IsOrbit, IsObject ] );
 
-# This is for the searching infrastructure, an operation to decide
+# This is for the searching infrastructure, some functions that check
 # whether a newly found is one of the points we are looking for:
-DeclareOperation( "LookFor", [ IsOrbit, IsObject ] );
+DeclareGlobalFunction( "ORB_LookForList" );
+DeclareGlobalFunction( "ORB_LookForHash" );
 
 # Things to get information out of an orbit enumeration:
 DeclareOperation( "TraceSchreierTreeBack", [ IsOrbit, IsPosInt ] );
@@ -69,6 +61,7 @@ DeclareOperation( "PositionOfFound", [ IsOrbit ] );
 
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );
+DeclareGlobalFunction( "ORB_ActionOnOrbitIntermediateHash" );
 
 # A helper function for base image computations:
 DeclareGlobalFunction( "ORB_SiftBaseImage" );
