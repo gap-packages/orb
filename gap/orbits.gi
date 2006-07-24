@@ -27,13 +27,15 @@ InstallValue( ORB, rec( ) );
 #  .stabchainrandom
 #  .permbase
 #  .stab
-#  .storenumbers
-#  .hashlen      for the call version with 3 or 4 arguments with options
-#  .hashfunc     only together with next option, hashs cannot grow!
+#  .storenumbers    indicates whether positions are stored in the hash
+#  .hashlen         for the call version with 3 or 4 arguments with options
+#  .hashfunc        only together with next option, hashs cannot grow!
 #  .eqfunc
-#  .storingnumbers  indicates whether positions are stored in the hash
 #  .looking
 #  .lookfunc
+#  .log             either false or a list of length 2 orbitlength
+#  .logind          index into log
+#  .logpos          write position in log
 
 # Outputs:
 #  .gens
@@ -205,6 +207,15 @@ InstallGlobalFunction( Orb,
         o.stopper := false;   # no stopping condition
     fi;
 
+    # Do we write a log?
+    if IsBound(o.log) and o.log = true then
+        o.log := [];
+        o.logind := [];
+        o.logpos := 1;
+    else
+        o.log := false;
+    fi;
+
     # Now take this record as our orbit record and return:
     o.gens := gens;
     o.genstoapply := [1..Length(gens)];   # an internal trick!
@@ -260,22 +271,15 @@ InstallMethod( ViewObj, "for an orbit", [IsOrbit and IsList and IsFinite],
   function( o )
     Print("<");
     if IsClosed(o) then Print("closed "); else Print("open "); fi;
-    if IsPermOnIntOrbitRep(o) then
-        Print("Int-");
-    fi;
+    if IsPermOnIntOrbitRep(o) then Print("Int-"); fi;
     Print("orbit, ", Length(o!.orbit), " points");
-    if o!.schreier then
-        Print(" with Schreier tree");
-    fi;
+    if o!.schreier then Print(" with Schreier tree"); fi;
     if o!.permgens <> false or o!.matgens <> false then
         Print(" and stabilizer");
-        if o!.onlystab then
-            Print(" going for stabilizer");
-        fi;
+        if o!.onlystab then Print(" going for stabilizer"); fi;
     fi;
-    if o!.looking then
-        Print(" looking for sth.");
-    fi;
+    if o!.looking then Print(" looking for sth."); fi;
+    if o!.log <> false then Print(" with log"); fi;
     Print(">");
   end );
 
@@ -457,9 +461,10 @@ InstallMethod( Enumerate,
   function( o, limit )
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
-    local gens,genstoapply,grpsizebound,ht,i,j,lookfunc,looking,nr,
-          onlystab,op,orb,orbsizebound,permgens,pos,rep,schreier,schreiergen,
-          schreiergenaction,schreierpos,stabsizebound,stopper,storenumbers,yy;
+    local gens,genstoapply,grpsizebound,ht,i,j,log,logind,logpos,lookfunc,
+          looking,nr,onlystab,op,orb,orbsizebound,permgens,pos,rep,schreier,
+          schreiergen,schreiergenaction,schreierpos,stabsizebound,stopper,
+          storenumbers,yy;
 
     # Set a few local variables for faster access:
     orb := o!.orbit;
@@ -486,6 +491,11 @@ InstallMethod( Enumerate,
     grpsizebound := o!.grpsizebound;
     schreiergenaction := o!.schreiergenaction;
     stabsizebound := o!.stabsizebound;
+    log := o!.log;
+    if log <> false then
+        logind := o!.logind;
+        logpos := o!.logpos;
+    fi;
 
     # Maybe we are looking for something and it is the start point:
     if i = 1 and o!.found = false and looking then
@@ -499,6 +509,9 @@ InstallMethod( Enumerate,
     while nr <= limit and i <= nr and i <> stopper do
         # Catch the case that we only want the stabilizer:
         if onlystab and o!.stabcomplete then break; fi;
+
+        # Are we logging?
+        if log <> false then logind[i] := logpos; fi;
 
         # Now apply generators:
         for j in genstoapply do
@@ -519,6 +532,14 @@ InstallMethod( Enumerate,
                     schreierpos[nr] := i;
                 fi;
                 
+                # Handle logging if desired:
+                if log <> false then
+                    log[logpos] := j;
+                    log[logpos+1] := nr;
+                    logpos := logpos+2;
+                    o!.logpos := logpos;   # write back to preserve
+                fi;
+                
                 # Are we looking for something?
                 if looking then
                     if lookfunc(o,yy) then
@@ -531,7 +552,9 @@ InstallMethod( Enumerate,
                 # Do we have a bound for the orbit length?
                 if orbsizebound <> false and nr >= orbsizebound then
                     # The orbit is ready, but do we have the stabiliser?
-                    if permgens = false or o!.stabcomplete then
+                    # Also, only early stop if no log is written!
+                    if (permgens = false or o!.stabcomplete) and
+                       log = false then
                         o!.pos := i;
                         SetFilterObj(o,IsClosed);
                         return o;
@@ -574,7 +597,11 @@ InstallMethod( Enumerate,
         fi;
     od;
     o!.pos := i;
-    if i > nr or nr >= o!.orbsizebound then SetFilterObj(o,IsClosed); fi;
+    if i > nr or nr >= o!.orbsizebound then 
+        SetFilterObj(o,IsClosed); 
+        # Close log:
+        if log <> false then logind[nr+1] := logpos; fi;
+    fi;
     return o;
 end );
 
@@ -584,9 +611,10 @@ InstallMethod( Enumerate,
   function( o, limit )
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
-    local gens,genstoapply,grpsizebound,i,j,lookfunc,looking,nr,onlystab,orb,
-          orbsizebound,permgens,rep,schreier,schreiergen,schreiergenaction,
-          schreierpos,stabsizebound,stopper,tab,yy;
+    local gens,genstoapply,grpsizebound,i,j,log,logind,logpos,lookfunc,
+          looking,nr,onlystab,orb,orbsizebound,permgens,rep,schreier,
+          schreiergen,schreiergenaction,schreierpos,stabsizebound,
+          stopper,tab,yy;
 
     orb := o!.orbit;
     i := o!.pos;  # we go on here
@@ -610,6 +638,11 @@ InstallMethod( Enumerate,
     grpsizebound := o!.grpsizebound;
     schreiergenaction := o!.schreiergenaction;
     stabsizebound := o!.stabsizebound;
+    log := o!.log;
+    if log <> false then
+        logind := o!.logind;
+        logpos := o!.logpos;
+    fi;
 
     # Maybe we are looking for something and it is the start point:
     if i = 1 and o!.found = false and looking then
@@ -623,6 +656,9 @@ InstallMethod( Enumerate,
     while nr <= limit and i <= nr and i <> stopper do
         # Catch the case that we only want the stabilizer:
         if onlystab and o!.stabcomplete then break; fi;
+
+        # Are we logging?
+        if log <> false then logind[i] := logpos; fi;
 
         # Now apply generators:
         for j in genstoapply do
@@ -638,6 +674,14 @@ InstallMethod( Enumerate,
                     o!.schreierpos[nr] := i;
                 fi;
 
+                # Handle logging if desired:
+                if log <> false then
+                    log[logpos] := j;
+                    log[logpos+1] := nr;
+                    logpos := logpos+2;
+                    o!.logpos := logpos;  # write back to preserve
+                fi;
+                
                 # Are we looking for something?
                 if looking then
                     if lookfunc(o,yy) then
@@ -648,9 +692,11 @@ InstallMethod( Enumerate,
                 fi;
 
                 # Do we have a bound for the orbit length?
-                if orbsizebound <> false and nr >= orbsizebound then
+                if (orbsizebound <> false and nr >= orbsizebound) then
                     # The orbit is ready, but do we have the stabiliser?
-                    if permgens = false or o!.stabcomplete then
+                    # Also only stop early if not log is written.
+                    if (permgens = false or o!.stabcomplete) and
+                       log = false then
                         o!.pos := i;
                         SetFilterObj(o,IsClosed);
                         return o;
@@ -693,7 +739,11 @@ InstallMethod( Enumerate,
         fi;
     od;
     o!.pos := i;
-    if i > nr then SetFilterObj(o,IsClosed); fi;
+    if i > nr then 
+        SetFilterObj(o,IsClosed); 
+        # Close log:
+        if log <> false then logind[nr+1] := logpos; fi;
+    fi;
     return o;
 end );
 
