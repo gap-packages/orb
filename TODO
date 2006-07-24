@@ -1,3 +1,9 @@
+  finish AddGeneratorsToOrbit
+  test it
+  ShallowSchreierTrees
+  more test files
+  adjust documentation
+
 Documentation:
   eqfunc and hashfunc options for Orb
   hfbig and hfdbig options for Orb
