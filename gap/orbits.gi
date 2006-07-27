@@ -224,6 +224,11 @@ InstallGlobalFunction( Orb,
 
     # Now take this record as our orbit record and return:
     o.gens := gens;
+    if IsObjWithMemory(gens[1]) then
+        o.memorygens := true;
+    else
+        o.memorygens := false;
+    fi;
     o.genstoapply := [1..Length(gens)];   # an internal trick!
     o.op := op;
     o.orbit := [x];
@@ -473,8 +478,8 @@ InstallMethod( Enumerate,
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
     local depth,depthmarks,gens,genstoapply,grpsizebound,ht,i,j,log,logind,
-          logpos,lookfunc,looking,nr,onlystab,op,orb,orbsizebound,permgens,
-          pos,rep,schreier,schreiergen,schreiergenaction,schreierpos,
+          logpos,lookfunc,looking,memorygens,nr,onlystab,op,orb,orbsizebound,
+          permgens,pos,rep,schreier,schreiergen,schreiergenaction,schreierpos,
           stabsizebound,stopper,storenumbers,suc,yy;
 
     # Set a few local variables for faster access:
@@ -490,6 +495,7 @@ InstallMethod( Enumerate,
     storenumbers := o!.storenumbers;
     op := o!.op;
     gens := o!.gens;
+    memorygens := o!.memorygens;
     ht := o!.ht;
     genstoapply := o!.genstoapply;
     schreier := o!.schreier;
@@ -537,7 +543,11 @@ InstallMethod( Enumerate,
 
         # Now apply generators:
         for j in genstoapply do
-            yy := op(orb[i],gens[j]);
+            if memorygens then
+                yy := op(orb[i],gens[j]!.el);
+            else
+                yy := op(orb[i],gens[j]);
+            fi;
             pos := ValueHT(ht,yy);
             if pos = fail then
                 nr := nr + 1;
@@ -651,8 +661,8 @@ InstallMethod( Enumerate,
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
     local depth,depthmarks,gens,genstoapply,grpsizebound,i,j,log,logind,
-          logpos,lookfunc,looking,nr,onlystab,orb,orbsizebound,permgens,
-          rep,schreier,schreiergen,schreiergenaction,schreierpos,
+          logpos,lookfunc,looking,memorygens,nr,onlystab,orb,orbsizebound,
+          permgens,rep,schreier,schreiergen,schreiergenaction,schreierpos,
           stabsizebound,stopper,suc,tab,yy;
 
     orb := o!.orbit;
@@ -666,6 +676,7 @@ InstallMethod( Enumerate,
     stopper := o!.stopper;
     onlystab := o!.onlystab;
     gens := o!.gens;
+    memorygens := o!.memorygens;
     genstoapply := o!.genstoapply;
     schreier := o!.schreier;
     if schreier then
@@ -712,7 +723,11 @@ InstallMethod( Enumerate,
 
         # Now apply generators:
         for j in genstoapply do
-            yy := orb[i]^gens[j];
+            if memorygens then
+                yy := orb[i]^(gens[j]!.el);
+            else
+                yy := orb[i]^gens[j];
+            fi;
             if tab[yy] = 0 then
                 nr := nr + 1;
                 orb[nr] := yy;
@@ -882,9 +897,9 @@ InstallMethod( AddGeneratorsToOrbit,
     # We basically reimplement the breadth-first orbit enumeration
     # without looking for something and generating Schreier generators:
     local depth,depthmarks,gen,genabs,gens,genstoapply,ht,i,ii,inneworbit,j,
-          log,logind,logpos,nr,nr2,nrgens,oldlog,oldlogind,oldnr,oldnrgens,op,
-          orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,storenumbers,
-          suc,yy;
+          log,logind,logpos,memorygens,nr,nr2,nrgens,oldlog,oldlogind,oldnr,
+          oldnrgens,op,orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,
+          storenumbers,suc,yy;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -901,6 +916,7 @@ InstallMethod( AddGeneratorsToOrbit,
     oldnrgens := Length(o!.gens);
     o!.gens := Concatenation(o!.gens,newgens);
     gens := o!.gens;
+    memorygens := o!.memorygens;
     nrgens := Length(gens);
     ht := o!.ht;
     schreier := o!.schreier;
@@ -971,7 +987,11 @@ InstallMethod( AddGeneratorsToOrbit,
             genstoapply := [1..nrgens];
         fi;
         for j in genstoapply do
-            yy := op(orb[i],gens[j]);
+            if memorygens then
+                yy := op(orb[i],gens[j]!.el);
+            else
+                yy := op(orb[i],gens[j]);
+            fi;
             pos := ValueHT(ht,yy);
             if pos = fail then   # a completely new point
                 # Put it into the database:
@@ -1049,8 +1069,9 @@ InstallMethod( AddGeneratorsToOrbit,
     # We basically reimplement the breadth-first orbit enumeration
     # without looking for something and generating Schreier generators:
     local depth,depthmarks,gen,genabs,gens,genstoapply,i,ii,inneworbit,j,log,
-          logind,logpos,nr,nr2,nrgens,oldlog,oldlogind,oldnr,oldnrgens,orb,
-          orbind,pos,pt,rep,schreier,schreiergen,schreierpos,suc,tab,yy;
+          logind,logpos,memorygens,nr,nr2,nrgens,oldlog,oldlogind,oldnr,
+          oldnrgens,orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,
+          suc,tab,yy;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -1066,6 +1087,7 @@ InstallMethod( AddGeneratorsToOrbit,
     oldnrgens := Length(o!.gens);
     o!.gens := Concatenation(o!.gens,newgens);
     gens := o!.gens;
+    memorygens := o!.memorygens;
     nrgens := Length(gens);
     schreier := o!.schreier;
     if schreier then
@@ -1135,8 +1157,12 @@ InstallMethod( AddGeneratorsToOrbit,
             genstoapply := [1..nrgens];
         fi;
         for j in genstoapply do
-            yy := orb[i]^gens[j];
-            if not(IsBound(tab[yy])) then
+            if memorygens then
+                yy := orb[i]^(gens[j]!.el);
+            else
+                yy := orb[i]^gens[j];
+            fi;
+            if not(IsBound(tab[yy])) or tab[yy] = 0 then
                 pos := fail;
             else
                 pos := tab[yy];
@@ -1309,10 +1335,17 @@ InstallMethod( ActionOnOrbit,
   function( o, gens )
     local res,i;
     res := [];
-    for i in [1..Length(gens)] do
-      Add(res,PermList( List([1..Length(o!.orbit)],
-                             j->o!.tab[o!.op(o!.orbit[j],gens[i])])));
-    od;
+    if o!.memorygens then
+        for i in [1..Length(gens)] do
+          Add(res,PermList( List([1..Length(o!.orbit)],
+                                 j->o!.tab[o!.op(o!.orbit[j],gens[i]!.el)])));
+        od;
+    else
+        for i in [1..Length(gens)] do
+          Add(res,PermList( List([1..Length(o!.orbit)],
+                                 j->o!.tab[o!.op(o!.orbit[j],gens[i])])));
+        od;
+    fi;
     return res;
   end );
     
@@ -1325,11 +1358,19 @@ InstallMethod( ActionOnOrbit,
         return ORB_ActionOnOrbitIntermediateHash(o,gens);
     fi;
     res := [];
-    for i in [1..Length(gens)] do
-      Add(res,PermList(
-       List([1..Length(o!.orbit)],
-            j->ValueHT(o!.ht,o!.op(o!.orbit[j],gens[i])))));
-    od;
+    if o!.memorygens then
+        for i in [1..Length(gens)] do
+          Add(res,PermList(
+           List([1..Length(o!.orbit)],
+                j->ValueHT(o!.ht,o!.op(o!.orbit[j],gens[i]!.el)))));
+        od;
+    else
+        for i in [1..Length(gens)] do
+          Add(res,PermList(
+           List([1..Length(o!.orbit)],
+                j->ValueHT(o!.ht,o!.op(o!.orbit[j],gens[i])))));
+        od;
+    fi;
     return res;
   end );
  
@@ -1341,10 +1382,19 @@ InstallGlobalFunction( ORB_ActionOnOrbitIntermediateHash,
         AddHT(ht,o!.orbit[i],i);
     od;
     res := [];
-    for i in [1..Length(gens)] do
-      Add(res,PermList(
-       List([1..Length(o!.orbit)],j->ValueHT(ht,o!.op(o!.orbit[j],gens[i])))));
-    od;
+    if o!.memorygens then
+        for i in [1..Length(gens)] do
+          Add(res,PermList(
+           List([1..Length(o!.orbit)],j->ValueHT(ht,
+                                      o!.op(o!.orbit[j],gens[i]!.el)))));
+        od;
+    else
+        for i in [1..Length(gens)] do
+          Add(res,PermList(
+           List([1..Length(o!.orbit)],j->ValueHT(ht,
+                                      o!.op(o!.orbit[j],gens[i])))));
+        od;
+    fi;
     return res;
   end );
 
