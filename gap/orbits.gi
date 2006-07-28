@@ -627,10 +627,12 @@ InstallMethod( Enumerate,
             fi;
         od;
         # Now close the log for this point:
-        if suc then
-            log[logpos-2] := -log[logpos-2];
-        else
-            logind[i] := 0;
+        if log <> false then
+            if suc then
+                log[logpos-2] := -log[logpos-2];
+            else
+                logind[i] := 0;
+            fi;
         fi;
         i := i + 1;
         if rep <> false then
@@ -802,10 +804,12 @@ InstallMethod( Enumerate,
             fi;
         od;
         # Now close the log for this point:
-        if suc then
-            log[logpos-2] := -log[logpos-2];
-        else
-            logind[i] := 0;
+        if log <> false then
+            if suc then
+                log[logpos-2] := -log[logpos-2];
+            else
+                logind[i] := 0;
+            fi;
         fi;
         i := i + 1;
         if rep <> false then
@@ -1235,19 +1239,22 @@ end );
 InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
   [ IsOrbit and IsClosed and IsOrbitWithLog, IsPosInt ],
   function( o, l )
-    local i,w,x;
+    local i,w,x,tries;
     if not(o!.schreier) then
         Error("Orbit has no Schreier tree");
-        return fail;
+        return;
     fi;
-    if Length(o) < 10 then 
+    if Length(o) < 20 then 
         Info(InfoOrb,2,"Very small orbit, doing nothing.");
+        return;
     fi;
-    while o!.depth > l do
+    tries := 1;
+    while o!.depth > l and tries <= 3 do
+        tries := tries + 1;
         x := [];
         for i in [1..Maximum(QuoInt(o!.depth,l),3)] do
             w := TraceSchreierTreeForward(o,
-                          o!.orbind[Random(2,QuoInt(Length(o),5))]);
+                          o!.orbind[Random(2,QuoInt(Length(o),2))]);
             Add(x,Product(o!.gens{w}));
         od;
         Info(InfoOrb,1,"Adding ",Length(x),
@@ -1255,6 +1262,9 @@ InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
         AddGeneratorsToOrbit(o,x);
         Info(InfoOrb,1,"Depth is now ",o!.depth);
     od;
+    if tries > 3 then
+        Info(InfoOrb,1,"Giving up, Schreier tree is not shallow.");
+    fi;
   end );
             
 InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
