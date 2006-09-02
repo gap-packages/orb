@@ -10,26 +10,6 @@
 ##
 #############################################################################
 
-###################
-# Random sources: #
-###################
-
-BindGlobal( "RandomSourcesFamily", NewFamily( "RandomSourcesFamily" ) );
-DeclareCategory( "IsRandomSource", IsComponentObjectRep );
-DeclareRepresentation( "IsGlobalRandomSourceRep", IsRandomSource, [] );
-DeclareGlobalVariable( "RandomSourceType" );
-
-# The constructor:
-DeclareOperation( "RandomSource", [IsString] );
-
-# Usage:
-DeclareOperation( "Reset", [IsRandomSource] );
-DeclareOperation( "Random", [IsRandomSource, IsInt, IsInt] );
-DeclareOperation( "Random", [IsRandomSource, IsList] );
-
-# For other objects:
-DeclareFilter( "HasRandomSource" );
-
 # For compressed vectors that know what they can contain:
 DeclareOperation( "Randomize", [IsObject] );
 DeclareOperation( "Randomize", [IsObject, IsRandomSource] );

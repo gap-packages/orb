@@ -10,67 +10,6 @@
 ##
 #############################################################################
 
-# Random sources:
-
-InstallValue(RandomSourceType, NewType(RandomSourcesFamily, IsRandomSource));
-
-InstallMethod( RandomSource, "place holder if io package is not there",
-  [ IsString ],
-  function( type )
-    if type <> "random" and type <> "urandom" then TryNextMethod(); fi;
-    if TestPackageAvailability("io","1.1") = fail then
-        Error("Please install the IO package to use real random sources.");
-        return fail;
-    fi;
-    LoadPackage("io");
-    ReadPackage("orb","gap/realrandom.gd");
-    ReadPackage("orb","gap/realrandom.gi");
-    return RandomSource(type);
-  end );
-
-InstallMethod( RandomSource, "the global random source", [IsString],
-  function( type )
-    local r;
-    if type <> "global" then TryNextMethod(); fi;
-    # Return the global random source:
-    r := rec(origstate := StateRandom()); 
-    Objectify(RandomSourceType,r);
-    SetFilterObj(r,IsGlobalRandomSourceRep);
-    return r;
-  end );
-
-InstallMethod( Reset, "for the global random source",
-  [IsRandomSource and IsGlobalRandomSourceRep],
-  function( r )
-    RestoreStateRandom( r!.origstate );
-  end );
-
-InstallMethod( Random, 
-  "for a random source using the global source and two integers",
-  [IsRandomSource and IsGlobalRandomSourceRep, IsInt, IsInt],
-  function( rs, from, to )
-    return Random(from,to);
-  end );
-
-InstallMethod( Random, 
-  "for a random source using the global source and a list",
-  [IsRandomSource and IsGlobalRandomSourceRep, IsList],
-  function( rs, list )
-    return Random(list);
-  end );
-
-InstallMethod( ViewObj, "for a random source using the global source",
-  [IsRandomSource and IsGlobalRandomSourceRep],
-  function(rs)
-    Print("<the global random source>");
-  end );
-
-InstallMethod( ViewObj, "for a random source",
-  [IsRandomSource],
-  function(rs)
-    Print("<a random source>");
-  end );
-
 # Random vectors and matrices:
 
 InstallMethod( Randomize, "for a compressed GF2 vector",
@@ -121,7 +60,7 @@ InstallMethod( Randomize,
     q := Size(q);
     MultRowVector(v,0*z);
     for i in [1..Length(v)] do
-        r := Random(0,q-1);
+        r := Random(rs,0,q-1);
         if r <> 0 then v[i] := z^r; fi;
     od;
     return v;
@@ -176,7 +115,7 @@ InstallGlobalFunction( MakeRandomVectors,
     if Length(arg) = 3 then
         randomsource := arg[3];
     else
-        randomsource := RandomSource("global");
+        randomsource := RandomSource(IsGlobalRandomSource);
     fi;
     
     l := [];
@@ -201,7 +140,7 @@ InstallGlobalFunction( MakeRandomLines,
     if Length(arg) = 3 then
         randomsource := arg[3];
     else
-        randomsource := RandomSource("global");
+        randomsource := RandomSource(IsGlobalRandomSource);
     fi;
     
     l := [];
@@ -235,7 +174,7 @@ InstallMethod( ProductReplacer,
     local pr;
     pr := ShallowCopy(opt);
     if not IsBound(pr.randomsource) then
-        pr.randomsource := RandomSource("global");
+        pr.randomsource := RandomSource(IsGlobalRandomSource);
     fi;
     if not IsBound(pr.scramble) then 
         pr.scramble := 100; 
