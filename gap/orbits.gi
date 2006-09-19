@@ -1445,6 +1445,15 @@ InstallGlobalFunction( ORB_ComputeStabChain,
     o!.stabsize := SizeStabChain(o!.stabchain);
   end );
 
+
+#######################################################################
+# A generic way to find out about the memory needed by an object:
+#######################################################################
+
+InstallMethod( Memory, "fallback method returning fail",
+  [IsObject], function( ob ) return fail; end );
+
+
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically

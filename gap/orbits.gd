@@ -72,6 +72,8 @@ DeclareGlobalFunction( "ORB_ActionOnOrbitIntermediateHash" );
 DeclareGlobalFunction( "ORB_SiftBaseImage" );
 DeclareGlobalFunction( "ORB_ComputeStabChain" );
 
+# A generic way to find out about the memory needed by an object:
+DeclareOperation( "Memory", IsObject );
   
 #######################################################################
 # The following loads the sub-package "QuotFinder":
