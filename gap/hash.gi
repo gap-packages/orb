@@ -347,3 +347,26 @@ InstallGlobalFunction( ORB_HashFunctionModWrapper,
     return data[1](p,data[2]) mod data[3];
   end );
 
+InstallGlobalFunction( ORB_HashFunctionForMatList,
+  function(ob,data)
+    local i,m,res;
+    res := 0;
+    for m in ob do
+        res := (res * data[1] + data[3].func(m,data[3].data)) mod data[2];
+    od;
+    return res+1;
+  end );
+    
+InstallMethod( ChooseHashFunction, "for lists of matrices",
+  [IsList, IsInt],
+  function( l, hashlen )
+    # FIXME:
+    local r;
+    if ForAll(l,IsMatrix) then
+        r := ChooseHashFunction( l[1], hashlen );
+        return rec( func := ORB_HashFunctionForMatList, 
+                    data := [101,hashlen,r] );
+    fi;
+    TryNextMethod();
+  end );
+

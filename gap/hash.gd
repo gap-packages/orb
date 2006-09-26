@@ -39,4 +39,5 @@ DeclareGlobalFunction( "ORB_HashFunctionForPermutations" );
 DeclareGlobalFunction( "ORB_HashFunctionForIntList" );
 DeclareGlobalFunction( "ORB_HashFunctionForNBitsPcWord" );
 DeclareGlobalFunction( "ORB_HashFunctionModWrapper" );
+DeclareGlobalFunction( "ORB_HashFunctionForMatList" );
 
