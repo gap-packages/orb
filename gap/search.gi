@@ -280,6 +280,9 @@ InstallMethod( RandomSearcher,
     if not IsBound(r.addslots) then
         r.addslots := 10;
     fi;
+    if not IsBound(r.limit) then
+        r.limit := infinity;
+    fi;
     r.stops := 0;
     r.tries := 0;
     r.testfunc := testfunc;
@@ -326,6 +329,9 @@ InstallMethod( Search, "for a random searcher", [IsRandomSearcher],
                 y := x!.el;
             else
                 y := x;
+            fi;
+            if rs!.tries > rs!.limit then
+                return fail;
             fi;
         until not( y in rs!.exceptions );
     until rs!.testfunc(y);
@@ -784,4 +790,146 @@ InstallGlobalFunction( SLPForWordList,
     Add(slp,line);
     return [StraightLineProgram(slp,nrgens),havewords,where];
 end );
+
+
+#############################################################################
+# A generic way to find stabilizers:
+#############################################################################
+
+InstallGlobalFunction( ORB_EstimatePermGroupSize,
+  function( gens )
+    local g,s;
+    g := Group(gens);
+    s := StabChain(g,rec( random := 900 ));
+    return SizeStabChain(s);
+  end );
+
+
+InstallGlobalFunction( ORB_FindStabilizerMC,
+  function( gens, pt, op, memory, limit, errorbound, estimatefunc, opt )
+    local counter,done,est,gensi,mem,o,oldest,orbpart,p,pr,prob,stab,tries,
+          x,y,z;
+    mem := Memory(pt);
+    if mem = fail then
+        mem := SHALLOW_SIZE(pt);
+        if mem = 0 then mem := GAPInfo.BytesPerVariable; fi;
+    fi;
+    orbpart := QuoInt(memory,mem);
+    o := Orb( gens, pt, op, rec( report := QuoInt(orbpart,10), 
+                                 schreier := true, 
+                                 hashlen := NextPrimeInt( orbpart*2 ) ) );
+    Info( InfoOrb, 2, "Enumerating up to ",orbpart," elements of orbit..." );
+    Enumerate(o,orbpart);
+
+    # Now find stabilizer generators:
+    stab := [];
+    done := false;
+    tries := 0;
+    pr := ProductReplacer(gens,opt);
+    est := 1;
+    prob := 1;
+    gensi := List(gens,x->x^-1);
+    while prob > errorbound do
+        counter := 0;
+        repeat
+            counter := counter + 1;
+            x := Next(pr);
+            y := op(pt,x);
+            p := Position(o,y);
+            Print(".\c");
+        until p <> fail or counter > limit;
+        if p = fail then
+            Info( InfoOrb, 1, "Giving up..." );
+            return rec(stab := stab, prob := fail);
+        fi;
+        z := x * Product(gensi{TraceSchreierTreeBack(o,p)});
+        AddSet(stab,z);
+        oldest := est;
+        if IsFunction(estimatefunc) then
+            Info( InfoOrb, 2, "Starting estimation..." );
+            est := estimatefunc(stab);
+            Info( InfoOrb, 2, "Finished estimation." );
+        fi;
+        if est = oldest then
+            prob := prob / 2;
+            Info( InfoOrb, 2, "New estimate is the same, prob=",prob );
+        else
+            prob := 1;
+            Info( InfoOrb, 2, "New estimate is ",est,", prob=",prob );
+        fi;
+    od;
+    return rec(stab := stab, prob := prob);
+  end );
+
+
+InstallGlobalFunction( ORB_FindNeedleMappers,
+  function( gens, pt, op, needles, memory, mappers, opt )
+    local foundmappers,gensi,i,j,lookfunc,mem,o,p,r,size,x;
+    size := fail;
+    if IsGroup(gens) then
+        if HasSize(gens) then
+            size := Size(gens);
+        fi;
+        gens := GeneratorsOfGroup(gens);
+    fi;
+    if not IsBound(opt.orblen) then
+        mem := Memory(pt);
+        if mem = fail then
+            mem := SHALLOW_SIZE(pt);
+            if mem = 0 then 
+                mem := GAPInfo.BytesPerVariable;
+            fi;
+        fi;
+        opt.orblen := QuoInt(memory,Length(needles)*mem);
+        if size <> fail and opt.orblen * opt.orblen > size then
+            opt.orblen := 2^(QuoInt(Log2Int(size),2)+1);
+        fi;
+    fi;
+    o := [];
+    Info( InfoOrb, 1, "Enumerating ",Length(needles)," orbits up to length ",
+          opt.orblen, "..." );
+    for i in [1..Length(needles)] do
+        o[i] := Orb( gens, needles[i], op, rec( report := QuoInt(opt.orblen,5),
+                                                schreier := true ) );
+        Enumerate(o[i],opt.orblen);
+        Info( InfoOrb, 2, "Finished one orbit." );
+    od;
+
+    j := fail;
+    p := fail;
+
+    lookfunc := function( x )
+      # Uses o from outer function!
+      # Writes j and p in outer function!
+      # This uses the feature of GAP, that j and p here always refer to
+      # the outer function ORB_FindNeedleMappers
+      # Reads pt and op from outer function.
+      j := 1;
+      while j <= Length(o) do
+          p := Position(o[j],op(pt,x));
+          if p <> fail then return true; fi;
+          j := j + 1;
+      od;
+      j := fail;
+      p := fail;
+      return false;
+    end;
+
+    gensi := List(gens,x->x^-1);
+    r := RandomSearcher( gens, lookfunc, opt );
+    # we just hand down the options record to the random searcher!
+
+    foundmappers := [];
+    i := 1;
+    while Length(foundmappers) <= mappers and i <= 15 * mappers do
+        x := Search(r);
+        if x = fail then return foundmappers; fi;
+        AddSet(foundmappers,x * Product(gensi{TraceSchreierTreeBack(o[j],p)}));
+        Info( InfoOrb, 2, "Found a needle mapper, have now ",
+              Length(foundmappers), ".");
+        i := i + 1;
+    od;
+
+    return foundmappers;
+  end );
 

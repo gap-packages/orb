@@ -98,3 +98,11 @@ DeclareGlobalFunction( "SpacesOfFixedLines" );
 DeclareGlobalFunction( "SLPForWordList" );
 
 
+#############################################################################
+# A generic way to find stabilizers:
+#############################################################################
+
+DeclareGlobalFunction( "ORB_EstimatePermGroupSize" );
+DeclareGlobalFunction( "ORB_FindStabilizerMC" );
+DeclareGlobalFunction( "ORB_FindNeedleMappers" );
+
