@@ -99,7 +99,8 @@ DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
     "staborblenlimit",   # limit, up to which orbits of stabilizers are
                          # computed using word action
   ] );
-DeclareOperation( "Memory", [IsOrbitBySuborbitSetup] );
+#Already there generically:
+#DeclareOperation( "Memory", [IsOrbitBySuborbitSetup] );
 
 
 ############################################
@@ -135,7 +136,8 @@ DeclareOperation( "StoreSuborbit",
 DeclareOperation( "LookupSuborbit", [ IsObject, IsSuborbitDatabase ] );
 DeclareOperation( "TotalLength", [ IsSuborbitDatabase ] );
 DeclareOperation( "Representatives", [ IsSuborbitDatabase ] );
-DeclareOperation( "Memory", [IsSuborbitDatabase] );
+# Already there generically:
+#DeclareOperation( "Memory", [IsSuborbitDatabase] );
 DeclareOperation( "SavingFactor", [ IsSuborbitDatabase ] );
 
 
@@ -160,7 +162,8 @@ BindGlobal( "StdOrbitBySuborbitsType",
            IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ) );
 DeclareOperation( "SuborbitsDb", [IsOrbitBySuborbit] );
 DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
-DeclareOperation( "Memory", [IsOrbitBySuborbit] );
+# Already there generically:
+#DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 DeclareOperation( "Seed", [IsOrbitBySuborbit] );
 DeclareOperation( "StabWords", [IsOrbitBySuborbit] );
 DeclareOperation( "TotalLength", [ IsOrbitBySuborbit ] );
@@ -208,7 +211,8 @@ BindGlobal( "StdOrbitBySuborbitListType",
            IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep and
            IsSmallList and IsList ) );
 
-DeclareOperation( "Memory", [IsOrbitBySuborbitList] );
+# Already there generically:
+#DeclareOperation( "Memory", [IsOrbitBySuborbitList] );
 DeclareOperation( "TotalLength", [IsOrbitBySuborbitList] );
 DeclareOperation( "SavingFactor", [IsOrbitBySuborbitList] );
 DeclareGlobalFunction( "InitOrbitBySuborbitList" );
