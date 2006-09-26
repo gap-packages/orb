@@ -187,7 +187,7 @@ function(p,j,i,setup,stab,w)
       # we define q*U_{i-1} to be the U_i-minimal U_{i-1}-orbit,
       # and q to be the U_i-minimal point in there.
       # now find the other U_{i-1}-orbits:
-      o := OrbitBySuborbitInner(setup,q,i,i,i-1,100);
+      o := OrbitBySuborbitInner(setup,q,i,i,i-1,100,fail);
       tups := List(o!.stabwords,w->ORB_SiftWord(setup,i,w));
       v := rec( tups := tups, size := o!.stabsize,
                 cache := List([1..setup!.k+1],i->WeakPointerObj([])) );
@@ -644,11 +644,17 @@ InstallGlobalFunction( ORB_WordTuple,
 InstallGlobalFunction( OrbitBySuborbit,
 function(setup,p,j,l,i,percentage)
   ORB.ORBITBYSUBORBITDEPTH := 0;
-  return OrbitBySuborbitInner(setup,p,j,l,i,percentage);
+  return OrbitBySuborbitInner(setup,p,j,l,i,percentage,fail);
 end );
 
+InstallGlobalFunction( OrbitBySuborbitKnownSize,
+function(setup,p,j,l,i,percentage,knownsize)
+  ORB.ORBITBYSUBORBITDEPTH := 0;
+  return OrbitBySuborbitInner(setup,p,j,l,i,percentage,knownsize);
+end );
+  
 InstallGlobalFunction( OrbitBySuborbitInner,
-function(setup,p,j,l,i,percentage)
+function(setup,p,j,l,i,percentage,knownsize)
   # Enumerates the orbit of p under the group U_l (with G=U_{k+1}) by
   # suborbits for the subgroup U_i described in "setup". 
   # "setup" is a setup object for the iterated quotient trick,
@@ -661,6 +667,8 @@ function(setup,p,j,l,i,percentage)
   # "percentage" is a number between 50 and 100 and gives a stopping criterium.
   #         We stop if percentage of the orbit is enumerated.
   #         Only over 50% we know that the stabilizer is correct!
+  # "knownsize" is either fail or the known size of the orbit to enumerate
+  #         In the latter case the stabilizer is not computed.
   # Returns a suborbit database with additional field "words" which is
   # a list of words in gens which can be used to reach U-orbit in the G-orbit
   local assumestabcomplete,db,firstgen,fullstabsize,ii,lastgen,m,miniwords,
@@ -718,7 +726,12 @@ function(setup,p,j,l,i,percentage)
   stabchain := StabChainOp(stabilizer,rec( random := setup!.stabchainrandom,
                                            base := setup!.permbase[l], 
                                            reduced := false ));
-  fullstabsize := 1;
+  if knownsize <> fail then
+      fullstabsize := setup!.size[l] / knownsize;
+      assumestabcomplete := true;
+  else
+      fullstabsize := 1;
+  fi;
   
   words := [[]];
   todo := [[]];

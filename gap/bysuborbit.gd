@@ -177,6 +177,7 @@ DeclareGlobalFunction( "ORB_WordOp" );
 DeclareGlobalFunction( "ORB_GetTransversalElement" );
 DeclareGlobalFunction( "ORB_PrepareStabgens" );
 DeclareGlobalFunction( "OrbitBySuborbit" );
+DeclareGlobalFunction( "OrbitBySuborbitKnownSize" );
 DeclareGlobalFunction( "OrbitBySuborbitInner" );
 DeclareGlobalFunction( "ORB_SiftWord" );
 DeclareGlobalFunction( "ORB_WordTuple" );
