@@ -212,7 +212,7 @@ InstallGlobalFunction( Orb,
     # (by now stabsizebound and stabsize are bound)
     if o.stabsizebound <> false then
         if o.stabsize >= o.stabsizebound then
-            Info(InfoOrb,2,"Stabilizer complete.");
+            Info(InfoOrb,3,"Stabilizer complete.");
             o.stabcomplete := true;
         fi;
     fi;
@@ -224,7 +224,7 @@ InstallGlobalFunction( Orb,
 
     # Now take this record as our orbit record and return:
     o.gens := gens;
-    if IsObjWithMemory(gens[1]) then
+    if Length(gens) > 0 and IsObjWithMemory(gens[1]) then
         o.memorygens := true;
     else
         o.memorygens := false;
@@ -532,7 +532,7 @@ InstallMethod( Enumerate,
         if (o!.schreier or o!.log <> false) and i > depthmarks[depth+1] then
             depth := depth + 1;
             depthmarks[depth+1] := nr+1;
-            Info(InfoOrb,2,"Going to depth ",depth);
+            Info(InfoOrb,3,"Going to depth ",depth);
         fi;
 
         # Catch the case that we only want the stabilizer:
@@ -604,7 +604,7 @@ InstallMethod( Enumerate,
                 if grpsizebound <> false and not o!.stabcomplete then
                     if nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,2,"Stabilizer complete.");
+                        Info(InfoOrb,3,"Stabilizer complete.");
                     fi;
                 fi;
 
@@ -616,12 +616,12 @@ InstallMethod( Enumerate,
                     if stabsizebound <> false and
                        o!.stabsize >= stabsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,2,"Stabilizer complete.");
+                        Info(InfoOrb,3,"Stabilizer complete.");
                     fi;
                     if grpsizebound <> false and
                        nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,2,"Stabilizer complete.");
+                        Info(InfoOrb,3,"Stabilizer complete.");
                     fi;
                 fi;
             fi;
@@ -714,7 +714,7 @@ InstallMethod( Enumerate,
         if (o!.schreier or o!.log <> false) and i > depthmarks[depth+1] then
             depth := depth + 1;
             depthmarks[depth+1] := nr+1;
-            Info(InfoOrb,2,"Going to depth ",depth);
+            Info(InfoOrb,3,"Going to depth ",depth);
         fi;
 
         # Catch the case that we only want the stabilizer:
@@ -781,7 +781,7 @@ InstallMethod( Enumerate,
                 if grpsizebound <> false and not o!.stabcomplete then
                     if nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,2,"Stabilizer complete.");
+                        Info(InfoOrb,3,"Stabilizer complete.");
                     fi;
                 fi;
 
@@ -793,12 +793,12 @@ InstallMethod( Enumerate,
                     if stabsizebound <> false and
                        o!.stabsize >= stabsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,2,"Stabilizer complete.");
+                        Info(InfoOrb,3,"Stabilizer complete.");
                     fi;
                     if grpsizebound <> false and 
                        nr*o!.stabsize*2 > grpsizebound then
                         o!.stabcomplete := true;
-                        Info(InfoOrb,2,"Stabilizer complete.");
+                        Info(InfoOrb,3,"Stabilizer complete.");
                     fi;
                 fi;
             fi;
@@ -951,7 +951,7 @@ InstallMethod( AddGeneratorsToOrbit,
         if ii >= depthmarks[depth+1] then
             depth := depth + 1;
             depthmarks[depth+1] := nr2+1;
-            Info(InfoOrb,2,"Going to depth ",depth);
+            Info(InfoOrb,3,"Going to depth ",depth);
         fi;
         i := orbind[ii];   # the official number
         logind[i] := logpos;  # note position on log
@@ -1121,7 +1121,7 @@ InstallMethod( AddGeneratorsToOrbit,
         if ii >= depthmarks[depth+1] then
             depth := depth + 1;
             depthmarks[depth+1] := nr2+1;
-            Info(InfoOrb,2,"Going to depth ",depth);
+            Info(InfoOrb,3,"Going to depth ",depth);
         fi;
         i := orbind[ii];   # the official number
         logind[i] := logpos;  # note position on log

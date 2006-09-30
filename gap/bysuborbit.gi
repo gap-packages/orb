@@ -723,13 +723,13 @@ function(setup,p,j,l,i,percentage,knownsize)
   stabgens := [];
   stabperms := [];
   stabilizer := Group(setup!.permgens[l][1]^0);
-  stabchain := StabChainOp(stabilizer,rec( random := setup!.stabchainrandom,
-                                           base := setup!.permbase[l], 
-                                           reduced := false ));
   if knownsize <> fail then
       fullstabsize := setup!.size[l] / knownsize;
       assumestabcomplete := true;
   else
+      stabchain := StabChainOp(stabilizer,rec( random := setup!.stabchainrandom,
+                                               base := setup!.permbase[l], 
+                                               reduced := false ));
       fullstabsize := 1;
   fi;
   
@@ -761,6 +761,13 @@ function(setup,p,j,l,i,percentage,knownsize)
                       seed := p ) );
   end;
     
+  # Just for the case that there is only one U_i orbit:
+  if TotalLength(db) * fullstabsize * 100 >= setup!.size[l]*percentage then 
+    Info(InfoOrb,3,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
+    ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
+    return MakeReturnObj();
+  fi;
+
   while true do
 
     ii := 1;
@@ -788,8 +795,9 @@ function(setup,p,j,l,i,percentage,knownsize)
             Add(todovecs,xxx);
             Add(miniwords,mw);
             Add(repforsuborbit,Length(db!.reps));
-            if 2 * TotalLength(db) * fullstabsize > setup!.size[l] and
-               TotalLength(db) * fullstabsize * 100 >= 
+            # Note: The following only guarantees the correct stabilizer
+            # if percentage is >= 50!
+            if TotalLength(db) * fullstabsize * 100 >= 
                                setup!.size[l]*percentage then 
               Info(InfoOrb,3,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
               ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
@@ -977,6 +985,8 @@ function(gens,permgens,sizes,codims,opt)
   od;
   nrgenssum[k+2] := sum;
 
+  # the future:
+  #sample := ZeroVector(RowLength(gens[1][1]),gens[1][1]);  
   sample := gens[1][1][1];  # first vector of first generator
 
   # First preparations:
@@ -993,8 +1003,10 @@ function(gens,permgens,sizes,codims,opt)
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
-  SetSize(g,sizes[k+1]);
-  setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+  if not(IsTrivial(g)) then
+      SetSize(g,sizes[k+1]);
+      setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+  fi;
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
@@ -1094,7 +1106,7 @@ function(gens,permgens,sizes,codims,opt)
 
       Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
            "in factor space...");
-      regvec := ZeroVector(sample,codims[k]);
+      regvec := ZeroVector(codims[k],sample);
       counter := 0;
       repeat
           if IsBound(opt.regvecfachints) and IsBound(opt.regvecfachints[j]) and
@@ -1201,7 +1213,9 @@ function(gens,permgens,sizes,codims,opt)
   od;
   nrgenssum[k+2] := sum;
 
-  sample := gens[1][1][1];  # first vector of first generator
+  # the future:
+  #sample := ZeroVector(RowLength(gens[1][1]),gens[1][1]);  
+  sample := gens[1][1][1];    # first vector of first generator
 
   # First preparations:
   setup := rec(k := k);
@@ -1217,8 +1231,10 @@ function(gens,permgens,sizes,codims,opt)
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
-  SetSize(g,sizes[k+1]);
-  setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+  if not(IsTrivial(g)) then
+      SetSize(g,sizes[k+1]);
+      setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+  fi;
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
@@ -1319,7 +1335,7 @@ function(gens,permgens,sizes,codims,opt)
 
       Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
            "in factor space...");
-      regvec := ZeroVector(sample,codims[k]);
+      regvec := ZeroVector(codims[k],sample);
       counter := 0;
       repeat
           if IsBound(opt.regvecfachints) and IsBound(opt.regvecfachints[j]) and
