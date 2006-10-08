@@ -1408,6 +1408,15 @@ InstallGlobalFunction( ORB_ActionOnOrbitIntermediateHash,
     return res;
   end );
 
+InstallMethod( ForgetMemory, "for an orbit object",
+  [ IsOrbit ],
+  function( o )
+    if o!.memorygens then
+        ForgetMemory(o!.gens);
+        o!.memorygens := false;
+    fi;
+  end );
+
 #################################################
 # A helper function for base image computations:
 #################################################
