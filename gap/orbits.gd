@@ -67,6 +67,8 @@ DeclareOperation( "DepthOfSchreierTree", [ IsOrbit ] );
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );
 DeclareGlobalFunction( "ORB_ActionOnOrbitIntermediateHash" );
+DeclareGlobalFunction( "ORB_ActionHomMapper" );
+DeclareOperation( "OrbActionHomomorphism", [IsOrbit and IsClosed] );
 
 # A helper function for base image computations:
 DeclareGlobalFunction( "ORB_SiftBaseImage" );
