@@ -1408,6 +1408,27 @@ InstallGlobalFunction( ORB_ActionOnOrbitIntermediateHash,
     return res;
   end );
 
+InstallGlobalFunction( "ORB_ActionHomMapper",
+  function(data,el)
+    return ActionOnOrbit(data.orb,[el])[1];
+  end );
+
+InstallMethod( OrbActionHomomorphism, "for a closed orbit",
+  [IsGroup, IsOrbit and IsClosed],
+  function(g,orb)
+    local data,h,hom,newgens;
+    if not(orb!.storenumbers) then
+        Info(InfoWarning,1,"This OrbActionHomomorphism will not be efficient,",
+             " use \"storenumbers\"!");
+    fi;
+    newgens := ActionOnOrbit(orb,GeneratorsOfGroup(g));
+    h := GroupWithGenerators(newgens);
+    data := rec( orb := orb );
+    hom := GroupHomByFuncWithData(g,h,ORB_ActionHomMapper,data);
+    return hom;
+  end );
+
+
 InstallMethod( ForgetMemory, "for an orbit object",
   [ IsOrbit ],
   function( o )
