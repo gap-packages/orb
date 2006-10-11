@@ -1347,13 +1347,11 @@ InstallMethod( ActionOnOrbit,
     res := [];
     if o!.memorygens then
         for i in [1..Length(gens)] do
-          Add(res,PermList( List([1..Length(o!.orbit)],
-                                 j->o!.tab[o!.op(o!.orbit[j],gens[i]!.el)])));
+          Add(res,PermList(o!.tab{OnTuples(o!.orbit,gens[i]!.el)}));
         od;
     else
         for i in [1..Length(gens)] do
-          Add(res,PermList( List([1..Length(o!.orbit)],
-                                 j->o!.tab[o!.op(o!.orbit[j],gens[i])])));
+          Add(res,PermList(o!.tab{OnTuples(o!.orbit,gens[i])}));
         od;
     fi;
     return res;
@@ -1417,7 +1415,7 @@ InstallMethod( OrbActionHomomorphism, "for a closed orbit",
   [IsGroup, IsOrbit and IsClosed],
   function(g,orb)
     local data,h,hom,newgens;
-    if not(orb!.storenumbers) then
+    if IsHashOrbitRep(orb) and not(orb!.storenumbers) then
         Info(InfoWarning,1,"This OrbActionHomomorphism will not be efficient,",
              " use \"storenumbers\"!");
     fi;
