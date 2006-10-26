@@ -9,7 +9,7 @@ clean:
 	(cd doc ; ./clean)
 
 archive: doc
-	(cd .. ; tar czvf orb-`cat VERSION`.tar.gz --exclude ".svn" --exclude test orb)
+	(cd .. ; tar czvf orb-`cat orb/VERSION`.tar.gz --exclude ".svn" --exclude test orb)
 
 WEBPOS=/home/antares/neunhoef/mywebpage/Computer/Software/Gap/orb
 
