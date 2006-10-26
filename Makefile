@@ -9,7 +9,7 @@ clean:
 	(cd doc ; ./clean)
 
 archive: doc
-	(cd .. ; tar czvf orb.tar.gz --exclude ".svn" --exclude test orb)
+	(cd .. ; tar czvf orb-`cat VERSION`.tar.gz --exclude ".svn" --exclude test orb)
 
 WEBPOS=/home/antares/neunhoef/mywebpage/Computer/Software/Gap/orb
 
@@ -21,5 +21,5 @@ towww: archive
 	cp PackageInfo.g ${WEBPOS}
 	cp README ${WEBPOS}/README.orb
 	cp doc/manual.pdf ${WEBPOS}/orb.pdf
-	cp ../orb.tar.gz ${WEBPOS}
+	cp ../orb-`cat VERSION`.tar.gz ${WEBPOS}
 
