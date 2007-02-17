@@ -1343,7 +1343,6 @@ function(gens,permgens,sizes,codims,opt)
               CopySubVector(opt.regvecfachints[j][counter+1],regvec,
                             [1..Length(regvec)],[1..Length(regvec)]);
               Info(InfoOrb,1,"Taking hint #",counter+1);
-              regvec := ShallowCopy(opt.regvecfachints[j][counter+1]);
           else
               Randomize(regvec);
           fi;
@@ -1376,6 +1375,246 @@ function(gens,permgens,sizes,codims,opt)
                 Randomize(regvec);
             fi;
             ORB_NormalizeVector(regvec);
+            # Now U_{j-1}-minimalize it, such that the transversal-words
+            # returned reach the U_{j-1}-suborbits we find next:
+            regvec := ORB_Minimalize(regvec,k+1,j-1,setup,false,false);
+            counter := counter + 1;
+            o := OrbitBySuborbit(setup,regvec,k+1,j,j-1,100);
+            Info(InfoOrb,1,"Found ",Length(Representatives(o!.db)),
+                 " suborbits (need ",sizes[j]/sizes[j-1],")");
+        until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or
+              counter >= ORB.TRIESINWHOLESPACE;
+        if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
+            Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
+            return;
+        fi;
+      fi;
+
+      Info(InfoOrb,2,"Found U",j-1,"-coset-recognising U",j,"-orbit!");
+      setup!.trans[j] := o!.words;
+      setup!.regvecs[j] := regvec;
+      setup!.cosetrecog[j] := ORB_CosetRecogGeneric;
+      if not(neededfullspace) then
+          setup!.cosetinfo[j] := [o!.db,k];   # the hash table
+      else
+          setup!.cosetinfo[j] := [o!.db,k+1];   # the hash table
+      fi;
+  od;
+  if IsBound(opt.stabchainrandom) then
+      setup!.stabchainrandom := opt.stabchainrandom;
+  else
+      setup!.stabchainrandom := 1000;  # no randomization by default
+  fi;
+  return setup;
+end );
+
+InstallGlobalFunction( ORB_ProjDownForSpaces,
+  function(x,y)
+    return ExtractSubMatrix(x,y[1],y[2]);
+  end );
+
+InstallGlobalFunction( OrbitBySuborbitBootstrapForSpaces,
+function(gens,permgens,sizes,codims,spcdim,opt)
+  # Returns a setup object for a list of helper subgroups
+  # gens: a list of lists of generators for U_1 < U_2 < ... < U_k < G
+  # permgens: the same in a faithful permutation representation
+  # sizes: a list of sizes of groups U_1 < U_2 < ... < U_k < G
+  # codims: a list of dimensions of factor modules
+  # spcdim: dimension of subspaces to permute
+  # opt: a record for options, can be empty
+  # note that the basis must be changed to make projection easy!
+  # That is, projection is taking the components [1..codim].
+
+  local counter,dim,doConversions,g,i,j,k,neededfullspace,nrgens,nrgenssum,
+        o,q,regvec,sample,setup,sm,sum;
+
+  # For the old compressed matrices:
+  if IsGF2MatrixRep(gens[1][1]) or Is8BitMatrixRep(gens[1][1]) then
+      doConversions := true;
+  else
+      doConversions := false;
+  fi;
+
+  # Some preparations:
+  k := Length(sizes)-1;
+  if Length(gens) <> k+1 or Length(permgens) <> k+1 or Length(codims) <> k then
+      Error("Need generators for ",k+1," groups and ",k," codimensions.");
+      return;
+  fi;
+  nrgens := List(gens,Length);
+  nrgenssum := 0*nrgens;
+  sum := 0;
+  for i in [1..k+1] do
+      nrgenssum[i] := sum;
+      sum := sum + nrgens[i];
+  od;
+  nrgenssum[k+2] := sum;
+
+  # the future:
+  #sample := ZeroVector(RowLength(gens[1][1]),gens[1][1]);  
+  sample := ExtractSubMatrix(gens[1][1],[1..spcdim],[1..Length(gens[1][1][1])]);
+  TriangulizeMat(sample);
+
+  # First preparations:
+  setup := rec(k := k);
+  setup.size := ShallowCopy(sizes);
+  setup.index := sizes{[1..k]};
+  for i in [k,k-1..2] do setup.index[i] := setup.index[i]/setup.index[i-1]; od;
+
+  # Calculate stabilizer chain for whole group:
+  setup.permgens := [];
+  setup.permgensinv := [];
+  setup.permbase := [];
+  setup.permgens[k+1] := Concatenation(permgens);
+  setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
+  Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
+  g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
+  if not(IsTrivial(g)) then
+      SetSize(g,sizes[k+1]);
+      setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+  fi;
+  for i in [k,k-1..1] do
+      g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
+      SetSize(g,sizes[i]);
+      Info(InfoOrb,1,"Trying smaller degree permutation representation for U",
+           i,"...");
+      sm := SmallerDegreePermutationRepresentation(g);
+      setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
+      if not(IsOne(sm)) then   # not the identity
+          Info(InfoOrb,1,"Found one on ",
+               LargestMovedPoint(GeneratorsOfGroup(Image(sm)))," points.");
+          for j in [1..Length(setup.permgens[i])] do
+              setup.permgens[i][j] := ImageElm(sm,setup.permgens[i][j]);
+          od;
+          g := Image(sm);
+      fi;
+      setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
+      setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+  od;
+  setup.stabchainrandom := 1000;
+
+  setup.els := [];
+  setup.els[k+1] := Concatenation(gens);
+  setup.elsinv := [];
+  setup.elsinv[k+1] := List(setup.els[k+1],x->x^-1);
+  setup.cosetinfo := [];
+  setup.cosetrecog := [];
+  setup.hashlen := [NextPrimeInt(3*sizes[1])];
+  Append(setup.hashlen,List([2..k+1],i->NextPrimeInt(
+                Minimum(3*(sizes[i]/sizes[i-1]),1000000))));
+  setup.sample := [];
+  setup.sample[k+1] := sample;
+  dim := Length(sample);
+  codims[k+1] := dim;   # for the sake of completeness!
+  setup.staborblenlimit := dim;
+  for j in [1..k] do
+      setup.els[j] := List(Concatenation(gens{[1..j]}),
+                           x->ExtractSubMatrix(x,[1..codims[j]],
+                                                 [1..codims[j]]));
+      if doConversions then
+          for i in setup.els[j] do ConvertToMatrixRep(i); od;
+      fi;
+      setup.elsinv[j] := List(setup.els[j],x->x^-1);
+      setup.sample[j] := ExtractSubMatrix(sample,[1..spcdim],[1..codims[j]]);
+  od;
+  q := Size(BaseField(gens[1][1]));
+  setup.trans := [];
+  setup.cache := LinkedListCache(100000000);  # 100 MB cache
+  setup.transcache := List([1..k+1],j->List([1..j],i->WeakPointerObj([])));
+
+  # Note that for k=1 we set codims[2] := dim
+  setup.pi := [];
+  setup.pifunc := [];
+  setup.info := [NewHT(setup.sample[1],
+                       NextPrimeInt((q^codims[1]-1)/(q-1) * 3))];
+  for j in [2..k+1] do
+      setup.pi[j] := [];
+      setup.pifunc[j] := [];
+      for i in [1..j-1] do
+          setup.pi[j][i] := [[1..spcdim],[1..codims[i]]];
+          setup.pifunc[j][i] := ORB_ProjDownForSpaces;
+      od;
+      if j < k+1 then
+          setup.info[j] :=
+             NewHT(setup.sample[j],
+                   NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])));
+      fi;
+  od;
+  setup.suborbnr := 0*[1..k];
+  setup.sumstabl := 0*[1..k];
+  setup.regvecs := [];
+  setup.op := List([1..k+1],i->OnSubspacesByCanonicalBasis);
+  setup.wordcache := [];
+  setup.wordhash := NewHT([1,2,3],1000);
+
+  Objectify( NewType(OrbitBySuborbitSetupFamily,
+                     IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
+             setup );
+  # From now on we can use it and it is an object!
+
+  # We do the recognition of elements of U_1 by the permutation rep:
+  Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
+  setup!.cosetinfo[1] := Orb(setup!.permgens[k]{[1..nrgens[1]]},
+                             setup!.permbase[k],OnTuples,
+                             NextPrimeInt(3*sizes[1]+1),
+                             rec( schreier := true,storenumbers := true ));
+  Enumerate(setup!.cosetinfo[1]);
+  setup!.cosetrecog[1] := ORB_CosetRecogPermgroup;
+  setup!.trans[1] := List([1..Length(setup!.cosetinfo[1])],
+                          x->TraceSchreierTreeForward(setup!.cosetinfo[1],x));
+
+  # Now do the other steps:
+  for j in [2..k] do
+      # First find a vector the orbit of which identifies the U_{j-1}-cosets
+      # of U_j, i.e. Stab_{U_j}(v) <= U_{j-1}, 
+      # we can use the j-1 infrastructure!
+
+      neededfullspace := false;
+
+      Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+           "in factor space...");
+      regvec := ZeroMatrix(spcdim,codims[k],sample);
+      counter := 0;
+      repeat
+          if IsBound(opt.regvecfachints) and IsBound(opt.regvecfachints[j]) and
+             IsBound(opt.regvecfachints[j][counter+1]) then
+              CopySubMatrix(opt.regvecfachints[j][counter+1],regvec,
+                            [1..spcdim],[1..spcdim],
+                            [1..Length(regvec)],[1..Length(regvec)]);
+              Info(InfoOrb,1,"Taking hint #",counter+1);
+          else
+              Randomize(regvec);
+          fi;
+          TriangulizeMat(regvec);
+          # Now U_{j-1}-minimalize it, such that the transversal-words
+          # returned reach the U_{j-1}-suborbits we find next:
+          regvec := ORB_Minimalize(regvec,k,j-1,setup,false,false);
+          counter := counter + 1;
+          o := OrbitBySuborbit(setup,regvec,k,j,j-1,100);
+          Info(InfoOrb,1,"Found ",Length(Representatives(o!.db)),
+               " suborbits (need ",sizes[j]/sizes[j-1],")");
+      until Length(Representatives(o!.db)) = sizes[j]/sizes[j-1] or 
+            counter >= ORB.TRIESINQUOTIENT;
+      if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
+        # Bad luck, try the full space:
+        neededfullspace := true;
+        Info(InfoOrb,1,"Looking for U",j-1,"-coset-recognising U",j,"-orbit ",
+             "in full space...");
+        regvec := ZeroMutable(sample);
+        counter := 0;
+        # Go to the original generators, using the infrastructure for k=j-1:
+        repeat
+            if IsBound(opt.regvecfullhints) and 
+               IsBound(opt.regvecfullhints[j]) and
+               IsBound(opt.regvecfullhints[j][counter+1]) then
+                CopySubMatrix(opt.regvecfullhints[j][counter+1],regvec,
+                              [1..spcdim],[1..spcdim],
+                              [1..Length(regvec)],[1..Length(regvec)]);
+                Info(InfoOrb,1,"Taking hint #",counter+1);
+            else
+                Randomize(regvec);
+            fi;
+            TriangulizeMat(regvec);
             # Now U_{j-1}-minimalize it, such that the transversal-words
             # returned reach the U_{j-1}-suborbits we find next:
             regvec := ORB_Minimalize(regvec,k+1,j-1,setup,false,false);

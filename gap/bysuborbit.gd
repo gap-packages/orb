@@ -194,6 +194,8 @@ DeclareGlobalFunction( "ORB_CosetRecogGeneric" );
 DeclareGlobalFunction( "ORB_CosetRecogPermgroup" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines" );
+DeclareGlobalFunction( "ORB_ProjDownForSpaces" );
+DeclareGlobalFunction( "OrbitBySuborbitBootstrapForSpaces" );
 
 
 #############################################
