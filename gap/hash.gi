@@ -370,3 +370,17 @@ InstallMethod( ChooseHashFunction, "for lists of matrices",
     TryNextMethod();
   end );
 
+InstallMethod( ChooseHashFunction, 
+  "for finite field vectors over big finite fields",
+  [IsList, IsInt],
+  function( l, hashlen )
+    local f,q;
+    if NestingDepthA(l) = 1 and Length(l) > 0 and IsFFE(l[1]) then
+        f := Field(l);
+        q := Size(f);
+        return rec( func := ORB_HashFunctionForShort8BitVectors,
+                    data := [hashlen,q] );
+    fi;
+    TryNextMethod();
+  end );
+

@@ -265,6 +265,7 @@ InstallGlobalFunction( Orb,
         else
             o.ht := NewHT(x,hashlen);
             if o.ht = fail then    # probably we found no hash function
+                Info(InfoOrb,1,"Warning: No hash function found!");
                 filts := filts and IsSlowOrbitRep;
             else
                 filts := filts and IsHashOrbitRep;
