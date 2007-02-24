@@ -460,6 +460,12 @@ InstallMethod( Seed, "for an orbit-by-suborbit",
     return o!.seed;
   end );
 
+InstallMethod( OrigSeed, "for an orbit-by-suborbit",
+  [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
+  function( o )
+    return o!.origseed;
+  end );
+
 InstallMethod( StabWords, "for an orbit-by-suborbit",
   [ IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ],
   function( o )
@@ -675,7 +681,8 @@ function(setup,p,j,l,i,percentage,knownsize)
         mw,newperm,newword,o,oldtodo,stab,stabg,stabgens,stabchain,prep,
         stabilizer,stabperms,sw,todo,v,words,x,firstgenU,lastgenU,
         triedstabgens,haveappliedU,MakeReturnObj,y,repforsuborbit,
-        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx,bi;
+        oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx,bi,
+        origp;
 
   Info(InfoOrb,3,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
   ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH + 1;
@@ -710,6 +717,7 @@ function(setup,p,j,l,i,percentage,knownsize)
 
   # First we U_i-minimalize p:
   stab := rec();
+  origp := p;
   p := ORB_Minimalize(p,j,i,setup,stab,false);
 
   miniwords := [[]];  # here we collect U-minimalizing elements
@@ -758,7 +766,8 @@ function(setup,p,j,l,i,percentage,knownsize)
                       groupsize := setup!.size[l],
                       orbitlength := setup!.size[l]/fullstabsize,
                       percentage := percentage,
-                      seed := p ) );
+                      seed := p,
+                      origseed := origp ) );
   end;
     
   # Just for the case that there is only one U_i orbit:

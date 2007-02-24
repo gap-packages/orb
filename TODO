@@ -1,8 +1,11 @@
   test AddGeneratorsToOrbit for orbits without log
   more test files, what?
   adjust documentation
+  Problem with ChooseHashFunction if vector is over too small field
+    --> gone with new vector/matrix interface
 
 Documentation:
+  OrigSeed
   eqfunc and hashfunc options for Orb
   hfbig and hfdbig options for Orb
   hfbig and hfdbig options for hash tables

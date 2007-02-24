@@ -165,6 +165,7 @@ DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
 # Already there generically:
 #DeclareOperation( "Memory", [IsOrbitBySuborbit] );
 DeclareOperation( "Seed", [IsOrbitBySuborbit] );
+DeclareOperation( "OrigSeed", [IsOrbitBySuborbit] );
 DeclareOperation( "StabWords", [IsOrbitBySuborbit] );
 DeclareOperation( "TotalLength", [ IsOrbitBySuborbit ] );
 DeclareOperation( "SavingFactor", [ IsOrbitBySuborbit ] );

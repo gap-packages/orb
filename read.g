@@ -15,3 +15,13 @@ ReadPackage("orb","gap/cache.gi");
 ReadPackage("orb","gap/orbits.gi");
 ReadPackage("orb","gap/search.gi");
 ReadPackage("orb","gap/bysuborbit.gi");
+
+if IsBound(IO_PackageIsLoaded) then
+    ReadPackage("orb","gap/picklers.gi");
+else
+    if not(IsBound(IO_PkgThingsToRead)) then
+        IO_PkgThingsToRead := [];
+    fi;
+    Add(IO_PkgThingsToRead,["orb","gap/picklers.gi"]);
+fi;
+
