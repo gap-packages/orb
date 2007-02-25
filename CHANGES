@@ -8,6 +8,8 @@
 
   - Picklers for orbits, caches, orbits-by-suborbits and other stuff.
   - Action on subspaces for orbits-by-suborbits.
+  - Fixed bug in \in method for permutations on integer orbits.
+
 
 ==========================
  Changes from 1.2 -> 1.3:

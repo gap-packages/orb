@@ -385,7 +385,7 @@ InstallMethod( \in,
   [IsPosInt, IsOrbit and IsDenseList and IsPermOnIntOrbitRep],
   function( ob, orb )
     local p;
-    if IsBound(orb!.tab[ob]) then
+    if IsBound(orb!.tab[ob]) and orb!.tab[ob] <> 0 then
         return true;
     else
         return false;
