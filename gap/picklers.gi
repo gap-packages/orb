@@ -108,6 +108,7 @@ IO_Unpicklers.CACN :=
         IO_FinalizeUnpickled();
         return IO_Error; 
     fi;
+    if IO_Unpickle(f) <> fail then return IO_Error; fi;
     Objectify( LinkedListCacheNodeType, c );
     IO_FinalizeUnpickled();
     return c;
