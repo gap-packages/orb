@@ -9,6 +9,8 @@
   - Picklers for orbits, caches, orbits-by-suborbits and other stuff.
   - Action on subspaces for orbits-by-suborbits.
   - Fixed bug in \in method for permutations on integer orbits.
+  - Picklers for product replacer objects and random searcher objects.
+  - Release revision 128 as version 1.4
 
 
 ==========================
