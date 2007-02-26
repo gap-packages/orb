@@ -126,9 +126,9 @@ Status := "dev",
 #AcceptDate := "",
 
 README_URL := 
-  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/orb/orb/README.orb",
+  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/README.orb",
 PackageInfoURL := 
-  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/orb/orb/PackageInfo.g",
+  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/PackageInfo.g",
 
 ##  Here you  must provide a short abstract explaining the package content 
 ##  in HTML format (used on the package overview Web page) and an URL 
@@ -150,7 +150,7 @@ PackageWWWHome := "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Soft
 PackageDoc := rec(
   BookName  := "orb",
   Archive := 
-    "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/orbdoc.tar.gz",
+    "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/orb.tar.gz",
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
@@ -163,7 +163,7 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">=4.4.8",
   NeededOtherPackages := [["GAPDoc", ">= 0.99"]],
-  SuggestedOtherPackages := [],
+  SuggestedOtherPackages := [["IO",">= 2.1"]],
   ExternalConditions := []
                       
 ),
