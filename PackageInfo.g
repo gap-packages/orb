@@ -140,10 +140,9 @@ PackageInfoURL :=
 # AbstractHTML := "This package provides  a collection of functions for \
 # computing the Smith normal form of integer matrices and some related \
 # utilities.",
-#AbstractHTML := 
-#  "The <span class=\"pkgname\">Example</span> package, as its name suggests, \
-#   is an example of how to create a <span class=\"pkgname\">GAP</span> \
-#   package. It has little functionality except for being a package",
+AbstractHTML := 
+  "The <span class=\"pkgname\">orb</span> package is about enumerating \
+orbits in various ways.",
 #
 PackageWWWHome := "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb.html",
 
