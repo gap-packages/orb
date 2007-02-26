@@ -176,3 +176,33 @@ IO_Unpicklers.OBSL :=
     return IO_GenericObjectUnpickler(f, l, [], []);
   end;
   
+InstallMethod( IO_Pickle, "for a product replacer object",
+  [ IsFile, IsProductReplacer ],
+  function( f, pr )
+    return IO_GenericObjectPickler(f,"PRPL",[],pr,[],[],
+                                   NamesOfComponents(pr));
+  end );
+
+IO_Unpicklers.PRPL := 
+  function(f)
+    local pr;
+    pr := rec();
+    Objectify(ProductReplacersType,pr);
+    return IO_GenericObjectUnpickler(f,pr,[],[]);
+  end;
+
+InstallMethod( IO_Pickle, "for a random searcher",
+  [ IsFile, IsRandomSearcher ],
+  function( f, rs )
+    return IO_GenericObjectPickler(f,"RSEA",[],rs,[],[],
+                                   NamesOfComponents(rs));
+  end );
+
+IO_Unpicklers.RSEA :=
+  function(f)
+    local rs;
+    rs := rec();
+    Objectify(RandomSearchersType,rs);
+    return IO_GenericObjectUnpickler(f,rs,[],[]);
+  end;
+
