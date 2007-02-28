@@ -392,6 +392,44 @@ InstallMethod( \in,
     fi;
   end );
 
+InstallMethod( Intersection2, "for two hash orbits",
+  [ IsHashOrbitRep, IsHashOrbitRep ],
+  function( o, oo )
+    local l;
+    l := Filtered(o,x->x in oo);
+    return Set(l);
+  end );
+
+InstallMethod( Intersection2, "for two perm on int orbits",
+  [ IsPermOnIntOrbitRep, IsPermOnIntOrbitRep ],
+  function( o, oo )
+    local l;
+    l := Filtered(o,x->x in oo);
+    return Set(l);
+  end );
+
+InstallMethod( IntersectSet, "for a mutable list and a hash orbit",
+  [ IsDenseList and IsMutable, IsHashOrbitRep ],
+  function( l, o )
+    local int,i;
+    int := Filtered(l,x->x in o);
+    l{[1..Length(int)]} := int;
+    for i in [Length(l),Length(l)-1..Length(int)+1] do
+        Unbind(l[i]);
+    od;
+  end );
+
+InstallMethod( IntersectSet, "for a mutable list and a perm on int orbit",
+  [ IsDenseList and IsMutable, IsPermOnIntOrbitRep ],
+  function( l, o )
+    local int,i;
+    int := Filtered(l,x->x in o);
+    l{[1..Length(int)]} := int;
+    for i in [Length(l),Length(l)-1..Length(int)+1] do
+        Unbind(l[i]);
+    od;
+  end );
+
 InstallMethod( EvaluateWord, "for a list of generators and a word",
   [IsList, IsList],
   function( gens, w )
