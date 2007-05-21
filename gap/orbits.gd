@@ -77,6 +77,11 @@ DeclareGlobalFunction( "ORB_ComputeStabChain" );
 # A generic way to find out about the memory needed by an object:
 DeclareOperation( "Memory", [IsObject] );
   
+# Things to work with suborbits:
+DeclareOperation( "FindSuborbits", [ IsOrbit, IsList ] );
+DeclareOperation( "FindSuborbits", [ IsOrbit, IsList, IsCyclotomic ] );
+DeclareOperation( "OrbitIntersectionMatrix", [ IsRecord, IsObject ] );
+
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically

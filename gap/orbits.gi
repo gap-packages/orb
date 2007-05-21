@@ -1522,6 +1522,152 @@ InstallMethod( Memory, "fallback method returning fail",
 
 
 #######################################################################
+# Things to work with suborbits:
+#######################################################################
+
+InstallOtherMethod( FindSuborbits, "without args", [ ],
+  function()
+    Error("Usage: FindSuborbits( o, subgens [,nrsuborbits] )");
+  end );
+
+InstallMethod( FindSuborbits, "for an orbit, and subgroup gens",
+  [ IsOrbit, IsList ],
+  function( o, subgens) return FindSuborbits(o,subgens,infinity); end );
+
+InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
+  [ IsOrbit, IsList, IsCyclotomic ],
+  function( o, subgens, nrsubs )
+    local fusetrupps,gensi,h,i,j,l,len,min,nr,nrtrupps,res,succ,
+          tried,truppnr,truppst,v,wo,x;
+
+    if not(IsClosed(o)) then
+        Error("Orbit must be closed");
+        return fail;
+    fi;
+    if not(o!.schreier) then
+        Error("Orbit must have Schreier vector");
+        return fail;
+    fi;
+    len := Length(o);
+
+    succ := 0*[1..len];
+    truppnr := 1*[1..len];
+    truppst := 1*[1..len];
+    nrtrupps := len;
+
+    fusetrupps := function(i,j)
+      local dummy,lastx,truppi,truppj,x;
+      truppi := truppnr[i];
+      truppj := truppnr[j];
+      if truppi = truppj then
+          return;
+      fi;
+      if truppj < truppi then
+          dummy := i; i := j; j := dummy;
+          dummy := truppi; truppi := truppj; truppj := dummy;
+      fi;
+      x := truppst[truppj];
+      repeat
+          truppnr[x] := truppi;
+          lastx := x;
+          x := succ[x];
+      until x = 0;
+      succ[lastx] := truppst[truppi];
+      truppst[truppi] := truppst[truppj];
+      Unbind(truppst[truppj]);
+      nrtrupps := nrtrupps - 1;
+      if nrtrupps mod 100000 = 0 then
+          Info(InfoOrb,2,nrtrupps," trupps left.\n");
+      fi;
+      return;
+    end;
+
+    tried := 0;
+    i := 1;
+    while i <= len and nrtrupps < nrsubs do
+        for h in subgens do
+            j := Position(o,o!.op(o[i],h));
+            fusetrupps(i,j);
+        od;
+        tried := tried + 1;
+        if tried mod 100000 = 0 then
+            Info(InfoOrb,2,"Have tried ",tried," out of ",len," points.\n");
+        fi;
+        i := i + 1;
+    od;
+
+    Info(InfoOrb,1,"Have suborbits, compiling result record...");
+
+    # Now return the result:
+    truppst := Compacted(truppst);
+    res := rec(
+        o := o,
+        nrsuborbits := nrtrupps,
+        reps := 0*[1..nrtrupps],
+        words := 0*[1..nrtrupps],
+        lens := 0*[1..nrtrupps],
+        suborbnr := 0*[1..len],
+        suborbs := 0*[1..nrtrupps],
+        conjsuborbit := 0*[1..nrtrupps],
+        issuborbitrecord := true,
+    );
+
+    for i in [1..nrtrupps] do
+        nr := 1;
+        x := truppst[i];
+        min := x;
+        l := [x];
+        res.suborbnr[x] := i;
+        while succ[x] <> 0 do
+            x := succ[x];
+            res.suborbnr[x] := i;
+            Add(l,x);
+            if x < min then min := x; fi;
+            nr := nr + 1;
+        od;
+        res.reps[i] := min;
+        res.words[i] := TraceSchreierTreeForward(o,min);
+        res.lens[i] := nr;
+        Sort(l);
+        res.suborbs[i] := l;
+    od;
+    
+    # Now provide information about conjugate suborbits:
+    Info(InfoOrb,1,"Computing conjugate suborbits...");
+    gensi := List(o!.gens,x->x^-1);
+    for i in [1..nrtrupps] do
+        v := o[1];
+        wo := res.words[i];
+        for x in [Length(wo),Length(wo)-1..1] do
+            v := o!.op(v,gensi[wo[x]]);
+        od;
+        res.conjsuborbit[i] := res.suborbnr[Position(o,v)];
+    od;
+    
+    return res;
+  end ); 
+
+InstallMethod( OrbitIntersectionMatrix, "for a record, and an element",
+  [ IsRecord, IsObject ], 
+  function( r, el )
+    local i,j,k,len,m,o,v,y;
+    len := r.nrsuborbits;
+    o := r.o;
+    m := List([1..len],i->0*[1..len]);
+    for i in [1..len] do
+        v := m[i];
+        for j in r.suborbs[i] do
+            y := o!.op(o[j],el);
+            k := r!.suborbnr[Position(o,y)];
+            v[k] := v[k] + 1;
+        od;
+    od;
+    return m;
+  end );
+
+
+
+#######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically
 # loaded by this command if available.
