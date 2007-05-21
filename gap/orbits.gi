@@ -1647,9 +1647,12 @@ InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
     return res;
   end ); 
 
-InstallMethod( OrbitIntersectionMatrix, "for a record, and an element",
+InstallMethod( OrbitIntersectionMatrix, "for a record, and a group element",
   [ IsRecord, IsObject ], 
   function( r, el )
+    # this computes |O_i g_l \cap O_j| where
+    # Orbit = \bigcup_{i=1}^k O_i     disjoint union
+    # and g_l maps the first point of O_1 into O_l for l=1,..,k
     local i,j,k,len,m,o,v,y;
     len := r.nrsuborbits;
     o := r.o;
@@ -1665,8 +1668,25 @@ InstallMethod( OrbitIntersectionMatrix, "for a record, and an element",
     return m;
   end );
 
-
-
+InstallMethod( RegularRepresentationSchurBasisElm,
+  "for a record, a list of inverses of double coset reps, a positive number",
+  [ IsRecord, IsList, IsPosInt ],
+  function( r, reps, j )
+    local i,l,len,m,o,suborbj,x,y;
+    j := r.conjsuborbit[j];
+    len := r.nrsuborbits;
+    o := r.o;
+    m := List([1..len],i->0*[1..len]);
+    suborbj := r.suborbs[j];
+    for l in [1..len] do
+        for x in suborbj do
+            y := o!.op(o[x],reps[r.conjsuborbit[l]]);
+            i := r!.suborbnr[Position(o,y)];
+            m[i][l] := m[i][l]+1;
+        od;
+    od;
+    return m;
+  end );
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically

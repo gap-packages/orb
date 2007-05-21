@@ -45,9 +45,14 @@ sub := FindSuborbits(o,hgens);
 # Now compute the double coset reps:
 dcosetreps := List(sub.words,w->Product(gens{w}));
 
-# One orbit intersection matrix:
+# Orbit intersection matrices:
 one := OrbitIntersectionMatrix( sub, dcosetreps[1]);;   # the identity!
 guck := OrbitIntersectionMatrix( sub, dcosetreps[2]);;
 guck2 := OrbitIntersectionMatrix( sub, dcosetreps[3]);;
-guck3 := OrbitIntersectionMatrix( sub, dcosetreps[2]*dcosetreps[3]);;
+
+# Regular representation matrices:
+dcosetrepsi := List(dcosetreps,x->x^-1);
+regrep1 := RegularRepresentationSchurBasisElm(sub,dcosetrepsi,1);;
+regrep2 := RegularRepresentationSchurBasisElm(sub,dcosetrepsi,2);;
+regrep24 := RegularRepresentationSchurBasisElm(sub,dcosetrepsi,24);;
 

@@ -81,6 +81,8 @@ DeclareOperation( "Memory", [IsObject] );
 DeclareOperation( "FindSuborbits", [ IsOrbit, IsList ] );
 DeclareOperation( "FindSuborbits", [ IsOrbit, IsList, IsCyclotomic ] );
 DeclareOperation( "OrbitIntersectionMatrix", [ IsRecord, IsObject ] );
+DeclareOperation( "RegularRepresentationSchurBasisElm",
+  [ IsRecord, IsList, IsPosInt ] );
 
 #######################################################################
 # The following loads the sub-package "QuotFinder":
