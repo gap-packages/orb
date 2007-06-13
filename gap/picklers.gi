@@ -52,6 +52,7 @@ InstallMethod( IO_Pickle, "for a cache node",
     # deep recursion, first find the first one:
     local c;
     if IO_IsAlreadyPickled(cn) <> false then
+        # this will only pickle a reference!
         return IO_GenericObjectPickler(f,"CACN",[cn!.ob,cn!.mem],cn,[],[],[]);
     fi;
     c := cn;
@@ -97,7 +98,6 @@ IO_Unpicklers.CACN :=
   function(f)
     local c,mem,ob;
     c := rec(ob := fail, mem := fail, next := fail, prev := fail);
-    IO_AddToUnpickled(c);
     c.ob := IO_Unpickle(f); 
     if c.ob = IO_Error then 
         IO_FinalizeUnpickled();
@@ -108,6 +108,7 @@ IO_Unpicklers.CACN :=
         IO_FinalizeUnpickled();
         return IO_Error; 
     fi;
+    IO_AddToUnpickled(c);
     if IO_Unpickle(f) <> fail then return IO_Error; fi;
     Objectify( LinkedListCacheNodeType, c );
     IO_FinalizeUnpickled();
