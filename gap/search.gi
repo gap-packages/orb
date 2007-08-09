@@ -863,24 +863,29 @@ InstallGlobalFunction( ORB_FindStabilizerMC,
             p := Position(o,y);
             Print(".\c");
         until p <> fail or counter > limit;
+        Print("\n");
         if p = fail then
             Info( InfoOrb, 1, "Giving up..." );
             return rec(stab := stab, prob := fail);
         fi;
         z := x * Product(gensi{TraceSchreierTreeBack(o,p)});
-        AddSet(stab,z);
-        oldest := est;
-        if IsFunction(estimatefunc) then
-            Info( InfoOrb, 2, "Starting estimation..." );
-            est := estimatefunc(stab);
-            Info( InfoOrb, 2, "Finished estimation." );
-        fi;
-        if est = oldest then
-            prob := prob / 2;
-            Info( InfoOrb, 2, "New estimate is the same, prob=",prob );
+        if IsOne(z) then
+            Info( InfoOrb, 2, "Found identity element." );
         else
-            prob := 1;
-            Info( InfoOrb, 2, "New estimate is ",est,", prob=",prob );
+            AddSet(stab,z);
+            oldest := est;
+            if IsFunction(estimatefunc) then
+                Info( InfoOrb, 2, "Starting estimation (old est=", est,")..." );
+                est := estimatefunc(stab);
+                Info( InfoOrb, 2, "Finished estimation: ", est );
+            fi;
+            if est = oldest then
+                prob := prob / 2;
+                Info( InfoOrb, 2, "New estimate is the same, prob=",prob );
+            else
+                prob := 1;
+                Info( InfoOrb, 2, "New estimate is ",est,", prob=",prob );
+            fi;
         fi;
     od;
     return rec(stab := stab, prob := prob);
