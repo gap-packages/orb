@@ -588,10 +588,33 @@ function(wo)
   return li;
 end );
 
-InstallGlobalFunction( FindShortGeneratorsOfSubgroup,
-function(G,U,membershiptest)
-  local su,o,si,s,ps,min,minsi,subgens,subwords,i,l;
-  su := Size(U);
+InstallMethod( FindShortGeneratorsOfSubgroup, "without option rec or func",
+  [ IsGroup, IsGroup ],
+  function(G,U)
+    return FindShortGeneratorsOfSubgroup(G,U,
+               rec( membershiptest := \in, sizetester := Size ) );
+  end );
+
+InstallMethod( FindShortGeneratorsOfSubgroup, "with option rec or func",
+  [ IsGroup, IsGroup, IsObject ],
+function(G,U,opt)
+  local su,o,si,s,ps,min,minsi,subgens,subwords,i,l,membershiptest,sizetester;
+  if IsFunction(opt) then
+      membershiptest := opt;
+      sizetester := Size;
+  elif IsRecord(opt) then
+      if IsBound(opt.membershiptest) then
+          membershiptest := opt.membershiptest;
+      else
+          membershiptest := \in;
+      fi;
+      if IsBound(opt.sizetester) then
+          sizetester := opt.sizetester;
+      else
+          sizetester := Size;
+      fi;
+  fi;
+  su := sizetester(U);
   if su = 1 then   # the trivial subgroup is easy to generate:
       return rec( gens := [One(U)], 
                   slp := StraightLineProgram( [[[1,0]]],
@@ -604,7 +627,7 @@ function(G,U,membershiptest)
   subgens := [o!.orbit[o!.found]];
   subwords := [TraceSchreierTreeForward(o,o!.found)];
   l := 1;   # will always be the length of subgens and subwords
-  si := Size(Group(ShallowCopy(subgens)));
+  si := sizetester(Group(ShallowCopy(subgens)));
   Info(InfoOrb,2,"Found subgroup of size ",si,":",subwords);
   if si = su then
       # Cyclic subgroup
@@ -620,21 +643,22 @@ function(G,U,membershiptest)
       if l <> Length(subgens) or l <> Length(subwords) then
           Error();
       fi;
-      s := Size(Group(ShallowCopy(subgens)));
+      s := sizetester(Group(ShallowCopy(subgens)));
       if s = su then
           # OK, we have got a generating set:
           # Now try shortening generating set:
-          Info(InfoOrb,2,"Found ",l," generators.");
+          Info(InfoOrb,2,"Found full subgroup of size ",si,":",subwords);
+          Info(InfoOrb,2,"Need ",l," generators.");
           if l <= 8 then
               ps := ORB_PowerSet([1..l]);
               min := Length(ps);
               minsi := l;
               for i in [2..Length(ps)-1] do
-                  s := Size(Group(subgens{ps[i]}));
+                  s := sizetester(Group(subgens{ps[i]}));
                   if s = su and Length(ps[i]) < minsi then
                       min := i;
                       minsi := Length(ps[i]);
-                      Info(InfoOrb,2,"Found ",minsi," generators.");
+                      Info(InfoOrb,2,"Need ",minsi," generators.");
                   fi;
               od;
               subgens := subgens{ps[min]};
@@ -642,7 +666,8 @@ function(G,U,membershiptest)
           else
               i := 1;
               while i <= Length(subgens) do
-                  s := Size(Group(subgens{Concatenation([1..i-1],[i+1..l])}));
+                  s := sizetester(
+                          Group(subgens{Concatenation([1..i-1],[i+1..l])}));
                   if s = su then  # we do not need generator i
                       Remove(subgens,i);
                       Remove(subwords,i);

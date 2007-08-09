@@ -79,7 +79,9 @@ DeclareGlobalFunction( "OrbitStatisticOnVectorSpaceLines" );
 
 DeclareGlobalFunction( "ORB_PowerSet" );
 DeclareGlobalFunction( "ORB_SLPLineFromWord" );
-DeclareGlobalFunction( "FindShortGeneratorsOfSubgroup" );
+DeclareOperation( "FindShortGeneratorsOfSubgroup", 
+  [ IsGroup, IsGroup, IsObject ] );
+DeclareOperation( "FindShortGeneratorsOfSubgroup", [ IsGroup, IsGroup ] );
 
 
 ##############################################################
