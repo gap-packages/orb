@@ -4,6 +4,7 @@
 
 # Here we do J2 on the cosets of its 5-Sylow-subgroup:
 
+LoadPackage("atlasrep");
 LoadPackage("chop");
 
 # Find an slp for the 5-Sylow:
@@ -21,23 +22,24 @@ hgens := ResultOfStraightLineProgram(slp,gens);
 gens := List(gens,CMat);
 hgens := List(hgens,CMat);
 
-# Chop the module:
-m := Module(hgens);
-r := Chop(m);
-soc := SocleOfModule(m,r.db);
+repeat
+    Print("Chopping module...\n");
 
-# Take a submodule in the socle:
-v := MutableCopyMat(soc.basis{soc.cfposs[1]});
+    # Chop the module:
+    m := Module(hgens);
+    r := Chop(m);
+    soc := SocleOfModule(m,r.db);
 
-# Now enumerate the orbit:
-TriangulizeMat(v);
-o := Orb(gens,v,OnSubspacesByCanonicalBasis,
-         rec( report := 2000, schreier := true, storenumbers := true, 
-              hashlen := 100000 ) );
-Enumerate(o);
-if Length(o) <> Size(g)/Size(sy5) then
-    Error("orbit size not correct");
-fi;
+    # Take a submodule in the socle:
+    v := MutableCopyMat(soc.basis{soc.cfposs[1]});
+
+    # Now enumerate the orbit:
+    TriangulizeMat(v);
+    o := Orb(gens,v,OnSubspacesByCanonicalBasis,
+             rec( report := 2000, schreier := true, storenumbers := true, 
+                  hashlen := 100000 ) );
+    Enumerate(o);
+until Length(o) = Size(g)/Size(sy5);
 
 # Find the suborbits:
 sub := FindSuborbits(o,hgens);
