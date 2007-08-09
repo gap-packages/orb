@@ -242,7 +242,7 @@ InstallGlobalFunction( Orb,
     if ForAll(gens,IsPerm) and IsPosInt(x) and op = OnPoints then
         # A special case for permutation acting on integers:
         lmp := LargestMovedPoint(gens);
-        if x > lmp then 
+        if x > lmp and lmp > 0 then 
             Info(InfoOrb,1,"Warning: start point not in permuted range");
         fi;
         o.tab := 0*[1..lmp];
