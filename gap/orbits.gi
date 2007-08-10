@@ -1296,10 +1296,10 @@ InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
                           o!.orbind[Random(2,QuoInt(Length(o),2))]);
             Add(x,Product(o!.gens{w}));
         od;
-        Info(InfoOrb,1,"Adding ",Length(x),
+        Info(InfoOrb,2,"Adding ",Length(x),
              " new generators to decrease depth...");
         AddGeneratorsToOrbit(o,x);
-        Info(InfoOrb,1,"Depth is now ",o!.depth);
+        Info(InfoOrb,2,"Depth is now ",o!.depth);
     od;
     if tries > 3 then
         Info(InfoOrb,1,"Giving up, Schreier tree is not shallow.");
