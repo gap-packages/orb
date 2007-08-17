@@ -191,6 +191,7 @@ InstallMethod( ProductReplacer,
     if Length(gens) = 0 then
         Error("Need at least one generator");
         return;
+    fi;
     if CanEasilySortElementsFamily(FamilyObj(gens[1])) then
         pr.gens := Set(gens);
     else
