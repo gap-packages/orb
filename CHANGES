@@ -9,6 +9,7 @@
   - Improved methods for Intersection2 and IntersectSet for hash
     orbits and perm on int orbits.
   - Fixed bug in the unpickling of caches.
+  - Fixed case of one generator in product replacers.
 
 
 ==========================

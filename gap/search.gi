@@ -191,11 +191,14 @@ InstallMethod( ProductReplacer,
     if Length(gens) = 0 then
         Error("Need at least one generator");
         return;
-    fi;
     if CanEasilySortElementsFamily(FamilyObj(gens[1])) then
         pr.gens := Set(gens);
     else
         pr.gens := gens;
+    fi;
+    if Length(gens) = 1 and pr.addslots = 0 then
+         # Make sure that the case of one generator is OK!
+         pr.addslots := 1;
     fi;
     pr.nrgens := Length(pr.gens);
     pr.slots := pr.nrgens + pr.addslots;
