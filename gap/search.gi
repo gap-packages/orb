@@ -12,95 +12,9 @@
 
 # Random vectors and matrices:
 
-InstallMethod( Randomize, "for a compressed GF2 vector",
-  [ IsGF2VectorRep and IsMutable ],
-  function( v )
-    local i;
-    MultRowVector(v,0*Z(2));
-    for i in [1..Length(v)] do
-      if Random(0,1) = 1 then v[i] := Z(2); fi;
-    od;
-    return v;
-  end );
-
-InstallMethod( Randomize, 
-  "for a compressed GF2 vector and a random source",
-  [ IsGF2VectorRep and IsMutable, IsRandomSource ],
-  function( v, rs )
-    local i;
-    MultRowVector(v,0*Z(2));
-    for i in [1..Length(v)] do
-      if Random(rs,0,1) = 1 then v[i] := Z(2); fi;
-    od;
-    return v;
-  end );
-
-InstallMethod( Randomize, "for a compressed 8bit vector",
-  [ Is8BitVectorRep and IsMutable ],
-  function( v )
-    local q,i,z,r;
-    q := BaseField(v);
-    z := PrimitiveRoot(q);
-    q := Size(q);
-    MultRowVector(v,0*z);
-    for i in [1..Length(v)] do
-        r := Random(0,q-1);
-        if r <> 0 then v[i] := z^r; fi;
-    od;
-    return v;
-  end );
-
-InstallMethod( Randomize, 
-  "for a compressed 8bit vector and a random source",
-  [ Is8BitVectorRep and IsMutable, IsRandomSource ],
-  function( v, rs )
-    local q,i,z,r;
-    q := BaseField(v);
-    z := PrimitiveRoot(q);
-    q := Size(q);
-    MultRowVector(v,0*z);
-    for i in [1..Length(v)] do
-        r := Random(rs,0,q-1);
-        if r <> 0 then v[i] := z^r; fi;
-    od;
-    return v;
-  end );
-
-InstallMethod( Randomize,
-  "for a compressed gf2 matrix",
-  [ IsGF2MatrixRep and IsMutable ],
-  function( m )
-    local v;
-    for v in m do Randomize(v); od;
-    return m;
-  end );
-
-InstallMethod( Randomize,
-  "for a compressed gf2 matrix and a random source",
-  [ IsGF2MatrixRep and IsMutable, IsRandomSource ],
-  function( m, rs )
-    local v;
-    for v in m do Randomize(v,rs); od;
-    return m;
-  end );
-
-InstallMethod( Randomize,
-  "for a compressed 8bit matrix",
-  [ Is8BitMatrixRep and IsMutable ],
-  function( m )
-    local v;
-    for v in m do Randomize(v); od;
-    return m;
-  end );
-
-InstallMethod( Randomize,
-  "for a compressed 8bit matrix and a random source",
-  [ Is8BitMatrixRep and IsMutable, IsRandomSource ],
-  function( m, rs )
-    local v;
-    for v in m do Randomize(v,rs); od;
-    return m;
-  end );
+# Methods for Randomize for gf2 and 8bit vectors have been taken out
+# they will be in GAP >= 4.5 in the library. In the meantime use
+# cmats.
 
 InstallGlobalFunction( MakeRandomVectors,
   function( arg )

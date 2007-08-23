@@ -10,6 +10,8 @@
     orbits and perm on int orbits.
   - Fixed bug in the unpickling of caches.
   - Fixed case of one generator in product replacers.
+  - Take out Randomize methods for gf2 and 8bit vectors and matrices.
+    They will reappear in GAP >= 4.5.
 
 
 ==========================
