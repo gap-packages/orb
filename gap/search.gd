@@ -110,3 +110,10 @@ DeclareGlobalFunction( "ORB_EstimatePermGroupSize" );
 DeclareGlobalFunction( "ORB_FindStabilizerMC" );
 DeclareGlobalFunction( "ORB_FindNeedleMappers" );
 
+############################################################################
+# A method to find transversals in matrix groups:
+############################################################################
+
+DeclareGlobalFunction( "FindWordsForRightTransversal" );
+DeclareGlobalFunction( "FindWordsForLeftTransversal" );
+
