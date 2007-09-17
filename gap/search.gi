@@ -102,6 +102,9 @@ InstallMethod( ProductReplacer,
     if not IsBound(pr.maxdepth) then
         pr.maxdepth := infinity;
     fi;
+    if not IsBound(pr.noaccu) then
+        pr.noaccu := false;
+    fi;
     if Length(gens) = 0 then
         Error("Need at least one generator");
         return;
@@ -119,6 +122,9 @@ InstallMethod( ProductReplacer,
     pr.slots := pr.nrgens + pr.addslots;
     pr.initialized := false;
     pr.steps := 0;
+    if pr.noaccu = false then
+        pr.accu := pr.gens[1]^0;
+    fi;
     Objectify(ProductReplacersType,pr);
     Reset(pr);
     return pr;
@@ -146,10 +152,18 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
         c := Random(pr!.randomsource,1,2);
         if c = 1 then
             pr!.state[a] := pr!.state[a] * pr!.state[b];
-            return pr!.state[a];
+            if pr!.noaccu then return pr!.state[a];
+            else
+                pr!.accu := pr!.accu * pr!.state[a];   # Rattle
+                return pr!.accu;
+            fi;
         else
             pr!.state[b] := pr!.state[a] * pr!.state[b];
-            return pr!.state[b];
+            if pr!.noaccu then return pr!.state[b];
+            else
+                pr!.accu := pr!.accu * pr!.state[b];   # Rattle
+                return pr!.accu;
+            fi;
         fi;
     end;
     if pr!.steps > pr!.maxdepth then Reset(pr); fi;
@@ -166,7 +180,10 @@ InstallMethod( ViewObj, "for a product replacer", [IsProductReplacer],
   function(pr)
     Print("<product replacer nrgens=",pr!.nrgens," slots=",pr!.slots,
           " scramble=",Maximum(pr!.nrgens*pr!.scramblefactor,pr!.scramble),
-          " maxdepth=",pr!.maxdepth," steps=",pr!.steps,">");
+          " maxdepth=",pr!.maxdepth," steps=",pr!.steps);
+    if pr!.noaccu then Print(" (without accu)");
+    else Print(" (rattle)"); fi;
+    Print(">");
   end );
 
 

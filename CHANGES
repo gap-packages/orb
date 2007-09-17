@@ -13,6 +13,7 @@
   - Take out Randomize methods for gf2 and 8bit vectors and matrices.
     They will reappear in GAP >= 4.5.
   - New method for finding transversals in matrix groups.
+  - Use "Rattle" in product replacers (can be switched off)
 
 
 ==========================
