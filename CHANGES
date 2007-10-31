@@ -19,7 +19,7 @@
     They will reappear in GAP >= 4.5.
   - New method for finding transversals in matrix groups.
   - Use "Rattle" in product replacers (can be switched off)
-  - Release revision 148 as version 1.5, which is intended to be
+  - Release revision 149 as version 1.5, which is intended to be
     a preliminary version without proper documentation.
 
 

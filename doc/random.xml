@@ -34,13 +34,13 @@ in the same &GAP; job. These ideas have led to the following abstraction.
 <Description>
 Objects in this category are <Q>random sources</Q> in the sense that
 they can produce random numbers using methods for the operation
-<Ref Meth="Random"/>.
+<Ref Meth="Random" Label="3arg"/>.
 </Description>
 </ManSection>
 
 <ManSection>
-<Meth Name="Random" Arg="rs, from, to"/>
-<Meth Name="Random" Arg="rs, list"/>
+<Meth Name="Random" Arg="rs, from, to" Label="3arg"/>
+<Meth Name="Random" Arg="rs, list" Label="2arg"/>
 <Returns> an integer </Returns>
 <Description>
 <A>rs</A> must be an object in the category <Ref Filt="IsRandomSource"/>
@@ -73,7 +73,8 @@ installed by installing a method for this operation <Ref Oper="RandomSource"/>,
 testing for the string value and calling <C>TryNextMethod()</C> if
 the string is not equal to the type description of the new method.
 Usually one should create a new representation for the new random
-source and provide methods for the operations <Ref Meth="Random"/>
+source and provide methods for the operations <Ref Meth="Random"
+    Label="3arg"/>
 above.
 </Description>
 </ManSection>
@@ -84,7 +85,7 @@ above.
 <Description>
 Resets the random source <A>rs</A> if possible. That is, it will produce
 the same sequence of random numbers as before when called with the
-same sequence of <Ref Meth="Random"/> calls. Note that there might
+same sequence of <Ref Meth="Random" Label="3arg"/> calls. Note that there might
 be types of random sources that do not support resetting like for
 example the <Q>real</Q> random sources.
 </Description>

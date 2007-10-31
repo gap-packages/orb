@@ -84,16 +84,17 @@ examples in Chapter <Ref Chap="examples"/>.
     after enumerating at least half of it.
     <P/>
     The result is an <Q>orbit-by-suborbit</Q> object. For such an object
-    in particular the operations <Ref Meth="Size"/>, <Ref Oper="Seed"/>,
+    in particular the operations <Ref Meth="Size" Label="fororb"/>, 
+    <Ref Oper="Seed"/>,
     <Ref Oper="SuborbitsDb"/>,
-    <Ref Oper="WordsToSuborbits"/>, <Ref Oper="Memory"/>,
+    <Ref Oper="WordsToSuborbits"/>, <Ref Oper="Memory" Label="forob"/>,
     <Ref Meth="Stabilizer" Label="obso"/>, and 
     <Ref Oper="Seed"/> are defined, see below.
 </Description>
 </ManSection>
 
 <ManSection>
-<Meth Name="Size" Arg="orb"/>
+<Meth Name="Size" Arg="orb" Label="fororb"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the number of points in the orbit-by-suborbit <A>orb</A>.
@@ -117,7 +118,8 @@ the <M>U_i</M>-minimalisation of the starting point given to
 Returns the data base of suborbits of the orbit-by-suborbit object
 <A>orb</A>. In particular, such a database object has methods
 for the operations
-<Ref Oper="Memory"/>, <Ref Oper="TotalLength"/>, and
+<Ref Oper="Memory" Label="forob"/>, <Ref Oper="TotalLength"
+    Label="fordb"/>, and
 <Ref Oper="Representatives"/>. For descriptions see below.
 </Description>
 </ManSection>
@@ -141,7 +143,7 @@ relative to this new starting point.
 </ManSection>
 
 <ManSection>
-<Oper Name="Memory" Arg="ob"/>
+<Oper Name="Memory" Arg="ob" Label="forob"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the amount of memory needed by the object <A>ob</A>, which can
@@ -183,7 +185,7 @@ starting point.
 </ManSection>
 
 <ManSection>
-<Oper Name="SavingFactor" Arg="orb"/>
+<Oper Name="SavingFactor" Arg="orb" Label="fororb"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the quotient of the total number of points stored in the
@@ -196,7 +198,7 @@ here!
 The following operations apply to orbit-by-suborbit database objects:
 
 <ManSection>
-<Oper Name="TotalLength" Arg="db"/>
+<Oper Name="TotalLength" Arg="db" Label="fordb"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the total number of points stored in all suborbits in the 
@@ -214,7 +216,7 @@ orbit-by-suborbit database <A>db</A>.
 </ManSection>
 
 <ManSection>
-<Oper Name="SavingFactor" Arg="db"/>
+<Oper Name="SavingFactor" Arg="db" Label="fordb"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the quotient of the total number of points stored in the
@@ -541,7 +543,7 @@ writes out, which orbits are in fact identical.
 </ManSection>
 
 <ManSection>
-<Oper Name="Memory" Arg="obsol"/>
+<Oper Name="Memory" Arg="obsol" Label="forobsol"/>
 <Returns> an integer </Returns>
 <Description>
     Returns the total memory used for all orbit-by-suborbits in the 
@@ -551,7 +553,7 @@ writes out, which orbits are in fact identical.
 </ManSection>
 
 <ManSection>
-<Oper Name="TotalLength" Arg="obsol"/>
+<Oper Name="TotalLength" Arg="obsol" Label="forobsol"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the total number of points stored in all orbit-by-suborbits in the 
@@ -560,7 +562,7 @@ orbit-by-suborbit-list <A>obsol</A>.
 </ManSection>
 
 <ManSection>
-<Meth Name="Size" Arg="obsol"/>
+<Meth Name="Size" Arg="obsol" Label="forobsol"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the total number of points in the orbit-by-suborbit-list <A>obsol</A>.
@@ -568,7 +570,7 @@ Returns the total number of points in the orbit-by-suborbit-list <A>obsol</A>.
 </ManSection>
 
 <ManSection>
-<Oper Name="SavingFactor" Arg="obsol"/>
+<Oper Name="SavingFactor" Arg="obsol" Label="forobsol"/>
 <Returns> an integer </Returns>
 <Description>
 Returns the quotient of the total number of points stored in all 

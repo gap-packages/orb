@@ -11,7 +11,7 @@ clean:
 archive: doc
 	(cd .. ; tar czvf orb-`cat orb/VERSION`.tar.gz --exclude ".svn" --exclude test orb)
 
-WEBPOS=/home/antares/neunhoef/mywebpage/Computer/Software/Gap/orb
+WEBPOS=/scratch/neunhoef/mywebpage.pub/Computer/Software/Gap/orb
 
 towww: archive
 	echo '<?xml version="1.0" encoding="ISO-8859-1"?>' >${WEBPOS}.version
