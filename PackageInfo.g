@@ -17,15 +17,15 @@ PackageName := "orb",
 
 Subtitle := "orb - Methods to enumerate Orbits",
 
-Version := "1.4",
+Version := "1.5",
 ##  Please adjust also the VERSION file in the package directory when
 ##  changing this.
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-Date := "27/02/2007",
+Date := "31/10/2007",
 
-ArchiveURL := "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/orb-1.4",
+ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-1.5",
 
 ArchiveFormats := ".tar.gz",
 
@@ -76,16 +76,16 @@ Persons := [
     FirstNames    := "Max",
     IsAuthor      := true,
     IsMaintainer  := true,
-    Email         := "max.neunhoeffer@math.rwth-aachen.de",
-    WWWHome       := "http://www.math.rwth-aachen.de/~Max.Neunhoeffer",
+    Email         := "neunhoef@mcs.st-and.ac.uk",
+    WWWHome       := "http://www-groups.mcs.st-and.ac.uk/~neunhoef",
     PostalAddress := Concatenation( [
-                       "Max Neunhoeffer\n",
-                       "Lehrstuhl D fuer Mathematik, RWTH Aachen\n",
-                       "Templergraben 64\n",
-                       "52056 Aachen\n",
-                       "Germany" ] ),
-    Place         := "Aachen",
-    Institution   := "RWTH Aachen"
+                       "School of Mathematics and Statistics\n",
+                       "Mathematical Institute\n",
+                       "North Haugh\n",
+                       "St Andrews, Fife KY16 9SS\n",
+                       "Scotland, UK" ] ),
+    Place         := "St Andrews",
+    Institution   := "University of St Andrews"
   ),
   rec( 
     LastName      := "Noeske",
@@ -126,9 +126,9 @@ Status := "dev",
 #AcceptDate := "",
 
 README_URL := 
-  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/README.orb",
+  "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/README.orb",
 PackageInfoURL := 
-  "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/PackageInfo.g",
+  "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/PackageInfo.g",
 
 ##  Here you  must provide a short abstract explaining the package content 
 ##  in HTML format (used on the package overview Web page) and an URL 
@@ -144,12 +144,10 @@ AbstractHTML :=
   "The <span class=\"pkgname\">orb</span> package is about enumerating \
 orbits in various ways.",
 #
-PackageWWWHome := "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb.html",
+PackageWWWHome := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb.html",
 
 PackageDoc := rec(
   BookName  := "orb",
-  Archive := 
-    "http://www.math.rwth-aachen.de/~Max.Neunhoeffer/Computer/Software/Gap/orb/orb.tar.gz",
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
@@ -160,9 +158,9 @@ PackageDoc := rec(
 
 
 Dependencies := rec(
-  GAP := ">=4.4.8",
-  NeededOtherPackages := [["GAPDoc", ">= 0.99"]],
-  SuggestedOtherPackages := [["IO",">= 2.1"]],
+  GAP := ">=4.4.10",
+  NeededOtherPackages := [["GAPDoc", ">= 1.1"]],
+  SuggestedOtherPackages := [["IO",">= 2.3"]],
   ExternalConditions := []
                       
 ),
