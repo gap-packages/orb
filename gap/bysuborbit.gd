@@ -197,6 +197,8 @@ DeclareGlobalFunction( "OrbitBySuborbitBootstrapForVectors" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForLines" );
 DeclareGlobalFunction( "ORB_ProjDownForSpaces" );
 DeclareGlobalFunction( "OrbitBySuborbitBootstrapForSpaces" );
+DeclareGlobalFunction( "ORB_PermuteBasisVectors" );
+DeclareGlobalFunction( "ORB_EmbedBaseChangeTopLeft" );
 
 
 #############################################

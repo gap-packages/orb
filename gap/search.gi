@@ -29,7 +29,7 @@ InstallGlobalFunction( MakeRandomVectors,
     if Length(arg) = 3 then
         randomsource := arg[3];
     else
-        randomsource := RandomSource(IsGlobalRandomSource);
+        randomsource := GlobalRandomSource;
     fi;
     
     l := [];
@@ -54,7 +54,7 @@ InstallGlobalFunction( MakeRandomLines,
     if Length(arg) = 3 then
         randomsource := arg[3];
     else
-        randomsource := RandomSource(IsGlobalRandomSource);
+        randomsource := GlobalRandomSource;
     fi;
     
     l := [];
@@ -88,7 +88,7 @@ InstallMethod( ProductReplacer,
     local pr;
     pr := ShallowCopy(opt);
     if not IsBound(pr.randomsource) then
-        pr.randomsource := RandomSource(IsGlobalRandomSource);
+        pr.randomsource := GlobalRandomSource;
     fi;
     if not IsBound(pr.scramble) then 
         pr.scramble := 100; 
@@ -138,6 +138,9 @@ InstallMethod( Reset, "for a product replacer", [IsProductReplacer],
     od;
     pr!.initialized := false;
     pr!.steps := 0;
+    if pr!.noaccu = false then
+        pr!.accu := pr!.gens[1]^0;
+    fi;
   end );
 
 InstallMethod( Next, "for a product replacer", [IsProductReplacer],
@@ -997,5 +1000,49 @@ InstallGlobalFunction( FindWordsForLeftTransversal,
     if res = fail then return fail; fi;
     res.words := List(res.words,Reversed);
     return res;
+  end );
+
+############################################################################
+# Find transforming matrices:
+############################################################################
+
+InstallGlobalFunction( TransformingMatsLSE, 
+  function( A, B )
+  local M,n;
+  # Returns the matrix of the linear system of equations to solve TA=BT 
+  # such that the nullspace of that matrix gives a basis of the solution 
+  # space in flat notation.
+  # "Flat notation" means Concatenation(T) instead of T.
+  # Each row of M will be an equation:
+  # M := [ [A[1][1],A[2][1],A[3][1],0,0,0,0,0,0],
+  #        [A[1][2],A[2][2],A[3][2],0,0,0,0,0,0],
+  #        [A[1][3],A[2][3],A[3][3],0,0,0,0,0,0],
+  #        [0,0,0,A[1][1],A[2][1],A[3][1],0,0,0],
+  #        [0,0,0,A[1][2],A[2][2],A[3][2],0,0,0],
+  #        [0,0,0,A[1][3],A[2][3],A[3][3],0,0,0],
+  #        [0,0,0,0,0,0,A[1][1],A[2][1],A[3][1]],
+  #        [0,0,0,0,0,0,A[1][2],A[2][2],A[3][2]],
+  #        [0,0,0,0,0,0,A[1][3],A[2][3],A[3][3]] ]
+  #     -[ [B[1][1],0,0,B[1][2],0,0,B[1][3],0,0],
+  #        [0,B[1][1],0,0,B[1][2],0,0,B[1][3],0],
+  #        [0,0,B[1][1],0,0,B[1][2],0,0,B[1][3]],
+  #        [B[2][1],0,0,B[2][2],0,0,B[2][3],0,0],
+  #        [0,B[2][1],0,0,B[2][2],0,0,B[2][3],0],
+  #        [0,0,B[2][1],0,0,B[2][2],0,0,B[2][3]],
+  #        [B[3][1],0,0,B[3][2],0,0,B[3][3],0,0],
+  #        [0,B[3][1],0,0,B[3][2],0,0,B[3][3],0],
+  #        [0,0,B[3][1],0,0,B[3][2],0,0,B[3][3]] ];
+  n := Length(A);
+  if n <> RowLength(A) or n <> Length(B) or n <> RowLength(B) then
+      Error("need square matrices of same size");
+  fi;
+  M :=   KroneckerProduct(OneMutable(A),TransposedMat(A))
+       - KroneckerProduct(B,OneMutable(B));
+  return TransposedMat(M);
+end);
+
+InstallGlobalFunction( TransformingMats,
+  function(A, B)
+    return NullspaceMat(TransformingMatsLSE(A,B));
   end );
 

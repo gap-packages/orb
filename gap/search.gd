@@ -117,3 +117,10 @@ DeclareGlobalFunction( "ORB_FindNeedleMappers" );
 DeclareGlobalFunction( "FindWordsForRightTransversal" );
 DeclareGlobalFunction( "FindWordsForLeftTransversal" );
 
+############################################################################
+# Find transforming matrices:
+############################################################################
+
+DeclareGlobalFunction( "TransformingMatsLSE" );
+DeclareGlobalFunction( "TransformingMats" );
+

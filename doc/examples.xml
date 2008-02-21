@@ -12,7 +12,589 @@ This chapter gives examples for the usage of this package.
 <Chapter Label="examples">
 <Heading>Examples</Heading>
 
-Here comes text.<P/>
+Currently we have one major example, which however illustrates a lot
+of the tools which are available in the <Package>orb</Package> package
+as well as in some other packages. In Section <Ref Sect="Borbit"/>
+you find a description how to enumerate the smallest orbit of the Baby
+monster sporadic simple group on the cosets of <M>2.^2E_6(2).2</M>.
+
+<Section Label="Borbit">
+<Heading>Enumerating a Baby monster orbit</Heading>
+
+In this section we show how to enumerate the smallest orbit of the Baby
+monster sporadic simple group on the cosets of <M>2.^2E_6(2).2</M>.
+We basically present a log of a &GAP; session with some explanations
+in between. Larger pieces of output which are not so interesting have
+been replaced by <C>...</C>.
+<P/>
+
+What do we have to do? (See <Cite Key="MNW"/>)
+
+Comment: in general quite difficult, have to try things.
+
+Realisation of the permutation action -> fixed vector
+
+
+First we load the packages, fetch representing matrices for the Baby
+monster using the <Package>atlasrep</Package> package and Rob Wilson's
+WWW Atlas of group representations:
+
+<Log>
+<![CDATA[gap> LoadPackage("chop");;
+...
+gap> LoadPackage("genss");;
+...
+gap> LoadPackage("atlasrep");;
+...
+gap> gens := AtlasGenerators("B",1).generators;
+[ <an immutable 4370x4370 matrix over GF2>, 
+  <an immutable 4370x4370 matrix over GF2> ]
+gap> bgens := List(gens,CMat);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] ]]>
+</Log>
+
+Now we find generators for  <M>E := 2.^2E_6(2).2</M> again by using the
+<Package>atlasrep</Package> package to fetch a straight line program
+expressing generators of <M>E</M> in terms of the generators of
+<M>B</M>:
+
+<Log>
+<![CDATA[gap> slpBtomax1 := AtlasStraightLineProgram("B",1).program;;
+gap> egens := ResultOfStraightLineProgram(slpBtomax1,bgens);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+]]></Log>
+
+Realise permutation action, find fixed vector:
+
+<Log>
+<![CDATA[gap> a := egens[1]-One(egens[1]);
+<cmat 4370x4370 over GF(2,1)>
+gap> ns := NullspaceMat(a);
+<immutable cmat 2202x4370 over GF(2,1)>
+gap> a := egens[2]-One(egens[2]);
+<cmat 4370x4370 over GF(2,1)>
+gap> a := ns * a;
+<cmat 2202x4370 over GF(2,1)>
+gap> ns2 := NullspaceMat(a);
+<immutable cmat 1x2202 over GF(2,1)>
+gap> v := ns2[1]*ns;
+<immutable cvec over GF(2,1) of length 4370>]]>
+</Log>
+
+Now v is fixed vector, since <M>E</M> is maximal...
+<P/>
+
+Memory considerations
+
+helper subgroups
+
+Find Fi22?
+
+Use L2(11) in M12 in Fi22
+
+
+Find a smaller representation for easier computation:
+
+<Log><![CDATA[
+gap> m := Module(egens);
+<module of dim. 4370 over GF(2)>
+gap> SetInfoLevel(InfoChop,2);
+gap> r := Chop(m);
+...
+rec( ischoprecord := true, 
+  db := [ <abs. simple module of dim. 78 over GF(2)>, 
+      <trivial module of dim. 1 over GF(2)>, 
+      <abs. simple module of dim. 1702 over GF(2)>, 
+      <abs. simple module of dim. 572 over GF(2)> ], mult := [ 5, 4, 2, 1 ], 
+  acs := [ 1, 2, 3, 1, 4, 1, 1, 2, 2, 3, 1, 2 ], 
+  module := <reducible module of dim. 4370 over GF(2)> )]]>
+</Log>
+check that 78 is the first one
+
+Plan: find t in 2a, b in 13a, look for conjugates of t until 
+we find elements t^x,b that are standard generators of Fi22
+and fulfill all relations for Fi22.
+
+Note usage of elements with memory.
+
+<Log>
+<![CDATA[gap> egens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[1]));
+[ <<immutable cmat 78x78 over GF(2,1)> with mem>, 
+  <<immutable cmat 78x78 over GF(2,1)> with mem> ]
+gap> # Find element in 2a:
+gap> o := Orb(egens78,StripMemory(egens78[1])^0,OnRight,
+> rec(schreier := true,report := 1000,
+> lookingfor := function(o,x) return Order(x)=22; end));
+<open orbit, 1 points with Schreier tree looking for sth.>
+gap> Enumerate(o);
+<open orbit, 393 points with Schreier tree looking for sth.>
+gap> word := TraceSchreierTreeForward(o,o!.found);
+[ 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2 ]
+gap> g22 := Product(egens78{word});
+<<immutable cmat 78x78 over GF(2,1)> with mem>
+gap> g2a := g22^11;
+<<immutable cmat 78x78 over GF(2,1)> with mem>]]>
+</Log>
+
+Find element of order 13:
+
+<Log>
+<![CDATA[
+gap> o := Orb(egens78,StripMemory(egens78[1])^0,OnRight,
+> rec(schreier := true,report := 1000,
+>          lookingfor := function(o,x) return Order(x)=13; end));
+<open orbit, 1 points with Schreier tree looking for sth.>
+gap> Enumerate(o);
+<open orbit, 144 points with Schreier tree looking for sth.>
+gap> word2 := TraceSchreierTreeForward(o,o!.found);
+[ 1, 2, 1, 2, 1, 2, 1, 2, 2 ]
+gap> g13 := Product(egens78{word2});
+<<immutable cmat 78x78 over GF(2,1)> with mem>
+gap> Order(g13);
+13
+gap> b := g13;
+<<immutable cmat 78x78 over GF(2,1)> with mem>]]>
+</Log>
+
+Now use product replacement algorithm to produce random elements
+and thus look for random conjugates:
+
+<Log>
+<![CDATA[gap> pr := ProductReplacer(egens78,rec(maxdepth := 150));
+<product replacer nrgens=2 slots=12 scramble=100 maxdepth=150 steps=
+0 (rattle)>
+gap> i := 0;
+0
+gap> repeat
+>   x := Next(pr);
+>   i := i + 1;
+>   a := g2a^x;
+> until IsOne(a^2) and
+> IsOne(b^13) and
+> IsOne((a*b)^11) and
+> IsOne((a*b^2)^21) and
+> IsOne(Comm(a,b)^3) and
+> IsOne(Comm(a,b^2)^3) and
+> IsOne(Comm(a,b^3)^3) and
+> IsOne(Comm(a,b^4)^2) and
+> IsOne(Comm(a,b^5)^3) and
+> IsOne(Comm(a,b*a*b^2)^3) and
+> IsOne(Comm(a,b^-1*a*b^-2)^2) and
+> IsOne(Comm(a,b*a*b^5)^2) and
+> IsOne(Comm(a,b^2*a*b^5)^2);
+gap> i;
+6362]]>
+</Log>
+
+We have done it, here are some more checks to illustrate tools
+for the case that we do not have a presentation:
+
+<Log>
+<![CDATA[gap> # Some more checks to illustrate tools:
+gap> g := Group(a,b);
+<matrix group with 2 generators>
+gap> S := StabilizerChain(g,rec(TryShortOrbit := 30,OrbitLengthLimit := 5000,
+>                             FailInsteadOfError := true));
+...
+<stabchain size=64561751654400 orblen=3510 layer=1 SchreierDepth=8>
+ <stabchain size=18393661440 orblen=2816 layer=2 SchreierDepth=7>
+  <stabchain size=6531840 orblen=1680 layer=3 SchreierDepth=7>
+   <stabchain size=3888 orblen=243 layer=4 SchreierDepth=5>
+    <stabchain size=16 orblen=16 layer=5 SchreierDepth=2>
+gap> Size(S);
+64561751654400
+gap> Size(CharacterTable("Fi22"));
+64561751654400]]>
+</Log>
+
+Note that this is not yet verified. It only gives a lower bound for the order
+of the group seen. However, we can use the action on the first orbit
+to get a homomorphism into a permutation group:
+
+<Log><![CDATA[
+gap> p := Group(ActionOnOrbit(S!.orb,[a,b]));
+<permutation group with 2 generators>
+gap> Size(p);
+64561751654400
+gap> DisplayCompositionSeries(p);
+G (2 gens, size 64561751654400)
+ | Fi(22)
+1 (0 gens, size 1)]]>
+</Log>
+
+This proves that our matrix group has Fi22 as a quotient.
+
+<Log><![CDATA[
+gap> Order((a*b)^4*b*a*b*(a*b*b)^2) = 12;
+true
+gap> # we even have standard generators for Fi22
+gap> slpmax1tofi22 := SLPOfElms([a,b]);
+<straight line program>
+gap> SetInfoLevel(InfoSLP,2);
+gap> SlotUsagePattern(slpmax1tofi22);;]]>
+</Log>
+
+Comment about SlotUsagePattern.
+
+<Log><![CDATA[
+gap> fgens := ResultOfStraightLineProgram(slpmax1tofi22,egens);
+...
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> aa := fgens[1];;
+gap> bb := fgens[2];;
+gap> IsOne(aa^2);
+true
+gap> IsOne(bb^13);
+true
+gap> IsOne((aa*bb)^11);
+false
+gap> IsOne((aa*bb)^22);
+true
+gap> IsOne((aa*bb^2)^21); 
+true
+gap> IsOne(Comm(aa,bb)^3) and
+> IsOne(Comm(aa,bb^2)^3) and
+> IsOne(Comm(aa,bb^3)^3) and
+> IsOne(Comm(aa,bb^4)^2) and
+> IsOne(Comm(aa,bb^5)^3) and
+> IsOne(Comm(aa,bb*aa*bb^2)^3) and
+> IsOne(Comm(aa,bb^-1*aa*bb^-2)^2) and
+> IsOne(Comm(aa,bb*aa*bb^5)^2) and
+> IsOne(Comm(aa,bb^2*aa*bb^5)^2);
+true]]>
+</Log>
+
+In the original representation we do not have Fi22 since one relation is not 
+fulfilled. Blabla
+
+modify aa by the central element:
+
+<Log><![CDATA[
+gap> aa := aa * (aa*bb)^11;
+<cmat 4370x4370 over GF(2,1)>
+gap> IsOne(aa^2);
+true
+gap> IsOne(bb^13);
+true
+gap> IsOne((aa*bb)^11);
+true
+gap> IsOne((aa*bb^2)^21);
+false
+gap> IsOne(Comm(aa,bb)^3) and
+> IsOne(Comm(aa,bb^2)^3) and
+> IsOne(Comm(aa,bb^3)^3) and
+> IsOne(Comm(aa,bb^4)^2) and
+> IsOne(Comm(aa,bb^5)^3) and
+> IsOne(Comm(aa,bb*aa*bb^2)^3) and
+> IsOne(Comm(aa,bb^-1*aa*bb^-2)^2) and
+> IsOne(Comm(aa,bb*aa*bb^5)^2) and
+> IsOne(Comm(aa,bb^2*aa*bb^5)^2);
+true]]>
+</Log>
+
+Now we have proved that our group is 2.Fi22, the central element can be 
+obtained in the following way:
+
+<Log><![CDATA[
+gap> c := (aa*bb^2)^21;
+<cmat 4370x4370 over GF(2,1)>
+gap> aa*c=c*aa;
+true
+gap> bb*c=c*bb;
+true
+gap> Order(c);
+2]]>
+</Log>
+
+This shows that we have aa 2.Fi22 and not 2xFi22
+
+<Log><![CDATA[
+gap> Order((aa*bb)^4*bb*aa*bb*(aa*bb*bb)^2) = 12;
+true]]>
+</Log>
+
+and we have standard generators of 2.Fi22
+<Log><![CDATA[
+gap> a := a * (a*b)^11;
+<<cmat 78x78 over GF(2,1)> with mem>
+gap> slpmax1tofi22 := SLPOfElms([a,b]);
+<straight line program>
+gap> SlotUsagePattern(slpmax1tofi22);;]]>
+</Log>
+
+now the new slp creates the new aa and bb:
+
+<Log><![CDATA[
+gap> fgens := [aa,bb];
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]]]>
+</Log>
+
+Then find nice quotients with good longish orbits for helper subgroups
+
+do base changes
+
+First we find generators for M12 and L2(11):
+
+<Log><![CDATA[
+gap> slpfi22tom12 := AtlasStraightLineProgram("Fi22",14).program;
+<straight line program>
+gap> slpm12tol211 := AtlasStraightLineProgram("M12",5).program;
+<straight line program>
+gap> SlotUsagePattern(slpfi22tom12);;
+gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
+...
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> # this is now either M12 or 2xM12 since 2.Fi22 does not contain 2.M12
+gap> lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> List(mgens,Order);
+[ 2, 3 ]
+gap> Order(mgens[1]*mgens[2]);
+11]]>
+</Log>
+
+This proves that we have M12 and not 2xM12.
+
+<Log><![CDATA[
+gap> m := Module(mgens);
+<module of dim. 4370 over GF(2)>
+gap> r := Chop(m);
+...
+gap> rad := RadicalSeries(m,r.db);
+...
+rec( 
+  db := [ <abs. simple module of dim. 44 over GF(2)>, <simple module of dim. 
+        32 over GF(2) splitting field degree 2>, 
+      <abs. simple module of dim. 144 over GF(2)>, 
+      <abs. simple module of dim. 10 over GF(2)>, 
+      <trivial module of dim. 1 over GF(2)> ], 
+  module := <reducible module of dim. 4370 over GF(2)>, 
+  basis := <immutable cmat 4370x4370 over GF(2,1)>, 
+  ibasis := <immutable cmat 4370x4370 over GF(2,1)>, 
+...
+  isotypes := [ [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 
+          2, 2, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ], 
+      [ 1, 1, 1, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 
+          5, 5, 5, 5, 5, 5, 5, 5 ], 
+      [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 
+          5, 5, 5, 5, 5, 5 ], 
+      [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 5 ], 
+      [ 1, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 
+          5 ], [ 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 5 ], 
+      [ 1, 1, 1, 1, 1, 4, 4, 4, 4, 4 ], [ 4, 4, 4, 4, 4, 5, 5, 5, 5, 5 ], 
+      [ 1, 1, 1, 1, 1 ] ], isradicalrecord := true )
+gap> bgens := List(bgens,x->rad.basis*x*rad.ibasis);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]]]>
+</Log>
+
+Find the basis vectors corresponding to some 32 dimensional summand in the 
+head.
+<Log><![CDATA[
+gap> l := rad.cfposs[1][13];
+[ 529 .. 560 ]
+gap> Append(l,Difference([1..4370],l));
+gap> bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> egens := ResultOfStraightLineProgram(slpBtomax1,bgens);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> fgens := ResultOfStraightLineProgram(slpmax1tofi22,egens);
+...
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
+...
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]]]>
+</Log>
+Now arrange things for L2(11) within the 32-dim top factor.
+
+<Log><![CDATA[
+gap> lgens32 := List(lgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
+[ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ]
+gap> m := Module(lgens32);
+<module of dim. 32 over GF(2)>
+gap> r := Chop(m);
+...
+gap> soc := SocleSeries(m,r.db);
+rec( issoclerecord := true, 
+  db := [ <abs. simple module of dim. 10 over GF(2)>, 
+      <simple module of dim. 10 over GF(2) splitting field degree 2>, 
+      <trivial module of dim. 1 over GF(2)> ], 
+  module := <reducible module of dim. 32 over GF(2)>, 
+  basis := <cmat 32x32 over GF(2,1)>, ibasis := <cmat 32x32 over GF(2,1)>, 
+  cfposs := [ [ [ 1 .. 10 ], [ 11 .. 20 ], [ 21 .. 30 ], [ 31 ], [ 32 ] ] ], 
+  isotypes := [ [ 1, 1, 2, 3, 3 ] ] )
+gap> t := ORB_EmbedBaseChangeTopLeft(soc.basis,4370);
+<cmat 4370x4370 over GF(2,1)>
+gap> ti := t^-1;
+gap> bgens := List(bgens,x->t*x*ti);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> egens := ResultOfStraightLineProgram(slpBtomax1,bgens);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> fgens := ResultOfStraightLineProgram(slpmax1tofi22,egens);
+...
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
+...
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]]]>
+</Log>
+
+We now check that the quotients found are good for our helper
+subgroups:
+
+<Log><![CDATA[
+gap> guck := List(lgens,x->ExtractSubMatrix(x,[1..20],[1..20]));
+[ <cmat 20x20 over GF(2,1)>, <cmat 20x20 over GF(2,1)> ]
+gap> OrbitStatisticOnVectorSpace(guck,660,10);
+...
+gap> guck := List(mgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
+[ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ]
+gap> OrbitStatisticOnVectorSpace(guck,95040,10);
+...]]>
+</Log>
+
+Average orbit lengths good...
+
+<P/>
+
+find corresponding permutation action for helper subgroups
+
+<Log><![CDATA[
+gap> guck := List(mgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
+[ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ]
+gap> S := StabilizerChain(Group(guck),rec(TryShortOrbit := 10));
+...
+<stabchain size=95040 orblen=3960 layer=1 SchreierDepth=7>
+ <stabchain size=24 orblen=24 layer=2 SchreierDepth=4>
+gap> p := Group(ActionOnOrbit(S!.orb,guck));
+<permutation group with 2 generators>
+gap> Size(p);
+95040
+gap> pp := Image(SmallerDegreePermutationRepresentation(p));
+<permutation group of size 95040 with 2 generators>
+gap> m12 := MathieuGroup(12);;
+gap> i := IsomorphismGroups(pp,m12);;
+gap> newgens := List(GeneratorsOfGroup(pp),x->ImageElm(i,x));
+[ (3,5)(6,9)(8,10)(11,12), (1,2,3)(4,10,6)(5,7,9)(8,11,12) ]
+gap> newgensl := ResultOfStraightLineProgram(slpm12tol211,newgens);
+[ (1,11)(2,12)(3,5)(4,8)(6,9)(7,10), (1,2,12)(3,10,9)(4,6,11)(5,7,8) ]]]>
+</Log>
+
+We could just go on from here, however, sometimes it is useful to save
+all the created data to disk...
+
+<Log><![CDATA[
+gap> f := IO_File("data.gp","w");;
+gap> IO_Pickle(f,"Generators of B in new basis");;
+gap> IO_Pickle(f,bgens);;
+gap> IO_Pickle(f,"slpBtomax1");;
+gap> IO_Pickle(f,slpBtomax1);;
+gap> IO_Pickle(f,"slpmax1tofi22");;
+gap> IO_Pickle(f,slpmax1tofi22);;
+gap> IO_Pickle(f,"slpfi22tom12");;
+gap> IO_Pickle(f,slpfi22tom12);;
+gap> IO_Pickle(f,"slpm12tol211");;
+gap> IO_Pickle(f,slpm12tol211);;
+gap> IO_Pickle(f,"Now all the generators from max1 to l2(11) as matrices");;
+gap> IO_Pickle(f,egens);;
+gap> IO_Pickle(f,fgens);;
+gap> IO_Pickle(f,mgens);;
+gap> IO_Pickle(f,lgens);;
+gap> IO_Pickle(f,"Permutation gens for M12 and L2(11)");;
+gap> IO_Pickle(f,newgens);;
+gap> IO_Pickle(f,newgensl);;
+gap> IO_Close(f);
+true]]>
+</Log>
+
+This can be loaded again in the following way:
+
+<Log><![CDATA[gap> LoadPackage("cvec");;
+...
+gap> LoadPackage("orb");;
+...
+gap> f := IO_File("data.gp");
+<file fd=4 rbufsize=65536 rpos=1 rdata=0>
+gap> IO_Unpickle(f);
+"Generators of B in new basis"
+gap> bgens := IO_Unpickle(f);    # B
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> IO_Unpickle(f);
+"slpBtomax1"
+gap> slpBtomax1 := IO_Unpickle(f);
+<straight line program>
+gap> IO_Unpickle(f);
+"slpmax1tofi22"
+gap> slpmax1tofi22 := IO_Unpickle(f);
+<straight line program>
+gap> IO_Unpickle(f);
+"slpfi22tom12"
+gap> slpfi22tom12 := IO_Unpickle(f);
+<straight line program>
+gap> IO_Unpickle(f);
+"slpm12tol211"
+gap> slpm12tol211 := IO_Unpickle(f);
+<straight line program>
+gap> IO_Unpickle(f);
+"Now all the generators from max1 to l2(11) as matrices"
+gap> egens := IO_Unpickle(f);    # 2.E6(2).2
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> fgens := IO_Unpickle(f);    # Fi22
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> mgens := IO_Unpickle(f);    # M12
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> lgens := IO_Unpickle(f);    # L2(11)
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
+gap> IO_Unpickle(f);
+"Permutation gens for M12 and L2(11)"
+gap> mgensp := IO_Unpickle(f);   # M12 as permutations
+[ (3,5)(6,9)(8,10)(11,12), (1,2,3)(4,10,6)(5,7,9)(8,11,12) ]
+gap> lgensp := IO_Unpickle(f);   # L2(11) as permutations
+[ (1,11)(2,12)(3,5)(4,8)(6,9)(7,10), (1,2,12)(3,10,9)(4,6,11)(5,7,8) ]
+gap> IO_Close(f);;]]>
+</Log>
+
+Then the orbit enumeration can be done in the following way.
+Note that since we did various base changes we have to recreate the fixed 
+vector <C>v</C> exactly as above.
+
+<Log>
+<![CDATA[gap> a := egens[1]-One(egens[1]);
+<cmat 4370x4370 over GF(2,1)>
+gap> ns := NullspaceMat(a);
+<immutable cmat 2202x4370 over GF(2,1)>
+gap> a := egens[2]-One(egens[2]);
+<cmat 4370x4370 over GF(2,1)>
+gap> a := ns * a;
+<cmat 2202x4370 over GF(2,1)>
+gap> ns2 := NullspaceMat(a);
+<immutable cmat 1x2202 over GF(2,1)>
+gap> v := ns2[1]*ns;
+<immutable cvec over GF(2,1) of length 4370>
+gap> setup := OrbitBySuborbitBootstrapForVectors(
+>   [lgens,mgens,bgens],
+>   [lgensp,mgensp,[(),()]],
+>   [660,95040,Size(ctb)],
+>   [20,32],rec());
+#I  Calculating stabilizer chain for whole group...
+#I  Trying smaller degree permutation representation for U2...
+#I  Trying smaller degree permutation representation for U1...
+#I  Enumerating permutation base images of U_1...
+#I  Looking for U1-coset-recognising U2-orbit in factor space...
+#I  OrbitBySuborbit found 100% of a U2-orbit of size 95 040
+#I  Found 144 suborbits (need 144)
+<setup for an orbit-by-suborbit enumeration, k=2>
+gap> o := OrbitBySuborbitKnownSize(setup,v,3,3,2,51,13571955000);
+#I  OrbitBySuborbit found 100% of a U2-orbit of size 1
+#I  OrbitBySuborbit found 100% of a U2-orbit of size 23 760
+...
+<orbit-by-suborbit size=13571955000 stabsize=306129918735099415756800 (
+51%) saving factor=45195>]]>
+</Log>
+
+</Section>
 
 <!-- ############################################################ -->
 

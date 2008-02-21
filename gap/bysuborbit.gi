@@ -939,6 +939,25 @@ InstallGlobalFunction( ORB_NormalizeVector,
     return v;
   end );
 
+InstallGlobalFunction( ORB_PermuteBasisVectors,
+  function( m, ra )
+    local i;
+    m := m{ra};
+    for i in [1..Length(m)] do
+        m[i] := m[i]{ra};
+    od;
+    return m;
+  end );
+
+InstallGlobalFunction( ORB_EmbedBaseChangeTopLeft,
+  function( t, dim )
+    local T,d;
+    T := IdentityMatrix(dim,t);
+    d := Length(t);
+    CopySubMatrix(t,T,[1..d],[1..d],[1..d],[1..d]);
+    return T;
+  end );
+
 InstallGlobalFunction( ORB_CosetRecogGeneric,
   function( i, w, s )
     local x,j;
