@@ -12,77 +12,111 @@ This chapter gives examples for the usage of this package.
 <Chapter Label="examples">
 <Heading>Examples</Heading>
 
+
+
 Currently we have one major example, which however illustrates a lot
 of the tools which are available in the <Package>orb</Package> package
-as well as in some other packages. In Section <Ref Sect="Borbit"/>
-you find a description how to enumerate the smallest orbit of the Baby
-monster sporadic simple group on the cosets of <M>2.^2E_6(2).2</M>.
-
-<Section Label="Borbit">
-<Heading>Enumerating a Baby monster orbit</Heading>
-
-In this section we show how to enumerate the smallest orbit of the Baby
-monster sporadic simple group on the cosets of <M>2.^2E_6(2).2</M>.
-We basically present a log of a &GAP; session with some explanations
-in between. Larger pieces of output which are not so interesting have
-been replaced by <C>...</C>.
+as well as in some other packages. 
 <P/>
 
+???
+<P/>
+
+???
 What do we have to do? (See <Cite Key="MNW"/>)
-
 Comment: in general quite difficult, have to try things.
+<P/>
 
-Realisation of the permutation action -> fixed vector
 
 
-First we load the packages, fetch representing matrices for the Baby
-monster using the <Package>atlasrep</Package> package and Rob Wilson's
-WWW Atlas of group representations:
+
+In Section <Ref Sect="Borbit"/>
+we present as an extended worked example how to
+enumerate the smallest non-trivial orbit of the 
+sporadic simple Baby monster group.
+
+<!-- ==================================================================== -->
+
+<Section Label="Borbit">
+<Heading>Enumerating the smallest Baby monster orbit</Heading>
+
+In this section we show in detail how to enumerate the smallest 
+non-trivial orbit of the sporadic simple Baby monster group <M>B</M>. 
+The associated one-point stabiliser is the largest 
+maximal subgroup <M>E:=2.^2E_6(2).2</M> of <M>B</M>,
+having index <M>[B\colon E]=13\,571\,955\,000\sim 1.4\cdot 10^{10}</M>,
+see <Cite Key="CCN85"/>. 
+<P/>
+
+We present a log of a &GAP; session with explanations in between, 
+where larger pieces of output have been replaced by <C>...</C>.
+We begin by loading the packages we are using in the sequel, where the
+<Package>orb</Package> package automatically invokes the
+<Package>io</Package> package, and the <Package>chop</Package> package
+automatically invokes the <Package>cvec</Package> package.
+
+<!-- ??? How official are these packages? -->
 
 <Log>
-<![CDATA[gap> LoadPackage("chop");;
-...
-gap> LoadPackage("genss");;
+<![CDATA[gap> LoadPackage("orb");;
 ...
 gap> LoadPackage("atlasrep");;
 ...
-gap> gens := AtlasGenerators("B",1).generators;
+gap> LoadPackage("chop");;
+...
+gap> LoadPackage("genss");;
+... ]]>
+</Log>
+
+We first try to find a matrix representation of <M>B</M>
+such that the <M>B</M>-orbit we look for is realised as 
+a set of vectors in the underlying vectors space. 
+The smallest faithful representation 
+of <M>B</M> over the field GF(2) springs to mind.
+Explicit matrices in terms of standard generators
+in the sense of <Cite Key="Wil96"/>
+are available in <Cite Key="AGR"/>, 
+and are accessibe through the <Package>atlasrep</Package> package.
+Moreover, we find generators of <M>E</M> by applying a straight line program,
+also available in the <Package>atlasrep</Package> package,
+expressing generators of <M>E</M> in terms of the generators of <M>B</M>. 
+
+<Log>
+<![CDATA[gap> gens := AtlasGenerators("B",1).generators;
 [ <an immutable 4370x4370 matrix over GF2>, 
   <an immutable 4370x4370 matrix over GF2> ]
 gap> bgens := List(gens,CMat);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] 
+gap> slpbtoe := AtlasStraightLineProgram("B",1).program;;
+gap> egens := ResultOfStraightLineProgram(slpbtoe,bgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] ]]>
 </Log>
 
-Now we find generators for  <M>E := 2.^2E_6(2).2</M> again by using the
-<Package>atlasrep</Package> package to fetch a straight line program
-expressing generators of <M>E</M> in terms of the generators of
-<M>B</M>:
+We look for a non-zero vector being fixed by both generators of <M>E</M>.
+It turns out that the latter have a common fixed space of dimension 1.
+Then, since <M>E</M> is a maximal subgroup,
+the stabiliser in <M>B</M> of the non-zero vector <M>v</M> 
+in that fixed space coincides with <M>E</M>.
 
 <Log>
-<![CDATA[gap> slpBtomax1 := AtlasStraightLineProgram("B",1).program;;
-gap> egens := ResultOfStraightLineProgram(slpBtomax1,bgens);
-[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-]]></Log>
-
-Realise permutation action, find fixed vector:
-
-<Log>
-<![CDATA[gap> a := egens[1]-One(egens[1]);
-<cmat 4370x4370 over GF(2,1)>
-gap> ns := NullspaceMat(a);
+<![CDATA[gap> x := egens[1]-One(egens[1]);;
+gap> nsx := NullspaceMat(x);
 <immutable cmat 2202x4370 over GF(2,1)>
-gap> a := egens[2]-One(egens[2]);
-<cmat 4370x4370 over GF(2,1)>
-gap> a := ns * a;
-<cmat 2202x4370 over GF(2,1)>
-gap> ns2 := NullspaceMat(a);
+gap> y := egens[2]-One(egens[2]);;
+gap> y := nsx * y;;
+gap> nsy := NullspaceMat(y);
 <immutable cmat 1x2202 over GF(2,1)>
-gap> v := ns2[1]*ns;
-<immutable cvec over GF(2,1) of length 4370>]]>
+gap> v := nsy[1]*nsx;
+<immutable cvec over GF(2,1) of length 4370> ]]>
 </Log>
 
-Now v is fixed vector, since <M>E</M> is maximal...
+<!-- ==================================================================== -->
+
+???
 <P/>
+
+
+
 
 Memory considerations
 
@@ -228,16 +262,16 @@ This proves that our matrix group has Fi22 as a quotient.
 gap> Order((a*b)^4*b*a*b*(a*b*b)^2) = 12;
 true
 gap> # we even have standard generators for Fi22
-gap> slpmax1tofi22 := SLPOfElms([a,b]);
+gap> slpetofi22 := SLPOfElms([a,b]);
 <straight line program>
 gap> SetInfoLevel(InfoSLP,2);
-gap> SlotUsagePattern(slpmax1tofi22);;]]>
+gap> SlotUsagePattern(slpetofi22);;]]>
 </Log>
 
 Comment about SlotUsagePattern.
 
 <Log><![CDATA[
-gap> fgens := ResultOfStraightLineProgram(slpmax1tofi22,egens);
+gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);
 ...
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
 gap> aa := fgens[1];;
@@ -317,9 +351,9 @@ and we have standard generators of 2.Fi22
 <Log><![CDATA[
 gap> a := a * (a*b)^11;
 <<cmat 78x78 over GF(2,1)> with mem>
-gap> slpmax1tofi22 := SLPOfElms([a,b]);
+gap> slpetofi22 := SLPOfElms([a,b]);
 <straight line program>
-gap> SlotUsagePattern(slpmax1tofi22);;]]>
+gap> SlotUsagePattern(slpetofi22);;]]>
 </Log>
 
 now the new slp creates the new aa and bb:
@@ -395,9 +429,9 @@ gap> l := rad.cfposs[1][13];
 gap> Append(l,Difference([1..4370],l));
 gap> bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> egens := ResultOfStraightLineProgram(slpBtomax1,bgens);
+gap> egens := ResultOfStraightLineProgram(slpbtoe,bgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> fgens := ResultOfStraightLineProgram(slpmax1tofi22,egens);
+gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);
 ...
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
 gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
@@ -429,9 +463,9 @@ gap> t := ORB_EmbedBaseChangeTopLeft(soc.basis,4370);
 gap> ti := t^-1;
 gap> bgens := List(bgens,x->t*x*ti);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> egens := ResultOfStraightLineProgram(slpBtomax1,bgens);
+gap> egens := ResultOfStraightLineProgram(slpbtoe,bgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> fgens := ResultOfStraightLineProgram(slpmax1tofi22,egens);
+gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);
 ...
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
 gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
@@ -489,15 +523,15 @@ all the created data to disk...
 gap> f := IO_File("data.gp","w");;
 gap> IO_Pickle(f,"Generators of B in new basis");;
 gap> IO_Pickle(f,bgens);;
-gap> IO_Pickle(f,"slpBtomax1");;
-gap> IO_Pickle(f,slpBtomax1);;
-gap> IO_Pickle(f,"slpmax1tofi22");;
-gap> IO_Pickle(f,slpmax1tofi22);;
+gap> IO_Pickle(f,"slpbtoe");;
+gap> IO_Pickle(f,slpbtoe);;
+gap> IO_Pickle(f,"slpetofi22");;
+gap> IO_Pickle(f,slpetofi22);;
 gap> IO_Pickle(f,"slpfi22tom12");;
 gap> IO_Pickle(f,slpfi22tom12);;
 gap> IO_Pickle(f,"slpm12tol211");;
 gap> IO_Pickle(f,slpm12tol211);;
-gap> IO_Pickle(f,"Now all the generators from max1 to l2(11) as matrices");;
+gap> IO_Pickle(f,"Now all the generators from E to L2(11) as matrices");;
 gap> IO_Pickle(f,egens);;
 gap> IO_Pickle(f,fgens);;
 gap> IO_Pickle(f,mgens);;
@@ -522,12 +556,12 @@ gap> IO_Unpickle(f);
 gap> bgens := IO_Unpickle(f);    # B
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
 gap> IO_Unpickle(f);
-"slpBtomax1"
-gap> slpBtomax1 := IO_Unpickle(f);
+"slpbtoe"
+gap> slpbtoe := IO_Unpickle(f);
 <straight line program>
 gap> IO_Unpickle(f);
-"slpmax1tofi22"
-gap> slpmax1tofi22 := IO_Unpickle(f);
+"slpetofi22"
+gap> slpetofi22 := IO_Unpickle(f);
 <straight line program>
 gap> IO_Unpickle(f);
 "slpfi22tom12"
@@ -538,7 +572,7 @@ gap> IO_Unpickle(f);
 gap> slpm12tol211 := IO_Unpickle(f);
 <straight line program>
 gap> IO_Unpickle(f);
-"Now all the generators from max1 to l2(11) as matrices"
+"Now all the generators from E to L2(11) as matrices"
 gap> egens := IO_Unpickle(f);    # 2.E6(2).2
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
 gap> fgens := IO_Unpickle(f);    # Fi22

@@ -80,7 +80,7 @@ Germany
 <#Include SYSTEM "examples.xml">
 </Body>
 
-<Bibliography Databases="orb"/>
+<Bibliography Databases="orb,../../../doc/manualbib.xml"/>
 
 <!--  And finally an index as well   -->
 <TheIndex/>
