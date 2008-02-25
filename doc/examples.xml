@@ -203,8 +203,13 @@ the derived subgroup <M>E'\cong 2.^2E_6(2)</M> of <M>E</M> turns
 out to possess maximal subgroups 
 <M>2\times Fi_{22}</M> and <M>2.Fi_{22}</M>, 
 where <M>Fi_{22}</M> denotes one of the sporadic simple Fischer groups,
-and where the former constitute a unique conjugacy class, while 
-the latter consist of two conjugacy classes being interchanged by <M>E</M>.
+and where the former constitute a unique conjugacy class
+with associated normalizers in <M>E</M> of shape 
+<M>2\times Fi_{22}.2</M>, while 
+the latter consist of two conjugacy classes being self-normalising
+and interchanged by <M>E</M>.
+<P/>
+
 Now <M>Fi_{22}</M> has a unique conjugacy class of maximal
 subgroups <M>M_{12}</M>, where the latter denotes one of 
 the sporadic simple Mathieu groups; the subgroups <M>M_{12}</M>
@@ -222,31 +227,15 @@ for the smaller helper subgroup.
 <P/>
 
 We start a random search to find a subgroup <M>Fi_{22}</M>
-or <M>2.Fi_{22}</M>
-...
-
-<P/>
-
-
-
-
-
-
-<!-- ==================================================================== -->
-
-
-<P/>
-
-We now start a random search for generators of a subgroup <M>Fi_{22}</M>,
-in terms of the given generators of <M>E</M>. 
-
-
-To accelerate computations
+or <M>2.Fi_{22}</M> of <M>E</M>. We aim at finding standard generators
+of <M>(2.)Fi_{22}</M>, and we use <C>GeneratorsWithMemory</C>
+in order to be able to express the generators found as words
+in the generators of <M>E</M>. To accelerate computations
 we first construct a small representation of <M>E</M>;
-by ...
-
-<P/>
-further computations similar for the other type of Fi22 
+by <Cite Key="Jansen"/> the smallest faithful irreducible 
+representation of <M>Fi_{22}</M> over GF(2) has dimension 78,
+hence we cannot do better for <M>E</M>; note that the latter is
+a representation of <M>\overline{E}:=E/Z(E)\cong {}^2E_6(2).2</M>.
 
 <Log><![CDATA[
 gap> m := Module(egens);
@@ -260,107 +249,116 @@ rec( ischoprecord := true,
       <abs. simple module of dim. 1702 over GF(2)>, 
       <abs. simple module of dim. 572 over GF(2)> ], mult := [ 5, 4, 2, 1 ], 
   acs := [ 1, 2, 3, 1, 4, 1, 1, 2, 2, 3, 1, 2 ], 
-  module := <reducible module of dim. 4370 over GF(2)> )]]>
+  module := <reducible module of dim. 4370 over GF(2)> )
+gap> egens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[1]));
+[ <<immutable cmat 78x78 over GF(2,1)> with mem>, 
+  <<immutable cmat 78x78 over GF(2,1)> with mem> ] ]]>
 </Log>
 
-
-check that 78 is the first one
-
-Plan: find t in 2a, b in 13a, look for conjugates of t until 
-we find elements t^x,b that are standard generators of Fi22
-and fulfill all relations for Fi22.
-
-Note usage of elements with memory.
+Standard generators <M>a,b</M> of <M>(2.)Fi_{22}</M>
+are given as follows, see <Cite Key="AGR"/>:
+<M>a</M> is an element of the 2A conjugacy class of <M>(2.)Fi_{22}</M>,
+where the conjugacy classes are denoted as in <Cite Key="CCN85"/>,
+and <M>b</M>, <M>ab</M> and <M>(ab)^4bab(abb)^2</M> have order 13,
+11 and 12, respectively. 
+The 2A conjugacy class of <M>Fi_{22}</M>
+fuses into the 2A conjugacy class of <M>\overline{E}</M>, 
+where the latter is obtained as the 11-th power of the
+unique conjugacy class consisting of elements of order 22, and 
+<M>\overline{E}</M> has only one conjugacy class of elements of order 13. 
 
 <Log>
-<![CDATA[gap> egens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[1]));
-[ <<immutable cmat 78x78 over GF(2,1)> with mem>, 
-  <<immutable cmat 78x78 over GF(2,1)> with mem> ]
-gap> # Find element in 2a:
-gap> o := Orb(egens78,StripMemory(egens78[1])^0,OnRight,
-> rec(schreier := true,report := 1000,
-> lookingfor := function(o,x) return Order(x)=22; end));
+<![CDATA[gap> o := Orb(egens78,StripMemory(egens78[1])^0,OnRight,
+>    rec(schreier := true,report := 1000,
+>    lookingfor := function(o,x) return Order(x)=22; end));
 <open orbit, 1 points with Schreier tree looking for sth.>
 gap> Enumerate(o);
 <open orbit, 393 points with Schreier tree looking for sth.>
 gap> word := TraceSchreierTreeForward(o,o!.found);
 [ 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2 ]
-gap> g22 := Product(egens78{word});
+gap> g2a := Product(egens78{word})^11;
 <<immutable cmat 78x78 over GF(2,1)> with mem>
-gap> g2a := g22^11;
-<<immutable cmat 78x78 over GF(2,1)> with mem>]]>
-</Log>
-
-Find element of order 13:
-
-<Log>
-<![CDATA[
 gap> o := Orb(egens78,StripMemory(egens78[1])^0,OnRight,
-> rec(schreier := true,report := 1000,
->          lookingfor := function(o,x) return Order(x)=13; end));
+>    rec(schreier := true,report := 1000,
+>    lookingfor := function(o,x) return Order(x)=13; end));
 <open orbit, 1 points with Schreier tree looking for sth.>
 gap> Enumerate(o);
 <open orbit, 144 points with Schreier tree looking for sth.>
-gap> word2 := TraceSchreierTreeForward(o,o!.found);
+gap> word := TraceSchreierTreeForward(o,o!.found);
 [ 1, 2, 1, 2, 1, 2, 1, 2, 2 ]
-gap> g13 := Product(egens78{word2});
-<<immutable cmat 78x78 over GF(2,1)> with mem>
-gap> Order(g13);
-13
-gap> b := g13;
-<<immutable cmat 78x78 over GF(2,1)> with mem>]]>
+gap> b := Product(egens78{word});
+<<immutable cmat 78x78 over GF(2,1)> with mem> ]]>
 </Log>
 
-Now use product replacement algorithm to produce random elements
-and thus look for random conjugates:
+We search through the <M>\overline{E}</M>-conjugates of <C>g2a</C>
+until we find a conjugate <M>a</M> together with <M>b</M> 
+fulfilling the defining conditions of standard generators of <M>Fi_{22}</M>, 
+and moreover fulfilling the relations of the associated presentation 
+for <M>Fi_{22}</M> also available in <Cite Key="AGR"/>.
+To find random conjugates we use the product replacement algorithm to 
+produce random elements of <M>\overline{E}</M> to conjugate <C>g2a</C> with. 
+The success probability of this approach is given as follows:
+Letting <M>\overline{E'}:=E'/Z(E')\cong {}^2E_6(2)</M>,
+out of the <M>|\overline{E'}|/|C_{\overline{E'}}(g2a)|</M> 
+conjugates of <C>g2a</C> there are 
+<M>|C_{\overline{E'}}(b)|/|C_{\overline{E'}}(Fi_{22})|
+=|C_{\overline{E'}}(b)|</M>
+elements together with the fixed element <M>b</M> 
+giving standard generators of <M>Fi_{22}</M>. 
+Since <M>Fi_{22}</M> has two conjugacy classes of elements of order 13, 
+and there are three conjugacy classes of subgroups <M>Fi_{22}</M>
+of <M>\overline{E'}</M>, the success probability is
+<M>6\cdot |C_{\overline{E'}}(g2a)|\cdot 
+   |C_{\overline{E'}}(b)|/|\overline{E'}|=2/101745\sim 2\cdot 10^{-5}</M>.
 
 <Log>
 <![CDATA[gap> pr := ProductReplacer(egens78,rec(maxdepth := 150));
-<product replacer nrgens=2 slots=12 scramble=100 maxdepth=150 steps=
-0 (rattle)>
-gap> i := 0;
-0
+<product replacer nrgens=2 slots=12 scramble=100 maxdepth=150 steps=0 (rattle)>
+gap> i := 0;;
 gap> repeat
->   x := Next(pr);
->   i := i + 1;
->   a := g2a^x;
-> until IsOne(a^2) and
-> IsOne(b^13) and
-> IsOne((a*b)^11) and
-> IsOne((a*b^2)^21) and
-> IsOne(Comm(a,b)^3) and
-> IsOne(Comm(a,b^2)^3) and
-> IsOne(Comm(a,b^3)^3) and
-> IsOne(Comm(a,b^4)^2) and
-> IsOne(Comm(a,b^5)^3) and
-> IsOne(Comm(a,b*a*b^2)^3) and
-> IsOne(Comm(a,b^-1*a*b^-2)^2) and
-> IsOne(Comm(a,b*a*b^5)^2) and
-> IsOne(Comm(a,b^2*a*b^5)^2);
+>      i := i + 1;
+>      x := Next(pr);
+>      a := g2a^x;
+>    until IsOne((a*b)^11) and IsOne(((a*b)^4*b*a*b*(a*b*b)^2)^12) and
+>      IsOne((a*b^2)^21) and IsOne(Comm(a,b)^3) and
+>      IsOne(Comm(a,b^2)^3) and IsOne(Comm(a,b^3)^3) and
+>      IsOne(Comm(a,b^4)^2) and IsOne(Comm(a,b^5)^3) and
+>      IsOne(Comm(a,b*a*b^2)^3) and IsOne(Comm(a,b^-1*a*b^-2)^2) and
+>      IsOne(Comm(a,b*a*b^5)^2) and IsOne(Comm(a,b^2*a*b^5)^2);
 gap> i;
-6362]]>
+6362 ]]>
 </Log>
 
-We have done it, here are some more checks to illustrate tools
-for the case that we do not have a presentation:
+Indeed, we have been fairly lucky.
+Due to a presentation of <M>Fi_{22}</M> being available 
+we have already proved that <M>\langle a,b\rangle\cong Fi_{22}</M>.
+If we did not have a presentation at hand, 
+we would only have been able to produce elements fulfilling
+the defining conditions of standard generators of <M>Fi_{22}</M>,
+which hence still could generate a subgroup of another isomorphism type.
+To filter out good candidates, we could use the following tools 
+for further checks.
+
 
 <Log>
-<![CDATA[gap> # Some more checks to illustrate tools:
+<![CDATA[
 gap> g := Group(a,b);
 <matrix group with 2 generators>
 gap> S := StabilizerChain(g,rec(TryShortOrbit := 30,OrbitLengthLimit := 5000,
->                             FailInsteadOfError := true));
+>                               FailInsteadOfError := true));
 ...
 <stabchain size=64561751654400 orblen=3510 layer=1 SchreierDepth=8>
  <stabchain size=18393661440 orblen=2816 layer=2 SchreierDepth=7>
   <stabchain size=6531840 orblen=1680 layer=3 SchreierDepth=7>
    <stabchain size=3888 orblen=243 layer=4 SchreierDepth=5>
     <stabchain size=16 orblen=16 layer=5 SchreierDepth=2>
-gap> Size(S);
-64561751654400
-gap> Size(CharacterTable("Fi22"));
-64561751654400]]>
+gap> Size(S)=Size(CharacterTable("Fi22"));
+true ]]>
 </Log>
+
+<P/>
+---------------------------------------------------------------------
+<P/>
 
 Note that this is not yet verified. It only gives a lower bound for the order
 of the group seen. However, we can use the action on the first orbit
@@ -462,6 +460,9 @@ gap> Order(c);
 </Log>
 
 This shows that we have aa 2.Fi22 and not 2xFi22
+
+<P/>
+further computations similar for the other type of Fi22  ...
 
 <Log><![CDATA[
 gap> Order((aa*bb)^4*bb*aa*bb*(aa*bb*bb)^2) = 12;
