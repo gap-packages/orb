@@ -260,15 +260,18 @@ gap> egens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[1]));
   <<immutable cmat 78x78 over GF(2,1)> with mem> ] ]]>
 </Log>
 
-Standard generators <M>a,b</M> of <M>(2.)Fi_{22}</M>
-are given as follows, see <Cite Key="AGR"/>:
-<M>a</M> is an element of the 2A conjugacy class of <M>(2.)Fi_{22}</M>,
-and <M>b</M>, <M>ab</M> and <M>(ab)^4bab(abb)^2</M> have order 13,
-11 and 12, respectively. 
+By <Cite Key="AGR"/>, standard generators <M>a,b</M> of <M>Fi_{22}</M>
+are given as follows:
+<M>a</M> is an element of the 2A conjugacy class of <M>Fi_{22}</M>,
+and <M>b</M>, <M>ab</M>, and <M>(ab)^4bab(abb)^2</M> have order 13,
+11, and 12, respectively; 
+standard generators of <M>2.Fi_{22}</M>
+are lifts of standard generators of <M>Fi_{22}</M>
+having the same order fingerprint.
 The 2A conjugacy class of <M>Fi_{22}</M>
 fuses into the 2A conjugacy class of <M>\overline{E}</M>, 
 where the latter is obtained as the 11-th power of the
-unique conjugacy class consisting of elements of order 22, and 
+unique conjugacy class of elements of order 22, and 
 <M>\overline{E}</M> has only one conjugacy class of elements of order 13. 
 
 <Log><![CDATA[
@@ -296,10 +299,13 @@ We search through the <M>\overline{E}</M>-conjugates of <C>g2a</C>
 until we find a conjugate <M>a</M> together with <M>b</M> 
 fulfilling the defining conditions of standard generators of <M>Fi_{22}</M>, 
 and moreover fulfilling the relations of the associated presentation 
-of <M>Fi_{22}</M> also available in <Cite Key="AGR"/>.
-To find random conjugates we use the product replacement algorithm to 
-produce random elements of <M>\overline{E}</M> to conjugate <C>g2a</C> with. 
-The success probability of this approach is given as follows:
+of <M>Fi_{22}</M> available in <Cite Key="AGR"/>.
+<P/>
+
+To find conjugates, we use the product replacement algorithm to 
+produce pseudo random elements of <M>\overline{E}</M>. 
+Assuming a genuine random search, 
+the success probability of this approach is as follows:
 Letting <M>\overline{E'}:=E'/Z(E')\cong {}^2E_6(2)</M>,
 out of the <M>|\overline{E'}|/|C_{\overline{E'}}(g2a)|</M> 
 conjugates of <C>g2a</C> there are 
@@ -311,7 +317,7 @@ Since <M>Fi_{22}</M> has two conjugacy classes of elements of order 13,
 and there are three conjugacy classes of subgroups <M>Fi_{22}</M>
 of <M>\overline{E'}</M>, the success probability is
 <M>6\cdot |C_{\overline{E'}}(g2a)|\cdot 
-   |C_{\overline{E'}}(b)|/|\overline{E'}|=2/101745\sim 2\cdot 10^{-5}</M>.
+   |C_{\overline{E'}}(b)|/|\overline{E'}|\sim 2\cdot 10^{-5}</M>.
 
 <Log><![CDATA[
 gap> pr := ProductReplacer(egens78,rec(maxdepth := 150));
@@ -319,6 +325,7 @@ gap> pr := ProductReplacer(egens78,rec(maxdepth := 150));
 gap> i := 0;;
 gap> repeat
 >      i := i + 1; 
+ if i mod 500 = 0 then Print(i," \c"); fi; 
 >      x := Next(pr);
 >      a := g2a^x;
 >    until IsOne((a*b)^11) and IsOne(((a*b)^4*b*a*b*(a*b*b)^2)^12) and
@@ -328,24 +335,24 @@ gap> repeat
 >      IsOne(Comm(a,b*a*b^2)^3) and IsOne(Comm(a,b^-1*a*b^-2)^2) and
 >      IsOne(Comm(a,b*a*b^5)^2) and IsOne(Comm(a,b^2*a*b^5)^2);
 gap> i;
-6362 ]]>
+53271 ]]>
 </Log>
 
+<!-- This is reproducible with a fresh GAP. -->
 <!-- if i mod 500 = 0 then Print(i," \c"); fi; -->
 
-Indeed, we have been fairly lucky.
-Due to a presentation being available we have indeed proved 
+Due to a presentation being available we have proved 
 that the elements found generate a subgroup <M>Fi_{22}</M>.
 If we had not had a presentation at hand, 
-we would only have been able to produce elements fulfilling
+we might only have been able to find elements fulfilling
 the defining conditions of standard generators of <M>Fi_{22}</M>,
-which hence still could generate a subgroup of another isomorphism type.
+but still generating a subgroup of another isomorphism type.
 In that case, for further checks we can use the following tools:
 We try to find a short orbit of vectors, and using a randomized 
 Schreier-Sims algorithm gives a lower bound for the order of the group seen. 
 However, we can use the action on the orbit to get a homomorphism 
 into a permutation group, allowing to prove that the group generated
-has <M>Fi_{22}</M> as a quotient.
+indeed has <M>Fi_{22}</M> as a quotient.
 
 <Log><![CDATA[
 gap> S := StabilizerChain(Group(a,b),rec(TryShortOrbit := 30,
@@ -358,16 +365,14 @@ gap> S := StabilizerChain(Group(a,b),rec(TryShortOrbit := 30,
     <stabchain size=16 orblen=16 layer=5 SchreierDepth=2>
 gap> Size(S)=Size(CharacterTable("Fi22"));
 true 
-gap> p := Group(ActionOnOrbit(S!.orb,[a,b]));
-<permutation group with 2 generators>
+gap> p := Group(ActionOnOrbit(S!.orb,[a,b]));;
 gap> DisplayCompositionSeries(p);
 G (2 gens, size 64561751654400)
  | Fi(22)
 1 (0 gens, size 1) ]]>
 </Log>
 
-We now return to our original representation, and check whether 
-we possibly have standard generators of <M>(2.)Fi_{22}</M>.
+We now return to our original representation.
 
 <!-- ??? Comment about SlotUsagePattern. -->
 
@@ -380,86 +385,54 @@ gap> SetInfoLevel(InfoSLP,2);
 gap> SlotUsagePattern(slpetofi22);;
 gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);
 ...
-[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> x := fgens[1];;
-gap> y := fgens[2];;
-gap> IsOne(x^2);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] 
+gap> a := fgens[1];;
+gap> b := fgens[2];; 
+gap> IsOne(b^13);
 true
-gap> IsOne(y^13);
+gap> IsOne((a*b)^11);
 true
-gap> IsOne((x*y)^11);
-false 
-gap> IsOne((x*y)^22);
+gap> IsOne((a*b^2)^21);
 true ]]>
 </Log>
 
-This implies that <M>(xy)^{11}</M> is the non-trivial element
-of <M>Z(E)</M>. Hence we adjust the generators accordingly,
-and check whether they now fulfill the defining conditions of
-standard generators of <M>(2.)Fi_{22}</M> and the relations 
-of the associated presentation of <M>(2.)Fi_{22}</M>.
-
-<Log><![CDATA[
-gap> a := a * (a*b)^11;;
-gap> slpetofi22 := SLPOfElms([a,b]);;
-gap> SlotUsagePattern(slpetofi22);; 
-gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);
-...
-[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> a := fgens[1];;
-gap> b := fgens[2];; 
-gap> IsOne(a^2) and IsOne(b^13);
-true
-gap> IsOne((a*b)^11) and IsOne(((a*b)^4*b*a*b*(a*b*b)^2)^12);
-true
-gap> IsOne(Comm(a,b)^3) and 
->    IsOne(Comm(a,b^2)^3) and IsOne(Comm(a,b^3)^3) and
->    IsOne(Comm(a,b^4)^2) and IsOne(Comm(a,b^5)^3) and
->    IsOne(Comm(a,b*a*b^2)^3) and IsOne(Comm(a,b^-1*a*b^-2)^2) and
->    IsOne(Comm(a,b*a*b^5)^2) and IsOne(Comm(a,b^2*a*b^5)^2);
-true
-gap> IsOne((a*b^2)^21);
-false; ]]>
-</Log>
-
-This shows that the elements found indeed generate
-a subgroup <M>2.Fi_{22}</M>.
-Note that in our random search with a probability of 1/3 
-we could also have hit a subgroup <M>(2\times)Fi_{22}</M>.
-(This actually happened to us in another run of this example.)
-In that case, we deal with the central element
-also as described above, and we proceed further entirely similar
-to the case worked out here. 
+By construction the group generated by <M>a,b</M> is <M>Fi_{22}</M>,
+or <M>2\times Fi_{22}</M>, or <M>2.Fi_{22}</M>.
+Since <M>a</M> has even order, and both <M>b</M> and <M>ab</M>
+have odd order, we cannot possibly have <M>2\times Fi_{22}</M>;
+and by the presentation of <M>2.Fi_{22}</M>
+available in <Cite Key="AGR"/> the order of <M>ab^2</M>
+being 21 implies that we cannot possibly have <M>2.Fi_{22}</M> either.
+Hence we indeed have found standard generators of <M>Fi_{22}</M>.
+If we had hit one of the cases <M>2\times Fi_{22}</M> or <M>2.Fi_{22}</M>,
+we could just continue the above search until we find a subgroup 
+<M>Fi_{22}</M>, or using the above order fingerprint 
+we could easily modify the elements found
+to obtain standard generators of either <M>Fi_{22}</M> or <M>2.Fi_{22}</M>.
 <P/>
 
-Standard generators of <M>U_2=M_{12}</M>
+Now, standard generators of <M>U_2=M_{12}</M>
 in terms of standard generators of <M>Fi_{22}</M>,
 and generators of <M>U_1=L_2(11)</M> 
 in terms of standard generators of <M>M_{12}</M>
 are accessible in the <Package>atlasrep</Package> package.
-The next task is to find good quotients with 
-longish orbits for the helper subgroups.
+Note that if we had found a subgroup <M>2.Fi_{22}</M> above,
+since <M>M_{12}</M> lifts to a subgroup <M>2\times M_{12}</M> 
+of <M>2.Fi_{22}</M>, it would again be easy to find standard 
+generators of <M>M_{12}</M> from the generators of <M>(2\times)M_{12}</M>
+provided by the <Package>atlasrep</Package> package.
+Anyway, the next task is to find good quotient modules with 
+longish orbits of the helper subgroups.
+To this end, we restrict to <M>M_{12}</M> 
+and compute the radical series of the restricted module.
 
 <Log><![CDATA[
 gap> slpfi22tom12 := AtlasStraightLineProgram("Fi22",14).program;;
 gap> slpm12tol211 := AtlasStraightLineProgram("M12",5).program;;
 gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> Order(mgens[1]);
-2
-gap> Order(mgens[2]);
-3
-gap> Order(mgens[1]*mgens[2]);
-11 ]]>
-</Log>
-
-By our construction, <C>mgens</C> generates a subgroup 
-<M>(2\times)M_{12}</M>, and the element orders show
-that this indeed is a subgroup <M>M_{12}</M>.
-We restrict to <M>M_{12}</M> and look for suitable quotient modules;
-to this end, we first compute the radical series.
-
-<Log><![CDATA[
+gap> lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);
+[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] 
 gap> m := Module(mgens);
 <module of dim. 4370 over GF(2)>
 gap> r := Chop(m);;
@@ -500,9 +473,7 @@ Found length     95040, have now   18 orbits, average length: 92400 ]]>
 
 This is excellent indeed.
 Hence we pick a summand of dimension 32 in the first radical layer,
-apply the associated base change to the generators of <M>B</M>,
-and to the generators of the various subgroups by running
-the straight line programs again.
+apply the associated base change to all generators.
 
 <Log><![CDATA[
 gap> bgens := List(bgens,x->rad.basis*x*rad.ibasis);
@@ -510,12 +481,11 @@ gap> bgens := List(bgens,x->rad.basis*x*rad.ibasis);
 gap> l := rad.cfposs[1][13];
 [ 529 .. 560 ]
 gap> Append(l,Difference([1..4370],l));
-gap> bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));
-[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> egens := ResultOfStraightLineProgram(slpbtoe,bgens);;
-gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);;
-...
-gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);; ]]>
+gap> bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));;
+gap> egens := List(egens,x->ORB_PermuteBasisVectors(x,l));;
+gap> fgens := List(fgens,x->ORB_PermuteBasisVectors(x,l));;
+gap> mgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;
+gap> lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; ]]>
 </Log>
 
 We consider the irreducible module of dimension 32, whose restriction
@@ -524,9 +494,8 @@ quotients of dimension 10 are too small to have too many regular orbits,
 but the direct sum of two of them turns out to work fine.
 
 <Log><![CDATA[
-gap> mgens32 := List(mgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
+gap> lgens32 := List(lgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
 [ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ]
-gap> lgens32 := ResultOfStraightLineProgram(slpm12tol211,mgens32);; 
 gap> m := Module(lgens32);;
 gap> r := Chop(m);
 ...
@@ -555,13 +524,11 @@ gap> t := ORB_EmbedBaseChangeTopLeft(soc.basis,4370);
 <cmat 4370x4370 over GF(2,1)>
 gap> ti := ORB_EmbedBaseChangeTopLeft(soc.ibasis,4370);
 <cmat 4370x4370 over GF(2,1)>
-gap> bgens := List(bgens,x->t*x*ti);
-[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
-gap> egens := ResultOfStraightLineProgram(slpbtoe,bgens);;
-gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);;
-...
-gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);;
-gap> lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);; ]]>
+gap> bgens := List(bgens,x->t*x*ti);;
+gap> egens := List(egens,x->t*x*ti);;
+gap> fgens := List(fgens,x->t*x*ti);;
+gap> mgens := List(mgens,x->t*x*ti);;
+gap> lgens := List(lgens,x->t*x*ti);; ]]>
 </Log>
 
 Having reached the ultimate choice of basis,
