@@ -242,9 +242,9 @@ hence we cannot do better for <M>E</M>; note that the latter is
 a representation of <M>\overline{E}:=E/Z(E)\cong {}^2E_6(2).2</M>.
 
 <Log><![CDATA[
+gap> SetInfoLevel(InfoChop,2);
 gap> m := Module(egens);
 <module of dim. 4370 over GF(2)>
-gap> SetInfoLevel(InfoChop,2);
 gap> r := Chop(m);
 ...
 rec( ischoprecord := true, 
@@ -252,10 +252,10 @@ rec( ischoprecord := true,
           <trivial module of dim. 1 over GF(2)>, 
           <abs. simple module of dim. 1702 over GF(2)>, 
           <abs. simple module of dim. 572 over GF(2)> ], 
-  mult := [ 5, 4, 2, 1 ], 
-  acs := [ 1, 2, 3, 1, 4, 1, 1, 2, 2, 3, 1, 2 ], 
+  mult := [ 5, 4, 2, 1 ], acs := [ 1, 2, 3, 1, 4, 1, 1, 2, 2, 3, 1, 2 ], 
   module := <reducible module of dim. 4370 over GF(2)> )
-gap> egens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[1]));
+gap> i := Position(List(r.db,Dimension),78);;
+gap> egens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[i]));
 [ <<immutable cmat 78x78 over GF(2,1)> with mem>, 
   <<immutable cmat 78x78 over GF(2,1)> with mem> ] ]]>
 </Log>
@@ -325,7 +325,6 @@ gap> pr := ProductReplacer(egens78,rec(maxdepth := 150));
 gap> i := 0;;
 gap> repeat
 >      i := i + 1; 
- if i mod 500 = 0 then Print(i," \c"); fi; 
 >      x := Next(pr);
 >      a := g2a^x;
 >    until IsOne((a*b)^11) and IsOne(((a*b)^4*b*a*b*(a*b*b)^2)^12) and
@@ -377,11 +376,11 @@ We now return to our original representation.
 <!-- ??? Comment about SlotUsagePattern. -->
 
 <Log><![CDATA[
+gap> SetInfoLevel(InfoSLP,2); 
 gap> slpetofi22 := SLPOfElms([a,b]);
 <straight line program>
 gap> Length(LinesOfStraightLineProgram(slpetofi22));
 278
-gap> SetInfoLevel(InfoSLP,2); 
 gap> SlotUsagePattern(slpetofi22);;
 gap> fgens := ResultOfStraightLineProgram(slpetofi22,egens);
 ...
@@ -421,8 +420,8 @@ since <M>M_{12}</M> lifts to a subgroup <M>2\times M_{12}</M>
 of <M>2.Fi_{22}</M>, it would again be easy to find standard 
 generators of <M>M_{12}</M> from the generators of <M>(2\times)M_{12}</M>
 provided by the <Package>atlasrep</Package> package.
-Anyway, the next task is to find good quotient modules with 
-longish orbits of the helper subgroups.
+Anyway, the next task is to find good quotient modules
+such that the helper subgroups have longish orbits on vectors.
 To this end, we restrict to <M>M_{12}</M> 
 and compute the radical series of the restricted module.
 
@@ -433,28 +432,24 @@ gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
 gap> lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] 
-gap> m := Module(mgens);
-<module of dim. 4370 over GF(2)>
+gap> m := Module(mgens);;
 gap> r := Chop(m);;
 ...
 gap> rad := RadicalSeries(m,r.db);
 ...
 rec( 
-  db := [ <abs. simple module of dim. 44 over GF(2)>, 
+  db := [ <abs. simple module of dim. 144 over GF(2)>, 
+          <abs. simple module of dim. 44 over GF(2)>, 
           <simple module of dim. 32 over GF(2) splitting field degree 2>, 
-          <abs. simple module of dim. 144 over GF(2)>, 
           <abs. simple module of dim. 10 over GF(2)>, 
-          <trivial module of dim. 1 over GF(2)> ], 
-  module := <reducible module of dim. 4370 over GF(2)>, 
-  basis := <immutable cmat 4370x4370 over GF(2,1)>, 
-  ibasis := <immutable cmat 4370x4370 over GF(2,1)>, 
-  cfposs := [ [ [ 1 .. 44 ], [ 45 .. 88 ], [ 89 .. 132 ], [ 133 .. 176 ], 
-                [ 177 .. 220 ], [ 221 .. 264 ], [ 265 .. 308 ], [ 309 .. 352 ], 
-                [ 353 .. 396 ], [ 397 .. 440 ], [ 441 .. 484 ], [ 485 .. 528 ],
-                [ 529 .. 560 ], [ 561 .. 592 ], [ 593 .. 624 ], [ 625 .. 656 ],
+          <trivial module of dim. 1 over GF(2)> ],
+  module := <reducible module of dim. 4370 over GF(2)>,
+  basis := <immutable cmat 4370x4370 over GF(2,1)>,
+  ibasis := <immutable cmat 4370x4370 over GF(2,1)>,
+  cfposs := [ [ [ 1 .. 144 ], [ 145 .. 288 ], [ 289 .. 432 ], [ 433 .. 576 ],
 ...
-  isotypes := [ [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 
-          2, 2, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ], 
+  isotypes := [ [ 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3,
+                  3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ],
 ...
   isradicalrecord := true ) ]]>
 </Log>
@@ -465,21 +460,25 @@ We observe that there are faithful irreducible quotients of dimensions
 irreducible module of dimension 10. We consider the one of dimension 32.
 
 <Log><![CDATA[
-gap> mgens32 := RepresentingMatrices(rad.db[2]);
+gap> i := Position(List(rad.db,Dimension),32);;
+gap> mgens32 := RepresentingMatrices(rad.db[i]);
 [ <immutable cmat 32x32 over GF(2,1)>, <immutable cmat 32x32 over GF(2,1)> ]
 gap> OrbitStatisticOnVectorSpace(mgens32,95040,30);
-Found length     95040, have now   18 orbits, average length: 92400 ]]>
+Found length     95040, have now   24 orbits, average length: 93060 ]]>
 </Log>
 
 This is excellent indeed.
 Hence we pick a summand of dimension 32 in the first radical layer,
-apply the associated base change to all generators.
+and apply the associated base change to all the generators.
 
 <Log><![CDATA[
-gap> bgens := List(bgens,x->rad.basis*x*rad.ibasis);
-[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] 
-gap> l := rad.cfposs[1][13];
-[ 529 .. 560 ]
+gap> bgens := List(bgens,x->rad.basis*x*rad.ibasis);;
+gap> egens := List(egens,x->rad.basis*x*rad.ibasis);;
+gap> fgens := List(fgens,x->rad.basis*x*rad.ibasis);;
+gap> mgens := List(mgens,x->rad.basis*x*rad.ibasis);;
+gap> lgens := List(lgens,x->rad.basis*x*rad.ibasis);;
+gap> j := Position(rad.isotypes[1],i);;
+gap> l := rad.cfposs[1][j];;
 gap> Append(l,Difference([1..4370],l));
 gap> bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));;
 gap> egens := List(egens,x->ORB_PermuteBasisVectors(x,l));;
@@ -488,8 +487,9 @@ gap> mgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;
 gap> lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; ]]>
 </Log>
 
-We consider the irreducible module of dimension 32, whose restriction
-to <M>U_1=L_2(11)</M> turns out to be is semisimple. Again irreducible 
+We consider the irreducible quotient module of <M>M_{12}</M> 
+of dimension 32, whose restriction to <M>L_2(11)</M> 
+turns out to be is semisimple. Again irreducible 
 quotients of dimension 10 are too small to have too many regular orbits, 
 but the direct sum of two of them turns out to work fine.
 
@@ -501,20 +501,24 @@ gap> r := Chop(m);
 ...
 gap> soc := SocleSeries(m,r.db);
 ...
-rec( issoclerecord := true, 
-  db := [ <abs. simple module of dim. 10 over GF(2)>, 
-          <simple module of dim. 10 over GF(2) splitting field degree 2>, 
-          <trivial module of dim. 1 over GF(2)> ], 
-  module := <reducible module of dim. 32 over GF(2)>, 
-  basis := <cmat 32x32 over GF(2,1)>, ibasis := <cmat 32x32 over GF(2,1)>, 
-  cfposs := [ [ [ 1 .. 10 ], [ 11 .. 20 ], [ 21 .. 30 ], [ 31 ], [ 32 ] ] ], 
-  isotypes := [ [ 1, 1, 2, 3, 3 ] ] )
-gap> lgens32 := List(lgens32,x->soc.basis*x*soc.ibasis);;
+rec( issoclerecord := true,
+  db := [ <simple module of dim. 10 over GF(2) splitting field degree 2>,
+          <trivial module of dim. 1 over GF(2)>,
+          <abs. simple module of dim. 10 over GF(2)> ],
+  module := <reducible module of dim. 32 over GF(2)>,
+  basis := <cmat 32x32 over GF(2,1)>, ibasis := <cmat 32x32 over GF(2,1)>,
+  cfposs := [ [ [ 1 .. 10 ], [ 11 ], [ 12 ], [ 13 .. 22 ], [ 23 .. 32 ] ] ],
+  isotypes := [ [ 1, 2, 2, 3, 3 ] ] )
+gap> i := Position(List(soc.db,x->[Dimension(x),DegreeOfSplittingField(x)]),
+>                                 [10,1]);;
+gap> j := Position(soc.isotypes[1],i);;
+gap> l := Concatenation(soc.cfposs[1]{[j,j+1]});;
+gap> lgens32 := List(lgens32,x->soc.basis*x*soc.ibasis);
 [ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ]
-gap> lgens20 := List(lgens32,x->ExtractSubMatrix(x,[1..20],[1..20]));
+gap> lgens20 := List(lgens32,x->ExtractSubMatrix(x,l,l));
 [ <cmat 20x20 over GF(2,1)>, <cmat 20x20 over GF(2,1)> ]
 gap> OrbitStatisticOnVectorSpace(lgens20,660,30);
-Found length       660, have now 4573 orbits, average length: 598 ]]>
+Found length       660, have now 4401 orbits, average length: 598 ]]>
 </Log>
 
 Again we apply the appropriate base change to all the generators.
@@ -528,7 +532,13 @@ gap> bgens := List(bgens,x->t*x*ti);;
 gap> egens := List(egens,x->t*x*ti);;
 gap> fgens := List(fgens,x->t*x*ti);;
 gap> mgens := List(mgens,x->t*x*ti);;
-gap> lgens := List(lgens,x->t*x*ti);; ]]>
+gap> lgens := List(lgens,x->t*x*ti);; 
+gap> Append(l,Difference([1..4370],l));
+gap> bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));;
+gap> egens := List(egens,x->ORB_PermuteBasisVectors(x,l));;
+gap> fgens := List(fgens,x->ORB_PermuteBasisVectors(x,l));;
+gap> mgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;
+gap> lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; ]]>
 </Log>
 
 Having reached the ultimate choice of basis,
@@ -536,13 +546,10 @@ we recreate the fixed vector <C>v</C>.
 
 <Log><![CDATA[
 gap> x := egens[1]-egens[1]^0;;
-gap> nsx := NullspaceMat(x);
-<immutable cmat 2202x4370 over GF(2,1)>
+gap> nsx := NullspaceMat(x);;
 gap> y := nsx * (egens[2]-egens[2]^0);;
-gap> nsy := NullspaceMat(y);
-<immutable cmat 1x2202 over GF(2,1)>
-gap> v := nsy[1]*nsx;
-<immutable cvec over GF(2,1) of length 4370> ]]>
+gap> nsy := NullspaceMat(y);;
+gap> v := nsy[1]*nsx;; ]]>
 </Log>
 
 Finally we need small faithful permutation representations 
@@ -562,9 +569,9 @@ gap> pp := Image(SmallerDegreePermutationRepresentation(p));
 gap> m12 := MathieuGroup(12);;
 gap> i := IsomorphismGroups(pp,m12);;
 gap> mpermgens := List(GeneratorsOfGroup(pp),x->ImageElm(i,x));
-[ (3,5)(6,9)(8,10)(11,12), (1,2,3)(4,10,6)(5,7,9)(8,11,12) ]
+[ (5,7)(6,11)(8,9)(10,12), (1,10,3)(2,11,12)(4,5,6)(7,9,8) ]
 gap> lpermgens := ResultOfStraightLineProgram(slpm12tol211,mpermgens);
-[ (1,11)(2,12)(3,5)(4,8)(6,9)(7,10), (1,2,12)(3,10,9)(4,6,11)(5,7,8) ] ]]>
+[ (1,8)(2,5)(3,9)(4,7)(6,11)(10,12), (1,8,3)(2,7,12)(4,6,9)(5,11,10) ] ]]>
 </Log>
 
 We could just go on from here, however, sometimes it is useful to save
@@ -572,48 +579,41 @@ all the created data to disk.
 
 <Log><![CDATA[
 gap> f := IO_File("data.gp","w");;
-gap> IO_Pickle(f,"seed vector");; 
+gap> IO_Pickle(f,"seed");; 
 gap> IO_Pickle(f,v);; 
-gap> IO_Pickle(f,"generators in new basis");; 
+gap> IO_Pickle(f,"generators");; 
 gap> IO_Pickle(f,bgens);; 
 gap> IO_Pickle(f,egens);; 
 gap> IO_Pickle(f,fgens);; 
 gap> IO_Pickle(f,mgens);; 
 gap> IO_Pickle(f,lgens);;
-gap> IO_Pickle(f,"straight line programs");; 
-gap> IO_Pickle(f,slpbtoe);;
-gap> IO_Pickle(f,slpetofi22);;
-gap> IO_Pickle(f,slpfi22tom12);;
-gap> IO_Pickle(f,slpm12tol211);;
-gap> IO_Pickle(f,"permutation generators of helper subgroups");; 
+gap> IO_Pickle(f,"permutations");; 
 gap> IO_Pickle(f,mpermgens);; 
 gap> IO_Pickle(f,lpermgens);;
 gap> IO_Close(f);; ]]>
 </Log>
 
-This can be loaded again as follows.
+This can be loaded again, in particular into a new &GAP; session, as follows.
 
 <Log><![CDATA[
+gap> LoadPackage("orb");;
+...
+gap> LoadPackage("cvec");;
+...
 gap> f := IO_File("data.gp");
 <file fd=4 rbufsize=65536 rpos=1 rdata=0>
 gap> IO_Unpickle(f);
-"seed vector"
+"seed"
 gap> v:=IO_Unpickle(f);;
 gap> IO_Unpickle(f);
-"generators in new basis"
+"generators"
 gap> bgens := IO_Unpickle(f);;
 gap> egens := IO_Unpickle(f);;
 gap> fgens := IO_Unpickle(f);;
 gap> mgens := IO_Unpickle(f);;
 gap> lgens := IO_Unpickle(f);;
 gap> IO_Unpickle(f);
-"straight line programs"
-gap> slpbtoe := IO_Unpickle(f);;
-gap> slpetofi22 := IO_Unpickle(f);;
-gap> slpfi22tom12 := IO_Unpickle(f);;
-gap> slpm12tol211 := IO_Unpickle(f);;
-gap> IO_Unpickle(f);
-"permutation generators of helper subgroups"
+"permutations"
 gap> mpermgens := IO_Unpickle(f);;
 gap> lpermgens := IO_Unpickle(f);;
 gap> IO_Close(f);; ]]>
@@ -632,7 +632,7 @@ yields an estimated memory requirement of
 <M>4\cdot 2^{32}\cdot 1/598\sim 29</M> MB.
 For the large <M>B</M>-orbit, being enumerated by <M>M_{12}</M>-orbits,
 we similarly get an estimated memory requirement of
-<M>547\cdot [B\colon E]\cdot 1/92400 \sim 80</M> MB.
+<M>547\cdot [B\colon E]\cdot 1/93060 \sim 80</M> MB.
 
 <Log><![CDATA[
 gap> setup := OrbitBySuborbitBootstrapForVectors(
