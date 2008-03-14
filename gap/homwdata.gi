@@ -66,4 +66,12 @@ InstallMethod( PreImagesRepresentative,
   return h!.invFun(h!.data,o);
   end );
 
+InstallMethod( PreImagesRepresentative, 
+  "for a mapping by function with invmap with data, and an obj",
+  [ IsMappingByFunctionRep and IsMappingByFunctionWithData, 
+    IsObject ], 0,
+  function (h,o)
+  return h!.prefun(h!.data,o);
+  end );
+
 
