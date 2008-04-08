@@ -105,6 +105,14 @@ InstallMethod( ProductReplacer,
     if not IsBound(pr.noaccu) then
         pr.noaccu := false;
     fi;
+    if not IsBound(pr.normalin) then
+        pr.normalin := false;
+    else
+        if pr.normalin <> false and
+           not(IsProductReplacer(pr.normalin)) then
+            Error("normalin option must be a product replacer");
+        fi;
+    fi;
     if Length(gens) = 0 then
         Error("Need at least one generator");
         return;
@@ -141,13 +149,16 @@ InstallMethod( Reset, "for a product replacer", [IsProductReplacer],
     if pr!.noaccu = false then
         pr!.accu := pr!.gens[1]^0;
     fi;
+    if pr!.normalin <> false then
+        Reset(pr!.normalin);
+    fi;
   end );
 
 InstallMethod( Next, "for a product replacer", [IsProductReplacer],
   function(pr)
     local OneStep,i;
     OneStep := function(pr)
-        local a,b,c;
+        local a,b,c,result;
         pr!.steps := pr!.steps + 1;
         a := Random(pr!.randomsource,1,pr!.slots);
         b := Random(pr!.randomsource,1,pr!.slots-1);
@@ -155,18 +166,19 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
         c := Random(pr!.randomsource,1,2);
         if c = 1 then
             pr!.state[a] := pr!.state[a] * pr!.state[b];
-            if pr!.noaccu then return pr!.state[a];
-            else
-                pr!.accu := pr!.accu * pr!.state[a];   # Rattle
-                return pr!.accu;
-            fi;
+            result := pr!.state[a];
         else
             pr!.state[b] := pr!.state[a] * pr!.state[b];
-            if pr!.noaccu then return pr!.state[b];
-            else
-                pr!.accu := pr!.accu * pr!.state[b];   # Rattle
-                return pr!.accu;
-            fi;
+            result := pr!.state[b];
+        fi;
+        if pr!.normalin <> false then
+            result := result ^ Next(pr!.normalin);
+        fi;
+        if pr!.noaccu then
+            return result;
+        else
+            pr!.accu := pr!.accu * result;   # Rattle
+            return pr!.accu;
         fi;
     end;
     if pr!.steps > pr!.maxdepth then Reset(pr); fi;
@@ -186,6 +198,10 @@ InstallMethod( ViewObj, "for a product replacer", [IsProductReplacer],
           " maxdepth=",pr!.maxdepth," steps=",pr!.steps);
     if pr!.noaccu then Print(" (without accu)");
     else Print(" (rattle)"); fi;
+    if pr!.normalin <> false then
+        Print(" normalin=");
+        ViewObj(pr!.normalin);
+    fi;
     Print(">");
   end );
 
