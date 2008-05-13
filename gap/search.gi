@@ -165,14 +165,19 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
         if b >= a then b := b + 1; fi;
         c := Random(pr!.randomsource,1,2);
         if c = 1 then
-            pr!.state[a] := pr!.state[a] * pr!.state[b];
+            if pr!.normalin <> false then
+                pr!.state[a] := pr!.state[a] * pr!.state[b]^Next(pr!.normalin);
+            else
+                pr!.state[a] := pr!.state[a] * pr!.state[b];
+            fi;
             result := pr!.state[a];
         else
-            pr!.state[b] := pr!.state[a] * pr!.state[b];
+            if pr!.normalin <> false then
+                pr!.state[b] := pr!.state[a]^Next(pr!.normalin) * pr!.state[b];
+            else
+                pr!.state[b] := pr!.state[a] * pr!.state[b];
+            fi;
             result := pr!.state[b];
-        fi;
-        if pr!.normalin <> false then
-            result := result ^ Next(pr!.normalin);
         fi;
         if pr!.noaccu then
             return result;
