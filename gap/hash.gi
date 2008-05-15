@@ -175,12 +175,12 @@ end );
 
 InstallGlobalFunction( ORB_HashFunctionForGF2Vectors,
 function(v,data)
-  return HASHKEY_BAG(v,101,8,data[2]) mod data[1] + 1;
+  return HASHKEY_BAG(v,101,2*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
 InstallGlobalFunction( ORB_HashFunctionFor8BitVectors,
 function(v,data)
-  return HASHKEY_BAG(v,101,12,data[2]) mod data[1] + 1;
+  return HASHKEY_BAG(v,101,3*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
 # Now the choosing methods for compressed vectors:
