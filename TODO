@@ -9,6 +9,8 @@ License
   more test files, what?
   adjust documentation
 
+  binary search orbits
+
 Documentation:
   OrigSeed
   eqfunc and hashfunc options for Orb

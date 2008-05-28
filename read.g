@@ -1,9 +1,13 @@
 #############################################################################
 ##
-##  read.g                orb package                       Max Neunhoeffer
+##                             orb package
+##  read.g
+##                                                          Juergen Mueller
+##                                                          Max Neunhoeffer
 ##                                                             Felix Noeske
 ##
-##  Copyright 2005 Lehrstuhl D für Mathematik, RWTH Aachen
+##  Copyright 2005-2008 by the authors.
+##  This file is free software, see license information at the end.
 ##
 ##  Reading the implementation part of the orb package.
 ##
