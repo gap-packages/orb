@@ -10,12 +10,6 @@
 ##
 #############################################################################
 
-# For compressed vectors that know what they can contain:
-if not(IsBound(Randomize)) then   # this is for GAP < 4.5
-    DeclareOperation( "Randomize", [IsObject] );
-    DeclareOperation( "Randomize", [IsObject, IsRandomSource] );
-fi;
-
 # Making lists of random vectors:
 DeclareGlobalFunction( "MakeRandomVectors" );
 DeclareGlobalFunction( "MakeRandomLines" );

@@ -1,8 +1,6 @@
   test AddGeneratorsToOrbit for orbits without log
   more test files, what?
   adjust documentation
-  Problem with ChooseHashFunction if vector is over too small field
-    --> gone with new vector/matrix interface
 
 Documentation:
   OrigSeed
@@ -29,5 +27,4 @@ assumestabcomplete fuer normale orbit-Algorithmen, wenn grpsizebound da?
 
 Zukunft:
   OrbitBySuborbit schaltbar? was war das nochmal???
-  OrbitBySuborbitWithKnownSize? wozu?
   permbase einbauen (lohnt sich das???)
