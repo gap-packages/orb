@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE Book SYSTEM "gapdoc.dtd">
 
 <!--
 
-  orb.xml          orb package documentation                    Max Neunhoeffer
+  orb.xml          
+                   orb package documentation                
+                                                                Juergen Mueller
+                                                            and Max Neunhoeffer
                                                                and Felix Noeske
 
-  Copyright (C) 2005, Lehrstuhl D für Mathematik, RWTH-Aachen
+  Copyright (C) 2005-2008 by the authors
 
 -->
 
@@ -19,9 +22,9 @@
     <Version>
       Version <#Include SYSTEM "../VERSION">
     </Version>
-    <Author>Jürgen Müller
+    <Author>JÃ¼rgen MÃ¼ller
 <Address>
-Lehrstuhl D für Mathematik,
+Lehrstuhl D fÃ¼r Mathematik,
 RWTH Aachen,
 Templergraben 64,
 52062 Aachen,
@@ -30,7 +33,7 @@ Germany
     <Email>juergen.mueller@math.rwth-aachen.de</Email>
     <Homepage>http://www.math.rwth-aachen.de/&tilde;Juergen.Mueller</Homepage>
     </Author>
-    <Author>Max Neunhöffer
+    <Author>Max NeunhÃ¶ffer
 <Address>
 School of Mathematics and Statistics
 Mathematical Institute
@@ -44,7 +47,7 @@ Scotland, UK
     </Author>
 <Author>Felix Noeske
 <Address>
-Lehrstuhl D für Mathematik,
+Lehrstuhl D fÃ¼r Mathematik,
 RWTH Aachen,
 Templergraben 64,
 52062 Aachen,
@@ -53,13 +56,25 @@ Germany
     <Email>felix.noeske@math.rwth-aachen.de</Email>
     <Homepage>http://www.math.rwth-aachen.de/&tilde;Felix.Noeske</Homepage>
     </Author>
-    <Date>October 2007</Date>
+    <Date>May 2008</Date>
 
 <Copyright>
-  &copyright; 2006-2007 by Jürgen Müller, Max Neunhöffer, and Felix Noeske<P/>
+  &copyright; 2005-2008 by JÃ¼rgen MÃ¼ller, Max NeunhÃ¶ffer and Felix Noeske<P/>
 
-  This package may be distributed under the terms and conditions of the
-  GNU Public License Version 2.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see
+<URL><Link>http://www.gnu.org/licenses/</Link></URL>.
+
 </Copyright>
 
 </TitlePage>
