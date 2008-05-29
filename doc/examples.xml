@@ -1,9 +1,11 @@
 <!-- 
 
-  examples.xml            orb package documentation             Max Neunhoeffer
-                                                                   Felix Noeske
+  examples.xml            orb package documentation
+                                                               Juergen Mueller
+                                                               Max Neunhoeffer
+                                                                  Felix Noeske
 
-         Copyright (C) 2008, Lehrstuhl D für Mathematik, RWTH-Aachen
+         Copyright (C) 2005-2008 by the authors
 
 This chapter gives examples for the usage of this package.
 

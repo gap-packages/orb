@@ -19,47 +19,53 @@
 InstallValue( ORB, rec( ) );
 
 # Possible options:
+#  .eqfunc
+#  .genstoapply
 #  .grpsizebound
-#  .orbsizebound
-#  .stabsizebound
-#  .permgens
+#  .hashfunc        only together with next option, hashs cannot grow!
+#  .hashlen         for the call version with 3 or 4 arguments with options
+#  .hfbig
+#  .hfdbig
+#  .log             either false or a list of length 2 orbitlength
+#  .lookingfor
 #  .matgens
 #  .onlystab
-#  .schreier
-#  .lookingfor
-#  .report
-#  .stabchainrandom
+#  .orbsizebound
 #  .permbase
+#  .permgens
+#  .report
+#  .schreier
+#  .schreiergenaction
 #  .stab
+#  .stabchainrandom
+#  .stabsizebound
 #  .storenumbers    indicates whether positions are stored in the hash
-#  .hashlen         for the call version with 3 or 4 arguments with options
-#  .hashfunc        only together with next option, hashs cannot grow!
-#  .eqfunc
-#  .looking
-#  .lookfunc
-#  .log             either false or a list of length 2 orbitlength
-#  .logind          index into log
-#  .logpos          write position in log
 
 # Outputs:
+#  .depth
+#  .depthmarks
+#  .found
 #  .gens
-#  .op
-#  .orbit
-#  .pos
-#  .tab
 #  .ht
-#  .stab
-#  .stabchain
-#  .stabsize
-#  .stabcomplete
+#  .log
+#  .logind          index into log
+#  .logpos          write position in log
+#  .lookfunc
+#  .looking
+#  .memorygens
+#  .op
+#  .orbind
+#  .orbit
+#  .permgensi
+#  .pos
 #  .schreiergen
 #  .schreierpos
-#  .found
+#  .stab
+#  .stabchain
+#  .stabcomplete
+#  .stabsize
 #  .stabwords
-#  .log
-#  .logind
-#  .logpos
-#  .orbind
+#  .tab
 
 InstallGlobalFunction( Orb, 
   function( arg )
@@ -87,7 +93,7 @@ InstallGlobalFunction( Orb,
         return;
     fi;
 
-    # We make a copy, the first two must be accessable very fast,
+    # We make a copy, the first two must be accessible very fast,
     # so we assign them first:
     o := rec( stabcomplete := false, stabsize := 1 );
     for comp in RecFields(opt) do

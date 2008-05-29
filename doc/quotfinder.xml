@@ -1,10 +1,11 @@
 <!-- 
 
          quotfinder.xml            orb package documentation             
-                                                               Max Neunhoeffer
-                                                                  Felix Noeske
+                                                                Juergen Mueller
+                                                            and Max Neunhoeffer
+                                                               and Felix Noeske
 
-         Copyright (C) 2005, Lehrstuhl D für Mathematik, RWTH-Aachen
+  Copyright (C) 2005-2008 by the authors
 
 This chapter explains functionality for looking for nice quotients of
 modules.

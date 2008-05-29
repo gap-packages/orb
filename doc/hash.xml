@@ -1,10 +1,11 @@
 <!-- 
 
          hash.xml            orb package documentation             
+                                                               Juergen Mueller
                                                                Max Neunhoeffer
                                                                   Felix Noeske
 
-         Copyright (C) 2005, Lehrstuhl D für Mathematik, RWTH-Aachen
+         Copyright (C) 2005-2008 by the authors
 
 This chapter explains functionality for hash lookups.
 

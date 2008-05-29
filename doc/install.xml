@@ -1,9 +1,11 @@
 <!-- 
 
-  install.xml            orb package documentation              Max Neunhoeffer
-                                                                   Felix Noeske
+  install.xml            orb package documentation
+                                                               Juergen Mueller
+                                                               Max Neunhoeffer
+                                                                  Felix Noeske
 
-         Copyright (C) 2005, Lehrstuhl D für Mathematik, RWTH-Aachen
+         Copyright (C) 2005-2008 by the authors
 
 This is the chapter of the documentation describing the installation.
 
@@ -24,7 +26,7 @@ Please, send us an e-mail if you have any questions, remarks,
 suggestions, etc. concerning this package. Also, I would like to hear
 about applications of this package.<P/>
 
-Max Neunhöffer and Felix Noeske<P/>
+Juergen Müller, Max Neunhöffer and Felix Noeske<P/>
 
 <!-- ############################################################ -->
 
