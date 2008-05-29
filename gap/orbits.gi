@@ -1542,7 +1542,7 @@ InstallOtherMethod( FindSuborbits, "without args", [ ],
 
 InstallMethod( FindSuborbits, "for an orbit, and subgroup gens",
   [ IsOrbit, IsList ],
-  function( o, subgens) return FindSuborbits(o,subgens,infinity); end );
+  function( o, subgens) return FindSuborbits(o,subgens,1); end );
 
 InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
   [ IsOrbit, IsList, IsCyclotomic ],
@@ -1594,7 +1594,7 @@ InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
 
     tried := 0;
     i := 1;
-    while i <= len and nrtrupps < nrsubs do
+    while i <= len and nrtrupps > nrsubs do
         for h in subgens do
             j := Position(o,o!.op(o[i],h));
             fusetrupps(i,j);
