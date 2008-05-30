@@ -165,6 +165,22 @@ This method is for kernel Pc words.
 </Description>
 </ManSection>
 
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="IntLists"/>
+<Returns> a record </Returns>
+<Description>
+This method is for lists of integers.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="MatLists"/>
+<Returns> a record </Returns>
+<Description>
+This method is for lists of matrices.
+</Description>
+</ManSection>
+
 </Section>
 
 <Section Label="hashtables">
@@ -240,6 +256,27 @@ Note that automatic growing is switched on for the new hash table which
 means that if the hash table grows, a new hash function is chosen using
 <Ref Oper="ChooseHashFunction"/>. If you do not want this, change the
 component <C>cangrow</C> to <K>false</K> after creating the hash table.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="GrowHT" Arg="ht, ob"/>
+<Returns> nothing </Returns>
+<Description>
+This is a more or less internal function. It is called when the space
+in a hash table becomes scarce. The first argument <A>ht</A> must be a
+hash table object, the second a sample point. 
+The function increases the hash size
+by a factor of 2. This makes it necessary to choose a new hash
+function. Usually this is done with the usual
+<C>ChooseHashFunction</C> method. However, one can assign the two
+components <C>hfbig</C> and <C>hfdbig</C> to a function and a record
+respectively. In that case, upon growing the hash, a new hash function
+is created by taking the function <C>hfbig</C> together with
+<C>hfdbig</C> as second data argument and reducing the resulting
+integer modulo the hash length. In this way one can specify a hash
+function suitable for all hash sizes by simply producing big enough
+hash values.
 </Description>
 </ManSection>
 

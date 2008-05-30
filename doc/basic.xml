@@ -157,7 +157,9 @@ list:
         orbit.<P/>
         Note that if you use this feature, the hash table cannot grow
         automatically any more, unless you also use the components
-        <C>hfbig</C> and <C>hfdbig</C> as well.
+        <C>hfbig</C> and <C>hfdbig</C> as well. See the description
+        of <Ref Func="GrowHT"/> for an explanation how to use this
+        feature.
     </Item>
     <Mark><C>genstoapply</C></Mark>
     <Item>This is only used internally and is intentionally not
@@ -391,7 +393,7 @@ The following operations help to ask additional information about orbit
 objects:
 
 <ManSection>
-<Oper Name="StabWords" Arg="orb"/>
+<Oper Name="StabWords" Arg="orb" Label="basic"/>
 <Returns>A list of words</Returns>
 <Description>
 If the stabiliser was computed during the orbit enumeration, then this
@@ -480,6 +482,29 @@ point with number <A>nr</A> to the starting point. As above,
 a word is here a list of integers, where positive integers are numbers of 
 generators and a negative integer <M>i</M> indicates the inverse of
 the generator with number <M>-i</M>. 
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="ActWithWord" Arg="gens, w, op, p"/>
+<Returns> A point </Returns>
+<Description>
+    <A>gens</A> must be a list of group generators, <A>w</A> a list of
+    positive integers less than or equal to the length of <A>gens</A>,
+    <A>op</A> an action function and <A>p</A> a point. This operation
+    computes the action of the word <A>w</A> in the generators
+    <A>gens</A> on the point <A>p</A> and returns the result.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="EvaluateWord" Arg="gens, w"/>
+<Returns> A group element </Returns>
+<Description>
+    <A>gens</A> must be a list of group generators, <A>w</A> a list of
+    positive integers less than or equal to the length of <A>gens</A>.
+    This operation evaluates the word <A>w</A> in the generators
+    <A>gens</A> and returns the result.
 </Description>
 </ManSection>
 

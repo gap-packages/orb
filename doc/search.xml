@@ -37,13 +37,20 @@ Then you could do this in the following way:
 <Example><![CDATA[gap> gens := [(1,2,3,4,5,6,7,8,9,10),(1,2)];
 [ (1,2,3,4,5,6,7,8,9,10), (1,2) ]
 gap> o := Orb(gens,(),OnRight,rec( report := 2000,
-> lookingfor := x->NrMovedPoints(x) = 7 and Order(x)=7,                      
+> lookingfor := 
+> function(o,x) return NrMovedPoints(x) = 7 and Order(x)=7; end,
 > schreier := true ));
 <open orbit, 1 points with Schreier tree looking for sth.>
 gap> Enumerate(o);
 <open orbit, 614 points with Schreier tree looking for sth.>
-gap> TraceSchreierTreeForward(o,PositionOfFound(o));
-[ 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2 ]]]></Example>
+gap> w := TraceSchreierTreeForward(o,PositionOfFound(o));
+[ 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2 ]
+gap> ActWithWord(o!.gens,w,o!.op,o[1]);                  
+(1,10,9,8,7,6,5)
+gap> o[PositionOfFound(o)] = ActWithWord(o!.gens,w,o!.op,o[1]);
+true
+gap> EvaluateWord(o!.gens,w);
+(1,10,9,8,7,6,5)]]></Example>
 
 The result shows that <M>a^6 \cdot (a\cdot b)^3</M> is a <M>7</M>-cycle
 and that there is no word in <M>a</M> and <M>b</M> with fewer than <M>12</M>
@@ -222,8 +229,8 @@ information is printed on the screen.
 <Heading>Finding generating sets of subgroups</Heading>
 
 The following function can be used to find generators of a subgroup
-of a group $G$, expressed as a straight line program in the generators
-of $G$.
+of a group <M>G</M>, expressed as a straight line program in the generators
+of <M>G</M>.
 
 <ManSection>
 <Func Name="FindShortGeneratorsOfSubgroup" Arg="G, U, membershiptest"/>

@@ -88,6 +88,7 @@ along with this program.  If not, see
 <#Include SYSTEM "install.xml">
 <#Include SYSTEM "basic.xml">
 <#Include SYSTEM "hash.xml">
+<#Include SYSTEM "cache.xml">
 <#Include SYSTEM "random.xml">
 <#Include SYSTEM "search.xml">
 <#Include SYSTEM "bysuborbit.xml">

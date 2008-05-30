@@ -95,6 +95,19 @@ examples in Chapter <Ref Chap="examples"/>.
 </ManSection>
 
 <ManSection>
+<Func Name="OrbitBySuborbitKnownSize" 
+      Arg="setup, p, j, l, i, percentage, knownsize"/>
+<Returns> an orbit-by-suborbit object </Returns>
+<Description>
+    Basically does the same as <Ref Func="OrbitBySuborbit"/> but does
+    not compute the stabiliser by evaluating Schreier words. Instead,
+    the size of the orbit to enumerate must already be known and be
+    given in the argument <A>knownsize</A>. The other arguments are as
+    for the function <Ref Func="OrbitBySuborbit"/>.
+</Description>
+</ManSection>
+
+<ManSection>
 <Meth Name="Size" Arg="orb" Label="fororb"/>
 <Returns> an integer </Returns>
 <Description>
@@ -309,6 +322,20 @@ where a vector is normalised if its first non-vanishing entry is equal
 to <M>1</M>.
 </Description>
 </ManSection>
+
+<ManSection>
+<Func Name="OrbitBySuborbitBootstrapForSpaces" 
+      Arg="gens, permgens, sizes, codims, spcdim, opt"/>
+  <Returns> a setup record in the filter <Ref Filt="IsOrbitBySuborbitSetup"/>
+  </Returns>
+<Description>
+All notations from the beginning of this Chapter <Ref Chap="bysuborbit"/> 
+remain in place. This does exactly the same as 
+<Ref Func="OrbitBySuborbitBootstrapForVectors"/> except that it handles
+the case of matrices acting on <A>spcdim</A>-dimensional subspaces. Those 
+subspaces are represented by fully echelonised bases.
+</Description>
+</ManSection>
 </Section>
 
 <Section Label="obsodatastrucs">
@@ -430,7 +457,7 @@ precomputation.
 <Mark><C>sumstabl</C></Mark>
 <Item> 
 A list of length <M>k</M> that contains in position <M>i</M> the sum
-of the point stabiliser lengths of all <M>U_i</M>-orbits <M>X_i</M>
+of the point stabiliser sizes of all <M>U_i</M>-orbits <M>X_i</M>
 archived in <C>info[i]</C> during precomputation.
 </Item>
 <Mark><C>permgens</C></Mark>
@@ -438,6 +465,8 @@ archived in <C>info[i]</C> during precomputation.
 A list of length <M>k+1</M> containing in position <M>i</M> generators
 for <M>U_1, \ldots, U_i</M> in a faithful permutation representation
 of <M>U_i</M>. Generators fit to the generators in <C>els</C>.
+For the variant <Ref Func="OrbitBySuborbitKnownSize"/> the <M>k+1</M>
+entry can be unbound.
 </Item>
 <Mark><C>permgensinv</C></Mark>
 <Item> 
@@ -457,7 +486,9 @@ a value smaller than <M>1000</M>.
 </Item>
 <Mark><C>wordhash</C></Mark>
 <Item> 
-A hash to quickly recognise already used words.
+A hash to quickly recognise already used words. For every word in the
+hash the position of that word in the <C>wordcache</C> list is stored
+as value in the hash.
 </Item>
 <Mark><C>wordcache</C></Mark>
 <Item> 
@@ -478,6 +509,18 @@ evaluated in the group.
 <Item>
     If the stabiliser in the quotient is larger than this limit, the
     suborbit is not stored.
+</Item>
+<Mark><C>cache</C></Mark>
+<Item>A linked list cache object (see <Ref Oper="LinkedListCache"/>)
+    to store already computed transversal elements. The cache nodes
+    are referenced in the <C>transcache</C> component and are stored
+    in the cache <C>cache</C>.
+</Item>
+<Mark><C>transcache</C></Mark>
+<Item>This is a list of lists of weak pointer objects. The weak
+    pointer object at position <C>[i][j]</C> holds references to
+    cache nodes of transversal elements of <M>U_{i-1}</M> in <M>U_i</M> in
+    representation <M>j</M>. 
 </Item>
 </List>
 </Description>
