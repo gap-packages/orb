@@ -1,26 +1,7 @@
-Check Doku
-utf encoding
-Copyright lines
-License
-
-
-
   test AddGeneratorsToOrbit for orbits without log
   more test files, what?
-  adjust documentation
 
   binary search orbits
-
-Documentation:
-  OrigSeed
-  eqfunc and hashfunc options for Orb
-  hfbig and hfdbig options for Orb
-  hfbig and hfdbig options for hash tables
-  log
-  filters for orbits
-  MakeSchreierTreeShallow
-  stopper
-  schreiergenaction
 
 For bysuborbit:
 

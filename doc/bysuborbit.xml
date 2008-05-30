@@ -240,6 +240,15 @@ here!
 </Description>
 </ManSection>
 
+<ManSection>
+<Oper Name="OrigSeed" Arg="orb"/>
+<Returns> a point </Returns>
+<Description>
+    Returns the original starting point for the orbit, not yet
+    minimalised.
+</Description>
+</ManSection>
+
 </Section>
 
 
