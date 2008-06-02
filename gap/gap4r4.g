@@ -13,9 +13,12 @@
 ##
 #############################################################################
 
-BindGlobal( "RowLength", function( m ) return Length(m[1]); end );
+DeclareAttribute( "RowLength", IsObject );
+InstallMethod( RowLength, [IsObject], function( m ) return Length(m[1]); end );
 
-BindGlobal( "Matrix", function( l, rowlength, sample )
+DeclareOperation( "Matrix", [ IsObject, IsObject, IsObject ] );
+InstallMethod( Matrix, [IsObject,IsObject,IsObject],
+function( l, rowlength, sample )
   if IsGF2MatrixRep(sample) or Is8BitMatrixRep(sample) then
       ConvertToMatrixRep(l);
   fi;
