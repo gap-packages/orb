@@ -22,8 +22,6 @@ setup := OrbitBySuborbitBootstrapForVectors([cu1gens,cu2gens,cngens],
 
 vv := v;
 v := CVec(v);
-#v := cngens[1][1];
-l := MakeRandomVectors(v,100);
 obsol := InitOrbitBySuborbitList(setup,40); 
 o := OrbitBySuborbit(setup,v,3,3,2,50);
 OrbitsFromSeedsToOrbitList(obsol,l);
