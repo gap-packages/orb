@@ -1,0 +1,107 @@
+<!-- 
+
+         cache.xml            orb package documentation             
+                                                               Juergen Mueller
+                                                               Max Neunhoeffer
+                                                                  Felix Noeske
+
+         Copyright (C) 2005-2008 by the authors
+
+This chapter explains functionality for caches.
+
+-->
+
+<Chapter Label="cache">
+<Heading>Caching techniques</Heading>
+
+<Section Label="cacheidea">
+<Heading>The idea of caching</Heading>
+
+If one wants to work with a large number of large objects which require some
+time to prepare and one does not know beforehand, how often one will
+need each one, it makes sense to work with some sort of cache. A cache
+is a data structure to keep some of the objects already produced but
+not too many of them to waste a lot of memory. That is, objects which
+have not been used for some time can automatically be removed from the
+cache, whereas the objects which are used more frequently stay in the
+cache. This chapter describes an implementation of this idea used in 
+the orbit-by-suborbit algorithms.
+
+</Section>
+
+<Section Label="cacheusage">
+    <Heading>Using caches</Heading>
+
+A cache is created using the following operation:
+
+<ManSection>
+<Oper Name="LinkedListCache" Arg="memorylimit"/>
+<Returns> A new cache object </Returns>
+<Description>
+    This operation creates a new linked list cache that uses at most
+    <A>memorylimit</A> bytes to store its entries. The cache is
+    organised as a linked list, newly cached objects are appended at
+    the beginning of the list, when the used memory grows over the
+    limit, old objects are removed at the end of this list
+    automatically.
+</Description>
+</ManSection>
+
+New objects are entered into the hash with the following function:
+
+<ManSection>
+<Oper Name="CacheObject" Arg="c, ob, mem"/>
+<Returns> A new node in the linked list cache </Returns>
+<Description>
+    This operation enters the object <A>ob</A> into the cache
+    <A>c</A>. The argument <A>mem</A> is an integer with the memory
+    usage of the object <A>ob</A>. The object is prepended to the
+    linked list cache and enough objects at the end are removed to
+    enforce the memory usage limit.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="ClearCache" Arg="c"/>
+<Returns> Nothing </Returns>
+<Description> Completely clears the cache <A>c</A> removing all nodes.
+</Description>
+</ManSection>
+
+A linked list cache is used as follows: Whenever you compute one of
+the objects you store it in the cache using <Ref Oper="CacheObject"/>
+and retain the linked list node that is returned. The usual place to
+retain it would be in a weak pointer object, such that this reference
+does not prevent the object to be garbage collected. When you next
+need this object, you check its corresponding position in the weak
+pointer object, if the reference is still there, you just use it and
+tell the cache that it was used again by calling <Ref
+    Oper="UseCacheObject"/>, otherwise you create it anew and
+store it in the cache again.
+<P/>
+As long as the object stays in the cache it is not garbage collected
+and the weak pointer object will still have its reference. As soon as
+the object is thrown out of the cache, the only reference to its node
+is the weak pointer object, thus if a garbage collection happens, it
+can be garbage collected. Note that before that garbage collection
+happens, the object might still be accessible via the weak pointer
+object. In this way, the available main memory in the workspace is
+used very efficiently and can be freed immediately when needed.
+
+<ManSection>
+<Oper Name="UseCacheObject" Arg="c, r"/>
+<Returns> Nothing </Returns>
+<Description>
+    The argument <A>c</A> must be a cache object and <A>r</A> a node
+    for such a cache. The object is either moved to the front of the
+    linked list (if it is still in the cache) or it is re-cached.
+    If necessary, objects at the end are removed from the cache to
+    enforce the memory usage limit.
+</Description>
+</ManSection>
+
+</Section>
+
+<!-- ############################################################ -->
+
+</Chapter>
