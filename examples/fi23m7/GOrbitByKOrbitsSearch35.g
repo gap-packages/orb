@@ -13,18 +13,18 @@ LoadPackage("cvec");
 cu1gens := List(u1gens,CMat);
 cu2gens := List(u2gens,CMat);
 cngens := List(ngens,CMat);
+cggens := List(ggens,CMat);
 
 # Now prepare everything for the big moment:
 setup := OrbitBySuborbitBootstrapForVectors([cu1gens,cu2gens,cngens],
-                                            [lll[4],lll[8],ngensp],
-                                            [3^4,3^8],[codim1,codim2]);
+                         [lll[4],lll[8],ngensp],
+                         [3^4,3^8,3265173504],[codim1,codim2],rec());
 
-v := cngens[1][1];
-o := OrbitBySuborbit(v,100000,3265173504,setup,50);
-oo := OrbitBySuborbitWithKnownSize(v,100000,373248,setup,30);
-
-# Old:
-#dcrs := InitDoubleCosetRepsSearcher(v,3265173504,setup);
-# Find the 35 first N orbits by enumerating half of each:
-#DoubleCosetRepsSearcher(dcrs,ggens,35,150001);
+vv := v;
+v := CVec(v);
+#v := cngens[1][1];
+l := MakeRandomVectors(v,100);
+obsol := InitOrbitBySuborbitList(setup,40); 
+o := OrbitBySuborbit(setup,v,3,3,2,50);
+OrbitsFromSeedsToOrbitList(obsol,l);
 

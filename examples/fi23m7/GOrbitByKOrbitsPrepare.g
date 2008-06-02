@@ -89,7 +89,9 @@ v := v * basi;
 # this is only necessary for "OrbitBySuborbit":
 ggensp := AtlasGenerators("Fi23",1).generators;
 ngensp := ResultOfStraightLineProgram(s,ggensp);
+Print("Finding smaller degree permutation representation...\n");
 ii := SmallerDegreePermutationRepresentation(Group(ngensp));
+Print("done.\n");
 ngensp := GeneratorsOfGroup(Image(ii));
 sygensp := ResultOfStraightLineProgram(syslp,ngensp);
 lll := CalcChain(sygensp,sychain,[]);
