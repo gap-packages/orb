@@ -8,7 +8,10 @@
 #   slpco1.g
 # Memory needed by this example: at least 600MB
 #
+LoadPackage("atlasrep");
+LoadPackage("io");
 LoadPackage("cvec");
+LoadPackage("orb");
 #SetInfoLevel(InfoOrb,2);  # to see more
 #ReadPackage("orb","examples/froslp.g");
 ReadPackage("orb","examples/co1F5d24/slpco1.g");

@@ -23,6 +23,20 @@ The mathematical details are described in
 <Cite Key="MNW"/>.
 <P/>
 
+In Section <Ref Sect="M11example"/> we present a small example of the
+usage of the orbit-by-suborbit machinery. We use the Mathieu group
+M11 acting on a 10-dimensional space over the field with <M>3</M>
+elements.
+<P/>
+
+In Section <Ref Sect="Co1example"/> we present a bigger example of the
+usage of the orbit-by-suborbit machinery. In this example the suborbit
+lengths of the 5th maximal subgroup of the Co1 sporadic simple group
+in its irreducible projective representation over the field with
+<M>5</M> elements in dimension <M>24</M> are determined which were
+previously unknown.
+<P/>
+
 In Section <Ref Sect="Borbit"/>
 we present as an extended worked example how to
 enumerate the smallest non-trivial orbit of the 
@@ -43,6 +57,23 @@ In Section <Ref Sect="Borbit2"/> ...
 
 In Section <Ref Sect="Borbit3"/> ...
 <P/> -->
+
+<!-- ==================================================================== -->
+
+<Section Label="M11example">
+    <Heading>The Mathieu group M11 acting in dimension <M>10</M></Heading>
+
+</Section>
+
+<!-- ==================================================================== -->
+
+<Section Label="Co1example">
+    <Heading>The sporadic simple Conway group Co1 acting in dimension <M>24</M>
+    </Heading>
+
+</Section>
+
+
 
 <!-- ==================================================================== -->
 
