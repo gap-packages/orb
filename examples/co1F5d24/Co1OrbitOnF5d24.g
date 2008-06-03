@@ -10,11 +10,12 @@
 #
 LoadPackage("cvec");
 #SetInfoLevel(InfoOrb,2);  # to see more
-ReadPackage("orb","examples/slpco1.g");
+ReadPackage("orb","examples/co1F5d24/slpco1.g");
 gens := AtlasGenerators("2.Co1",3).generators;
 cgens := List(gens,CMat);
 basech := CVEC_ReadMatFromFile(
-       Filename(DirectoriesPackageLibrary("orb",""),"examples/co1basech.cmat"));
+       Filename(DirectoriesPackageLibrary("orb",""),
+                "examples/co1F5d24/co1basech.cmat"));
 basechi := basech^-1;
 cgens := List(cgens,x->basech*x*basechi);
 cmax5 := ResultOfStraightLineProgram(slpmax5,cgens);
