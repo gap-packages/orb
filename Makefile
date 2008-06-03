@@ -1,4 +1,4 @@
-GAP=mygap64L
+GAP=/home/neunhoef/bin/mygap64L
 
 doc: doc/manual.six
 
