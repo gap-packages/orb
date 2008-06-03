@@ -30,14 +30,19 @@ sporadic simple Baby Monster group, by giving
 a log of a &GAP; session with explanations in between.
 This is intended to illustrate a few of the tools 
 which are available in the <Package>orb</Package> package
-as well as in related packages. 
+as well as in related packages. Note that for all this to work you
+have to acquire and install the following packages:
+<Package>io</Package>, <Package>chop</Package>,
+<Package>cvec</Package>, <Package>atlasrep</Package> and
+<Package>genss</Package>.
 <P/>
 
+<!--
 In Section <Ref Sect="Borbit2"/> ...
 <P/>
 
 In Section <Ref Sect="Borbit3"/> ...
-<P/>
+<P/> -->
 
 <!-- ==================================================================== -->
 
@@ -51,7 +56,7 @@ maximal subgroups <M>E \cong 2.^2E_6(2).2</M> of <M>B</M>,
 which are the centralisers of the 2A involutions of <M>B</M>.
 Here <M>E</M> is a bicyclic extension 
 of the twisted Lie type group <M>^2E_6(2)</M>,
-and has index <M>[B\colon E]=13\,571\,955\,000 \approx 1.4\cdot 10^{10}</M>,
+and has index <M>[B\colon E]=13\,571\,955\,000 \approx 1.4 \cdot 10^{10}</M>,
 see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package.
 <P/>
 
@@ -118,7 +123,7 @@ gap> v := nsy[1]*nsx;
 Storing eight elements of GF(2) into 1 byte, to store a vector of length 
 4370 needs 547 bytes plus some organisational overhead resulting in about
 580 bytes, hence to store the full <M>B</M>-orbit of <M>v</M> 
-we need <M>580\cdot [B\colon E] \approx 7.9 \cdot 10^{12}</M> bytes.
+we need <M>580 \cdot [B\colon E] \approx 7.9 \cdot 10^{12}</M> bytes.
 Hence we try to find helper subgroups suitable to achieve a saving
 factor of <M>\approx 10^4</M>, i. e. allowing to store only one out of
 <M>\approx 10^4</M> vectors. To this end, we look for a pair 
@@ -320,8 +325,8 @@ giving standard generators of <M>Fi_{{22}}</M>.
 Since <M>Fi_{{22}}</M> has two conjugacy classes of elements of order 13, 
 and there are three conjugacy classes of subgroups <M>Fi_{{22}}</M>
 of <M>\overline{E'}</M>, the success probability is
-<M>6\cdot |C_{{ \overline{E'} }}(g2a)|\cdot 
-    |C_{{ \overline{E'} }}(b)|/|\overline{E'}| \approx 2\cdot 10^{-5}</M>.
+<M>6 \cdot |C_{{ \overline{E'} }}(g2a)| \cdot 
+    |C_{{ \overline{E'} }}(b)|/|\overline{E'}| \approx 2 \cdot 10^{-5}</M>.
 
 <Log><![CDATA[
 gap> pr := ProductReplacer(egens78,rec(maxdepth := 150));
@@ -639,14 +644,14 @@ We expect that all the vectors in the smaller quotient of dimension 20
 will enumerated; needing 3 bytes per vector for the actual data which
 results in 40 bytes including overhead, this amounts to
 <M>40 \cdot 2^{20} \approx 42</M> MB of memory space.
-Since <M>2^{32} \approx 4.3\cdot 10^9</M> is less than <M>[B\colon E]</M>,
+Since <M>2^{32} \approx 4.3 \cdot 10^9</M> is less than <M>[B\colon E]</M>,
 we also expect that the larger quotient of dimension 32 will be 
 enumerated completely, by <M>L_2(11)</M>-orbits; 
 needing 4 bytes per vector for the actual data resulting in 40 bytes
 including overhead, and assuming a saving factor as
 suggested by <C>OrbitStatisticOnVectorSpace</C>
 yields an estimated memory requirement of 
-<M>40 \cdot 2^{32}\cdot 1/598 \approx 287</M> MB.
+<M>40 \cdot 2^{32} \cdot 1/598 \approx 287</M> MB.
 For the large <M>B</M>-orbit, being enumerated by <M>M_{{12}}</M>-orbits,
 we similarly get an estimated memory requirement of
 <M>584 \cdot [B\colon E] \cdot 1/93060 \approx 85</M> MB.
@@ -681,17 +686,19 @@ order of magnitude.
 
 <!-- ==================================================================== -->
 
+<!-- not yet available
 <Section Label="Borbit2">
 <Heading>The Baby Monster action on its 2B involutions</Heading>
 
-</Section>
+</Section> -->
 
 <!-- ==================================================================== -->
 
+<!-- not yet available
 <Section Label="Borbit3">
     <Heading>The Baby Monster action on the cosets of <M>Fi_{{22}}</M></Heading>
 
-</Section>
+</Section> -->
 
 <!-- ==================================================================== -->
 

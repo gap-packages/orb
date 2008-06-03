@@ -23,7 +23,7 @@ Version := "2.0",
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-Date := "28/05/2008",
+Date := "04/06/2008",
 
 ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-2.0",
 
@@ -172,10 +172,7 @@ Dependencies := rec(
 ##  With the new package loading mechanism (GAP >=4.4)  the availability
 ##  tests of other packages, as given under .Dependencies above, will be 
 ##  done automatically and need not be included in this function.
-#AvailabilityTest := ReturnTrue,
-AvailabilityTest := function()
-    return true;
-  end,
+AvailabilityTest := ReturnTrue,
 
 ##  Suggest here if the package should be *automatically loaded* when GAP is 
 ##  started.  This should usually be 'false'. Say 'true' only if your package 
