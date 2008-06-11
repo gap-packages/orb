@@ -15,6 +15,7 @@
   - Clean up examples directory
   - Added Co1 example to documentation
   - Added M11 example to documentation
+  - Use new "cheap" option of SmallerDegreePermutationRepresentation
   - Release revision 189 as version 2.0
 
 

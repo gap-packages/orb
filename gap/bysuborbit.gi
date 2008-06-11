@@ -1043,7 +1043,7 @@ function(gens,permgens,sizes,codims,opt)
       SetSize(g,sizes[i]);
       Info(InfoOrb,1,"Trying smaller degree permutation representation for U",
            i,"...");
-      sm := SmallerDegreePermutationRepresentation(g);
+      sm := SmallerDegreePermutationRepresentation(g:cheap);
       setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
       if not(IsOne(sm)) then   # not the identity
           Info(InfoOrb,1,"Found one on ",
@@ -1271,7 +1271,7 @@ function(gens,permgens,sizes,codims,opt)
       SetSize(g,sizes[i]);
       Info(InfoOrb,1,"Trying smaller degree permutation representation for U",
            i,"...");
-      sm := SmallerDegreePermutationRepresentation(g);
+      sm := SmallerDegreePermutationRepresentation(g:cheap);
       setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
       if not(IsOne(sm)) then   # not the identity
           Info(InfoOrb,1,"Found one on ",
@@ -1509,7 +1509,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
       SetSize(g,sizes[i]);
       Info(InfoOrb,1,"Trying smaller degree permutation representation for U",
            i,"...");
-      sm := SmallerDegreePermutationRepresentation(g);
+      sm := SmallerDegreePermutationRepresentation(g:cheap);
       setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
       if not(IsOne(sm)) then   # not the identity
           Info(InfoOrb,1,"Found one on ",
