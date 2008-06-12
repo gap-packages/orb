@@ -24,14 +24,16 @@ The mathematical details are described in
 <P/>
 
 In Section <Ref Sect="M11example"/> we present a small example of the
-usage of the orbit-by-suborbit machinery. We use the Mathieu group
-M11 acting on a 10-dimensional space over the field with <M>3</M>
-elements.
+usage of the orbit-by-suborbit machinery. We use the sporadic
+simple Mathieu group <M>M_{{11}}</M> acting projectively 
+on its irreducible module of dimension 24 over the
+field with 3 elements. 
 <P/>
 
 In Section <Ref Sect="Co1example"/> we present a bigger example of the
 usage of the orbit-by-suborbit machinery. In this example the suborbit
-lengths of the 5th maximal subgroup of the Co1 sporadic simple group
+lengths of the 5th maximal subgroup of the 
+sporadic simple group <M>Co_{{1}}</M> 
 in its irreducible projective representation over the field with
 <M>5</M> elements in dimension <M>24</M> are determined which were
 previously unknown.
@@ -46,9 +48,8 @@ This is intended to illustrate a few of the tools
 which are available in the <Package>orb</Package> package
 as well as in related packages. Note that for all this to work you
 have to acquire and install the following packages:
-<Package>IO</Package>, <Package>chop</Package>,
-<Package>cvec</Package>, <Package>atlasrep</Package> and
-<Package>genss</Package>.
+<Package>IO</Package>, <Package>cvec</Package>, <Package>chop</Package>,
+<Package>genss</Package>, and  <Package>atlasrep</Package>.
 <P/>
 
 <!--
@@ -66,30 +67,83 @@ In Section <Ref Sect="Borbit3"/> ...
 
 The example in this section is very small but our intention is that
 everything can still be analysed and looked at more or less by hand.
-We want to enumerate orbits for the Mathieu group <M>M_{{11}}</M> 
+We want to enumerate orbits or the sporadic simple Mathieu group 
+<M>M_{{11}}</M> 
 acting projectively on its irreducible module of dimension 24 over the
-field with 3 elements. All the files for this example are located in the
+field with 3 elements. 
+
+<P/> 
+We begin by loading the packages we are using in the sequel, where the
+<Package>orb</Package> package automatically invokes the
+<Package>IO</Package> package.
+All the files for this example are located in the
 <F>examples</F> subdirectory of the <Package>orb</Package> package. 
-
-<P/>Note that you have to have the two packages <Package>IO</Package>
-and <Package>cvec</Package> installed and compiled for this to work.
-
-<P/> Then you simply run the example in the following way:
+Then you simply run the example in the following way:
 
 <Log><![CDATA[
+gap> LoadPackage("orb");
+...
+gap> LoadPackage("cvec");
+...
+gap> LoadPackage("atlasrep");
+...
 gap> ReadPackage("orb","examples/M11OrbitOnPF3d24.g");
 ...
 gap> o := OrbitBySuborbit(setup,v,3,3,2,100);
+...
+#I  OrbitBySuborbit found 100% of a U3-orbit of size 7 920
 ...]]>
 </Log>
 
 Everything works instantly as it would have without the orbit-by-suborbits
-method. 
+method. (Depending on whether the matrix and permutation generators 
+for <M>M_{{11}}</M> are already stored locally, 
+some time might be needed to fetch them.)
 We will not go into the details of this computation here, but they can be
-read off from the code: We are using two helper subgroups
-<M>U_1 &lt; U_2 &lt; Co_1 </M> of respective orders <M>20</M> and
+directly read off from the code in the file <F>M11OrbitOnPF3d24.g</F>:
+
+<Log><![CDATA[
+SetInfoLevel(InfoOrb,2);
+pgens := AtlasGenerators("M11",1).generators;
+
+gens := AtlasGenerators("M11",14).generators;
+cgens := List(gens,CMat);
+basech := CVEC_ReadMatFromFile(
+    Filename(DirectoriesPackageLibrary("orb",""),"examples/m11basech.cmat"));
+basechi := basech^-1;
+cgens := List(cgens,x->basech*x*basechi);
+
+ReadPackage("orb","examples/m11slps.g");
+pgu2 := ResultOfStraightLineProgram(s2,pgens);
+pgu1 := ResultOfStraightLineProgram(s1,pgu2);
+cu2 := ResultOfStraightLineProgram(s2,cgens);
+cu1 := ResultOfStraightLineProgram(s1,cu2);
+
+setup := OrbitBySuborbitBootstrapForLines(
+    [cu1,cu2,cgens],[pgu1,pgu2,pgens],[20,720,7920],[5,11],rec());
+setup!.stabchainrandom := 900;
+
+v := ZeroMutable(cgens[1][1]);
+Randomize(v);
+ORB_NormalizeVector(v); ]]>
+</Log>
+
+We are using two helper subgroups
+<M>U_1 &lt; U_2 &lt; M_{11} </M> of respective orders <M>20</M> and
 <M>720</M>.  The quotient spaces we use for the helper
 subgroups have dimensions <M>5</M> and <M>11</M> respectively.
+Straight line programs to compute generators of the helper
+subgroups in terms of the given generators of <M>M_{11}</M>,
+and an appropriate basis exhibiting the quotients,
+have already been computed, and are stored in the 
+files <F>m11slps.g</F> and <F>m11basech.cmat</F>, respectively.
+(In Section <Ref Sect="Borbit"/> we show in detail how such
+straight line programs and suitable bases 
+can be found using the tools available in 
+in the <Package>orb</Package> package.)
+The command <F>OrbitBySuborbitBootstrapForLines</F>
+invokes the precomputation, and in particular says that
+we want to use projective action.
 </Section>
 
 <!-- ==================================================================== -->
@@ -156,16 +210,15 @@ We begin by loading the packages we are using in the sequel, where the
 <Package>IO</Package> package, and the <Package>chop</Package> package
 automatically invokes the <Package>cvec</Package> package.
 
-<!-- ??? How official are these packages? -->
 
 <Log><![CDATA[
-gap> LoadPackage("orb");;
+gap> LoadPackage("orb");
 ...
-gap> LoadPackage("atlasrep");;
+gap> LoadPackage("atlasrep");
 ...
-gap> LoadPackage("chop");;
+gap> LoadPackage("chop");
 ...
-gap> LoadPackage("genss");;
+gap> LoadPackage("genss");
 ... ]]> 
 </Log>
 
@@ -765,8 +818,9 @@ gap> o := OrbitBySuborbitKnownSize(setup,v,3,3,2,51,13571955000);
 #I  OrbitBySuborbit found 100% of a U2-orbit of size 1
 #I  OrbitBySuborbit found 100% of a U2-orbit of size 23 760
 ...
-<orbit-by-suborbit size=13571955000 stabsize=306129918735099415756800 
- (51%) saving factor=45195> ]]>
+#I  OrbitBySuborbit found 51% of a U3-orbit of size 13 571 955 000
+<orbit-by-suborbit size=13571955000 stabsize=306129918735099415756800 (
+51%) saving factor=56404> ]]>
 </Log>
 
 Indeed the saving factor actually achieved is smaller than the
