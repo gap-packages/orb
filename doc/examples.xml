@@ -67,8 +67,7 @@ In Section <Ref Sect="Borbit3"/> ...
 
 The example in this section is very small but our intention is that
 everything can still be analysed and looked at more or less by hand.
-We want to enumerate orbits or the sporadic simple Mathieu group 
-<M>M_{{11}}</M> 
+We want to enumerate orbits of the Mathieu group <M>M_{{11}}</M> 
 acting projectively on its irreducible module of dimension 24 over the
 field with 3 elements. 
 All the files for this example are located in the
@@ -89,11 +88,12 @@ Everything works instantly as it would have without the orbit-by-suborbits
 method. (Depending on whether the matrix and permutation generators 
 for <M>M_{{11}}</M> are already stored locally, 
 some time might be needed to fetch them.)
-We will not go into the details of this computation here, but they can be
+The details of this computation can be
 directly read off from the code in the file <F>M11OrbitOnPF3d24.g</F>:
 
 <Log><![CDATA[
 LoadPackage("orb");
+LoadPackage("io");
 LoadPackage("cvec");
 LoadPackage("atlasrep");
 
@@ -119,12 +119,16 @@ setup!.stabchainrandom := 900;
 
 v := ZeroMutable(cgens[1][1]);
 Randomize(v);
-ORB_NormalizeVector(v); ]]>
+ORB_NormalizeVector(v); 
+
+Print("Now do\n  o := OrbitBySuborbit(setup,v,3,3,2,100);\n");]]>
 </Log>
 
 We are using two helper subgroups
-<M>U_1 &lt; U_2 &lt; M_{11} </M> of respective orders <M>20</M> and
-<M>720</M>.  The quotient spaces we use for the helper
+<M>U_1 &lt; U_2 &lt; M_{11} </M>,
+where <M>U_2\cong A_2.2</M> is a maximal subgroup of <M>M_{11} </M>
+of order <M>720</M>, and <M>U_2\cong 5:4</M> is a maximal subgroup of 
+<M>U_2</M> of order <M>20</M>. The quotient spaces we use for the helper
 subgroups have dimensions <M>5</M> and <M>11</M> respectively.
 Straight line programs to compute generators of the helper
 subgroups in terms of the given generators of <M>M_{11}</M>,
@@ -148,8 +152,8 @@ we want to use projective action.
     </Heading>
 
 The example in this section shows how to compute all suborbit lengths
-of the 5th maximal subgroup of the sporadic simple Conway group <M>Co_1</M>
-acting projectively on its irreducible module of dimension 24
+of the 5th maximal subgroup of the Conway group <M>Co_1</M>,
+in its irreducible projective action on a module of dimension 24
 over the field with 5 elements. All the files for this example
 are located in the <F>examples/co1F5d24</F> subdirectory of the
 <Package>orb</Package> package. 
@@ -162,18 +166,36 @@ gap> ReadPackage("orb","examples/co1F5d24/Co1OrbitOnPF5d24.findall.g");
 ...]]>
 </Log>
 
+<P/>
+We will not go into the details of the first part of the computation here, 
+as they are very similar to those reproduced in 
+Section <Ref Sect="M11example"/>, and can be
+directly read off from the code in the file <F>Co1OrbitOnPF5d24.g</F>:
+We are using three helper subgroups
+<M>U_1 &lt; U_2 &lt; U_3 &lt; Co_1 </M> of respective orders <M>10752</M>,
+<M>371589120</M> and <M>89181388800</M>. The projective action comes from
+the irreducible 24-dimensional linear representation of the Schur cover
+<M>2.Co_1</M> of <M>Co_1</M> and the quotient spaces we use for the helper
+subgroups have dimensions <M>8</M>, <M>8</M> and <M>16</M> respectively.
+The details of the second part can be directly read off 
+from the code in the file <F>Co1OrbitOnPF5d24.findall.g</F>:
+
+<Log><![CDATA[
+oo := InitOrbitBySuborbitList(setup,80);
+l := MakeRandomLines(v,1000);
+OrbitsFromSeedsToOrbitList(oo,l);
+intervecs := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),
+             "examples/co1F5d24/co1interestingvecs.cmat"));
+OrbitsFromSeedsToOrbitList(oo,intervecs);
+Length(oo!.obsos);
+Sum(oo!.obsos,Size);
+(5^24-1)/(5-1);]]>
+</Log>
+
+<P/>
 Note that this example needs about 2GB of main memory on a 32bit machine
 and probably nearly 4GB on a 64bit machine. However, the suborbit lengths
 were previously unknown before they were computed with this program.
-
-<P/>
-We will not go into the details of this computation here, but they can be
-read off from the code: We are using three helper subgroups
-<M>U_1 &lt; U_2 &lt; U_3 &lt; Co_1 </M> of respective orders <M>10752</M>,
-<M>371589120</M> and <M>89181388800</M>. The projective action comes from
-the irreducible 24-dimensional representation of the Schur cover
-<M>2.Co_1</M> of <M>Co_1</M> and the quotient spaces we use for the helper
-subgroups have dimensions <M>8</M>, <M>8</M> and <M>16</M> respectively.
 
 </Section>
 
@@ -183,7 +205,7 @@ subgroups have dimensions <M>8</M>, <M>8</M> and <M>16</M> respectively.
 <Heading>The Baby Monster <M>B</M> acting on its 2A involutions</Heading>
 
 In this section we show in detail how to enumerate the smallest 
-non-trivial orbit of the sporadic simple Baby Monster group <M>B</M>. 
+non-trivial orbit of the Baby Monster group <M>B</M>. 
 The associated one-point stabilisers are the largest 
 maximal subgroups <M>E \cong 2.^2E_6(2).2</M> of <M>B</M>,
 which are the centralisers of the 2A involutions of <M>B</M>.
