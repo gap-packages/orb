@@ -33,7 +33,7 @@ field with 3 elements.
 In Section <Ref Sect="Co1example"/> we present a bigger example of the
 usage of the orbit-by-suborbit machinery. In this example the suborbit
 lengths of the 5th maximal subgroup of the 
-sporadic simple group <M>Co_{{1}}</M> 
+sporadic simple Conway group <M>Co_{{1}}</M> 
 in its irreducible projective representation over the field with
 <M>5</M> elements in dimension <M>24</M> are determined which were
 previously unknown.
@@ -42,7 +42,7 @@ previously unknown.
 In Section <Ref Sect="Borbit"/>
 we present as an extended worked example how to
 enumerate the smallest non-trivial orbit of the 
-sporadic simple Baby Monster group, by giving
+sporadic simple Baby Monster group <M>B</M>, by giving
 a log of a &GAP; session with explanations in between.
 This is intended to illustrate a few of the tools 
 which are available in the <Package>orb</Package> package
@@ -71,23 +71,13 @@ We want to enumerate orbits or the sporadic simple Mathieu group
 <M>M_{{11}}</M> 
 acting projectively on its irreducible module of dimension 24 over the
 field with 3 elements. 
-
-<P/> 
-We begin by loading the packages we are using in the sequel, where the
-<Package>orb</Package> package automatically invokes the
-<Package>IO</Package> package.
 All the files for this example are located in the
-<F>examples</F> subdirectory of the <Package>orb</Package> package. 
+<F>examples/m11PF3d24</F> subdirectory of the 
+<Package>orb</Package> package. 
 Then you simply run the example in the following way:
 
 <Log><![CDATA[
-gap> LoadPackage("orb");
-...
-gap> LoadPackage("cvec");
-...
-gap> LoadPackage("atlasrep");
-...
-gap> ReadPackage("orb","examples/M11OrbitOnPF3d24.g");
+gap> ReadPackage("orb","examples/m11PF3d24/M11OrbitOnPF3d24.g");
 ...
 gap> o := OrbitBySuborbit(setup,v,3,3,2,100);
 ...
@@ -103,24 +93,28 @@ We will not go into the details of this computation here, but they can be
 directly read off from the code in the file <F>M11OrbitOnPF3d24.g</F>:
 
 <Log><![CDATA[
+LoadPackage("orb");
+LoadPackage("cvec");
+LoadPackage("atlasrep");
+
 SetInfoLevel(InfoOrb,2);
 pgens := AtlasGenerators("M11",1).generators;
 
 gens := AtlasGenerators("M11",14).generators;
 cgens := List(gens,CMat);
-basech := CVEC_ReadMatFromFile(
-    Filename(DirectoriesPackageLibrary("orb",""),"examples/m11basech.cmat"));
+basech := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),
+          "examples/m11PF3d24/m11basech.cmat"));
 basechi := basech^-1;
 cgens := List(cgens,x->basech*x*basechi);
 
-ReadPackage("orb","examples/m11slps.g");
+ReadPackage("orb","examples/m11PF3d24/m11slps.g");
 pgu2 := ResultOfStraightLineProgram(s2,pgens);
 pgu1 := ResultOfStraightLineProgram(s1,pgu2);
 cu2 := ResultOfStraightLineProgram(s2,cgens);
 cu1 := ResultOfStraightLineProgram(s1,cu2);
 
 setup := OrbitBySuborbitBootstrapForLines(
-    [cu1,cu2,cgens],[pgu1,pgu2,pgens],[20,720,7920],[5,11],rec());
+         [cu1,cu2,cgens],[pgu1,pgu2,pgens],[20,720,7920],[5,11],rec());
 setup!.stabchainrandom := 900;
 
 v := ZeroMutable(cgens[1][1]);
@@ -149,21 +143,17 @@ we want to use projective action.
 <!-- ==================================================================== -->
 
 <Section Label="Co1example">
-    <Heading>The sporadic simple Conway group <M>Co_1</M> acting in 
+    <Heading>The Conway group <M>Co_1</M> acting in 
     dimension <M>24</M>
     </Heading>
 
 The example in this section shows how to compute all suborbit lengths
 of the 5th maximal subgroup of the sporadic simple Conway group <M>Co_1</M>
-in its projective action on its irreducible module of dimension 24
+acting projectively on its irreducible module of dimension 24
 over the field with 5 elements. All the files for this example
 are located in the <F>examples/co1F5d24</F> subdirectory of the
 <Package>orb</Package> package. 
-
-<P/>Note that you have to have the two packages <Package>IO</Package>
-and <Package>cvec</Package> installed and compiled for this to work.
-
-<P/> Then you simply run the example in the following way:
+Then you simply run the example in the following way:
 
 <Log><![CDATA[
 gap> ReadPackage("orb","examples/co1F5d24/Co1OrbitOnPF5d24.g");
@@ -187,12 +177,10 @@ subgroups have dimensions <M>8</M>, <M>8</M> and <M>16</M> respectively.
 
 </Section>
 
-
-
 <!-- ==================================================================== -->
 
 <Section Label="Borbit">
-<Heading>The Baby Monster action on its 2A involutions</Heading>
+<Heading>The Baby Monster <M>B</M> acting on its 2A involutions</Heading>
 
 In this section we show in detail how to enumerate the smallest 
 non-trivial orbit of the sporadic simple Baby Monster group <M>B</M>. 
@@ -209,7 +197,6 @@ We begin by loading the packages we are using in the sequel, where the
 <Package>orb</Package> package automatically invokes the
 <Package>IO</Package> package, and the <Package>chop</Package> package
 automatically invokes the <Package>cvec</Package> package.
-
 
 <Log><![CDATA[
 gap> LoadPackage("orb");
