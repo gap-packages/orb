@@ -31,12 +31,12 @@ field with 3 elements.
 <P/>
 
 In Section <Ref Sect="Co1example"/> we present a bigger example of the
-usage of the orbit-by-suborbit machinery. In this example the suborbit
-lengths of the 5th maximal subgroup of the 
-sporadic simple Conway group <M>Co_{{1}}</M> 
+usage of the orbit-by-suborbit machinery. In this example the orbit
+lengths of the sporadic simple Conway group <M>Co_{{1}}</M> acting in
 in its irreducible projective representation over the field with
-<M>5</M> elements in dimension <M>24</M> are determined which were
-previously unknown. These suborbit lengths were needed to rule out
+<M>5</M> elements in dimension <M>24</M>
+are determined, which were previously unknown.
+These orbit lengths were needed to rule out
 a case in <Cite Key="LongOrbits"/>.
 <P/>
 
@@ -153,7 +153,7 @@ we want to use projective action.
     </Heading>
 
 The example in this section shows how to compute all suborbit lengths
-of the 5th maximal subgroup of the Conway group <M>Co_1</M>,
+of the Conway group <M>Co_1</M>,
 in its irreducible projective action on a module of dimension 24
 over the field with 5 elements. All the files for this example
 are located in the <F>examples/co1F5d24</F> subdirectory of the
@@ -195,8 +195,10 @@ Sum(oo!.obsos,Size);
 
 <P/>
 Note that this example needs about 2GB of main memory on a 32bit machine
-and probably nearly 4GB on a 64bit machine. However, the suborbit lengths
+and probably nearly 4GB on a 64bit machine. However, the orbit lengths
 were previously unknown before they were computed with this program.
+The orbit lengths were needed to rule out
+a case in <Cite Key="LongOrbits"/>.
 
 </Section>
 
