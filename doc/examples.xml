@@ -36,7 +36,8 @@ lengths of the 5th maximal subgroup of the
 sporadic simple Conway group <M>Co_{{1}}</M> 
 in its irreducible projective representation over the field with
 <M>5</M> elements in dimension <M>24</M> are determined which were
-previously unknown.
+previously unknown. These suborbit lengths were needed to rule out
+a case in <Cite Key="LongOrbits"/>.
 <P/>
 
 In Section <Ref Sect="Borbit"/>
