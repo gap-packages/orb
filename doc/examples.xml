@@ -127,8 +127,8 @@ Print("Now do\n  o := OrbitBySuborbit(setup,v,3,3,2,100);\n");]]>
 
 We are using two helper subgroups
 <M>U_1 &lt; U_2 &lt; M_{11} </M>,
-where <M>U_2\cong A_2.2</M> is a maximal subgroup of <M>M_{11} </M>
-of order <M>720</M>, and <M>U_2\cong 5:4</M> is a maximal subgroup of 
+where <M>U_2\cong A_2.2</M> is the largest maximal subgroup of <M>M_{11}</M>,
+having order <M>720</M>, and <M>U_2\cong 5:4</M> is a maximal subgroup of 
 <M>U_2</M> of order <M>20</M>. The quotient spaces we use for the helper
 subgroups have dimensions <M>5</M> and <M>11</M> respectively.
 Straight line programs to compute generators of the helper
@@ -173,8 +173,17 @@ as they are very similar to those reproduced in
 Section <Ref Sect="M11example"/>, and can be
 directly read off from the code in the file <F>Co1OrbitOnPF5d24.g</F>:
 We are using three helper subgroups
-<M>U_1 &lt; U_2 &lt; U_3 &lt; Co_1 </M> of respective orders <M>10752</M>,
-<M>371589120</M> and <M>89181388800</M>. The projective action comes from
+<M>U_1 &lt; U_2 &lt; U_3 &lt; Co_1</M>,
+
+where <M>Co_1</M> has order 
+<M>4157776806543360000\approx 4.2\cdot 10^{18}</M>, see <Cite Key="CCN85"/>,
+and where <M>U_3\cong 2_+^{1+8}.O_8(2)</M> is the fifth maximal subgroup
+of <M>Co_1 </M>, having order <M>89181388800\approx 8.9\cdot 10^{10}</M>,
+while <M>U_2\cong [2^8]\colon S_6(2)</M> is a maximal subgroup of <M>U_3</M>
+of order <M>371589120\approx 3.7\cdot 10^{8}</M>, 
+and <M>U_1\cong 2^6\colon L_3(2)</M> is a maximal subgroup of 
+<M>S_6(2)</M> of order <M>10752\approx 1.1\cdot 10^{4}</M>.
+The projective action comes from
 the irreducible 24-dimensional linear representation of the Schur cover
 <M>2.Co_1</M> of <M>Co_1</M> and the quotient spaces we use for the helper
 subgroups have dimensions <M>8</M>, <M>8</M> and <M>16</M> respectively.
