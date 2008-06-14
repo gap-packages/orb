@@ -47,10 +47,16 @@ sporadic simple Baby Monster group <M>B</M>, by giving
 a log of a &GAP; session with explanations in between.
 This is intended to illustrate a few of the tools 
 which are available in the <Package>orb</Package> package
-as well as in related packages. Note that for all this to work you
-have to acquire and install the following packages:
-<Package>IO</Package>, <Package>cvec</Package>, <Package>chop</Package>,
-<Package>genss</Package>, and  <Package>atlasrep</Package>.
+as well as in related packages. 
+<P/>
+
+Note that for all this to work you
+have to acquire and install the packages
+<Package>IO</Package>, <Package>cvec</Package>, and 
+<Package>atlasrep</Package>,
+and for Section <Ref Sect="Borbit"/>
+you additionally need the packages 
+<Package>chop</Package> and <Package>genss</Package>.
 <P/>
 
 <!--
@@ -85,6 +91,7 @@ gap> o := OrbitBySuborbit(setup,v,3,3,2,100);
 ...]]>
 </Log>
 
+<P/>
 Everything works instantly as it would have without the orbit-by-suborbits
 method. (Depending on whether the matrix and permutation generators 
 for <M>M_{{11}}</M> are already stored locally, 
@@ -125,11 +132,14 @@ ORB_NormalizeVector(v);
 Print("Now do\n  o := OrbitBySuborbit(setup,v,3,3,2,100);\n");]]>
 </Log>
 
+<P/>
 We are using two helper subgroups
 <M>U_1 &lt; U_2 &lt; M_{11} </M>,
 where <M>U_2\cong A_2.2</M> is the largest maximal subgroup of <M>M_{11}</M>,
 having order <M>720</M>, and <M>U_2\cong 5:4</M> is a maximal subgroup of 
-<M>U_2</M> of order <M>20</M>. The quotient spaces we use for the helper
+<M>U_2</M> of order <M>20</M>, 
+see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package.
+The quotient spaces we use for the helper
 subgroups have dimensions <M>5</M> and <M>11</M> respectively.
 Straight line programs to compute generators of the helper
 subgroups in terms of the given generators of <M>M_{11}</M>,
@@ -174,9 +184,9 @@ Section <Ref Sect="M11example"/>, and can be
 directly read off from the code in the file <F>Co1OrbitOnPF5d24.g</F>:
 We are using three helper subgroups
 <M>U_1 &lt; U_2 &lt; U_3 &lt; Co_1</M>,
-
 where <M>Co_1</M> has order 
-<M>4157776806543360000\approx 4.2\cdot 10^{18}</M>, see <Cite Key="CCN85"/>,
+<M>4157776806543360000\approx 4.2\cdot 10^{18}</M>, 
+see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package,
 and where <M>U_3\cong 2_+^{1+8}.O_8(2)</M> is the fifth maximal subgroup
 of <M>Co_1 </M>, having order <M>89181388800\approx 8.9\cdot 10^{10}</M>,
 while <M>U_2\cong [2^8]\colon S_6(2)</M> is a maximal subgroup of <M>U_3</M>
@@ -185,8 +195,13 @@ and <M>U_1\cong 2^6\colon L_3(2)</M> is a maximal subgroup of
 <M>S_6(2)</M> of order <M>10752\approx 1.1\cdot 10^{4}</M>.
 The projective action comes from
 the irreducible 24-dimensional linear representation of the Schur cover
-<M>2.Co_1</M> of <M>Co_1</M> and the quotient spaces we use for the helper
+<M>2.Co_1</M> of <M>Co_1</M>, which by <Cite Key="Jansen"/> 
+is the smallest faithful representation of <M>2.Co_1</M>
+over the field GF(5), 
+and the quotient spaces we use for the helper
 subgroups have dimensions <M>8</M>, <M>8</M> and <M>16</M> respectively.
+
+<P/>
 The details of the second part can be directly read off 
 from the code in the file <F>Co1OrbitOnPF5d24.findall.g</F>:
 
@@ -216,24 +231,35 @@ a case in <Cite Key="LongOrbits"/>.
 <Section Label="Borbit">
 <Heading>The Baby Monster <M>B</M> acting on its 2A involutions</Heading>
 
-In this section we show in detail how to enumerate the smallest 
-non-trivial orbit of the Baby Monster group <M>B</M>. 
-The associated one-point stabilisers are the largest 
-maximal subgroups <M>E \cong 2.^2E_6(2).2</M> of <M>B</M>,
-which are the centralisers of the 2A involutions of <M>B</M>.
-Here <M>E</M> is a bicyclic extension 
-of the twisted Lie type group <M>^2E_6(2)</M>,
-and has index <M>[B\colon E]=13\,571\,955\,000 \approx 1.4 \cdot 10^{10}</M>,
-see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package.
-<P/>
+The example in this section shows how to enumerate the smallest
+non-trivial orbit of the Baby Monster group <M>B</M>.
+All the files for this example are located in the
+<F>examples/bmF2d4370</F> subdirectory of the
+<Package>orb</Package> package.
+You may simply run the example in the following way:
 
-We begin by loading the packages we are using in the sequel, where the
+<Log><![CDATA[
+gap> ReadPackage("orb","examples/bmF2d4370/BMOrbitOnF2d4370partI.g");
+...
+gap> ReadPackage("orb","examples/bmF2d4370/BMOrbitOnF2d4370partII.g");
+... ]]>
+</Log>
+
+<P/>
+In the sequel we comment in detail 
+on how the necessary input data actually is prepared.
+We begin by loading the packages we are going to use.
+<!-- where the
 <Package>orb</Package> package automatically invokes the
 <Package>IO</Package> package, and the <Package>chop</Package> package
-automatically invokes the <Package>cvec</Package> package.
+automatically invokes the <Package>cvec</Package> package. -->
 
 <Log><![CDATA[
 gap> LoadPackage("orb");
+...
+gap> LoadPackage("io");
+...
+gap> LoadPackage("cvec");
 ...
 gap> LoadPackage("atlasrep");
 ...
@@ -243,6 +269,17 @@ gap> LoadPackage("genss");
 ... ]]> 
 </Log>
 
+<P/>
+The one-point stabilisers associated to the smallest 
+non-trivial orbit of <M>B</M> are its largest 
+maximal subgroups <M>E \cong 2.^2E_6(2).2</M>,
+which are the centralisers of its 2A involutions.
+Here <M>E</M> is a bicyclic extension 
+of the twisted Lie type group <M>^2E_6(2)</M>,
+and has index <M>[B\colon E]=13\,571\,955\,000 \approx 1.4 \cdot 10^{10}</M>,
+see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package.
+
+<P/>
 We first try to find a matrix representation of <M>B</M>
 such that the <M>B</M>-orbit we look for is realised as 
 a set of vectors in the underlying vector space. 
@@ -268,6 +305,7 @@ gap> egens := ResultOfStraightLineProgram(slpbtoe,bgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] ]]>
 </Log>
 
+<P/>
 We look for a non-zero vector being fixed by both generators of <M>E</M>.
 It turns out that the latter have a common fixed space of dimension 1.
 Then, since <M>E</M> is a maximal subgroup,
@@ -285,6 +323,7 @@ gap> v := nsy[1]*nsx;
 <immutable cvec over GF(2,1) of length 4370> ]]>
 </Log>
 
+<P/>
 Storing eight elements of GF(2) into 1 byte, to store a vector of length 
 4370 needs 547 bytes plus some organisational overhead resulting in about
 580 bytes, hence to store the full <M>B</M>-orbit of <M>v</M> 
@@ -296,7 +335,6 @@ factor of <M>\approx 10^4</M>, i. e. allowing to store only one out of
 such that <M>|U_2| \approx 10^5</M>, where we take 
 into account that typically the overall saving factor achieved is 
 somewhat smaller than the order of the largest helper subgroup.
-<P/>
 
 <!-- ====================================================================
 
@@ -369,6 +407,7 @@ hence in e2 there are 2 conjugacy of such m12
 
      ==================================================================== -->
 
+<P/>
 By <Cite Key="CCN85"/>, and a few computations with subgroup fusions
 using the <Package>CTblLib</Package> package,
 the derived subgroup <M>E' \cong 2.{}^2E_6(2)</M> of <M>E</M> turns
@@ -380,8 +419,8 @@ with associated normalizers in <M>E</M> of shape
 <M>2 \times Fi_{{22}}.2</M>, while 
 the latter consist of two conjugacy classes being self-normalising
 and interchanged by <M>E</M>.
-<P/>
 
+<P/>
 Now <M>Fi_{{22}}</M> has a unique conjugacy class of maximal
 subgroups <M>M_{{12}}</M>, where the latter denotes one of 
 the sporadic simple Mathieu groups; the subgroups <M>M_{{12}}</M>
@@ -399,8 +438,8 @@ for the smaller helper subgroup.
 Recall that <M>U_1</M> and <M>U_2</M> are useful helper subgroups
 only if we are able to find suitable quotient modules allowing for the
 envisaged saving factor.
-<P/>
 
+<P/>
 To find <M>U_1</M> and <M>U_2</M>, we first try to find a subgroup 
 <M>Fi_{{22}}</M> or <M>2.Fi_{{22}}</M> of <M>E</M>.
 We start a random search, aiming at finding standard generators
@@ -433,6 +472,7 @@ gap> egens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[i]));
   <<immutable cmat 78x78 over GF(2,1)> with mem> ] ]]>
 </Log>
 
+<P/>
 By <Cite Key="AGR"/>, standard generators <M>a,b</M> of <M>Fi_{{22}}</M>
 are given as follows:
 <M>a</M> is an element of the 2A conjugacy class of <M>Fi_{{22}}</M>,
@@ -468,14 +508,15 @@ gap> b := Product(egens78{word});
 <<immutable cmat 78x78 over GF(2,1)> with mem> ]]>
 </Log>
 
+<P/>
 We search through the <M>\overline{E}</M>-conjugates of <C>g2a</C>
 until we find a conjugate <M>a</M> together with <M>b</M> 
 fulfilling the defining conditions of standard generators of
 <M>Fi_{{22}}</M>, 
 and moreover fulfilling the relations of the associated presentation 
 of <M>Fi_{{22}}</M> available in <Cite Key="AGR"/>.
-<P/>
 
+<P/>
 To find conjugates, we use the product replacement algorithm to 
 produce pseudo random elements of <M>\overline{E}</M>. 
 Assuming a genuine random search, 
@@ -514,6 +555,7 @@ gap> i;
 <!-- This is reproducible with a fresh GAP 4.4, not with 4.dev. -->
 <!-- if i mod 500 = 0 then Print(i," \c"); fi; -->
 
+<P/>
 Note that the initial state of the random number generator does influence
 this randomised result. It may very well be that you see some other
 value for <M>i</M>! <P/>
@@ -548,6 +590,7 @@ G (2 gens, size 64561751654400)
 1 (0 gens, size 1) ]]>
 </Log>
 
+<P/>
 We now return to our original representation.
 
 <!-- ??? Comment about SlotUsagePattern. -->
@@ -572,11 +615,11 @@ gap> IsOne((a*b^2)^21);
 true ]]>
 </Log>
 
+<P/>
 By construction the group generated by <M>a,b</M> is <M>Fi_{{22}}</M>
 or <M>2 \times Fi_{{22}}</M> or <M>2.Fi_{{22}}</M>. Note that due to
 different seeds in the random number generator it is in fact possible
-at this stage that you have created a different group as displayed
-here!
+at this stage that you have created a different group as displayed here!
 In our outcome, since <M>a</M> has even order, and both <M>b</M> and <M>ab</M>
 have odd order, we cannot possibly have <M>2 \times Fi_{{22}}</M>;
 and by the presentation of <M>2.Fi_{{22}}</M>
@@ -590,8 +633,8 @@ we could just continue the above search until we find a subgroup
 we could easily modify the elements found
 to obtain standard generators of either <M>Fi_{{22}}</M> or
 <M>2.Fi_{{22}}</M>.
-<P/>
 
+<P/>
 Now, standard generators of <M>U_2=M_{{12}}</M>
 in terms of standard generators of <M>Fi_{{22}}</M>,
 and generators of <M>U_1=L_2(11)</M> 
@@ -637,6 +680,7 @@ rec(
   isradicalrecord := true ) ]]>
 </Log>
 
+<P/>
 We observe that there are faithful irreducible quotients of dimensions
 10, 32, 44, and 144. Since we look for a quotient module such that
 <M>M_{{12}}</M> has many regular orbits on vectors, we ignore the 
@@ -670,6 +714,7 @@ gap> mgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;
 gap> lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; ]]>
 </Log>
 
+<P/>
 We consider the irreducible quotient module of <M>M_{{12}}</M> 
 of dimension 32, whose restriction to <M>L_2(11)</M> 
 turns out to be is semisimple. The irreducible 
@@ -704,6 +749,7 @@ gap> OrbitStatisticOnVectorSpace(lgens20,660,30);
 Found length       660, have now 4401 orbits, average length: 598 ]]>
 </Log>
 
+<P/>
 We apply the appropriate base change to all the generators.
 
 <Log><![CDATA[
@@ -724,6 +770,7 @@ gap> mgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;
 gap> lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; ]]>
 </Log>
 
+<P/>
 Having reached the ultimate choice of basis,
 we recreate the fixed vector <C>v</C>.
 
@@ -735,6 +782,7 @@ gap> nsy := NullspaceMat(y);;
 gap> v := nsy[1]*nsx;; ]]>
 </Log>
 
+<P/>
 Finally we need small faithful permutation representations 
 of the helper subgroups.
 
@@ -757,6 +805,7 @@ gap> lpermgens := ResultOfStraightLineProgram(slpm12tol211,mpermgens);
 [ (1,8)(2,5)(3,9)(4,7)(6,11)(10,12), (1,8,3)(2,7,12)(4,6,9)(5,11,10) ] ]]>
 </Log>
 
+<P/>
 We could just go on from here, however, sometimes it is useful to save
 all the created data to disk.
 
@@ -776,6 +825,7 @@ gap> IO_Pickle(f,lpermgens);;
 gap> IO_Close(f);; ]]>
 </Log>
 
+<P/>
 This can be loaded again, in particular into a new &GAP; session, as follows.
 
 <Log><![CDATA[
@@ -802,6 +852,7 @@ gap> lpermgens := IO_Unpickle(f);;
 gap> IO_Close(f);; ]]>
 </Log>
 
+<P/>
 Now we are prepared to actually run the orbit enumeration. Note that
 for the following memory estimates we assume that we are running
 things on a 64bit machine. On a 32bit machine the overhead is smaller.
@@ -844,6 +895,7 @@ gap> o := OrbitBySuborbitKnownSize(setup,v,3,3,2,51,13571955000);
 51%) saving factor=56404> ]]>
 </Log>
 
+<P/>
 Indeed the saving factor actually achieved is smaller than the
 best possible estimate given above, but it still has the same
 order of magnitude.
