@@ -557,8 +557,10 @@ gap> i;
 
 <P/>
 Note that the initial state of the random number generator does influence
-this randomised result. It may very well be that you see some other
-value for <M>i</M>! <P/>
+this randomised result: it may very well be that you see some other
+value for <M>i</M>. 
+
+<P/>
 Due to a presentation being available we have proved 
 that the elements found generate a subgroup <M>Fi_{{22}}</M>.
 If we had not had a presentation at hand, 
@@ -593,7 +595,7 @@ G (2 gens, size 64561751654400)
 <P/>
 We now return to our original representation.
 
-<!-- ??? Comment about SlotUsagePattern. -->
+<!-- Comment about `SlotUsagePattern' in file `memeffslp.g' -->
 
 <Log><![CDATA[
 gap> SetInfoLevel(InfoSLP,2); 
