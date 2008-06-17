@@ -535,6 +535,82 @@ evaluated in the group.
 </Description>
 </ManSection>
 
+<Subsection>
+    <Heading>The global record <C>ORB</C></Heading>
+
+In this section we describe the global record <C>ORB</C>, which
+contains some entries that can tune the behaviour of the
+orbit-by-suborbit functions. The record has the following components:
+
+<List>
+    <Mark><C>MINSHASHLEN</C></Mark>
+    <Item>This positive integer is the initial value of the hash size
+        when enumerating orbits of stored stabilisers to find all or 
+        search through <M>U_{{i-1}}</M>-minimal vectors in an
+        <M>U_i</M>-orbit. The default value is <M>1000</M>.</Item>
+    <Mark><C>ORBITBYSUBORBITDEPTH</C></Mark>
+    <Item>This integer indicates how many recursive calls to
+        <C>OrbitBySubOrbitInner</C> have been done. The initial value
+        is <M>0</M> to indicate that no such call has happened. This
+    variable is necessary since the minimalisation routine sometimes
+    uses <C>OrbitBySubOrbitInner</C> recursively to complete some
+    precomputation <Q>on the fly</Q> during some other
+    orbit-by-suborbit enumeration. This
+    component is always set to <M>0</M> automatically when calling
+    <Ref Func="OrbitBySuborbit"/> or <Ref
+        Func="OrbitBySuborbitKnownSize"/> so the user should usually
+    not have to worry about it at all.
+    </Item>
+    <Mark><C>PATIENCEFORSTAB</C></Mark>
+    <Item>This integer indicates how many Schreier generators for the
+    stabiliser are tried before assuming that the stabiliser is
+    complete. Whenever a new generator for the stabiliser is found
+    that increases the size of the currently known stabiliser, the
+    count is reset to <M>0</M> that is, only when
+    <C>ORB.PATIENCEFORSTAB</C> unsuccessful Schreier generators have
+    been tried no more Schreier generators are created. The default
+    value for this component is <M>1000</M>. This feature is purely
+    heuristical and therefore this value has to be adjusted for some
+    orbit enumerations.
+    </Item>
+    <Mark><C>PLEASEEXITNOW</C></Mark>
+    <Item>This value is usually set to <K>false</K>. Setting it to
+        <K>true</K> in a break loop tells the orbit-by-suborbit
+        routines to exit gracefully at the next possible time. Simply
+        leaving such a break loop with <K>quit;</K> is not safe, since
+    the routines might be in the process of updating precomputation
+    data and the data structures might be left corrupt. Always use
+    this component to leave an orbit enumeration prematurely.
+    </Item>
+    <Mark><C>REPORTSUBORBITS</C></Mark>
+    <Item>This positive integer governs how often information messages
+        about newly found suborbits are printed. The default value is
+        <M>1000</M> saying that after every <M>1000</M> suborbits a message 
+        is printed, if the info level is at its default value
+        <M>1</M>. If the info level is increased, then this component
+        does no longer affect the printing and all found suborbits
+        are reported.
+    </Item>
+    <Mark><C>TRIESINQUOTIENT</C> and <C>TRIESINWHOLESPACE</C></Mark>
+    <Item>The bootstrap routines 
+        <Ref Func="OrbitBySuborbitBootstrapForVectors"/>,
+        <Ref Func="OrbitBySuborbitBootstrapForLines"/> and
+        <Ref Func="OrbitBySuborbitBootstrapForSpaces"/> all need to
+        compute transversals of one helper subgroup in the next one.
+        They use orbit enumerations in various spaces to achieve this.
+        The component <C>TRIESINQUOTIENT</C> must be a non-negative
+        integer and indicates how often a random vector in the
+        corresponding quotient space is tried to find an orbit that
+        can distinguish between cosets. The other component
+        <C>TRIESINWHOLESPACE</C> also must be a non-negative integer
+        and indicates how often a random vector in the whole space
+        is tried. The default values are <M>3</M> and <M>20</M>
+        resepectively.
+        </Item>
+</List>
+
+</Subsection>
+
 </Section>
 
 <Section>
