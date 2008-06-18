@@ -108,4 +108,8 @@ for i in [1..Length(ngens)] do
     ngens[i] := Reversed(List(ngens[i],Reversed));
     ConvertToMatrixRep(ngens[i]);
 od;
-
+for i in [1..Length(ggens)] do
+    ggens[i] := Reversed(List(ggens[i],Reversed));
+    ConvertToMatrixRep(ggens[i]);
+od;
+v := Reversed(v);

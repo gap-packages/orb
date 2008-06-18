@@ -24,5 +24,11 @@ vv := v;
 v := CVec(v);
 obsol := InitOrbitBySuborbitList(setup,40); 
 o := OrbitBySuborbit(setup,v,3,3,2,50);
+l := Orb(cggens,v,OnRight,rec(schreier := true));
+Enumerate(l,100000);
 OrbitsFromSeedsToOrbitList(obsol,l);
+origseeds := List(obsol,OrigSeed);
+positions :=  List(origseeds,x->Position(l,x));
+words := List(positions,x->TraceSchreierTreeForward(l,x));
 
+# Note that this finds only 35 of the representatives!
