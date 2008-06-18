@@ -32,11 +32,14 @@ LoadPackage("orb");
 
 # Read in some stuff:
 #Read("utilities.g");  # for orbits
-Read("chainworker.g");
-Read("fi23m7.g");     # the slps
+ReadPackage("orb","examples/fi23m7/chainworker.g");
+ReadPackage("orb","examples/fi23m7/fi23m7.g");     # the slps
 Print("Reading matrices...\n");
-ggens := [ScanMeatAxeFile("fi23.1494.1.t"),
-          ScanMeatAxeFile("fi23.1494.2.t")];
+n1 := Filename(DirectoriesPackageLibrary("orb","examples/fi23m7"),
+               "fi23.1494.1.t");
+n2 := Filename(DirectoriesPackageLibrary("orb","examples/fi23m7"),
+               "fi23.1494.2.t");
+ggens := [ScanMeatAxeFile(n1),ScanMeatAxeFile(n2)];
 Print("Have fi23 matrices over F2 with dim 1494.\n");
 ngens := ResultOfStraightLineProgram(s,ggens);
 Print("Have generators of normalizer.\n");
