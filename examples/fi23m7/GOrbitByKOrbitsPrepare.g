@@ -93,7 +93,7 @@ v := v * basi;
 ggensp := AtlasGenerators("Fi23",1).generators;
 ngensp := ResultOfStraightLineProgram(s,ggensp);
 Print("Finding smaller degree permutation representation...\n");
-ii := SmallerDegreePermutationRepresentation(Group(ngensp));
+ii := SmallerDegreePermutationRepresentation(Group(ngensp):cheap);
 Print("done.\n");
 ngensp := GeneratorsOfGroup(Image(ii));
 sygensp := ResultOfStraightLineProgram(syslp,ngensp);
