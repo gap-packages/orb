@@ -99,7 +99,7 @@ bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));;
 egens := List(egens,x->ORB_PermuteBasisVectors(x,l));;
 fgens := List(fgens,x->ORB_PermuteBasisVectors(x,l));;
 mgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;
-lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; ]]>
+lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));;
 
 ##
 lgens32 := List(lgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
@@ -127,14 +127,14 @@ bgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));;
 egens := List(egens,x->ORB_PermuteBasisVectors(x,l));;
 fgens := List(fgens,x->ORB_PermuteBasisVectors(x,l));;
 mgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;
-lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; ]]>
+lgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));;
 
 ##
 x := egens[1]-egens[1]^0;;
 nsx := NullspaceMat(x);;
 y := nsx * (egens[2]-egens[2]^0);;
 nsy := NullspaceMat(y);;
-v := nsy[1]*nsx;; ]]>
+v := nsy[1]*nsx;;
 
 ##
 mgens32 := List(mgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
@@ -159,4 +159,4 @@ IO_Pickle(f,lgens);;
 IO_Pickle(f,"permutations");;
 IO_Pickle(f,mpermgens);;
 IO_Pickle(f,lpermgens);;
-IO_Close(f);; ]]>
+IO_Close(f);;
