@@ -30,6 +30,12 @@ on its irreducible module of dimension 24 over the
 field with 3 elements. 
 <P/>
 
+In Section <Ref Sect="Fi23example"/> we present another example of the
+usage of the orbit-by-suborbit programs. In this example we determine
+35 of the 36 double coset representatives of the 7th maximal subgroup
+of the sporadic simple <M>Fi_{{23}}</M> group.
+<P/>
+
 In Section <Ref Sect="Co1example"/> we present a bigger example of the
 usage of the orbit-by-suborbit machinery. In this example the orbit
 lengths of the sporadic simple Conway group <M>Co_{{1}}</M> acting in
@@ -153,6 +159,39 @@ in the <Package>orb</Package> package.)
 The command <F>OrbitBySuborbitBootstrapForLines</F>
 invokes the precomputation, and in particular says that
 we want to use projective action.
+</Section>
+
+<!-- ==================================================================== -->
+
+<Section Label="Fi23example">
+    <Heading>The Fischer group <M>Fi_{{23}}</M> acting in 
+    dimension <M>1494</M>
+    </Heading>
+
+The example in this section shows how to compute 35 of the 36 double coset
+representatives of the 7th maximal subgroup of the sporadic simple
+Fischer group <M>Fi_{{23}}</M>. We use the 1494-dimensional
+irreducible representation over the field with 2 elements. This
+representation contains a vector that is fixed by the 7th maximal
+subgroup, such that the action on its orbit is isomorphic to the
+action on the cosets of the 7th maximal subgroup.
+All the files for this example
+are located in the <F>examples/fi23m7</F> subdirectory of the
+<Package>orb</Package> package. 
+You simply run the example in the following way:
+
+<Log><![CDATA[
+gap> ReadPackage("orb","examples/fi23m7/GOrbitByKOrbitsPrepare.g");
+...
+gap> ReadPackage("orb","examples/fi23m7/GOrbitByKOrbitsSearch35.g");
+...]]>
+</Log>
+
+<P/>
+We will not go into the details of the computation here, 
+but they can be
+read off directly from the code in the files in that directory.
+
 </Section>
 
 <!-- ==================================================================== -->

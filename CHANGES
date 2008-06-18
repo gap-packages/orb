@@ -9,12 +9,13 @@
   - Variant of "rattle" for random elements in normal closure.
   - Fixed 64bit issue for hash functions for compressed vectors.
   - Make compatible to GAP 4.4 again
-  - New chapter as an example of OrbitBySuborbit technology
+  - New chapter as a worked out example of OrbitBySuborbit technology
   - Update of documentation to code
   - Sort out licensing business
   - Clean up examples directory
   - Added Co1 example to documentation
   - Added M11 example to documentation
+  - Added Fi23 example to documentation
   - Use new "cheap" option of SmallerDegreePermutationRepresentation
   - Release revision 189 as version 2.0
 
