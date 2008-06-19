@@ -33,7 +33,7 @@ field with 3 elements.
 In Section <Ref Sect="Fi23example"/> we present another example of the
 usage of the orbit-by-suborbit programs. In this example we determine
 35 of the 36 double coset representatives of the 7th maximal subgroup
-of the sporadic simple <M>Fi_{{23}}</M> group.
+of the sporadic simple Fischer group <M>Fi_{{23}}</M>.
 <P/>
 
 In Section <Ref Sect="Co1example"/> we present a bigger example of the
@@ -49,11 +49,19 @@ a case in <Cite Key="LongOrbits"/>.
 In Section <Ref Sect="Borbit"/>
 we present as an extended worked example how to
 enumerate the smallest non-trivial orbit of the 
-sporadic simple Baby Monster group <M>B</M>, by giving
-a log of a &GAP; session with explanations in between.
-This is intended to illustrate a few of the tools 
+sporadic simple Baby Monster group <M>B</M>.
+We give a log of a &GAP; session with explanations in between,
+being intended to illustrate a few of the tools 
 which are available in the <Package>orb</Package> package
 as well as in related packages. 
+
+Actually, the <Package>orb</Package> package has also been applied
+to two much larger permutation actions of <M>B</M>, 
+namely its action on its 2B involutions, having degree
+<M>\approx 1.2\cdot 10^{13}</M>, and its action
+on the cosets of a maximal subgroup isomorphic to <M>Fi_{23}</M>,
+having degree <M>\approx 1.0\cdot 10^{15}</M>; 
+for details see <Cite Key="MueBMCo2"/> and <Cite Key="MNW"/>, respectively.
 <P/>
 
 Note that for all this to work you
@@ -836,11 +844,9 @@ gap> S := StabilizerChain(Group(mgens32),rec(TryShortOrbit := 10));
  <stabchain size=24 orblen=24 layer=2 SchreierDepth=4>
 gap> p := Group(ActionOnOrbit(S!.orb,mgens32));
 <permutation group with 2 generators>
-gap> pp := Image(SmallerDegreePermutationRepresentation(p));
-<permutation group of size 95040 with 2 generators>
 gap> m12 := MathieuGroup(12);;
-gap> i := IsomorphismGroups(pp,m12);;
-gap> mpermgens := List(GeneratorsOfGroup(pp),x->ImageElm(i,x));
+gap> i := IsomorphismGroups(p,m12);;
+gap> mpermgens := List(GeneratorsOfGroup(p),x->ImageElm(i,x));
 [ (5,7)(6,11)(8,9)(10,12), (1,10,3)(2,11,12)(4,5,6)(7,9,8) ]
 gap> lpermgens := ResultOfStraightLineProgram(slpm12tol211,mpermgens);
 [ (1,8)(2,5)(3,9)(4,7)(6,11)(10,12), (1,8,3)(2,7,12)(4,6,9)(5,11,10) ] ]]>
@@ -915,10 +921,8 @@ we similarly get an estimated memory requirement of
 
 <Log><![CDATA[
 gap> setup := OrbitBySuborbitBootstrapForVectors(
->             [lgens,mgens,bgens],
->             [lpermgens,mpermgens,[(),()]],
->             [660,95040,Size(CharacterTable("B"))],
->             [20,32],rec());
+>             [lgens,mgens,bgens],[lpermgens,mpermgens,[(),()]],
+>             [660,95040,4154781481226426191177580544000000],[20,32],rec());
 #I  Calculating stabilizer chain for whole group...
 #I  Trying smaller degree permutation representation for U2...
 #I  Trying smaller degree permutation representation for U1...
@@ -955,7 +959,7 @@ order of magnitude.
 
 <!-- not yet available
 <Section Label="Borbit3">
-    <Heading>The Baby Monster action on the cosets of <M>Fi_{{22}}</M></Heading>
+<Heading>The Baby Monster action on the cosets of <M>Fi_{{22}}</M></Heading>
 
 </Section> -->
 
