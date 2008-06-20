@@ -844,9 +844,12 @@ gap> S := StabilizerChain(Group(mgens32),rec(TryShortOrbit := 10));
  <stabchain size=24 orblen=24 layer=2 SchreierDepth=4>
 gap> p := Group(ActionOnOrbit(S!.orb,mgens32));
 <permutation group with 2 generators>
+gap> i := SmallerDegreePermutationRepresentation(p);;
+gap> pp := Group(List(GeneratorsOfGroup(p),x->ImageElm(i,x)));
+<permutation group with 2 generators>
 gap> m12 := MathieuGroup(12);;
-gap> i := IsomorphismGroups(p,m12);;
-gap> mpermgens := List(GeneratorsOfGroup(p),x->ImageElm(i,x));
+gap> i := IsomorphismGroups(pp,m12);;
+gap> mpermgens := List(GeneratorsOfGroup(pp),x->ImageElm(i,x));
 [ (5,7)(6,11)(8,9)(10,12), (1,10,3)(2,11,12)(4,5,6)(7,9,8) ]
 gap> lpermgens := ResultOfStraightLineProgram(slpm12tol211,mpermgens);
 [ (1,8)(2,5)(3,9)(4,7)(6,11)(10,12), (1,8,3)(2,7,12)(4,6,9)(5,11,10) ] ]]>

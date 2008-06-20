@@ -140,9 +140,11 @@ v := nsy[1]*nsx;;
 mgens32 := List(mgens,x->ExtractSubMatrix(x,[1..32],[1..32]));
 S := StabilizerChain(Group(mgens32),rec(TryShortOrbit := 10));
 p := Group(ActionOnOrbit(S!.orb,mgens32));
+i := SmallerDegreePermutationRepresentation(p);;
+pp := Group(List(GeneratorsOfGroup(p),x->ImageElm(i,x)));
 m12 := MathieuGroup(12);;
-i := IsomorphismGroups(p,m12);;
-mpermgens := List(GeneratorsOfGroup(p),x->ImageElm(i,x));
+i := IsomorphismGroups(pp,m12);;
+mpermgens := List(GeneratorsOfGroup(pp),x->ImageElm(i,x));
 lpermgens := ResultOfStraightLineProgram(slpm12tol211,mpermgens);
 
 ##
