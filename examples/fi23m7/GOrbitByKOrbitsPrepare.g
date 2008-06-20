@@ -98,6 +98,8 @@ Print("done.\n");
 ngensp := GeneratorsOfGroup(Image(ii));
 sygensp := ResultOfStraightLineProgram(syslp,ngensp);
 lll := CalcChain(sygensp,sychain,[]);
+u1gensp := lll[4];
+u2gensp := lll[8];
 
 for i in [1..Length(u1gens)] do
     u1gens[i] := Reversed(List(u1gens[i],Reversed));
@@ -116,3 +118,19 @@ for i in [1..Length(ggens)] do
     ConvertToMatrixRep(ggens[i]);
 od;
 v := Reversed(v);
+
+# PICKLE
+f := IO_File("data.gp","w");;
+IO_Pickle(f,"seed");;
+IO_Pickle(f,v);;
+IO_Pickle(f,"generators");;
+IO_Pickle(f,ggens);;
+IO_Pickle(f,ngens);;
+IO_Pickle(f,u2gens);;
+IO_Pickle(f,u1gens);;
+IO_Pickle(f,"permutations");;
+IO_Pickle(f,ngensp);;
+IO_Pickle(f,u2gensp);;
+IO_Pickle(f,u1gensp);;
+IO_Close(f);;
+
