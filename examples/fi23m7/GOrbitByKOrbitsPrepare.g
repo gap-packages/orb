@@ -5,7 +5,6 @@
 #  GOrbitByKOrbitsVerify.g
 # and prepares the groups and representations.
 # It uses the files
-#   utilities.g
 #   chainworker.g
 #   fi23m7.g
 # and the MeatAxe ASCII-format matrices
@@ -27,11 +26,11 @@ RestoreStateRandom(
 );
 
 # First fetch the group in the right representation:
-LoadPackage("atlasrep");
 LoadPackage("orb");
+LoadPackage("cvec");
+LoadPackage("atlasrep");
 
 # Read in some stuff:
-#Read("utilities.g");  # for orbits
 ReadPackage("orb","examples/fi23m7/chainworker.g");
 ReadPackage("orb","examples/fi23m7/fi23m7.g");     # the slps
 Print("Reading matrices...\n");
@@ -89,7 +88,7 @@ u2gens := List(u2gens,x->bas*x*basi);
 u1gens := List(u1gens,x->bas*x*basi);
 v := v * basi;
 
-# this is only necessary for "OrbitBySuborbit":
+# adjust to necessities for "OrbitBySuborbit":
 ggensp := AtlasGenerators("Fi23",1).generators;
 ngensp := ResultOfStraightLineProgram(s,ggensp);
 Print("Finding smaller degree permutation representation...\n");
@@ -119,18 +118,9 @@ for i in [1..Length(ggens)] do
 od;
 v := Reversed(v);
 
-# PICKLE
-f := IO_File("data.gp","w");;
-IO_Pickle(f,"seed");;
-IO_Pickle(f,v);;
-IO_Pickle(f,"generators");;
-IO_Pickle(f,ggens);;
-IO_Pickle(f,ngens);;
-IO_Pickle(f,u2gens);;
-IO_Pickle(f,u1gens);;
-IO_Pickle(f,"permutations");;
-IO_Pickle(f,ngensp);;
-IO_Pickle(f,u2gensp);;
-IO_Pickle(f,u1gensp);;
-IO_Close(f);;
+cu1gens := List(u1gens,CMat);
+cu2gens := List(u2gens,CMat);
+cngens := List(ngens,CMat);
+cggens := List(ggens,CMat);
+v := CVec(v);
 
