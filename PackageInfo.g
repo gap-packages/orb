@@ -23,7 +23,7 @@ Version := "2.0",
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-Date := "04/06/2008",
+Date := "22/06/2008",
 
 ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-2.0",
 
@@ -186,7 +186,6 @@ Autoload := false,
 
 ##  *Optional*: Here you can list some keyword related to the topic 
 ##  of the package.
-# Keywords := ["Smith normal form", "p-adic", "rational matrix inversion"]
 Keywords := ["Orbit huge", "OrbitBySuborbit", "hash tables", 
              "searching in groups"]
 

@@ -232,6 +232,20 @@ positions :=  List(origseeds,x->Position(l,x));
 words := List(positions,x->TraceSchreierTreeForward(l,x));]]>
 </Log>
 
+Note that this computation finds only 35 of the 36 double coset
+representatives. The last corresponds to a very short suborbit which
+is very difficult to find. Knowing the number of missing points, we
+guess the stabiliser in <M>H</M> of a missing representative, and find the
+latter amongst the fixed points of the stabiliser. We can then choose
+the one which lies in the <M>G</M>-orbit we have nearly enumerated
+above.
+
+<P/>
+These double coset representatives were needed to determine the
+2-modular character table of <M>Fi_{{23}}</M>. Details of this
+can be found in <Cite Key="Fi23mod2"/>.
+
+
 </Section>
 
 <!-- ==================================================================== -->
