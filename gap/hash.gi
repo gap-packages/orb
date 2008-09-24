@@ -195,7 +195,7 @@ InstallMethod( ChooseHashFunction, "failure method if all fails",
   end );
 
 InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
-  [IsGF2VectorRep,IsInt],
+  [IsGF2VectorRep and IsList,IsInt],
   function(p,hashlen)
     local bytelen;
     bytelen := QuoInt(Length(p),8);
@@ -212,7 +212,7 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
   end );
 
 InstallMethod( ChooseHashFunction, "for compressed 8bit vectors",
-  [Is8BitVectorRep,IsInt],
+  [Is8BitVectorRep and IsList,IsInt],
   function(p,hashlen)
     local bytelen,i,q,qq;
     q := Q_VEC8BIT(p);
@@ -247,7 +247,7 @@ function(x,data)
 end );
 
 InstallMethod( ChooseHashFunction, "for compressed gf2 matrices",
-  [IsGF2MatrixRep,IsInt],
+  [IsGF2MatrixRep and IsList,IsInt],
   function(p,hashlen)
     local data;
     data := [hashlen,ChooseHashFunction(p[1],hashlen),
@@ -257,10 +257,10 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 matrices",
   end );
 
 InstallMethod( ChooseHashFunction, "for compressed 8bit matrices",
-  [Is8BitMatrixRep,IsInt],
+  [Is8BitMatrixRep and IsList,IsInt],
   function(p,hashlen)
     local data,q;
-    q := Q_VEC8BIT(p);
+    q := Q_VEC8BIT(p[1]);
     data := [hashlen,ChooseHashFunction(p[1],hashlen),
              PowerMod(q,Length(p[1]),hashlen)];
     return rec( func := ORB_HashFunctionForCompressedMats,
