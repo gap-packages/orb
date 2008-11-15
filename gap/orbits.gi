@@ -578,7 +578,7 @@ InstallMethod( Enumerate,
     rep := o!.report;
     while nr <= limit and i <= nr and i <> stopper do
         # Handle depth of Schreier tree:
-        if (o!.schreier or o!.log <> false) and i > depthmarks[depth+1] then
+        if (o!.schreier or o!.log <> false) and i >= depthmarks[depth+1] then
             depth := depth + 1;
             depthmarks[depth+1] := nr+1;
             Info(InfoOrb,3,"Going to depth ",depth);
@@ -760,7 +760,7 @@ InstallMethod( Enumerate,
     rep := o!.report;
     while nr <= limit and i <= nr and i <> stopper do
         # Handle depth of Schreier tree:
-        if (o!.schreier or o!.log <> false) and i > depthmarks[depth+1] then
+        if (o!.schreier or o!.log <> false) and i >= depthmarks[depth+1] then
             depth := depth + 1;
             depthmarks[depth+1] := nr+1;
             Info(InfoOrb,3,"Going to depth ",depth);

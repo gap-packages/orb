@@ -7,6 +7,7 @@
 ==========================
 
   - Fixed some bugs for hash functions for compressed vectors/matrices.
+  - Fixed a bug in the depth and depthmarks of orbits
 
 
 ==========================
