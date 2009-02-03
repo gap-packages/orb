@@ -514,6 +514,47 @@ ORB.PLEASEEXITNOW := false;
 ORB.TRIESINQUOTIENT := 3;
 ORB.TRIESINWHOLESPACE := 20;
 
+InstallMethod( ORB_StabilizerChainKnownSize,
+  "GAP library method for permutation groups",
+  [IsPermGroup,IsPosInt],
+  function(g,size)
+    return StabChain(g,rec(size := size));
+  end );
+
+InstallMethod( ORB_BaseStabilizerChain,
+  "GAP library method for permutation groups",
+  [IsRecord],
+  function(S)
+    return BaseStabChain(S);
+  end );
+
+InstallMethod( ORB_StabilizerChainKnownBase,
+  "GAP library method for permutation groups",
+  [IsPermGroup,IsObject],
+  function(g,base)
+    if base = fail then
+        return StabChain(g,rec(random := 900));
+    else
+        return StabChain(g,rec(base := base, random := 900,
+                               knownBase := base, reduced := false));
+    fi;
+  end );
+
+InstallMethod( ORB_SizeStabilizerChain,
+  "GAP library method for permutation groups",
+  [IsRecord], SizeStabChain );
+
+InstallMethod( ORB_IsWordInStabilizerChain,
+  "GAP library method for permutation groups",
+  [IsList, IsList, IsList, IsRecord],
+  function( word, permgens, permgensinv, S )
+    local b,bi;
+    b := BaseStabChain(S);
+    bi := ORB_ApplyWord(b,word,permgens,permgensinv,OnTuples);
+    return ORB_SiftBaseImage(S,bi,1);
+  end );
+
+
 InstallGlobalFunction( ORB_WordOp,
   function(p,w)
     # w a quadruple [word,gens,invgens,op]
@@ -738,9 +779,10 @@ function(setup,p,j,l,i,percentage,knownsize)
       fullstabsize := setup!.size[l] / knownsize;
       assumestabcomplete := true;
   else
-      stabchain := StabChainOp(stabilizer,rec( random := setup!.stabchainrandom,
-                                               base := setup!.permbase[l], 
-                                               reduced := false ));
+      stabchain := ORB_StabilizerChainKnownBase(stabilizer,setup!.permbase[l]);
+      ##stabchain := StabChainOp(stabilizer,rec( random:=setup!.stabchainrandom,
+      ##                                         base := setup!.permbase[l], 
+      ##                                         reduced := false ));
       fullstabsize := 1;
   fi;
   
@@ -871,9 +913,11 @@ function(setup,p,j,l,i,percentage,knownsize)
           fi;
           Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
                "Calculated Schreier generator as word");
-          bi := ORB_ApplyWord(setup!.permbase[l],newword,setup!.permgens[l],
-                              setup!.permgensinv[l],OnTuples);
-          if ORB_SiftBaseImage(stabchain,bi,1) = false then
+          ##bi := ORB_ApplyWord(setup!.permbase[l],newword,setup!.permgens[l],
+          ##                    setup!.permgensinv[l],OnTuples);
+          ##if ORB_SiftBaseImage(stabchain,bi,1) = false then
+          if ORB_IsWordInStabilizerChain(newword,setup!.permgens[l],
+                 setup!.permgensinv[l],stabchain) = false then
             Info(InfoOrb,3+ORB.ORBITBYSUBORBITDEPTH,
                  "Schreier generator is new");
               newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
@@ -884,11 +928,14 @@ function(setup,p,j,l,i,percentage,knownsize)
               stabilizer := GroupWithGenerators(stabperms);
               Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
                    "Calculating new estimate of the stabilizer...");
-              stabchain := StabChainOp(stabilizer,
-                                       rec( random := setup!.stabchainrandom,
-                                            base := setup!.permbase[l], 
-                                            reduced := false ));
-              fullstabsize := SizeStabChain(stabchain);
+              stabchain := ORB_StabilizerChainKnownBase(stabilizer,
+                                    setup!.permbase[l]);
+              fullstabsize := ORB_SizeStabilizerChain(stabchain);
+              ##stabchain := StabChainOp(stabilizer,
+              ##                         rec( random := setup!.stabchainrandom,
+              ##                              base := setup!.permbase[l], 
+              ##                              reduced := false ));
+              ##fullstabsize := SizeStabChain(stabchain);
               Info(InfoOrb,ORB.ORBITBYSUBORBITDEPTH,
                    "New stabilizer order: ",fullstabsize);
               if TotalLength(db) * fullstabsize * 100
@@ -1034,27 +1081,36 @@ function(gens,permgens,sizes,codims,opt)
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
-  if not(IsTrivial(g)) then
+  if IsTrivial(g) or
+     (IsBound(opt.NoStabChainFullGroup) and opt.NoStabChainFullGroup) then
+      setup.permbase[k+1] := fail;
+  else
       SetSize(g,sizes[k+1]);
-      setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+      setup.permbase[k+1] := ORB_BaseStabilizerChain(
+                                ORB_StabilizerChainKnownSize(g,Size(g)));
+      ##setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   fi;
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
-      Info(InfoOrb,1,"Trying smaller degree permutation representation for U",
-           i,"...");
-      sm := SmallerDegreePermutationRepresentation(g:cheap);
       setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
-      if not(IsOne(sm)) then   # not the identity
-          Info(InfoOrb,1,"Found one on ",
-               LargestMovedPoint(GeneratorsOfGroup(Image(sm)))," points.");
-          for j in [1..Length(setup.permgens[i])] do
-              setup.permgens[i][j] := ImageElm(sm,setup.permgens[i][j]);
-          od;
-          g := Image(sm);
+      if IsPermGroup(g) then
+          Info(InfoOrb,1,"Trying smaller degree permutation representation ",
+               "for U",i,"...");
+          sm := SmallerDegreePermutationRepresentation(g:cheap);
+          if not(IsOne(sm)) then   # not the identity
+              Info(InfoOrb,1,"Found one on ",
+                   LargestMovedPoint(GeneratorsOfGroup(Image(sm)))," points.");
+              for j in [1..Length(setup.permgens[i])] do
+                  setup.permgens[i][j] := ImageElm(sm,setup.permgens[i][j]);
+              od;
+              g := Image(sm);
+          fi;
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
-      setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      ##setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      setup.permbase[i] := ORB_BaseStabilizerChain(
+                              ORB_StabilizerChainKnownSize(g,sizes[i]));
   od;
   setup.stabchainrandom := 1000;
 
@@ -1117,6 +1173,7 @@ function(gens,permgens,sizes,codims,opt)
   # From now on we can use it and it is an object!
 
   # We do the recognition of elements of U_1 by the permutation rep:
+  # FIXME: later devise code if U_1 in permgens is not a permutation grp.
   Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
   setup!.cosetinfo[1] := Orb(setup!.permgens[k]{[1..nrgens[1]]},
                              setup!.permbase[k],OnTuples,
@@ -1262,27 +1319,36 @@ function(gens,permgens,sizes,codims,opt)
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
-  if not(IsTrivial(g)) then
+  if IsTrivial(g) or
+     (IsBound(opt.NoStabChainFullGroup) and opt.NoStabChainFullGroup) then
+      setup.permbase[k+1] := fail;
+  else
       SetSize(g,sizes[k+1]);
-      setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+      setup.permbase[k+1] := ORB_BaseStabilizerChain(
+                                ORB_StabilizerChainKnownSize(g,Size(g)));
+      ##setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   fi;
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
-      Info(InfoOrb,1,"Trying smaller degree permutation representation for U",
-           i,"...");
-      sm := SmallerDegreePermutationRepresentation(g:cheap);
       setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
-      if not(IsOne(sm)) then   # not the identity
-          Info(InfoOrb,1,"Found one on ",
-               LargestMovedPoint(GeneratorsOfGroup(Image(sm)))," points.");
-          for j in [1..Length(setup.permgens[i])] do
-              setup.permgens[i][j] := ImageElm(sm,setup.permgens[i][j]);
-          od;
-          g := Image(sm);
+      if IsPermGroup(g) then
+          Info(InfoOrb,1,"Trying smaller degree permutation representation ",
+               "for U",i,"...");
+          sm := SmallerDegreePermutationRepresentation(g:cheap);
+          if not(IsOne(sm)) then   # not the identity
+              Info(InfoOrb,1,"Found one on ",
+                   LargestMovedPoint(GeneratorsOfGroup(Image(sm)))," points.");
+              for j in [1..Length(setup.permgens[i])] do
+                  setup.permgens[i][j] := ImageElm(sm,setup.permgens[i][j]);
+              od;
+              g := Image(sm);
+          fi;
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
-      setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      ##setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      setup.permbase[i] := ORB_BaseStabilizerChain(
+                              ORB_StabilizerChainKnownSize(g,sizes[i]));
   od;
   setup.stabchainrandom := 1000;
 
@@ -1346,6 +1412,7 @@ function(gens,permgens,sizes,codims,opt)
   # From now on we can use it and it is an object!
 
   # We do the recognition of elements of U_1 by the permutation rep:
+  # FIXME: later devise code if U_1 in permgens is not a permutation grp.
   Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
   setup!.cosetinfo[1] := Orb(setup!.permgens[k]{[1..nrgens[1]]},
                              setup!.permbase[k],OnTuples,
@@ -1500,27 +1567,36 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
   Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
-  if not(IsTrivial(g)) then
+  if IsTrivial(g) or
+     (IsBound(opt.NoStabChainFullGroup) and opt.NoStabChainFullGroup) then
+      setup.permbase[k+1] := fail;
+  else
       SetSize(g,sizes[k+1]);
-      setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
+      setup.permbase[k+1] := ORB_BaseStabilizerChain(
+                                ORB_StabilizerChainKnownSize(g,Size(g)));
+      ##setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   fi;
   for i in [k,k-1..1] do
       g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
-      Info(InfoOrb,1,"Trying smaller degree permutation representation for U",
-           i,"...");
-      sm := SmallerDegreePermutationRepresentation(g:cheap);
       setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
-      if not(IsOne(sm)) then   # not the identity
-          Info(InfoOrb,1,"Found one on ",
-               LargestMovedPoint(GeneratorsOfGroup(Image(sm)))," points.");
-          for j in [1..Length(setup.permgens[i])] do
-              setup.permgens[i][j] := ImageElm(sm,setup.permgens[i][j]);
-          od;
-          g := Image(sm);
+      if IsPermGroup(g) then
+          Info(InfoOrb,1,"Trying smaller degree permutation representation ",
+               "for U",i,"...");
+          sm := SmallerDegreePermutationRepresentation(g:cheap);
+          if not(IsOne(sm)) then   # not the identity
+              Info(InfoOrb,1,"Found one on ",
+                   LargestMovedPoint(GeneratorsOfGroup(Image(sm)))," points.");
+              for j in [1..Length(setup.permgens[i])] do
+                  setup.permgens[i][j] := ImageElm(sm,setup.permgens[i][j]);
+              od;
+              g := Image(sm);
+          fi;
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
-      setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      ##setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      setup.permbase[i] := ORB_BaseStabilizerChain(
+                              ORB_StabilizerChainKnownSize(g,sizes[i]));
   od;
   setup.stabchainrandom := 1000;
 
@@ -1584,6 +1660,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   # From now on we can use it and it is an object!
 
   # We do the recognition of elements of U_1 by the permutation rep:
+  # FIXME: later devise code if U_1 in permgens is not a permutation grp.
   Info(InfoOrb,1,"Enumerating permutation base images of U_1...");
   setup!.cosetinfo[1] := Orb(setup!.permgens[k]{[1..nrgens[1]]},
                              setup!.permbase[k],OnTuples,

@@ -88,6 +88,10 @@ DeclareOperation( "OrbitIntersectionMatrix", [ IsRecord, IsObject ] );
 DeclareOperation( "RegularRepresentationSchurBasisElm",
   [ IsRecord, IsList, IsPosInt ] );
 
+# Things that are hooks for other packages:
+DeclareOperation( "SizeMC", [ IsGroup, IsRat ] );
+DeclareOperation( "SizeMC", [ IsGroup ] );
+
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically

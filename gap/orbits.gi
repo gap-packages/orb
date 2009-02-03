@@ -1697,6 +1697,45 @@ InstallMethod( RegularRepresentationSchurBasisElm,
     od;
     return m;
   end );
+
+
+#######################################################################
+# The following lays down an infrastructure for group size estimation
+# which can be used by other packages to plug into:
+#######################################################################
+
+InstallMethod( SizeMC, "one-argument fallback",
+  [ IsGroup ],
+  function( G )
+    return SizeMC(G,1/20);
+  end );
+
+InstallOtherMethod( SizeMC, "zero-argument usage info",
+  [ ],
+  function()
+    Print("Usage: SizeMC( <group> [,<errorprobability>] )\n");
+    Print("       uses a Monte Carlo method to determine the size\n");
+    Print("       result cannot be too large, but can be too small\n");
+    Print("       with error probability bounded by the 2nd arg.\n");
+    return fail;
+  end );
+
+InstallMethod( SizeMC, "high ranked method for groups that know the size",
+  [ IsGroup and HasSize, IsRat ], SUM_FLAGS,
+  function( G, err )
+    return Size(G);
+  end );
+
+InstallMethod( SizeMC, "standard method for permutation groups",
+  [ IsGroup and IsPermGroup, IsRat ],
+  function( G, err )
+    local S,rand,H;
+    rand := QuoInt( (1-err)*1000, 1000 );
+    H := Group(GeneratorsOfGroup(G));
+    S := StabChain( H, rec( random := rand ) );
+    return SizeStabChain(S);
+  end );
+
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically

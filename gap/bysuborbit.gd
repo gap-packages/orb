@@ -177,6 +177,15 @@ DeclareOperation( "SavingFactor", [ IsOrbitBySuborbit ] );
 # The real thing:
 ##################
 
+DeclareOperation( "ORB_StabilizerChainKnownSize", [IsGroup,IsPosInt] );
+DeclareOperation( "ORB_BaseStabilizerChain", [IsObject] );
+                                             # stabilizer chain
+DeclareOperation( "ORB_StabilizerChainKnownBase", [IsGroup,IsObject] );
+DeclareOperation( "ORB_SizeStabilizerChain", [IsObject] );
+DeclareOperation( "ORB_IsWordInStabilizerChain", 
+  [IsList,IsList,IsList,IsObject] );
+    # word, permgens, permgensinv, and stabilizer chain
+
 DeclareGlobalFunction( "ORB_WordOp" );
 DeclareGlobalFunction( "ORB_GetTransversalElement" );
 DeclareGlobalFunction( "ORB_PrepareStabgens" );
