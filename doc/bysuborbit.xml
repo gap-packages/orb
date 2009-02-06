@@ -25,8 +25,8 @@ is rewarded with impressive performance.
 recall the basic setup: Let <M>G</M> be a group acting from the right
 on some set <M>X</M>. Let <M>k</M> be a natural number, set 
 <M>X_{{k+1}} := X</M>, and let
-<Display> U_1 &lt; U_2 &lt; \cdots &lt; U_k &lt; U_{{k+1}} = G </Display>
-be a chain of <Q>helper</Q> subgroups. Further, for <M>1 \le i \le k</M>
+<Display> U_1 &lt; U_2 &lt; \ldots &lt; U_k &lt; U_{{k+1}} = G </Display>
+be a chain of <Q>helper</Q> subgroups. Further, for <M>1 \leq i \leq k</M>
 let <M>X_i</M> be a <M>U_i</M> set and let <M>\pi_i : X_{{i+1}} \to X_i</M>
 be a homomorphism of <M>U_i</M>-sets.
 
@@ -276,9 +276,21 @@ The outer list must have length <M>k+1</M> with entry <M>i</M> being a list
 of matrices generating <M>U_i</M>, given in the action on <M>X=X_{{k+1}}</M>.
 The above mentioned base change must have been done. The second
 argument <A>permgens</A> must be an analogous list with generator lists
-for the <M>U_i</M>, but here we have to have permutation representations.
-These permutation representations are used to compute membership and
-group orders of stabilisers. The argument <A>sizes</A> must be a list of
+for the <M>U_i</M>. 
+These representations are used to compute membership and
+group orders of stabilisers. In its simplest form, <A>permgens</A> is a 
+list of permutation representations of the same degree, giving a set of 
+generators for each individual group <M>U_i</M>. Alternatively, if for some 
+<M>U_i</M>, <M>i > 1</M>, it is required that the stabilizer of its action 
+is to be calculated as a matrix group, generators of <M>U_i</M> in some 
+matrix representation may be supplied. However, it is then mandatory that 
+for all <M>1 &lt; i \leq k+1</M> the generator lists have the following format:
+The <M>i</M>-th entry of <A>permgens</A> is 
+a list concatenating the generator lists of <M>U_1</M> up to <M>U_i</M> (in
+this order) all of whose elements are in either some permutation or some matrix 
+representation. Note that currently, the generators of <M>U_1</M> need
+to be always given in a permutation representation.
+The argument <A>sizes</A> must be a list of
 length <M>k+1</M> and entry <M>i</M> must be the group order of <M>U_i</M>
 (again with <M>U_{{k+1}}</M> being <M>G</M>). Finally, the argument
 <A>codims</A> must be a list of length <M>k</M> containing integers
@@ -311,7 +323,11 @@ actually works is used.
 </Item>
 <Mark><C>stabchainrandom</C></Mark>
 <Item>If bound the value is copied into the <C>stabchainrandom</C>
-component of the setup record.</Item>
+    component of the setup record.</Item>
+<Mark><C>nostabchainfullgroup</C></Mark>
+<Item>If bound it must be <K>true</K> or <K>false</K>. If it is 
+    unbound or set to <K>true</K>, no stabilizer chain is computed for the
+    group <M>U_{k+1}</M>. Its default value is <K>false</K>.</Item>
 </List>
 </Description>
 </ManSection>

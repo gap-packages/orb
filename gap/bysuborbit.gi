@@ -937,7 +937,7 @@ function(setup,p,j,l,i,percentage,knownsize)
               ##                              reduced := false ));
               ##fullstabsize := SizeStabChain(stabchain);
               Info(InfoOrb,ORB.ORBITBYSUBORBITDEPTH,
-                   "New stabilizer order: ",fullstabsize);
+                   "New stabilizer order: ",fullstabsize," (l=",l,")");
               if TotalLength(db) * fullstabsize * 100
                  >= setup!.size[l]*percentage then 
                 Info(InfoOrb,3,"Leaving OrbitBySuborbit");
@@ -1077,23 +1077,33 @@ function(gens,permgens,sizes,codims,opt)
   setup.permgens := [];
   setup.permgensinv := [];
   setup.permbase := [];
-  setup.permgens[k+1] := Concatenation(permgens);
+  if Length(permgens[k+1]) = nrgens[k+1] then
+      # old calling convention
+      setup.permgens[k+1] := Concatenation(permgens);
+  else
+      setup.permgens[k+1] := ShallowCopy(permgens[k+1]);
+  fi;
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
-  Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
+  SetSize(g,sizes[k+1]);
   if IsTrivial(g) or
-     (IsBound(opt.NoStabChainFullGroup) and opt.NoStabChainFullGroup) then
+     (IsBound(opt.nostabchainfullgroup) and opt.nostabchainfullgroup) then
       setup.permbase[k+1] := fail;
   else
-      SetSize(g,sizes[k+1]);
+      Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
       setup.permbase[k+1] := ORB_BaseStabilizerChain(
                                 ORB_StabilizerChainKnownSize(g,Size(g)));
       ##setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   fi;
   for i in [k,k-1..1] do
-      g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
+      if Length(permgens[i]) = nrgens[i] then
+          # old calling convention:
+          setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
+      else
+          setup.permgens[i] := ShallowCopy(permgens[i]);
+      fi;
+      g := Group(setup.permgens[i]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
-      setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
       if IsPermGroup(g) then
           Info(InfoOrb,1,"Trying smaller degree permutation representation ",
                "for U",i,"...");
@@ -1109,6 +1119,7 @@ function(gens,permgens,sizes,codims,opt)
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
       ##setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      Info(InfoOrb,1,"Computing a base for helper subgroup #",i);
       setup.permbase[i] := ORB_BaseStabilizerChain(
                               ORB_StabilizerChainKnownSize(g,sizes[i]));
   od;
@@ -1315,23 +1326,33 @@ function(gens,permgens,sizes,codims,opt)
   setup.permgens := [];
   setup.permgensinv := [];
   setup.permbase := [];
-  setup.permgens[k+1] := Concatenation(permgens);
+  if Length(permgens[k+1]) = nrgens[k+1] then
+      # old calling convention
+      setup.permgens[k+1] := Concatenation(permgens);
+  else
+      setup.permgens[k+1] := ShallowCopy(permgens[k+1]);
+  fi;
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
-  Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
+  SetSize(g,sizes[k+1]);
   if IsTrivial(g) or
-     (IsBound(opt.NoStabChainFullGroup) and opt.NoStabChainFullGroup) then
+     (IsBound(opt.nostabchainfullgroup) and opt.nostabchainfullgroup) then
       setup.permbase[k+1] := fail;
   else
-      SetSize(g,sizes[k+1]);
+      Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
       setup.permbase[k+1] := ORB_BaseStabilizerChain(
                                 ORB_StabilizerChainKnownSize(g,Size(g)));
       ##setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   fi;
   for i in [k,k-1..1] do
-      g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
+      if Length(permgens[i]) = nrgens[i] then
+          # old calling convention:
+          setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
+      else
+          setup.permgens[i] := ShallowCopy(permgens[i]);
+      fi;
+      g := Group(setup.permgens[i]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
-      setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
       if IsPermGroup(g) then
           Info(InfoOrb,1,"Trying smaller degree permutation representation ",
                "for U",i,"...");
@@ -1347,6 +1368,7 @@ function(gens,permgens,sizes,codims,opt)
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
       ##setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      Info(InfoOrb,1,"Computing a base for helper subgroup #",i);
       setup.permbase[i] := ORB_BaseStabilizerChain(
                               ORB_StabilizerChainKnownSize(g,sizes[i]));
   od;
@@ -1563,23 +1585,33 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   setup.permgens := [];
   setup.permgensinv := [];
   setup.permbase := [];
-  setup.permgens[k+1] := Concatenation(permgens);
+  if Length(permgens[k+1]) = nrgens[k+1] then
+      # old calling convention
+      setup.permgens[k+1] := Concatenation(permgens);
+  else
+      setup.permgens[k+1] := ShallowCopy(permgens[k+1]);
+  fi;
   setup.permgensinv[k+1] := List(setup.permgens[k+1],x->x^-1);
-  Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
   g := Group(setup.permgens[k+1]{[nrgenssum[k+1]+1..nrgenssum[k+2]]});
+  SetSize(g,sizes[k+1]);
   if IsTrivial(g) or
-     (IsBound(opt.NoStabChainFullGroup) and opt.NoStabChainFullGroup) then
+     (IsBound(opt.nostabchainfullgroup) and opt.nostabchainfullgroup) then
       setup.permbase[k+1] := fail;
   else
-      SetSize(g,sizes[k+1]);
+      Info(InfoOrb,1,"Calculating stabilizer chain for whole group...");
       setup.permbase[k+1] := ORB_BaseStabilizerChain(
                                 ORB_StabilizerChainKnownSize(g,Size(g)));
       ##setup.permbase[k+1] := BaseStabChain(StabChainOp(g,rec()));
   fi;
   for i in [k,k-1..1] do
-      g := Group(setup.permgens[i+1]{[nrgenssum[i]+1..nrgenssum[i+1]]});
+      if Length(permgens[i]) = nrgens[i] then
+          # old calling convention:
+          setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
+      else
+          setup.permgens[i] := ShallowCopy(permgens[i]);
+      fi;
+      g := Group(setup.permgens[i]{[nrgenssum[i]+1..nrgenssum[i+1]]});
       SetSize(g,sizes[i]);
-      setup.permgens[i] := setup.permgens[i+1]{[1..nrgenssum[i+1]]};
       if IsPermGroup(g) then
           Info(InfoOrb,1,"Trying smaller degree permutation representation ",
                "for U",i,"...");
@@ -1595,6 +1627,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
       fi;
       setup.permgensinv[i] := List(setup.permgens[i],x->x^-1);
       ##setup.permbase[i] := BaseStabChain(StabChainOp(g,rec()));
+      Info(InfoOrb,1,"Computing a base for helper subgroup #",i);
       setup.permbase[i] := ORB_BaseStabilizerChain(
                               ORB_StabilizerChainKnownSize(g,sizes[i]));
   od;
