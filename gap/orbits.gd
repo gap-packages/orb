@@ -92,6 +92,9 @@ DeclareOperation( "RegularRepresentationSchurBasisElm",
 DeclareOperation( "SizeMC", [ IsGroup, IsRat ] );
 DeclareOperation( "SizeMC", [ IsGroup ] );
 
+# To miraculously estimate orbit sizes
+DeclareGlobalFunction( "ORB_EstimateOrbitSize" );
+
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically

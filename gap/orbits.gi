@@ -1736,6 +1736,76 @@ InstallMethod( SizeMC, "standard method for permutation groups",
     return SizeStabChain(S);
   end );
 
+## Orbit size estimation using the birthday principle
+InstallGlobalFunction( ORB_EstimateOrbitSize,
+  function( gens, pt, op, L, limit, timeout )
+    local starttime, endtime, pr, ht, tries, coinc, grpcoinc, S, x, ptx,
+          elm, estimate, upper, lower;
+    starttime := Runtime();
+    endtime := starttime + timeout;
+    pr := ProductReplacer( gens, rec( maxdepth:=400 ) );
+    ht := NewHT( pt, NextPrimeInt( Minimum( 100000, limit ) ) );
+    tries := 0;
+    coinc := 0;
+    grpcoinc := 0;
+    S := [];
+    while tries <= 3 * limit and coinc < L do
+      if ( tries mod 100 = 1 ) and
+         Runtime() >= endtime then
+        # check every 100 random elements if we have exceeded the
+        # maximum alloted time. If so, bail out.
+        Info( InfoOrb, 4, "Time limit exceeded." );
+        return fail;
+      fi;
+
+      x := Next( pr );
+      ptx := op( pt, x );
+      elm := ValueHT( ht, ptx );
+      if elm = fail then
+        # new
+        AddHT( ht, ptx, x );
+      else
+        # coincidence
+        coinc := coinc + 1;
+        # record stabilizer element
+        if elm = x then
+          # we have found a coincidence in the group
+          grpcoinc := grpcoinc + 1;
+        else
+          Add( S, elm * x^-1 );
+        fi;
+      fi;
+      tries := tries + 1;
+      if tries > limit and coinc < QuoInt( L, 3 ) then
+        # if we don't find at least a third of the necessary coincidences
+        # within the maximum number of tries, we bail out.
+        # Otherwise we allow three times the limit, to find the remaining
+        # coincidences.
+        Info( InfoOrb, 4, "Too few coincidences found within limit." );
+        return fail;
+      fi;
+    od;
+    if coinc = L then
+      estimate := QuoInt( tries^2, 2*L );
+      Info( InfoOrb, 4, "Estimated orbit size is ", estimate, ".");
+      upper := Int( 2*tries^2 / (-MACFLOAT_INT( 196 )/100 +
+                    SQRT_MACFLOAT( MACFLOAT_INT( 4*L - 1 ) ) )^2
+                    + MACFLOAT_INT(1)/2 );
+      lower := Int( 2*tries^2 / ( MACFLOAT_INT( 196 )/ 100 +
+               SQRT_MACFLOAT( MACFLOAT_INT( 4*L - 1 ) ) )^2 );
+      Info( InfoOrb, 4, "Confidence interval with error 5% is [ ",
+               lower, ", ", upper," ]." );
+        return rec( estimate := estimate,
+                    lowerbound := lower,
+                    upperbound := upper,
+                    Sgens := S,
+                    grpcoinc := grpcoinc );
+      #fi;
+    else
+      return fail;
+    fi;
+  end );
+
 #######################################################################
 # The following loads the sub-package "QuotFinder":
 # Note that this requires other GAP packages, which are automatically
