@@ -1288,7 +1288,7 @@ end );
 InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
   [ IsOrbit and IsClosed and IsOrbitWithLog, IsPosInt ],
   function( o, l )
-    local i,w,x,tries;
+    local i,w,x,tries,nr;
     if not(o!.schreier) then
         Error("Orbit has no Schreier tree");
         return;
@@ -1301,7 +1301,13 @@ InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
     while o!.depth > l and tries <= 3 do
         tries := tries + 1;
         x := [];
-        for i in [1..Maximum(QuoInt(o!.depth,l),3)] do
+        nr := QuoInt(o!.depth,l)+1;
+        if nr > 9 then 
+            nr := 9;
+        elif nr < 3 then
+            nr := 3;
+        fi;
+        for i in [1..nr] do
             w := TraceSchreierTreeForward(o,
                           o!.orbind[Random(2,QuoInt(Length(o),2))]);
             Add(x,Product(o!.gens{w}));
