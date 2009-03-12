@@ -14,6 +14,7 @@
 #############################################################################
 
 ReadPackage("orb","gap/homwdata.gi");
+ReadPackage("orb","gap/avltree.gi");
 ReadPackage("orb","gap/hash.gi");
 ReadPackage("orb","gap/cache.gi");
 ReadPackage("orb","gap/orbits.gi");

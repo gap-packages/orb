@@ -19,6 +19,7 @@ if not(IsBound(RowLength)) then
 fi;
 
 ReadPackage("orb","gap/homwdata.gd");
+ReadPackage("orb","gap/avltree.gd");
 ReadPackage("orb","gap/hash.gd");
 ReadPackage("orb","gap/cache.gd");
 ReadPackage("orb","gap/orbits.gd");
