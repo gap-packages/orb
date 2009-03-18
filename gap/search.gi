@@ -93,14 +93,36 @@ InstallMethod( ProductReplacer,
     if not IsBound(pr.randomsource) then
         pr.randomsource := GlobalRandomSource;
     fi;
+    if not IsBound(pr.turbo) then
+        pr.turbo := true;
+    fi;
     if not IsBound(pr.scramble) then 
-        pr.scramble := 100; 
+        if pr.turbo then
+            pr.scramble := 0; 
+        else
+            pr.scramble := 100; 
+        fi;
     fi;
     if not IsBound(pr.scramblefactor) then 
-        pr.scramblefactor := 10;
+        if pr.turbo then
+            pr.scramblefactor := 0;
+        else
+            pr.scramblefactor := 10;
+        fi;
     fi;
     if not IsBound(pr.addslots) then
-        pr.addslots := 10;
+        if pr.turbo then
+            pr.addslots := 0;
+        else
+            pr.addslots := 10;
+        fi;
+    fi;
+    if not IsBound(pr.minslots) then
+        if pr.turbo then
+            pr.minslots := 12;
+        else
+            pr.minslots := 0;
+        fi;
     fi;
     if not IsBound(pr.maxdepth) then
         pr.maxdepth := infinity;
@@ -127,10 +149,18 @@ InstallMethod( ProductReplacer,
     fi;
     if Length(gens) = 1 and pr.addslots = 0 then
          # Make sure that the case of one generator is OK!
-         pr.addslots := 1;
+         pr.minslots := 2;
     fi;
     pr.nrgens := Length(pr.gens);
     pr.slots := pr.nrgens + pr.addslots;
+    if pr.slots < pr.minslots then
+        pr.slots := pr.minslots;
+    fi;
+    if pr.turbo then
+        pr.settled := ListWithIdenticalEntries(pr.slots,3);
+    else
+        pr.settled := ListWithIdenticalEntries(pr.slots,0);
+    fi;
     pr.initialized := false;
     pr.steps := 0;
     if pr.noaccu = false then
@@ -161,27 +191,53 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
   function(pr)
     local OneStep,i;
     OneStep := function(pr)
-        local a,b,c,result;
+        local a, b, c, l, x, result, i;
         pr!.steps := pr!.steps + 1;
         a := Random(pr!.randomsource,1,pr!.slots);
-        b := Random(pr!.randomsource,1,pr!.slots-1);
-        if b >= a then b := b + 1; fi;
-        c := Random(pr!.randomsource,1,2);
-        if c = 1 then
-            if pr!.normalin <> false then
-                pr!.state[a] := pr!.state[a] * pr!.state[b]^Next(pr!.normalin);
+        if pr!.settled[a] = 0 then  # traditional and long term behaviour
+            b := Random(pr!.randomsource,1,pr!.slots-1);
+            if b >= a then b := b + 1; fi;
+            c := Random(pr!.randomsource,1,2);
+            if c = 1 then
+                if pr!.normalin <> false then
+                    pr!.state[a]:=pr!.state[a]*pr!.state[b]^Next(pr!.normalin);
+                else
+                    pr!.state[a]:=pr!.state[a]*pr!.state[b];
+                fi;
             else
-                pr!.state[a] := pr!.state[a] * pr!.state[b];
+                if pr!.normalin <> false then
+                    pr!.state[a]:=pr!.state[b]^Next(pr!.normalin)*pr!.state[a];
+                else
+                    pr!.state[a]:=pr!.state[b]*pr!.state[a];
+                fi;
             fi;
-            result := pr!.state[a];
-        else
-            if pr!.normalin <> false then
-                pr!.state[b] := pr!.state[a]^Next(pr!.normalin) * pr!.state[b];
+        else   # turbo behaviour
+            pr!.settled[a] := pr!.settled[a] - 1;
+            # Form a random subproduct of all other gens and multiply
+            # either from left or from right:
+            c := Random(pr!.randomsource,1,2);
+            if c = 1 then  # left to right:
+                l := Concatenation([a+1..pr!.slots],[1..a-1]);
             else
-                pr!.state[b] := pr!.state[a] * pr!.state[b];
+                l := Concatenation([a-1,a-2..1],[pr!.slots,pr!.slots-1..a+1]);
             fi;
-            result := pr!.state[b];
+            c := Random(pr!.randomsource,1,2);
+            for i in l do
+                b := Random(pr!.randomsource,0,4);
+                if b > 0 then
+                    x := pr!.state[i]^b;
+                    if pr!.normalin <> false then
+                        x := x^Next(pr!.normalin);
+                    fi;
+                    if c = 1 then    # from right:
+                        pr!.state[a] := pr!.state[a] * x;
+                    else   # from left:
+                        pr!.state[a] := x * pr!.state[a];
+                    fi;
+                fi;
+            od;
         fi;
+        result := pr!.state[a];
         if pr!.noaccu then
             return result;
         else
@@ -201,9 +257,11 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
 
 InstallMethod( ViewObj, "for a product replacer", [IsProductReplacer],
   function(pr)
-    Print("<product replacer nrgens=",pr!.nrgens," slots=",pr!.slots,
+    Print("<product replacer ");
+    if pr!.turbo then Print("(turbo) "); fi;
+    Print("gens=",pr!.nrgens," slots=",pr!.slots,
           " scramble=",Maximum(pr!.nrgens*pr!.scramblefactor,pr!.scramble),
-          " maxdepth=",pr!.maxdepth," steps=",pr!.steps);
+          "\n         maxdepth=",pr!.maxdepth," steps=",pr!.steps);
     if pr!.noaccu then Print(" (without accu)");
     else Print(" (rattle)"); fi;
     if pr!.normalin <> false then

@@ -29,7 +29,9 @@
 #   ![4]     alloc: highest allocated index, always = 3 mod 4
 #   ![5]     three-way comparison function
 #   ![6]     top: reference to top node
-#   ![7]     unused
+#   ![7]     value: plain list holding the values stored under the keys
+#            can be fail, in which case all stored values are "true"
+#            will be bound when first value other than true is set
 #
 # From index 8 on for every position = 0 mod 4:
 #   ![4n]    obj: an object
@@ -60,8 +62,8 @@ else
     AVLTreeCmp := AVLTreeCmp_GAP;
 fi;
 
-InstallGlobalFunction( AVLTree_GAP, function(cmpfunc)
-  # Parameters: cmpfunc
+InstallGlobalFunction( AVLTree_GAP, function(arg)
+  # Parameters: cmpfunc (optional), default value is AVLTreeCmp
   # Initializes balanced binary tree object, optionally with comparison 
   # function. Returns empty tree object.
   # A comparison function takes 2 arguments and returns respectively -1, 0
@@ -71,7 +73,19 @@ InstallGlobalFunction( AVLTree_GAP, function(cmpfunc)
   # only defined by the tree and not by an ordering of the elements. Such
   # trees are managed by the special functions below. Specify "false"
   # as the cmpfunc.
-  local t;
+  local t,cmpfunc;
+  if Length(arg) = 0 then
+      cmpfunc := AVLTreeCmp;
+  elif Length(arg) = 1 then
+      cmpfunc := arg[1];
+      if not(IsFunction(cmpfunc)) then
+          Error("Argument must be a three-way comparison function");
+          return fail;
+      fi;
+  else
+      Error("Usage: AVLTree( [three-way comparison function] )");
+      return fail;
+  fi;
   t := [11,8,0,11,cmpfunc,0,fail,0,0,0,0];
   Objectify(AVLTreeType,t);
   return t;
@@ -122,6 +136,10 @@ fi;
 InstallGlobalFunction( AVLTreeFreeNode_GAP, function(t,n)
   t![n] := t![2];
   t![2] := n;
+  n := n/4;
+  if IsBound(t![7]) and IsBound(t![7][n]) then
+      Unbind(t![7][n]);
+  fi;
 end);
 if IsBound(AVLTreeFreeNode_C) then
     AVLTreeFreeNode := AVLTreeFreeNode_C;
@@ -239,6 +257,33 @@ else
     AVLTreeSetBalFactor := AVLTreeSetBalFactor_GAP;
 fi;
 
+InstallGlobalFunction( AVLTreeValue_GAP, function(t,n)
+  if not(IsBound(t![7])) then 
+      return true;
+  elif not(IsBound(t![7][n/4])) then
+      return true;
+  else
+      return t![7][n/4];
+  fi;
+end);
+if IsBound(AVLTreeValue_C) then
+    AVLTreeValue := AVLTreeValue_C;
+else
+    AVLTreeValue := AVLTreeValue_GAP;
+fi;
+
+InstallGlobalFunction( AVLTreeSetValue_GAP, function(t,n,v)
+  n := n/4;
+  if not(IsBound(t![7])) then
+      t![7] := EmptyPlist(n);
+  fi;
+  t![n] := v;
+end);
+if IsBound(AVLTreeSetValue_C) then
+    AVLTreeSetValue := AVLTreeSetValue_C;
+else
+    AVLTreeSetValue := AVLTreeSetValue_GAP;
+fi;
 
 InstallMethod( Display, "for an avltree object",
   [IsAVLTree],
@@ -287,6 +332,20 @@ else
     AVLTreeFind := AVLTreeFind_GAP;
 fi;
 
+InstallGlobalFunction( AVLTreeLookup_GAP, function(t,d)
+  local p;
+  p := AVLTreeFind(t,d);
+  if p = fail then
+      return fail;
+  else
+      return AVLTreeValue(t,p);
+  fi;
+end);
+if IsBound(AVLTreeLookup_C) then
+    AVLTreeLookup := AVLTreeLookup_C;
+else
+    AVLTreeLookup := AVLTreeLookup_GAP;
+fi;
 
 InstallGlobalFunction( AVLTreeIndex_GAP, function(tree,index)
   # Parameters: tree, index
@@ -324,7 +383,20 @@ else
     AVLTreeIndex := AVLTreeIndex_GAP;
 fi;
 
-
+InstallGlobalFunction( AVLTreeIndexLookup, function(tree,i)
+  local p;
+  p := AVLTreeIndex(tree,i);
+  if p = fail then 
+      return fail;
+  else
+      return AVLTreeValue(tree,p);
+  fi;
+end);
+if IsBound(AVLTreeIndexLookup_C) then
+    AVLTreeIndexLookup := AVLTreeIndexLookup_C;
+else
+    AVLTreeIndexLookup := AVLTreeIndexLookup_GAP;
+fi;
 
 InstallGlobalFunction( AVLTreeRebalance_GAP, function(tree,q)
   # the tree starting at q has balanced subtrees but is out of balance:
@@ -445,10 +517,11 @@ fi;
 
 
 
-InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data)
-  # Parameters: tree, data
+InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data,value)
+  # Parameters: tree, data, value
   #  tree is a AVLTree
   #  data is a data structure defined by the user
+  #  value is the value stored under the key data, if true, nothing is stored
   # Tries to add the data as a node in tree. It is an error, if there is
   # already a node which is "equal" to data with respect to the comparison
   # function. Returns true if everything went well or fail, if an equal 
@@ -466,6 +539,9 @@ InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data)
     AVLTreeSetBalFactor(tree,new,0);
     AVLTreeSetRank(tree,new,1);
     AVLTreeSetData(tree,new,data);
+    if value <> true then
+        AVLTreeSetValue(tree,new,value);
+    fi;
     tree![3] := 1;
     tree![6] := new;
     return true;
@@ -525,6 +601,9 @@ InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data)
   AVLTreeSetBalFactor(tree,p,0);
   AVLTreeSetRank(tree,p,1);
   AVLTreeSetData(tree,p,data);
+  if value <> true then
+      AVLTreeSetValue(tree,p,value);
+  fi;
   # insert into tree:
   if c < 0 then    # left
     AVLTreeSetLeft(tree,l,p);
@@ -571,11 +650,11 @@ else
 fi;
 
 
-
-InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,index)
-  # Parameters: index, data, tree
+InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,value,index)
+  # Parameters: index, data, value, tree
   #  tree is a AVLTree
   #  data is a data structure defined by the user
+  #  value is the value to be stored under key data, nothing is stored if true
   #  index is the index, where data should be inserted in tree 1 ist at
   #          first position, NumberOfNodes+1 after the last.
   # Tries to add the data as a node in tree. Returns true if everything 
@@ -596,6 +675,9 @@ InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,index)
     AVLTreeSetBalFactor(tree,tree![6],0);
     AVLTreeSetRank(tree,tree![6],1);
     AVLTreeSetData(tree,tree![6],data);
+    if value <> true then
+        AVLTreeSetValue(tree,tree![6],value);
+    fi;
     tree![3] := 1;
     return true;
   fi;
@@ -652,6 +734,9 @@ InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,index)
   AVLTreeSetBalFactor(tree,p,0);
   AVLTreeSetRank(tree,p,1);
   AVLTreeSetData(tree,p,data);
+  if value <> true then
+      AVLTreeSetValue(tree,p,value);
+  fi;
   # insert into tree:
   if c < 0 then    # left
     AVLTreeSetLeft(tree,l,p);
@@ -696,8 +781,6 @@ if IsBound(AVLTreeIndexAdd_C) then
 else
     AVLTreeIndexAdd := AVLTreeIndexAdd_GAP;
 fi;
-
-
 
 InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
   # Parameters: tree, data
@@ -872,8 +955,6 @@ if IsBound(AVLTreeDelete_C) then
 else
     AVLTreeDelete := AVLTreeDelete_GAP;
 fi;
-
-
 
 InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
   # Parameters: tree, index

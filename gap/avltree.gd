@@ -55,12 +55,20 @@ DeclareGlobalFunction( "AVLTreeBalFactor_GAP" );
 AVLTreeBalFactor := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLTreeSetBalFactor_GAP" );
 AVLTreeSetBalFactor := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLTreeValue_GAP" );
+AVLTreeValue := fail;     # placeholder for later assignment
+DeclareGlobalFunction( "AVLTreeSetValue_GAP" );
+AVLTreeSetValue := fail;     # placeholder for later assignment
 DeclareGlobalFunction( "AVLTreeFind_GAP" );
 AVLTreeFind := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLTreeLookup_GAP" );
+AVLTreeLookup := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLTreeIndex_GAP" );
 AVLTreeIndex := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLTreeRebalance_GAP" );
 AVLTreeRebalance := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLTreeIndexLookup_GAP" );
+AVLTreeIndexLookup := fail;   # placeholder for later assignment
 DeclareGlobalFunction( "AVLTreeAdd_GAP" );
 AVLTreeAdd := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLTreeIndexAdd_GAP" );

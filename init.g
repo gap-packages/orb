@@ -13,6 +13,20 @@
 ##
 #############################################################################
 
+################################
+# First look after our C part: #
+################################
+
+# load kernel function if it is installed:
+if (not IsBound(ORBC)) and ("orb" in SHOW_STAT()) then
+  # try static module
+  LoadStaticModule("orb");
+fi;
+if (not IsBound(ORBC)) and
+   (Filename(DirectoriesPackagePrograms("orb"), "orb.so") <> fail) then
+  LoadDynamicModule(Filename(DirectoriesPackagePrograms("orb"), "orb.so"));
+fi;
+
 # Compatibility things for GAP 4.4:
 if not(IsBound(RowLength)) then
     ReadPackage("orb","gap/gap4r4.g");
