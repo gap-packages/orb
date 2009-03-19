@@ -137,7 +137,7 @@ InstallGlobalFunction( AVLTreeFreeNode_GAP, function(t,n)
   t![n] := t![2];
   t![2] := n;
   n := n/4;
-  if IsBound(t![7]) and IsBound(t![7][n]) then
+  if t![7] <> fail and IsBound(t![7][n]) then
       Unbind(t![7][n]);
   fi;
 end);
@@ -258,7 +258,7 @@ else
 fi;
 
 InstallGlobalFunction( AVLTreeValue_GAP, function(t,n)
-  if not(IsBound(t![7])) then 
+  if t![7] = fail then 
       return true;
   elif not(IsBound(t![7][n/4])) then
       return true;
@@ -274,10 +274,10 @@ fi;
 
 InstallGlobalFunction( AVLTreeSetValue_GAP, function(t,n,v)
   n := n/4;
-  if not(IsBound(t![7])) then
+  if t![7] = fail then
       t![7] := EmptyPlist(n);
   fi;
-  t![n] := v;
+  t![7][n] := v;
 end);
 if IsBound(AVLTreeSetValue_C) then
     AVLTreeSetValue := AVLTreeSetValue_C;
@@ -383,7 +383,7 @@ else
     AVLTreeIndex := AVLTreeIndex_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeIndexLookup, function(tree,i)
+InstallGlobalFunction( AVLTreeIndexLookup_GAP, function(tree,i)
   local p;
   p := AVLTreeIndex(tree,i);
   if p = fail then 
