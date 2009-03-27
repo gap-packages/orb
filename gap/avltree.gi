@@ -46,7 +46,7 @@
 #                    2 - balance factor -1
 # 
 
-InstallGlobalFunction( AVLTreeCmp_GAP, 
+InstallGlobalFunction( AVLCmp_GAP, 
 function(a,b)
   if a = b then 
     return 0;
@@ -56,14 +56,14 @@ function(a,b)
     return 1;
   fi;
 end);
-if IsBound(AVLTreeCmp_C) then
-    AVLTreeCmp := AVLTreeCmp_C;
+if IsBound(AVLCmp_C) then
+    AVLCmp := AVLCmp_C;
 else
-    AVLTreeCmp := AVLTreeCmp_GAP;
+    AVLCmp := AVLCmp_GAP;
 fi;
 
 InstallGlobalFunction( AVLTree_GAP, function(arg)
-  # Parameters: cmpfunc (optional), default value is AVLTreeCmp
+  # Parameters: cmpfunc (optional), default value is AVLCmp
   # Initializes balanced binary tree object, optionally with comparison 
   # function. Returns empty tree object.
   # A comparison function takes 2 arguments and returns respectively -1, 0
@@ -75,7 +75,7 @@ InstallGlobalFunction( AVLTree_GAP, function(arg)
   # as the cmpfunc.
   local t,cmpfunc;
   if Length(arg) = 0 then
-      cmpfunc := AVLTreeCmp;
+      cmpfunc := AVLCmp;
   elif Length(arg) = 1 then
       cmpfunc := arg[1];
       if not(IsFunction(cmpfunc)) then
@@ -102,7 +102,7 @@ InstallMethod( ViewObj, "for an avltree object",
     Print("<avltree nodes=",t![3]," alloc=",t![4],">");
   end );
 
-InstallGlobalFunction( AVLTreeNewNode_GAP, function(t)
+InstallGlobalFunction( AVLNewNode_GAP, function(t)
   local n;
   if t![2] > 0 then
       n := t![2];
@@ -110,30 +110,26 @@ InstallGlobalFunction( AVLTreeNewNode_GAP, function(t)
   elif t![1] < t![4] then
       n := t![1]+1;
       t![1] := t![1]+4;
-      t![n] := 0;
-      t![n+1] := 0;
-      t![n+2] := 0;
-      t![n+3] := 0;
   else
       n := t![4]+1;
       t![4] := t![4] * 2 + 1;    # retain congruent 3 mod 4
       t![1] := n+3;
       t![t![4]] := fail;    # expand allocation
-      t![n] := 0;
-      t![n+1] := 0;
-      t![n+2] := 0;
-      t![n+3] := 0;
   fi;
+  t![n] := 0;
+  t![n+1] := 0;
+  t![n+2] := 0;
+  t![n+3] := 0;
   return n;
 end);
-if IsBound(AVLTreeNewNode_C) then
-    AVLTreeNewNode := AVLTreeNewNode_C;
+if IsBound(AVLNewNode_C) then
+    AVLNewNode := AVLNewNode_C;
 else
-    AVLTreeNewNode := AVLTreeNewNode_GAP;
+    AVLNewNode := AVLNewNode_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeFreeNode_GAP, function(t,n)
+InstallGlobalFunction( AVLFreeNode_GAP, function(t,n)
   t![n] := t![2];
   t![2] := n;
   n := n/4;
@@ -141,94 +137,94 @@ InstallGlobalFunction( AVLTreeFreeNode_GAP, function(t,n)
       Unbind(t![7][n]);
   fi;
 end);
-if IsBound(AVLTreeFreeNode_C) then
-    AVLTreeFreeNode := AVLTreeFreeNode_C;
+if IsBound(AVLFreeNode_C) then
+    AVLFreeNode := AVLFreeNode_C;
 else
-    AVLTreeFreeNode := AVLTreeFreeNode_GAP;
+    AVLFreeNode := AVLFreeNode_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeData_GAP, function(t,n)
+InstallGlobalFunction( AVLData_GAP, function(t,n)
   return t![n];
 end);
-if IsBound(AVLTreeData_C) then
-    AVLTreeData := AVLTreeData_C;
+if IsBound(AVLData_C) then
+    AVLData := AVLData_C;
 else
-    AVLTreeData := AVLTreeData_GAP;
+    AVLData := AVLData_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeSetData_GAP, function(t,n,d)
+InstallGlobalFunction( AVLSetData_GAP, function(t,n,d)
   t![n] := d;
 end);
-if IsBound(AVLTreeSetData_C) then
-    AVLTreeSetData := AVLTreeSetData_C;
+if IsBound(AVLSetData_C) then
+    AVLSetData := AVLSetData_C;
 else
-    AVLTreeSetData := AVLTreeSetData_GAP;
+    AVLSetData := AVLSetData_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeLeft_GAP, function(t,n)
+InstallGlobalFunction( AVLLeft_GAP, function(t,n)
   return QuoInt(t![n+1],4)*4;
 end);
-if IsBound(AVLTreeLeft_C) then
-    AVLTreeLeft := AVLTreeLeft_C;
+if IsBound(AVLLeft_C) then
+    AVLLeft := AVLLeft_C;
 else
-    AVLTreeLeft := AVLTreeLeft_GAP;
+    AVLLeft := AVLLeft_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeSetLeft_GAP, function(t,n,m)
+InstallGlobalFunction( AVLSetLeft_GAP, function(t,n,m)
   t![n+1] := m + t![n+1] mod 4;
 end);
-if IsBound(AVLTreeSetLeft_C) then
-    AVLTreeSetLeft := AVLTreeSetLeft_C;
+if IsBound(AVLSetLeft_C) then
+    AVLSetLeft := AVLSetLeft_C;
 else
-    AVLTreeSetLeft := AVLTreeSetLeft_GAP;
+    AVLSetLeft := AVLSetLeft_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeRight_GAP, function(t,n)
+InstallGlobalFunction( AVLRight_GAP, function(t,n)
   return QuoInt(t![n+2],4)*4;
 end);
-if IsBound(AVLTreeRight_C) then
-    AVLTreeRight := AVLTreeRight_C;
+if IsBound(AVLRight_C) then
+    AVLRight := AVLRight_C;
 else
-    AVLTreeRight := AVLTreeRight_GAP;
+    AVLRight := AVLRight_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeSetRight_GAP, function(t,n,m)
+InstallGlobalFunction( AVLSetRight_GAP, function(t,n,m)
   t![n+2] := m;
 end);
-if IsBound(AVLTreeSetRight_C) then
-    AVLTreeSetRight := AVLTreeSetRight_C;
+if IsBound(AVLSetRight_C) then
+    AVLSetRight := AVLSetRight_C;
 else
-    AVLTreeSetRight := AVLTreeSetRight_GAP;
+    AVLSetRight := AVLSetRight_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeRank_GAP, function(t,n)
+InstallGlobalFunction( AVLRank_GAP, function(t,n)
   return t![n+3];
 end);
-if IsBound(AVLTreeRank_C) then
-    AVLTreeRank := AVLTreeRank_C;
+if IsBound(AVLRank_C) then
+    AVLRank := AVLRank_C;
 else
-    AVLTreeRank := AVLTreeRank_GAP;
+    AVLRank := AVLRank_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeSetRank_GAP, function(t,n,r)
+InstallGlobalFunction( AVLSetRank_GAP, function(t,n,r)
   t![n+3] := r;
 end);
-if IsBound(AVLTreeSetRank_C) then
-    AVLTreeSetRank := AVLTreeSetRank_C;
+if IsBound(AVLSetRank_C) then
+    AVLSetRank := AVLSetRank_C;
 else
-    AVLTreeSetRank := AVLTreeSetRank_GAP;
+    AVLSetRank := AVLSetRank_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeBalFactor_GAP, function(t,n)
+InstallGlobalFunction( AVLBalFactor_GAP, function(t,n)
   local bf;
   bf := t![n+1] mod 4;    # 0, 1 or 2
   if bf = 2 then
@@ -237,27 +233,27 @@ InstallGlobalFunction( AVLTreeBalFactor_GAP, function(t,n)
     return bf;
   fi;
 end);
-if IsBound(AVLTreeBalFactor_C) then
-    AVLTreeBalFactor := AVLTreeBalFactor_C;
+if IsBound(AVLBalFactor_C) then
+    AVLBalFactor := AVLBalFactor_C;
 else
-    AVLTreeBalFactor := AVLTreeBalFactor_GAP;
+    AVLBalFactor := AVLBalFactor_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeSetBalFactor_GAP, function(t,n,bf)
+InstallGlobalFunction( AVLSetBalFactor_GAP, function(t,n,bf)
   if bf = -1 then
     t![n+1] := QuoInt(t![n+1],4)*4 + 2;
   else
     t![n+1] := QuoInt(t![n+1],4)*4 + bf;
   fi;
 end);
-if IsBound(AVLTreeSetBalFactor_C) then
-    AVLTreeSetBalFactor := AVLTreeSetBalFactor_C;
+if IsBound(AVLSetBalFactor_C) then
+    AVLSetBalFactor := AVLSetBalFactor_C;
 else
-    AVLTreeSetBalFactor := AVLTreeSetBalFactor_GAP;
+    AVLSetBalFactor := AVLSetBalFactor_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeValue_GAP, function(t,n)
+InstallGlobalFunction( AVLValue_GAP, function(t,n)
   if t![7] = fail then 
       return true;
   elif not(IsBound(t![7][n/4])) then
@@ -266,23 +262,23 @@ InstallGlobalFunction( AVLTreeValue_GAP, function(t,n)
       return t![7][n/4];
   fi;
 end);
-if IsBound(AVLTreeValue_C) then
-    AVLTreeValue := AVLTreeValue_C;
+if IsBound(AVLValue_C) then
+    AVLValue := AVLValue_C;
 else
-    AVLTreeValue := AVLTreeValue_GAP;
+    AVLValue := AVLValue_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeSetValue_GAP, function(t,n,v)
+InstallGlobalFunction( AVLSetValue_GAP, function(t,n,v)
   n := n/4;
   if t![7] = fail then
       t![7] := EmptyPlist(n);
   fi;
   t![7][n] := v;
 end);
-if IsBound(AVLTreeSetValue_C) then
-    AVLTreeSetValue := AVLTreeSetValue_C;
+if IsBound(AVLSetValue_C) then
+    AVLSetValue := AVLSetValue_C;
 else
-    AVLTreeSetValue := AVLTreeSetValue_GAP;
+    AVLSetValue := AVLSetValue_GAP;
 fi;
 
 InstallMethod( Display, "for an avltree object",
@@ -293,10 +289,10 @@ InstallMethod( Display, "for an avltree object",
       local i;
       if p = 0 then return; fi;
       for i in [1..depth] do Print(" "); od;
-      Print(P,"data=",AVLTreeData(t,p)," rank=",AVLTreeRank(t,p)," pos=",p,
-            " bf=",AVLTreeBalFactor(t,p),"\n");
-      DoRecursion(AVLTreeLeft(t,p),depth+1,"L:");
-      DoRecursion(AVLTreeRight(t,p),depth+1,"R:");
+      Print(P,"data=",AVLData(t,p)," rank=",AVLRank(t,p)," pos=",p,
+            " bf=",AVLBalFactor(t,p),"\n");
+      DoRecursion(AVLLeft(t,p),depth+1,"L:");
+      DoRecursion(AVLRight(t,p),depth+1,"R:");
     end;
 
     Print("<avltree nodes=",t![3]," alloc=",t![4],"\n");
@@ -304,9 +300,9 @@ InstallMethod( Display, "for an avltree object",
     Print(">\n");
   end );
 
-InstallGlobalFunction( AVLTreeFind_GAP, function(tree,data)
+InstallGlobalFunction( AVLFind_GAP, function(tree,data)
   # Parameters: tree, data
-  #  t is a AVLTree
+  #  t is a AVL
   #  data is a data structure defined by the user
   # Searches in tree for a node equal to data, returns this node or fail
   # if not found.
@@ -314,45 +310,46 @@ InstallGlobalFunction( AVLTreeFind_GAP, function(tree,data)
   compare := tree![5];
   p := tree![6];
   while p >= 8 do
-    c := compare(data,AVLTreeData(tree,p));
+    c := compare(data,AVLData(tree,p));
     if c = 0 then
       return p;
-    elif c < 0 then    # data < AVLTreeData(tree,p)
-      p := AVLTreeLeft(tree,p);
-    else               # data > AVLTreeData(tree,p)
-      p := AVLTreeRight(tree,p);
+    elif c < 0 then    # data < AVLData(tree,p)
+      p := AVLLeft(tree,p);
+    else               # data > AVLData(tree,p)
+      p := AVLRight(tree,p);
     fi;
   od;
   
   return fail;
 end);
-if IsBound(AVLTreeFind_C) then
-    AVLTreeFind := AVLTreeFind_C;
+if IsBound(AVLFind_C) then
+    AVLFind := AVLFind_C;
 else
-    AVLTreeFind := AVLTreeFind_GAP;
+    AVLFind := AVLFind_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeLookup_GAP, function(t,d)
+InstallGlobalFunction( AVLLookup_GAP, function(t,d)
   local p;
-  p := AVLTreeFind(t,d);
+  p := AVLFind(t,d);
   if p = fail then
       return fail;
   else
-      return AVLTreeValue(t,p);
+      return AVLValue(t,p);
   fi;
 end);
-if IsBound(AVLTreeLookup_C) then
-    AVLTreeLookup := AVLTreeLookup_C;
+if IsBound(AVLLookup_C) then
+    AVLLookup := AVLLookup_C;
 else
-    AVLTreeLookup := AVLTreeLookup_GAP;
+    AVLLookup := AVLLookup_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeIndex_GAP, function(tree,index)
+InstallGlobalFunction( AVLIndex_GAP, function(tree,index)
   # Parameters: tree, index
-  #  tree is a AVLTree
+  #  tree is a AVL
   #  index is an index in the tree
-  # Searches in tree for the node with index index, returns this node or fail
-  # if not found. Works without comparison function, just by index.
+  # Searches in tree for the node with index index, returns the data of
+  # this node or fail if not found. Works without comparison function, 
+  # just by index.
   local p, offset, r;
 
   if index < 1 or index > tree![3] then
@@ -363,42 +360,42 @@ InstallGlobalFunction( AVLTreeIndex_GAP, function(tree,index)
   offset := 0;         # Offset of subtree p in tree
   
   while true do   # will terminate!
-    r := offset + AVLTreeRank(tree,p);
+    r := offset + AVLRank(tree,p);
     if index < r then
       # go left
-      p := AVLTreeLeft(tree,p);
+      p := AVLLeft(tree,p);
     elif index = r then
       # found!
-      return p;
+      return AVLData(tree,p);
     else
       # go right!
       offset := r;
-      p := AVLTreeRight(tree,p);
+      p := AVLRight(tree,p);
     fi;
   od;
 end);
-if IsBound(AVLTreeIndex_C) then
-    AVLTreeIndex := AVLTreeIndex_C;
+if IsBound(AVLIndex_C) then
+    AVLIndex := AVLIndex_C;
 else
-    AVLTreeIndex := AVLTreeIndex_GAP;
+    AVLIndex := AVLIndex_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeIndexLookup_GAP, function(tree,i)
+InstallGlobalFunction( AVLIndexLookup_GAP, function(tree,i)
   local p;
-  p := AVLTreeIndex(tree,i);
+  p := AVLIndex(tree,i);
   if p = fail then 
       return fail;
   else
-      return AVLTreeValue(tree,p);
+      return AVLValue(tree,p);
   fi;
 end);
-if IsBound(AVLTreeIndexLookup_C) then
-    AVLTreeIndexLookup := AVLTreeIndexLookup_C;
+if IsBound(AVLIndexLookup_C) then
+    AVLIndexLookup := AVLIndexLookup_C;
 else
-    AVLTreeIndexLookup := AVLTreeIndexLookup_GAP;
+    AVLIndexLookup := AVLIndexLookup_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeRebalance_GAP, function(tree,q)
+InstallGlobalFunction( AVLRebalance_GAP, function(tree,q)
   # the tree starting at q has balanced subtrees but is out of balance:
   # the depth of the deeper subtree is 2 bigger than the depth of the other
   # tree. This function changes this situation following the procedure
@@ -409,32 +406,32 @@ InstallGlobalFunction( AVLTreeRebalance_GAP, function(tree,q)
   local shrink, p, l;
 
   shrink := true;   # in nearly all cases this happens
-  if AVLTreeBalFactor(tree,q) < 0 then
-    p := AVLTreeLeft(tree,q);
+  if AVLBalFactor(tree,q) < 0 then
+    p := AVLLeft(tree,q);
   else
-    p := AVLTreeRight(tree,q);
+    p := AVLRight(tree,q);
   fi;
-  if AVLTreeBalFactor(tree,p) = AVLTreeBalFactor(tree,q) then   
+  if AVLBalFactor(tree,p) = AVLBalFactor(tree,q) then   
     # we need a single rotation:
     #       q++             p=           q--          p=
     #      / \             / \          / \          / \
     #     a   p+    ==>   q=  c    OR  p-  c   ==>  a   q=
     #        / \         / \          / \              / \
     #       b   c       a   b        a   b            b   c
-    if AVLTreeBalFactor(tree,q) > 0 then
-      AVLTreeSetRight(tree,q,AVLTreeLeft(tree,p));
-      AVLTreeSetLeft(tree,p,q);
-      AVLTreeSetBalFactor(tree,q,0);
-      AVLTreeSetBalFactor(tree,p,0);
-      AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) + AVLTreeRank(tree,q));
+    if AVLBalFactor(tree,q) > 0 then
+      AVLSetRight(tree,q,AVLLeft(tree,p));
+      AVLSetLeft(tree,p,q);
+      AVLSetBalFactor(tree,q,0);
+      AVLSetBalFactor(tree,p,0);
+      AVLSetRank(tree,p,AVLRank(tree,p) + AVLRank(tree,q));
     else
-      AVLTreeSetLeft(tree,q,AVLTreeRight(tree,p));
-      AVLTreeSetRight(tree,p,q);
-      AVLTreeSetBalFactor(tree,q,0);
-      AVLTreeSetBalFactor(tree,p,0);
-      AVLTreeSetRank(tree,q,AVLTreeRank(tree,q) - AVLTreeRank(tree,p));
+      AVLSetLeft(tree,q,AVLRight(tree,p));
+      AVLSetRight(tree,p,q);
+      AVLSetBalFactor(tree,q,0);
+      AVLSetBalFactor(tree,p,0);
+      AVLSetRank(tree,q,AVLRank(tree,q) - AVLRank(tree,p));
     fi;
-  elif AVLTreeBalFactor(tree,p) = - AVLTreeBalFactor(tree,q) then   
+  elif AVLBalFactor(tree,p) = - AVLBalFactor(tree,q) then   
     # we need a double rotation:
     #       q++                             q--
     #      / \             c=              / \            c=
@@ -443,83 +440,83 @@ InstallGlobalFunction( AVLTreeRebalance_GAP, function(tree,q)
     #       c   e      / \   / \        a   c         / \   / \
     #      / \        a   b d   e          / \       a   b d   e
     #     b   d                           b   d
-    if AVLTreeBalFactor(tree,q) > 0 then
-      l := AVLTreeLeft(tree,p);
-      AVLTreeSetRight(tree,q,AVLTreeLeft(tree,l));
-      AVLTreeSetLeft(tree,p,AVLTreeRight(tree,l));
-      AVLTreeSetLeft(tree,l,q);
-      AVLTreeSetRight(tree,l,p);
-      if AVLTreeBalFactor(tree,l) > 0 then
-        AVLTreeSetBalFactor(tree,p,0);
-        AVLTreeSetBalFactor(tree,q,-1);
-      elif AVLTreeBalFactor(tree,l) = 0 then
-        AVLTreeSetBalFactor(tree,p,0);
-        AVLTreeSetBalFactor(tree,q,0);
-      else    # AVLTreeBalFactor(tree,l) < 0
-        AVLTreeSetBalFactor(tree,p,1);
-        AVLTreeSetBalFactor(tree,q,0);
+    if AVLBalFactor(tree,q) > 0 then
+      l := AVLLeft(tree,p);
+      AVLSetRight(tree,q,AVLLeft(tree,l));
+      AVLSetLeft(tree,p,AVLRight(tree,l));
+      AVLSetLeft(tree,l,q);
+      AVLSetRight(tree,l,p);
+      if AVLBalFactor(tree,l) > 0 then
+        AVLSetBalFactor(tree,p,0);
+        AVLSetBalFactor(tree,q,-1);
+      elif AVLBalFactor(tree,l) = 0 then
+        AVLSetBalFactor(tree,p,0);
+        AVLSetBalFactor(tree,q,0);
+      else    # AVLBalFactor(tree,l) < 0
+        AVLSetBalFactor(tree,p,1);
+        AVLSetBalFactor(tree,q,0);
       fi;
-      AVLTreeSetBalFactor(tree,l,0);
-      AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - AVLTreeRank(tree,l));
-      AVLTreeSetRank(tree,l,AVLTreeRank(tree,l) + AVLTreeRank(tree,q));
+      AVLSetBalFactor(tree,l,0);
+      AVLSetRank(tree,p,AVLRank(tree,p) - AVLRank(tree,l));
+      AVLSetRank(tree,l,AVLRank(tree,l) + AVLRank(tree,q));
       p := l;
     else
-      l := AVLTreeRight(tree,p);
-      AVLTreeSetLeft(tree,q,AVLTreeRight(tree,l));
-      AVLTreeSetRight(tree,p,AVLTreeLeft(tree,l));
-      AVLTreeSetLeft(tree,l,p);
-      AVLTreeSetRight(tree,l,q);
-      if AVLTreeBalFactor(tree,l) < 0 then
-        AVLTreeSetBalFactor(tree,p,0);
-        AVLTreeSetBalFactor(tree,q,1);
-      elif AVLTreeBalFactor(tree,l) = 0 then
-        AVLTreeSetBalFactor(tree,p,0);
-        AVLTreeSetBalFactor(tree,q,0);
-      else    # AVLTreeBalFactor(tree,l) > 0
-        AVLTreeSetBalFactor(tree,p,-1);
-        AVLTreeSetBalFactor(tree,q,0);
+      l := AVLRight(tree,p);
+      AVLSetLeft(tree,q,AVLRight(tree,l));
+      AVLSetRight(tree,p,AVLLeft(tree,l));
+      AVLSetLeft(tree,l,p);
+      AVLSetRight(tree,l,q);
+      if AVLBalFactor(tree,l) < 0 then
+        AVLSetBalFactor(tree,p,0);
+        AVLSetBalFactor(tree,q,1);
+      elif AVLBalFactor(tree,l) = 0 then
+        AVLSetBalFactor(tree,p,0);
+        AVLSetBalFactor(tree,q,0);
+      else    # AVLBalFactor(tree,l) > 0
+        AVLSetBalFactor(tree,p,-1);
+        AVLSetBalFactor(tree,q,0);
       fi;
-      AVLTreeSetBalFactor(tree,l,0);
-      AVLTreeSetRank(tree,l,AVLTreeRank(tree,l) + AVLTreeRank(tree,p));
-      AVLTreeSetRank(tree,q,AVLTreeRank(tree,q) - AVLTreeRank(tree,l));   
-                           # new value of AVLTreeRank(tree,l)!
+      AVLSetBalFactor(tree,l,0);
+      AVLSetRank(tree,l,AVLRank(tree,l) + AVLRank(tree,p));
+      AVLSetRank(tree,q,AVLRank(tree,q) - AVLRank(tree,l));   
+                           # new value of AVLRank(tree,l)!
       p := l;
     fi;
-  else   # AVLTreeBalFactor(tree,p) = 0 then  
+  else   # AVLBalFactor(tree,p) = 0 then  
     # we need a single rotation:
     #       q++             p-           q--          p+
     #      / \             / \          / \          / \
     #     a   p=    ==>   q+  c    OR  p=  c   ==>  a   q-
     #        / \         / \          / \              / \
     #       b   c       a   b        a   b            b   c
-    if AVLTreeBalFactor(tree,q) > 0 then
-      AVLTreeSetRight(tree,q,AVLTreeLeft(tree,p));
-      AVLTreeSetLeft(tree,p,q);
-      AVLTreeSetBalFactor(tree,q,1);
-      AVLTreeSetBalFactor(tree,p,-1);
-      AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) + AVLTreeRank(tree,q));
+    if AVLBalFactor(tree,q) > 0 then
+      AVLSetRight(tree,q,AVLLeft(tree,p));
+      AVLSetLeft(tree,p,q);
+      AVLSetBalFactor(tree,q,1);
+      AVLSetBalFactor(tree,p,-1);
+      AVLSetRank(tree,p,AVLRank(tree,p) + AVLRank(tree,q));
     else
-      AVLTreeSetLeft(tree,q,AVLTreeRight(tree,p));
-      AVLTreeSetRight(tree,p,q);
-      AVLTreeSetBalFactor(tree,q,-1);
-      AVLTreeSetBalFactor(tree,p,1);
-      AVLTreeSetRank(tree,q,AVLTreeRank(tree,q) - AVLTreeRank(tree,p));
+      AVLSetLeft(tree,q,AVLRight(tree,p));
+      AVLSetRight(tree,p,q);
+      AVLSetBalFactor(tree,q,-1);
+      AVLSetBalFactor(tree,p,1);
+      AVLSetRank(tree,q,AVLRank(tree,q) - AVLRank(tree,p));
     fi;
     shrink := false;    
   fi;
   return rec(newroot := p, shorter := shrink);
 end);
-if IsBound(AVLTreeRebalance_C) then
-    AVLTreeRebalance := AVLTreeRebalance_C;
+if IsBound(AVLRebalance_C) then
+    AVLRebalance := AVLRebalance_C;
 else
-    AVLTreeRebalance := AVLTreeRebalance_GAP;
+    AVLRebalance := AVLRebalance_GAP;
 fi;
 
 
 
-InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data,value)
+InstallGlobalFunction( AVLAdd_GAP, function(tree,data,value)
   # Parameters: tree, data, value
-  #  tree is a AVLTree
+  #  tree is a AVL
   #  data is a data structure defined by the user
   #  value is the value stored under the key data, if true, nothing is stored
   # Tries to add the data as a node in tree. It is an error, if there is
@@ -533,14 +530,14 @@ InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data,value)
   
   p := tree![6];
   if p = 0 then   # A new, single node in the tree
-    new := AVLTreeNewNode(tree);
-    AVLTreeSetLeft(tree,new,0);
-    AVLTreeSetRight(tree,new,0);
-    AVLTreeSetBalFactor(tree,new,0);
-    AVLTreeSetRank(tree,new,1);
-    AVLTreeSetData(tree,new,data);
+    new := AVLNewNode(tree);
+    AVLSetLeft(tree,new,0);
+    AVLSetRight(tree,new,0);
+    AVLSetBalFactor(tree,new,0);
+    AVLSetRank(tree,new,1);
+    AVLSetData(tree,new,data);
     if value <> true then
-        AVLTreeSetValue(tree,new,value);
+        AVLSetValue(tree,new,value);
     fi;
     tree![3] := 1;
     tree![6] := new;
@@ -563,26 +560,26 @@ InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data,value)
   repeat
     
     # do we have to remember this position?
-    if AVLTreeBalFactor(tree,p) <> 0 then
+    if AVLBalFactor(tree,p) <> 0 then
       q := n;       # forget old last node with balance factor <> 0
     fi;
     
     # now one step:
-    c := compare(data,AVLTreeData(tree,p));
+    c := compare(data,AVLData(tree,p));
     if c = 0 then   # we did not want this!
       for p in rankadds do
-        AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - 1);
+        AVLSetRank(tree,p,AVLRank(tree,p) - 1);
       od;
       return fail; # tree is unchanged
     fi;
     
     l := p;     # remember last position
-    if c < 0 then   # data < AVLTreeData(tree,p)
-      AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) + 1);
+    if c < 0 then   # data < AVLData(tree,p)
+      AVLSetRank(tree,p,AVLRank(tree,p) + 1);
       Add(rankadds,p);
-      p := AVLTreeLeft(tree,p);
-    else            # data > AVLTreeData(tree,p)
-      p := AVLTreeRight(tree,p);
+      p := AVLLeft(tree,p);
+    else            # data > AVLData(tree,p)
+      p := AVLRight(tree,p);
     fi;
     Add(nodes,p);
     n := n + 1;
@@ -595,64 +592,64 @@ InstallGlobalFunction( AVLTreeAdd_GAP, function(tree,data,value)
   l := nodes[n-1];   # for easier reference
   
   # a new node:
-  p := AVLTreeNewNode(tree);
-  AVLTreeSetLeft(tree,p,0);
-  AVLTreeSetRight(tree,p,0);
-  AVLTreeSetBalFactor(tree,p,0);
-  AVLTreeSetRank(tree,p,1);
-  AVLTreeSetData(tree,p,data);
+  p := AVLNewNode(tree);
+  AVLSetLeft(tree,p,0);
+  AVLSetRight(tree,p,0);
+  AVLSetBalFactor(tree,p,0);
+  AVLSetRank(tree,p,1);
+  AVLSetData(tree,p,data);
   if value <> true then
-      AVLTreeSetValue(tree,p,value);
+      AVLSetValue(tree,p,value);
   fi;
   # insert into tree:
   if c < 0 then    # left
-    AVLTreeSetLeft(tree,l,p);
+    AVLSetLeft(tree,l,p);
   else
-    AVLTreeSetRight(tree,l,p);
+    AVLSetRight(tree,l,p);
   fi;
   tree![3] := tree![3] + 1;
   
   # modify balance factors between q and l:
   for i in [q+1..n-1] do
-    AVLTreeSetBalFactor(tree,nodes[i],path[i]);
+    AVLSetBalFactor(tree,nodes[i],path[i]);
   od;
   
   # is rebalancing at q necessary?
   if q = 0 then    # whole tree has grown one step
     return true;   # Success!
   fi;
-  if AVLTreeBalFactor(tree,nodes[q]) = -path[q] then
+  if AVLBalFactor(tree,nodes[q]) = -path[q] then
     # the subtree at q has gotten more balanced
-    AVLTreeSetBalFactor(tree,nodes[q],0);
+    AVLSetBalFactor(tree,nodes[q],0);
     return true;   # Success!
   fi;
   
   # now at last we do have to rebalance at nodes[q] because the tree has
   # gotten out of balance:
-  p := AVLTreeRebalance(tree,nodes[q]);
+  p := AVLRebalance(tree,nodes[q]);
   p := p.newroot;
   
   # finishing touch: link new root of subtree (p) to t:
   if q = 1 then  # q resp. r was First node
     tree![6] := p;
   elif path[q-1] = -1 then
-    AVLTreeSetLeft(tree,nodes[q-1],p);
+    AVLSetLeft(tree,nodes[q-1],p);
   else
-    AVLTreeSetRight(tree,nodes[q-1],p);
+    AVLSetRight(tree,nodes[q-1],p);
   fi;
   
   return true;
 end);
-if IsBound(AVLTreeAdd_C) then
-    AVLTreeAdd := AVLTreeAdd_C;
+if IsBound(AVLAdd_C) then
+    AVLAdd := AVLAdd_C;
 else
-    AVLTreeAdd := AVLTreeAdd_GAP;
+    AVLAdd := AVLAdd_GAP;
 fi;
 
 
-InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,value,index)
+InstallGlobalFunction( AVLIndexAdd_GAP, function(tree,data,value,index)
   # Parameters: index, data, value, tree
-  #  tree is a AVLTree
+  #  tree is a AVL
   #  data is a data structure defined by the user
   #  value is the value to be stored under key data, nothing is stored if true
   #  index is the index, where data should be inserted in tree 1 ist at
@@ -669,14 +666,14 @@ InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,value,index)
   p := tree![6];
   if p = 0 then   # A new, single node in the tree
     # index must be equal to 1
-    tree![6] := AVLTreeNewNode(tree);
-    AVLTreeSetLeft(tree,tree![6],0);
-    AVLTreeSetRight(tree,tree![6],0);
-    AVLTreeSetBalFactor(tree,tree![6],0);
-    AVLTreeSetRank(tree,tree![6],1);
-    AVLTreeSetData(tree,tree![6],data);
+    tree![6] := AVLNewNode(tree);
+    AVLSetLeft(tree,tree![6],0);
+    AVLSetRight(tree,tree![6],0);
+    AVLSetBalFactor(tree,tree![6],0);
+    AVLSetRank(tree,tree![6],1);
+    AVLSetData(tree,tree![6],data);
     if value <> true then
-        AVLTreeSetValue(tree,tree![6],value);
+        AVLSetValue(tree,tree![6],value);
     fi;
     tree![3] := 1;
     return true;
@@ -698,24 +695,24 @@ InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,value,index)
   repeat
     
     # do we have to remember this position?
-    if AVLTreeBalFactor(tree,p) <> 0 then
+    if AVLBalFactor(tree,p) <> 0 then
       q := n;       # forget old last node with balance factor <> 0
     fi;
     
     # now one step:
-    if index <= offset+AVLTreeRank(tree,p) then
+    if index <= offset+AVLRank(tree,p) then
       c := -1;    # we have to descend to left subtree
     else
       c := +1;    # we have to descend to right subtree
     fi;
     
     l := p;     # remember last position
-    if c < 0 then   # data < AVLTreeData(tree,p)
-      AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) + 1);
-      p := AVLTreeLeft(tree,p);
-    else            # data > AVLTreeData(tree,p)
-      offset := offset + AVLTreeRank(tree,p);
-      p := AVLTreeRight(tree,p);
+    if c < 0 then   # data < AVLData(tree,p)
+      AVLSetRank(tree,p,AVLRank(tree,p) + 1);
+      p := AVLLeft(tree,p);
+    else            # data > AVLData(tree,p)
+      offset := offset + AVLRank(tree,p);
+      p := AVLRight(tree,p);
     fi;
     Add(nodes,p);
     n := n + 1;
@@ -728,63 +725,63 @@ InstallGlobalFunction( AVLTreeIndexAdd_GAP, function(tree,data,value,index)
   l := nodes[n-1];   # for easier reference
   
   # a new node:
-  p := AVLTreeNewNode(tree);
-  AVLTreeSetLeft(tree,p,0);
-  AVLTreeSetRight(tree,p,0);
-  AVLTreeSetBalFactor(tree,p,0);
-  AVLTreeSetRank(tree,p,1);
-  AVLTreeSetData(tree,p,data);
+  p := AVLNewNode(tree);
+  AVLSetLeft(tree,p,0);
+  AVLSetRight(tree,p,0);
+  AVLSetBalFactor(tree,p,0);
+  AVLSetRank(tree,p,1);
+  AVLSetData(tree,p,data);
   if value <> true then
-      AVLTreeSetValue(tree,p,value);
+      AVLSetValue(tree,p,value);
   fi;
   # insert into tree:
   if c < 0 then    # left
-    AVLTreeSetLeft(tree,l,p);
+    AVLSetLeft(tree,l,p);
   else
-    AVLTreeSetRight(tree,l,p);
+    AVLSetRight(tree,l,p);
   fi;
   tree![3] := tree![3] + 1;
   
   # modify balance factors between q and l:
   for i in [q+1..n-1] do
-    AVLTreeSetBalFactor(tree,nodes[i],path[i]);
+    AVLSetBalFactor(tree,nodes[i],path[i]);
   od;
   
   # is rebalancing at q necessary?
   if q = 0 then    # whole tree has grown one step
     return true;   # Success!
   fi;
-  if AVLTreeBalFactor(tree,nodes[q]) = -path[q] then
+  if AVLBalFactor(tree,nodes[q]) = -path[q] then
     # the subtree at q has gotten more balanced
-    AVLTreeSetBalFactor(tree,nodes[q],0);
+    AVLSetBalFactor(tree,nodes[q],0);
     return true;   # Success!
   fi;
   
   # now at last we do have to rebalance at nodes[q] because the tree has
   # gotten out of balance:
-  p := AVLTreeRebalance(tree,nodes[q]);
+  p := AVLRebalance(tree,nodes[q]);
   p := p.newroot;
   
   # finishing touch: link new root of subtree (p) to t:
   if q = 1 then  # q resp. r was First node
     tree![6] := p;
   elif path[q-1] = -1 then
-    AVLTreeSetLeft(tree,nodes[q-1],p);
+    AVLSetLeft(tree,nodes[q-1],p);
   else
-    AVLTreeSetRight(tree,nodes[q-1],p);
+    AVLSetRight(tree,nodes[q-1],p);
   fi;
   
   return true;
 end);
-if IsBound(AVLTreeIndexAdd_C) then
-    AVLTreeIndexAdd := AVLTreeIndexAdd_C;
+if IsBound(AVLIndexAdd_C) then
+    AVLIndexAdd := AVLIndexAdd_C;
 else
-    AVLTreeIndexAdd := AVLTreeIndexAdd_GAP;
+    AVLIndexAdd := AVLIndexAdd_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
+InstallGlobalFunction( AVLDelete_GAP, function(tree,data)
   # Parameters: tree, data
-  #  tree is a AVLTree
+  #  tree is a AVL
   #  data is a data structure defined by the user
   # Tries to find data as a node in the tree. If found, this node is deleted
   # and the tree rebalanced. It is an error, of the node is not found.
@@ -798,10 +795,10 @@ InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
     return fail;
   fi;
   if tree![3] = 1 then
-    if compare(data,AVLTreeData(tree,p)) = 0 then
+    if compare(data,AVLData(tree,p)) = 0 then
       tree![3] := 0;
       tree![6] := 0;
-      AVLTreeFreeNode(tree,p);
+      AVLFreeNode(tree,p);
       return true;
     else
       return fail;
@@ -821,15 +818,15 @@ InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
   repeat
     
     # what is the next step?
-    c := compare(data,AVLTreeData(tree,p));
+    c := compare(data,AVLData(tree,p));
     
     if c <> 0 then  # only if data not found!
-      if c < 0 then       # data < AVLTreeData(tree,p)
-        AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - 1);
+      if c < 0 then       # data < AVLData(tree,p)
+        AVLSetRank(tree,p,AVLRank(tree,p) - 1);
         Add(ranksubs,p);
-        p := AVLTreeLeft(tree,p);
-      elif c > 0 then     # data > AVLTreeData(tree,p)
-        p := AVLTreeRight(tree,p);
+        p := AVLLeft(tree,p);
+      elif c > 0 then     # data > AVLData(tree,p)
+        p := AVLRight(tree,p);
       fi;
       Add(nodes,p);
       n := n + 1;
@@ -839,55 +836,55 @@ InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
     if p = 0 then
       # error, we did not find data
       for i in ranksubs do
-        AVLTreeSetRank(tree,i,AVLTreeRank(tree,i) + 1);
+        AVLSetRank(tree,i,AVLRank(tree,i) + 1);
       od;
       return fail;
     fi;
     
   until c = 0;   # until we find the right node
-  # now data is equal to AVLTreeData(tree,p,) so this node p must be removed.
+  # now data is equal to AVLData(tree,p,) so this node p must be removed.
   # the tree must be modified between tree![6] and nodes[n] along path
   # Ranks are already done up there
   
   # now we have to search a neighbour, we modify "nodes" and "path" but not n!
   m := n;
-  if AVLTreeBalFactor(tree,p) < 0 then   # search to the left
-    l := AVLTreeLeft(tree,p);   # must be a node!
-    AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - 1);   
+  if AVLBalFactor(tree,p) < 0 then   # search to the left
+    l := AVLLeft(tree,p);   # must be a node!
+    AVLSetRank(tree,p,AVLRank(tree,p) - 1);   
     # we will delete in left subtree!
     Add(nodes,l);
     m := m + 1;
     Add(path,-1);
-    while AVLTreeRight(tree,l) <> 0 do
-      l := AVLTreeRight(tree,l);
+    while AVLRight(tree,l) <> 0 do
+      l := AVLRight(tree,l);
       Add(nodes,l);
       m := m + 1;
       Add(path,1);
     od;
     c := -1;       # we got predecessor
-  elif AVLTreeBalFactor(tree,p) > 0 then    # search to the right
-    l := AVLTreeRight(tree,p);  # must be a node!
+  elif AVLBalFactor(tree,p) > 0 then    # search to the right
+    l := AVLRight(tree,p);  # must be a node!
     Add(nodes,l);
     m := m + 1;
     Add(path,1);
-    while AVLTreeLeft(tree,l) <> 0 do
-      AVLTreeSetRank(tree,l,AVLTreeRank(tree,l) - 1); 
+    while AVLLeft(tree,l) <> 0 do
+      AVLSetRank(tree,l,AVLRank(tree,l) - 1); 
       # we will delete in left subtree!
-      l := AVLTreeLeft(tree,l);
+      l := AVLLeft(tree,l);
       Add(nodes,l);
       m := m + 1;
       Add(path,-1);
     od;
     c := 1;        # we got successor
   else   # equal depths
-    if AVLTreeLeft(tree,p) <> 0 then  
-      l := AVLTreeLeft(tree,p);
-      AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - 1);
+    if AVLLeft(tree,p) <> 0 then  
+      l := AVLLeft(tree,p);
+      AVLSetRank(tree,p,AVLRank(tree,p) - 1);
       Add(nodes,l);
       m := m + 1;
       Add(path,-1);
-      while AVLTreeRight(tree,l) <> 0 do
-        l := AVLTreeRight(tree,l);
+      while AVLRight(tree,l) <> 0 do
+        l := AVLRight(tree,l);
         Add(nodes,l);
         m := m + 1;
         Add(path,1);
@@ -903,23 +900,23 @@ InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
   # "nodes" and "path" is updated, but n could be < m
   
   # Copy Data from l up to p: order is NOT modified
-  AVLTreeSetData(tree,p,AVLTreeData(tree,l));   
+  AVLSetData(tree,p,AVLData(tree,l));   
      # works for m = n, i.e. if p is end node
   
   # Delete node at l = nodes[m] by modifying nodes[m-1]:
   # Note: nodes[m] has maximal one subtree!
   if c <= 0 then
-    r := AVLTreeLeft(tree,l);
+    r := AVLLeft(tree,l);
   else  #  c > 0
-    r := AVLTreeRight(tree,l);
+    r := AVLRight(tree,l);
   fi;
   if path[m-1] < 0 then
-    AVLTreeSetLeft(tree,nodes[m-1],r);
+    AVLSetLeft(tree,nodes[m-1],r);
   else
-    AVLTreeSetRight(tree,nodes[m-1],r);
+    AVLSetRight(tree,nodes[m-1],r);
   fi;
   tree![3] := tree![3] - 1;
-  AVLTreeFreeNode(tree,l);
+  AVLFreeNode(tree,l);
   
   # modify balance factors:
   # the subtree nodes[m-1] has become shorter at its left (resp. right)
@@ -929,20 +926,20 @@ InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
   # (we decrement m and work until the corresponding subtree has not shrunk)
   m := m - 1;  # start work HERE
   while m >= 1 do
-    if AVLTreeBalFactor(tree,nodes[m]) = 0 then
-      AVLTreeSetBalFactor(tree,nodes[m],-path[m]);  # we made path[m] shorter
+    if AVLBalFactor(tree,nodes[m]) = 0 then
+      AVLSetBalFactor(tree,nodes[m],-path[m]);  # we made path[m] shorter
       return true;
-    elif AVLTreeBalFactor(tree,nodes[m]) = path[m] then
-      AVLTreeSetBalFactor(tree,nodes[m],0);         # we made path[m] shorter
+    elif AVLBalFactor(tree,nodes[m]) = path[m] then
+      AVLSetBalFactor(tree,nodes[m],0);         # we made path[m] shorter
     else    # tree is out of balance
-      p := AVLTreeRebalance(tree,nodes[m]);
+      p := AVLRebalance(tree,nodes[m]);
       if m = 1 then
         tree![6] := p.newroot;
         return true;               # everything is done
       elif path[m-1] = -1 then
-        AVLTreeSetLeft(tree,nodes[m-1],p.newroot);
+        AVLSetLeft(tree,nodes[m-1],p.newroot);
       else
-        AVLTreeSetRight(tree,nodes[m-1],p.newroot);
+        AVLSetRight(tree,nodes[m-1],p.newroot);
       fi;
       if not p.shorter then return true; fi;   # nothing happens further up
     fi;
@@ -950,17 +947,17 @@ InstallGlobalFunction( AVLTreeDelete_GAP, function(tree,data)
   od;
   return true;
 end);
-if IsBound(AVLTreeDelete_C) then
-    AVLTreeDelete := AVLTreeDelete_C;
+if IsBound(AVLDelete_C) then
+    AVLDelete := AVLDelete_C;
 else
-    AVLTreeDelete := AVLTreeDelete_GAP;
+    AVLDelete := AVLDelete_GAP;
 fi;
 
-InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
+InstallGlobalFunction( AVLIndexDelete_GAP, function(tree,index)
   # Parameters: tree, index
   #  index is the index of the element to be deleted, must be between 1 and
   #          tree![3] inclusively
-  #  tree is a AVLTree
+  #  tree is a AVL
   # returns fail if index is out of range, otherwise true;
   local p, path, nodes, n, offset, c, m, l, r;
   
@@ -976,7 +973,7 @@ InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
     # index must be equal to 1
     tree![3] := 0;
     tree![6] := 0;
-    AVLTreeFreeNode(tree,p);
+    AVLFreeNode(tree,p);
     return true;
   fi;
   
@@ -991,21 +988,21 @@ InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
   repeat
     
     # what is the next step?
-    if index = offset+AVLTreeRank(tree,p) then
+    if index = offset+AVLRank(tree,p) then
       c := 0;   # we found our node!
-    elif index < offset+AVLTreeRank(tree,p) then
+    elif index < offset+AVLRank(tree,p) then
       c := -1;  # we have to go left
     else
       c := +1;  # we have to go right
     fi;
     
     if c <> 0 then  # only if data not found!
-      if c < 0 then       # data < AVLTreeData(tree,p)
-        AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - 1);
-        p := AVLTreeLeft(tree,p);
-      elif c > 0 then     # data > AVLTreeData(tree,p)
-        offset := offset + AVLTreeRank(tree,p);
-        p := AVLTreeRight(tree,p);
+      if c < 0 then       # data < AVLData(tree,p)
+        AVLSetRank(tree,p,AVLRank(tree,p) - 1);
+        p := AVLLeft(tree,p);
+      elif c > 0 then     # data > AVLData(tree,p)
+        offset := offset + AVLRank(tree,p);
+        p := AVLRight(tree,p);
       fi;
       Add(nodes,p);
       n := n + 1;
@@ -1019,44 +1016,44 @@ InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
   
   # now we have to search a neighbour, we modify "nodes" and "path" but not n!
   m := n;
-  if AVLTreeBalFactor(tree,p) < 0 then   # search to the left
-    l := AVLTreeLeft(tree,p);   # must be a node!
-    AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - 1);   
+  if AVLBalFactor(tree,p) < 0 then   # search to the left
+    l := AVLLeft(tree,p);   # must be a node!
+    AVLSetRank(tree,p,AVLRank(tree,p) - 1);   
     # we will delete in left subtree!
     Add(nodes,l);
     m := m + 1;
     Add(path,-1);
-    while AVLTreeRight(tree,l) <> 0 do
-      l := AVLTreeRight(tree,l);
+    while AVLRight(tree,l) <> 0 do
+      l := AVLRight(tree,l);
       Add(nodes,l);
       m := m + 1;
       Add(path,1);
     od;
     c := -1;       # we got predecessor
-  elif AVLTreeBalFactor(tree,p) > 0 then    # search to the right
-    l := AVLTreeRight(tree,p);  # must be a node!
+  elif AVLBalFactor(tree,p) > 0 then    # search to the right
+    l := AVLRight(tree,p);  # must be a node!
     Add(nodes,l);
     m := m + 1;
     Add(path,1);
-    while AVLTreeLeft(tree,l) <> 0 do
-      AVLTreeSetRank(tree,l,AVLTreeRank(tree,l) - 1);  
+    while AVLLeft(tree,l) <> 0 do
+      AVLSetRank(tree,l,AVLRank(tree,l) - 1);  
       # we will delete in left subtree!
-      l := AVLTreeLeft(tree,l);
+      l := AVLLeft(tree,l);
       Add(nodes,l);
       m := m + 1;
       Add(path,-1);
     od;
     c := 1;        # we got successor
   else   # equal depths
-    if AVLTreeLeft(tree,p) <> 0 then  
-      l := AVLTreeLeft(tree,p);
-      AVLTreeSetRank(tree,p,AVLTreeRank(tree,p) - 1);  
+    if AVLLeft(tree,p) <> 0 then  
+      l := AVLLeft(tree,p);
+      AVLSetRank(tree,p,AVLRank(tree,p) - 1);  
       # we will delete in left subtree!
       Add(nodes,l);
       m := m + 1;
       Add(path,-1);
-      while AVLTreeRight(tree,l) <> 0 do
-        l := AVLTreeRight(tree,l);
+      while AVLRight(tree,l) <> 0 do
+        l := AVLRight(tree,l);
         Add(nodes,l);
         m := m + 1;
         Add(path,1);
@@ -1072,23 +1069,23 @@ InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
   # "nodes" and "path" is updated, but n could be < m
   
   # Copy Data from l up to p: order is NOT modified
-  AVLTreeSetData(tree,p,AVLTreeData(tree,l));   
+  AVLSetData(tree,p,AVLData(tree,l));   
   # works for m = n, i.e. if p is end node
   
   # Delete node at l = nodes[m] by modifying nodes[m-1]:
   # Note: nodes[m] has maximal one subtree!
   if c <= 0 then
-    r := AVLTreeLeft(tree,l);
+    r := AVLLeft(tree,l);
   else  #  c > 0
-    r := AVLTreeRight(tree,l);
+    r := AVLRight(tree,l);
   fi;
   if path[m-1] < 0 then
-    AVLTreeSetLeft(tree,nodes[m-1],r);
+    AVLSetLeft(tree,nodes[m-1],r);
   else
-    AVLTreeSetRight(tree,nodes[m-1],r);
+    AVLSetRight(tree,nodes[m-1],r);
   fi;
   tree![3] := tree![3] - 1;
-  AVLTreeFreeNode(tree,l);
+  AVLFreeNode(tree,l);
   
   # modify balance factors:
   # the subtree nodes[m-1] has become shorter at its left (resp. right)
@@ -1098,20 +1095,20 @@ InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
   # (we decrement m and work until the corresponding subtree has not shrunk)
   m := m - 1;  # start work HERE
   while m >= 1 do
-    if AVLTreeBalFactor(tree,nodes[m]) = 0 then
-      AVLTreeSetBalFactor(tree,nodes[m],-path[m]);  # we made path[m] shorter
+    if AVLBalFactor(tree,nodes[m]) = 0 then
+      AVLSetBalFactor(tree,nodes[m],-path[m]);  # we made path[m] shorter
       return true;
-    elif AVLTreeBalFactor(tree,nodes[m]) = path[m] then
-      AVLTreeSetBalFactor(tree,nodes[m],0);         # we made path[m] shorter
+    elif AVLBalFactor(tree,nodes[m]) = path[m] then
+      AVLSetBalFactor(tree,nodes[m],0);         # we made path[m] shorter
     else    # tree is out of balance
-      p := AVLTreeRebalance(tree,nodes[m]);
+      p := AVLRebalance(tree,nodes[m]);
       if m = 1 then
         tree![6] := p.newroot;
         return true;               # everything is done
       elif path[m-1] = -1 then
-        AVLTreeSetLeft(tree,nodes[m-1],p.newroot);
+        AVLSetLeft(tree,nodes[m-1],p.newroot);
       else
-        AVLTreeSetRight(tree,nodes[m-1],p.newroot);
+        AVLSetRight(tree,nodes[m-1],p.newroot);
       fi;
       if not p.shorter then return true; fi;   # nothing happens further up
     fi;
@@ -1119,15 +1116,15 @@ InstallGlobalFunction( AVLTreeIndexDelete_GAP, function(tree,index)
   od;
   return true;
 end);
-if IsBound(AVLTreeIndexDelete_C) then
-    AVLTreeIndexDelete := AVLTreeIndexDelete_C;
+if IsBound(AVLIndexDelete_C) then
+    AVLIndexDelete := AVLIndexDelete_C;
 else
-    AVLTreeIndexDelete := AVLTreeIndexDelete_GAP;
+    AVLIndexDelete := AVLIndexDelete_GAP;
 fi;
 
 
 
-InstallGlobalFunction( AVLTreeToList_GAP, function(tree)
+InstallGlobalFunction( AVLToList_GAP, function(tree)
   # walks recursively through the tree and builds a list, where every entry 
   # belongs to a node in the order of the tree and each entry is a list, 
   # containing the data as first entry, the depth in the tree as second 
@@ -1139,25 +1136,25 @@ InstallGlobalFunction( AVLTreeToList_GAP, function(tree)
   
   DoRecursion := function(p,depth)
     # does the work
-    if AVLTreeLeft(tree,p) <> 0 then
-      DoRecursion(AVLTreeLeft(tree,p),depth+1);
+    if AVLLeft(tree,p) <> 0 then
+      DoRecursion(AVLLeft(tree,p),depth+1);
     fi;
-    Add(l,[AVLTreeData(tree,p),depth,AVLTreeBalFactor(tree,p)]);
-    if AVLTreeRight(tree,p) <> 0 then
-      DoRecursion(AVLTreeRight(tree,p),depth+1);
+    Add(l,[AVLData(tree,p),depth,AVLBalFactor(tree,p)]);
+    if AVLRight(tree,p) <> 0 then
+      DoRecursion(AVLRight(tree,p),depth+1);
     fi;
   end;
   
   DoRecursion(tree![6],1);
   return l;
 end);
-if IsBound(AVLTreeToList_C) then
-    AVLTreeToList := AVLTreeToList_C;
+if IsBound(AVLToList_C) then
+    AVLToList := AVLToList_C;
 else
-    AVLTreeToList := AVLTreeToList_GAP;
+    AVLToList := AVLToList_GAP;
 fi;
 
-BindGlobal( "AVLTreeTest", function(tree)
+BindGlobal( "AVLTest", function(tree)
   # walks recursively through the tree and tests its balancedness. Returns
   # the depth or the subtree where the tree is not balanced. Mainly for test
   # purposes. Returns tree if the NumberOfNodes is not correct.
@@ -1171,16 +1168,16 @@ BindGlobal( "AVLTreeTest", function(tree)
     # and a list with the depth of the tree and the number of nodes in it.
     local ldepth, rdepth;
     
-    if AVLTreeLeft(tree,p) <> 0 then
-      ldepth := DoRecursion(AVLTreeLeft(tree,p));
+    if AVLLeft(tree,p) <> 0 then
+      ldepth := DoRecursion(AVLLeft(tree,p));
       if ldepth = false then 
         return false;
       fi;
     else
       ldepth := [0,0];
     fi;
-    if AVLTreeRight(tree,p) <> 0 then
-      rdepth := DoRecursion(AVLTreeRight(tree,p));
+    if AVLRight(tree,p) <> 0 then
+      rdepth := DoRecursion(AVLRight(tree,p));
       if rdepth = false then
         return false;
       fi;
@@ -1188,8 +1185,8 @@ BindGlobal( "AVLTreeTest", function(tree)
       rdepth := [0,0];
     fi;
     if AbsInt(rdepth[1]-ldepth[1] > 1) or 
-       AVLTreeBalFactor(tree,p) <> rdepth[1]-ldepth[1] or
-       AVLTreeRank(tree,p) <> ldepth[2] + 1 then
+       AVLBalFactor(tree,p) <> rdepth[1]-ldepth[1] or
+       AVLRank(tree,p) <> ldepth[2] + 1 then
       error := p;
       return false;
     else

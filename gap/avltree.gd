@@ -27,56 +27,56 @@ BindGlobal( "AVLTreeType", NewType(AVLTreeFamily,IsAVLTree) );
 # nothing appended is the one to be used, it is assigned to the C
 # version if it is there and otherwise to the GAP version.
 
-DeclareGlobalFunction( "AVLTreeCmp_GAP" );
-AVLTreeCmp := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLCmp_GAP" );
+AVLCmp := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLTree_GAP" );
 AVLTree := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeNewNode_GAP" );
-AVLTreeNewNode := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeFreeNode_GAP" );
-AVLTreeFreeNode := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeData_GAP" );
-AVLTreeData := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeSetData_GAP" );
-AVLTreeSetData := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeLeft_GAP" );
-AVLTreeLeft := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeSetLeft_GAP" );
-AVLTreeSetLeft := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeRight_GAP" );
-AVLTreeRight := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeSetRight_GAP" );
-AVLTreeSetRight := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeRank_GAP" );
-AVLTreeRank := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeSetRank_GAP" );
-AVLTreeSetRank := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeBalFactor_GAP" );
-AVLTreeBalFactor := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeSetBalFactor_GAP" );
-AVLTreeSetBalFactor := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeValue_GAP" );
-AVLTreeValue := fail;     # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeSetValue_GAP" );
-AVLTreeSetValue := fail;     # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeFind_GAP" );
-AVLTreeFind := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeLookup_GAP" );
-AVLTreeLookup := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeIndex_GAP" );
-AVLTreeIndex := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeRebalance_GAP" );
-AVLTreeRebalance := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeIndexLookup_GAP" );
-AVLTreeIndexLookup := fail;   # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeAdd_GAP" );
-AVLTreeAdd := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeIndexAdd_GAP" );
-AVLTreeIndexAdd := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeDelete_GAP" );
-AVLTreeDelete := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeIndexDelete_GAP" );
-AVLTreeIndexDelete := fail;  # placeholder for later assignment
-DeclareGlobalFunction( "AVLTreeToList_GAP" );
-AVLTreeToList := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLNewNode_GAP" );
+AVLNewNode := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLFreeNode_GAP" );
+AVLFreeNode := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLData_GAP" );
+AVLData := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLSetData_GAP" );
+AVLSetData := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLLeft_GAP" );
+AVLLeft := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLSetLeft_GAP" );
+AVLSetLeft := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLRight_GAP" );
+AVLRight := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLSetRight_GAP" );
+AVLSetRight := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLRank_GAP" );
+AVLRank := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLSetRank_GAP" );
+AVLSetRank := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLBalFactor_GAP" );
+AVLBalFactor := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLSetBalFactor_GAP" );
+AVLSetBalFactor := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLValue_GAP" );
+AVLValue := fail;     # placeholder for later assignment
+DeclareGlobalFunction( "AVLSetValue_GAP" );
+AVLSetValue := fail;     # placeholder for later assignment
+DeclareGlobalFunction( "AVLFind_GAP" );
+AVLFind := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLLookup_GAP" );
+AVLLookup := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLIndex_GAP" );
+AVLIndex := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLRebalance_GAP" );
+AVLRebalance := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLIndexLookup_GAP" );
+AVLIndexLookup := fail;   # placeholder for later assignment
+DeclareGlobalFunction( "AVLAdd_GAP" );
+AVLAdd := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLIndexAdd_GAP" );
+AVLIndexAdd := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLDelete_GAP" );
+AVLDelete := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLIndexDelete_GAP" );
+AVLIndexDelete := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLToList_GAP" );
+AVLToList := fail;  # placeholder for later assignment
 
