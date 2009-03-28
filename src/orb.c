@@ -89,14 +89,14 @@ Obj AVLCmp_C(Obj self, Obj a, Obj b)
 #define SetAVLData(t,i,d) SET_ELM_PLIST(t,i,d); CHANGED_BAG(t)
 #define AVLLeft(t,i) (INT_INTOBJ(ELM_PLIST(t,i+1)) & AVLmask2)
 #define SetAVLLeft(t,i,n) SET_ELM_PLIST(t,i+1, \
-  INTOBJ_INT( (INT_INTOBJ(ELM_PLIST(t,i+1)) & AVLMask) + n ))
+  INTOBJ_INT( (INT_INTOBJ(ELM_PLIST(t,i+1)) & AVLmask) + n ))
 #define AVLRight(t,i) INT_INTOBJ(ELM_PLIST(t,i+2))
 #define SetAVLRight(t,i,n) SET_ELM_PLIST(t,i+2,INTOBJ_INT(n))
 #define AVLRank(t,i) INT_INTOBJ(ELM_PLIST(t,i+3))
 #define SetAVLRank(t,i,r) SET_ELM_PLIST(t,i+3,INTOBJ_INT(r))
-#define AVLBalFact(t,i) (INT_INTOBJ(ELM_PLIST(t,i+1)) & AVLmask)
-#define SetAVLBalFact(t,i,b) SET_ELM_PLIST(t,i+1, \
-  INTOBJ_INT( (INT_INTOBJ(ELM_PLIST(t,i+1)) & AVLMask2) + b ))
+#define AVLBalFactor(t,i) (INT_INTOBJ(ELM_PLIST(t,i+1)) & AVLmask)
+#define SetAVLBalFactor(t,i,b) SET_ELM_PLIST(t,i+1, \
+  INTOBJ_INT( (INT_INTOBJ(ELM_PLIST(t,i+1)) & AVLmask2) + b ))
 
 static Int AVLNewNode( Obj t )
 {
@@ -129,6 +129,10 @@ static Int AVLNewNode( Obj t )
 
 static Obj AVLNewNode_C( Obj self, Obj t )
 {
+    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLNewNode(avltree)", 0L, 0L );
+        return 0L;
+    }
     return INTOBJ_INT(AVLNewNode(t));
 }
 
@@ -146,6 +150,11 @@ static inline void AVLFreeNode( Obj t, Int n )
 
 static Obj AVLFreeNode_C( Obj self, Obj t, Obj n)
 {
+    if (!IS_INTOBJ(n) ||
+        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLFreeNode(avltree,integer)", 0L, 0L );
+        return 0L;
+    }
     AVLFreeNode(t,INT_INTOBJ(n));
     return (Obj) 0;
 }
@@ -171,6 +180,10 @@ static inline Int AVLFind( Obj t, Obj d )
 
 static Obj AVLFind_C( Obj self, Obj t, Obj d )
 {
+    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLFind(avltree, object)", 0L, 0L );
+        return 0L;
+    }
     Obj tmp = INTOBJ_INT(AVLFind(t,d));
     if (tmp == INTOBJ_INT(0)) 
         return Fail;
@@ -180,6 +193,10 @@ static Obj AVLFind_C( Obj self, Obj t, Obj d )
             
 static Obj AVLLookup_C( Obj self, Obj t, Obj d )
 {
+    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLLookup(avltree, object)", 0L, 0L );
+        return 0L;
+    }
     Int p = AVLFind(t,d);
     if (p == 0) return Fail;
     Obj vals = AVLValues(t);
@@ -212,6 +229,11 @@ static inline Int AVLIndex( Obj t, Int i )
 
 static Obj AVLIndex_C( Obj self, Obj t, Obj i )
 {
+    if (!IS_INTOBJ(i) || 
+        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLIndex(avltree, integer)", 0L, 0L );
+        return 0L;
+    }
     Int p = AVLIndex( t, INT_INTOBJ(i) );
     if (p == 0) 
         return Fail;
@@ -221,6 +243,11 @@ static Obj AVLIndex_C( Obj self, Obj t, Obj i )
 
 static Obj AVLIndexLookup_C( Obj self, Obj t, Obj i )
 {
+    if (!IS_INTOBJ(i) || 
+        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLIndexLookup(avltree, integer)", 0L, 0L );
+        return 0L;
+    }
     Int p = AVLIndex(t,INT_INTOBJ(i));
     if (p == 0) return Fail;
     Obj vals = AVLValues(t);
@@ -243,7 +270,7 @@ static inline void AVLRebalance( Obj tree, Int q, Int *newroot, int *shrink )
   Int p, l;
 
   *shrink = 1;   /* in nearly all cases this happens */
-  if (AVLBalFactor(tree,q) == 2) {   /* was: < 0 */
+  if (AVLBalFactor(tree,q) == 2)   /* was: < 0 */
       p = AVLLeft(tree,q);
   else
       p = AVLRight(tree,q);
@@ -285,7 +312,7 @@ static inline void AVLRebalance( Obj tree, Int q, Int *newroot, int *shrink )
           SetAVLRight(tree,l,p);
           if (AVLBalFactor(tree,l) == 1) {   /* was: > 0 */
               SetAVLBalFactor(tree,p,0);
-              SetAVLBalFactor(tree,q,-1);
+              SetAVLBalFactor(tree,q,2);     /* was: -1 */
           } else if (AVLBalFactor(tree,l) == 0) {
               SetAVLBalFactor(tree,p,0);
               SetAVLBalFactor(tree,q,0);
@@ -316,7 +343,7 @@ static inline void AVLRebalance( Obj tree, Int q, Int *newroot, int *shrink )
           SetAVLBalFactor(tree,l,0);
           SetAVLRank(tree,l,AVLRank(tree,l) + AVLRank(tree,p));
           SetAVLRank(tree,q,AVLRank(tree,q) - AVLRank(tree,l));   
-                               # new value of AVLRank(tree,l)!
+                               /* new value of AVLRank(tree,l)! */
           p = l;
       }
   } else {  /* AVLBalFactor(tree,p) = 0 */
@@ -341,18 +368,174 @@ static inline void AVLRebalance( Obj tree, Int q, Int *newroot, int *shrink )
       }
       *shrink = 0;
   }
+  *newroot = p;
 }
 
 Obj static AVLRebalance_C( Obj self, Obj tree, Obj q )
 {
-    Int newroot;
+    Int newroot = 0;
     int shrink;
     Obj tmp;
     AVLRebalance( tree, INT_INTOBJ(q), &newroot, &shrink );
     tmp = NEW_PREC(2);
     AssPRec(tmp,RNamName("newroot"),INTOBJ_INT(newroot));
-    AssPRec(tmp,RNamName("shrink"),shrink ? True : False);
+    AssPRec(tmp,RNamName("shorter"),shrink ? True : False);
     return tmp;
+}
+
+Obj static AVLValue( Obj t, Int n )
+{
+    Obj vals = AVLValues(t);
+    if (vals == Fail) return True;
+    n /= 4;
+    if (!ISB_LIST(vals,n)) return True;
+    return ELM_LIST(vals,n);
+}
+
+void static SetAVLValue( Obj t, Int n, Obj v )
+{
+    Obj vals = AVLValues(t);
+    n /= 4;
+    if (vals == Fail || !IS_LIST(vals)) {
+        vals = NEW_PLIST(T_PLIST, n);
+        SetAVLValues(t,vals);
+    }
+    ASS_LIST(vals,n,v);
+}
+
+Obj static AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
+{
+/* Parameters: tree, data, value
+    tree is a AVL
+    data is a data structure defined by the user
+    value is the value stored under the key data, if true, nothing is stored
+   Tries to add the data as a node in tree. It is an error, if there is
+   already a node which is "equal" to data with respect to the comparison
+   function. Returns true if everything went well or fail, if an equal 
+   object is already present. */
+
+  Obj compare;
+  Int p, new;
+  /* here all steps are recorded: -1:left, +1:right */
+  int path[64];   /* Trees will never be deeper than that! */
+  Int nodes[64];
+  int n;          /* The length of the list nodes */
+  Int q;
+  Int rankadds[64];
+  int rankaddslen;   /* length of list rankadds */
+  Int c;
+  Int l;
+  Int i;
+
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+      ErrorQuit( "Usage: AVLAdd(avltree, object, object)", 0L, 0L );
+      return 0L;
+  }
+
+  compare = AVL3Comp(tree);
+  p = AVLTop(tree);
+  if (p == 0) {   /* A new, single node in the tree */
+      new = AVLNewNode(tree);
+      SetAVLLeft(tree,new,0);
+      SetAVLRight(tree,new,0);
+      SetAVLBalFactor(tree,new,0);
+      SetAVLRank(tree,new,1);
+      SetAVLData(tree,new,data);
+      if (value != True)
+          SetAVLValue(tree,new,value);
+      SetAVLNodes(tree,1);
+      SetAVLTop(tree,new);
+      return True;
+  }
+  
+  /* let's first find the right position in the tree:
+     but: remember the last node on the way with bal. factor <> 0 and the path
+          after this node
+     and: remember the nodes where the Rank entry is incremented in case we
+          find an "equal" element                                           */
+  nodes[1] = p;   /* here we store all nodes on our way, nodes[i+1] is reached
+                     from nodes[i] by walking one step path[i] */
+  n = 1;          /* this is the length of "nodes" */
+  q = 0;          /* this is the last node with bal. factor <> 0 */
+                  /* index in "nodes" or 0 for no such node */
+  rankaddslen = 0;  /* nothing done so far, list of Rank-modified nodes */
+  do {
+      /* do we have to remember this position? */
+      if (AVLBalFactor(tree,p) != 0)
+          q = n;       /* forget old last node with balance factor != 0 */
+      
+      /* now one step: */
+      c = INT_INTOBJ(CALL_2ARGS(compare,data,AVLData(tree,p)));
+      if (c == 0) {   /* we did not want this! */
+          for (p = 1; p <= rankaddslen; p++) {
+            SetAVLRank(tree,p,AVLRank(tree,rankadds[p]) - 1);
+          }
+          return Fail;    /* tree is unchanged */
+      }
+      
+      l = p;     /* remember last position */
+      if (c < 0) {    /* data < AVLData(tree,p) */
+          SetAVLRank(tree,p,AVLRank(tree,p) + 1);
+          rankadds[++rankaddslen] = p;
+          p = AVLLeft(tree,p);
+      } else {        /* data > AVLData(tree,p) */
+          p = AVLRight(tree,p);
+      }
+      path[n] = c > 0 ? 1 : 2;   /* Internal representation! */
+      nodes[++n] = p;
+  } while (p != 0);
+  /* now p is 0 and nodes[n-1] is the node where data must be attached
+     the tree must be modified between nodes[q] and nodes[n-1] along path
+     Ranks are already done */
+  l = nodes[n-1];   /* for easier reference */
+  
+  /* a new node: */
+  p = AVLNewNode(tree);
+  SetAVLLeft(tree,p,0);
+  SetAVLRight(tree,p,0);
+  SetAVLBalFactor(tree,p,0);
+  SetAVLRank(tree,p,1);
+  SetAVLData(tree,p,data);
+  if (value != True) {
+      SetAVLValue(tree,p,value);
+  }
+  /* insert into tree: */
+  if (c < 0) {    /* left */
+      SetAVLLeft(tree,l,p);
+  } else {
+      SetAVLRight(tree,l,p);
+  }
+  SetAVLNodes(tree,AVLNodes(tree)+1);
+  
+  /* modify balance factors between q and l: */
+  for (i = q+1;i <= n-1;i++) {
+      SetAVLBalFactor(tree,nodes[i],path[i]);
+  }
+  
+  /* is rebalancing at q necessary? */
+  if (q == 0)     /* whole tree has grown one step */
+      return True;
+  if (AVLBalFactor(tree,nodes[q]) == 3-path[q]) {
+      /* the subtree at q has gotten more balanced */
+      SetAVLBalFactor(tree,nodes[q],0);
+      return True;   /* Success! */
+  }
+  
+  /* now at last we do have to rebalance at nodes[q] because the tree has
+     gotten out of balance: */
+  int shrink;   /* not used */
+  AVLRebalance(tree,nodes[q],&p,&shrink);
+  
+  /* finishing touch: link new root of subtree (p) to t: */
+  if (q == 1) {    /* q resp. r was First node */
+      SetAVLTop(tree,p);
+  } else if (path[q-1] == 2) {
+      SetAVLLeft(tree,nodes[q-1],p);
+  } else {
+      SetAVLRight(tree,nodes[q-1],p);
+  }
+  
+  return True;
 }
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
@@ -393,6 +576,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "AVLRebalance_C", 2, "tree, q",
     AVLRebalance_C,
     "orb.c:AVLRebalance_C" },
+
+  { "AVLAdd_C", 3, "tree, data, value",
+    AVLAdd_C,
+    "orb.c:AVLAdd_C" },
 
   { 0 }
 
