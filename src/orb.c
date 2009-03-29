@@ -159,6 +159,26 @@ static Obj AVLFreeNode_C( Obj self, Obj t, Obj n)
     return (Obj) 0;
 }
 
+Obj static inline AVLValue( Obj t, Int n )
+{
+    Obj vals = AVLValues(t);
+    if (vals == Fail) return True;
+    n /= 4;
+    if (!ISB_LIST(vals,n)) return True;
+    return ELM_LIST(vals,n);
+}
+
+void static inline SetAVLValue( Obj t, Int n, Obj v )
+{
+    Obj vals = AVLValues(t);
+    n /= 4;
+    if (vals == Fail || !IS_LIST(vals)) {
+        vals = NEW_PLIST(T_PLIST, n);
+        SetAVLValues(t,vals);
+    }
+    ASS_LIST(vals,n,v);
+}
+
 static inline Int AVLFind( Obj t, Obj d )
 {
     Obj compare,c;
@@ -199,12 +219,7 @@ static Obj AVLLookup_C( Obj self, Obj t, Obj d )
     }
     Int p = AVLFind(t,d);
     if (p == 0) return Fail;
-    Obj vals = AVLValues(t);
-    p /= 4;
-    if (vals == Fail || !ISB_LIST(vals,p))
-        return True;
-    else
-        return ELM_LIST(vals,p);
+    return AVLValue(t,p);
 }
         
 static inline Int AVLIndex( Obj t, Int i )
@@ -383,30 +398,10 @@ Obj static AVLRebalance_C( Obj self, Obj tree, Obj q )
     return tmp;
 }
 
-Obj static AVLValue( Obj t, Int n )
-{
-    Obj vals = AVLValues(t);
-    if (vals == Fail) return True;
-    n /= 4;
-    if (!ISB_LIST(vals,n)) return True;
-    return ELM_LIST(vals,n);
-}
-
-void static SetAVLValue( Obj t, Int n, Obj v )
-{
-    Obj vals = AVLValues(t);
-    n /= 4;
-    if (vals == Fail || !IS_LIST(vals)) {
-        vals = NEW_PLIST(T_PLIST, n);
-        SetAVLValues(t,vals);
-    }
-    ASS_LIST(vals,n,v);
-}
-
 Obj static AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
 {
 /* Parameters: tree, data, value
-    tree is a AVL
+    tree is an AVL tree
     data is a data structure defined by the user
     value is the value stored under the key data, if true, nothing is stored
    Tries to add the data as a node in tree. It is an error, if there is
@@ -538,6 +533,314 @@ Obj static AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
   return True;
 }
 
+Obj static AVLIndexAdd_C( Obj self, Obj tree, Obj data, Obj value, Obj ind )
+{
+/* Parameters: tree, data, value
+    tree is an AVL tree
+    data is a data structure defined by the user
+    value is the value stored under the key data, if true, nothing is stored
+    index is the index, where data should be inserted in tree 1 ist at
+          first position, NumberOfNodes+1 after the last.
+    Tries to add the data as a node in tree. Returns true if everything 
+    went well or fail, if something went wrong,    */
+
+  Int p, new;
+  /* here all steps are recorded: -1:left, +1:right */
+  int path[64];   /* Trees will never be deeper than that! */
+  Int nodes[64];
+  int n;          /* The length of the list nodes */
+  Int q;
+  Int c;
+  Int l;
+  Int index;
+  Int i;
+  Int offset;
+
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+      ErrorQuit( "Usage: AVLAdd(avltree, object, object)", 0L, 0L );
+      return 0L;
+  }
+
+  index = INT_INTOBJ(ind);
+  if (index < 1 || index > AVLNodes(tree)+1) return Fail;
+
+  p = AVLTop(tree);
+  if (p == 0) {   /* A new, single node in the tree */
+      new = AVLNewNode(tree);
+      SetAVLLeft(tree,new,0);
+      SetAVLRight(tree,new,0);
+      SetAVLBalFactor(tree,new,0);
+      SetAVLRank(tree,new,1);
+      SetAVLData(tree,new,data);
+      if (value != True)
+          SetAVLValue(tree,new,value);
+      SetAVLNodes(tree,1);
+      SetAVLTop(tree,new);
+      return True;
+  }
+  
+  /* let's first find the right position in the tree:
+     but: remember the last node on the way with bal. factor <> 0 and the path
+          after this node
+     and: remember the nodes where the Rank entry is incremented in case we
+          find an "equal" element                                           */
+  nodes[1] = p;   /* here we store all nodes on our way, nodes[i+1] is reached
+                     from nodes[i] by walking one step path[i] */
+  n = 1;          /* this is the length of "nodes" */
+  q = 0;          /* this is the last node with bal. factor <> 0 */
+                  /* index in "nodes" or 0 for no such node */
+  offset = 0;   /* number of nodes with smaller index than those in subtree */
+
+  do {
+      /* do we have to remember this position? */
+      if (AVLBalFactor(tree,p) != 0)
+          q = n;       /* forget old last node with balance factor != 0 */
+      
+      /* now one step: */
+      if (index <= offset+AVLRank(tree,p))
+          c = -1;
+      else
+          c = +1;
+      
+      l = p;     /* remember last position */
+      if (c < 0) {    /* data < AVLData(tree,p) */
+          SetAVLRank(tree,p,AVLRank(tree,p) + 1);
+          p = AVLLeft(tree,p);
+      } else {        /* data > AVLData(tree,p) */
+          offset += AVLRank(tree,p);
+          p = AVLRight(tree,p);
+      }
+      path[n] = c > 0 ? 1 : 2;   /* Internal representation! */
+      nodes[++n] = p;
+  } while (p != 0);
+  /* now p is 0 and nodes[n-1] is the node where data must be attached
+     the tree must be modified between nodes[q] and nodes[n-1] along path
+     Ranks are already done */
+  l = nodes[n-1];   /* for easier reference */
+  
+  /* a new node: */
+  p = AVLNewNode(tree);
+  SetAVLLeft(tree,p,0);
+  SetAVLRight(tree,p,0);
+  SetAVLBalFactor(tree,p,0);
+  SetAVLRank(tree,p,1);
+  SetAVLData(tree,p,data);
+  if (value != True) {
+      SetAVLValue(tree,p,value);
+  }
+  /* insert into tree: */
+  if (c < 0) {    /* left */
+      SetAVLLeft(tree,l,p);
+  } else {
+      SetAVLRight(tree,l,p);
+  }
+  SetAVLNodes(tree,AVLNodes(tree)+1);
+  
+  /* modify balance factors between q and l: */
+  for (i = q+1;i <= n-1;i++) {
+      SetAVLBalFactor(tree,nodes[i],path[i]);
+  }
+  
+  /* is rebalancing at q necessary? */
+  if (q == 0)     /* whole tree has grown one step */
+      return True;
+  if (AVLBalFactor(tree,nodes[q]) == 3-path[q]) {
+      /* the subtree at q has gotten more balanced */
+      SetAVLBalFactor(tree,nodes[q],0);
+      return True;   /* Success! */
+  }
+  
+  /* now at last we do have to rebalance at nodes[q] because the tree has
+     gotten out of balance: */
+  int shrink;   /* not used */
+  AVLRebalance(tree,nodes[q],&p,&shrink);
+  
+  /* finishing touch: link new root of subtree (p) to t: */
+  if (q == 1) {    /* q resp. r was First node */
+      SetAVLTop(tree,p);
+  } else if (path[q-1] == 2) {
+      SetAVLLeft(tree,nodes[q-1],p);
+  } else {
+      SetAVLRight(tree,nodes[q-1],p);
+  }
+  
+  return True;
+}
+
+Obj static AVLDelete_C( Obj self, Obj tree, Obj data)
+  /* Parameters: tree, data
+      tree is an AVL tree
+      data is a data structure defined by the user
+     Tries to find data as a node in the tree. If found, this node is deleted
+     and the tree rebalanced. It is an error, of the node is not found.
+     Returns fail in this case, and true normally.       */
+{
+  Obj compare;
+  Int p;
+  int path[64];   /* Trees will never be deeper than that! */
+  Int nodes[64];
+  int n;
+  int c;
+  int m,i;
+  Int r,l;
+  Int ranksubs[64];
+  int ranksubslen;    /* length of list randsubs */
+  
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+      ErrorQuit( "Usage: AVLDelete(avltree, object)", 0L, 0L );
+      return 0L;
+  }
+
+  compare = AVL3Comp(tree);
+  p = AVLTop(tree);
+  if (p == 0)     /* Nothing to delete or find */
+      return Fail;
+
+  if (AVLNodes(tree) == 1) {
+      if (INT_INTOBJ(CALL_2ARGS(compare,data,AVLData(tree,p))) == 0) {
+          SetAVLNodes(tree,0);
+          SetAVLTop(tree,0);
+          AVLFreeNode(tree,p);
+          return True;
+      } else {
+          return Fail;
+      }
+  }
+  
+  /* let's first find the right position in the tree:
+     and: remember the nodes where the Rank entry is decremented in case we
+          find an "equal" element */
+  nodes[1] = p;   /* here we store all nodes on our way, nodes[i+1] is reached
+                     from nodes[i] by walking one step path[i] */
+  n = 1;      
+  ranksubslen = 0; /* nothing done so far, list of Rank-modified nodes */
+  
+  do {
+      
+      /* what is the next step? */
+      c = INT_INTOBJ(CALL_2ARGS(compare,data,AVLData(tree,p)));
+      
+      if (c != 0) {    /* only if data not found! */
+          if (c < 0) {    /* data < AVLData(tree,p) */
+              SetAVLRank(tree,p,AVLRank(tree,p) - 1);
+              ranksubs[++ranksubslen] = p;
+              p = AVLLeft(tree,p);
+          } else {        /* data > AVLData(tree,p) */
+              p = AVLRight(tree,p);
+          }
+          path[n] = c > 0 ? 1 : 2;   /* Internal representation! */
+          nodes[++n] = p;
+      }
+      
+      if (p == 0) {
+          /* error, we did not find data */
+          for (i = 1; i <= ranksubslen; i++) {
+              SetAVLRank(tree,ranksubs[i],AVLRank(tree,ranksubs[i]) + 1);
+          }
+          return Fail;
+      }
+      
+  } while (c != 0);   /* until we find the right node */
+  /* now data is equal to AVLData(tree,p) so this node p must be removed.
+     the tree must be modified between AVLTop(tree) and nodes[n] along path
+     Ranks are already done up there. */
+  
+  /* now we have to search a neighbour, we modify "nodes" and "path" but 
+   * not n! */
+  m = n;
+  if (AVLBalFactor(tree,p) == 2) {   /* (was: < 0) search to the left */
+      l = AVLLeft(tree,p);   /* must be a node! */
+      SetAVLRank(tree,p,AVLRank(tree,p) - 1);   
+      /* we will delete in left subtree! */
+      path[m] = 2;   /* was: -1 */
+      nodes[++m] = l;
+      while (AVLRight(tree,l) != 0) {
+          l = AVLRight(tree,l);
+          path[m] = 1;
+          nodes[++m] = l;
+      }
+      c = -1;       /* we got predecessor */
+  } else if (AVLBalFactor(tree,p) > 0) {  /* search to the right */
+      l = AVLRight(tree,p);      /* must be a node! */
+      path[m] = 1;
+      nodes[++m] = l;
+      while (AVLLeft(tree,l) != 0) {
+          SetAVLRank(tree,l,AVLRank(tree,l) - 1); 
+          /* we will delete in left subtree! */
+          l = AVLLeft(tree,l);
+          path[m] = 2;  /* was: -1 */
+          nodes[++m] = l;
+      }
+      c = 1;        /* we got successor */
+  } else {   /* equal depths */
+      if (AVLLeft(tree,p) != 0) {
+          l = AVLLeft(tree,p);
+          SetAVLRank(tree,p,AVLRank(tree,p) - 1);
+          path[m] = 2;   /* was: -1 */
+          nodes[++m] = l;
+          while (AVLRight(tree,l) != 0) {
+              l = AVLRight(tree,l);
+              path[m] = 1;
+              nodes[++m] = l;
+          }
+          c = -1;     /* we got predecessor */
+      } else {        /* we got an end node */
+          l = p;
+          c = 0;      
+      }
+  }
+  /* l points now to a neighbour, in case c = -1 to the predecessor, in case
+     c = 1 to the successor, or to p itself in case c = 0
+     "nodes" and "path" is updated, but n could be < m */
+  
+  /* Copy Data from l up to p: order is NOT modified */
+  SetAVLData(tree,p,AVLData(tree,l));   
+     /* works for m = n, i.e. if p is end node */
+  
+  /* Delete node at l = nodes[m] by modifying nodes[m-1]:
+     Note: nodes[m] has maximal one subtree! */
+  if (c <= 0)
+      r = AVLLeft(tree,l);
+  else    /*  c > 0 */
+      r = AVLRight(tree,l);
+  
+  if (path[m-1] == 2)    /* was: < 0 */
+      SetAVLLeft(tree,nodes[m-1],r);
+  else
+      SetAVLRight(tree,nodes[m-1],r);
+  SetAVLNodes(tree,AVLNodes(tree)-1);
+  AVLFreeNode(tree,l);
+  
+  /* modify balance factors:
+     the subtree nodes[m-1] has become shorter at its left (resp. right)
+     subtree, if path[m-1]=-1 (resp. +1). We have to react according to
+     the BalFactor at this node and then up the tree, if the whole subtree
+     has shrunk:
+     (we decrement m and work until the corresponding subtree has not shrunk) */
+  m--;   /* start work HERE */
+  while (m >= 1) {
+      if (AVLBalFactor(tree,nodes[m]) == 0) {
+          SetAVLBalFactor(tree,nodes[m],3-path[m]); /* we made path[m] shorter*/
+          return True;
+      } else if (AVLBalFactor(tree,nodes[m]) == path[m]) {
+          SetAVLBalFactor(tree,nodes[m],0);     /* we made path[m] shorter */
+      } else {   /* tree is out of balance */
+          int shorter;
+          AVLRebalance(tree,nodes[m],&p,&shorter);
+          if (m == 1) {
+              SetAVLTop(tree,p);
+              return True;               /* everything is done */
+          } else if (path[m-1] == 2)   /* was: = -1 */
+              SetAVLLeft(tree,nodes[m-1],p);
+          else
+              SetAVLRight(tree,nodes[m-1],p);
+          if (!shorter) return True;    /* nothing happens further up */
+      }
+      m--;
+  }
+  return True;
+}
+ 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
 /******************************************************************************
@@ -580,6 +883,14 @@ static StructGVarFunc GVarFuncs [] = {
   { "AVLAdd_C", 3, "tree, data, value",
     AVLAdd_C,
     "orb.c:AVLAdd_C" },
+
+  { "AVLIndexAdd_C", 4, "tree, data, value, index",
+    AVLIndexAdd_C,
+    "orb.c:AVLIndexAdd_C" },
+
+  { "AVLDelete_C", 2, "tree, data", 
+    AVLDelete_C,
+    "orb.c:AVLDelete_C" },
 
   { 0 }
 

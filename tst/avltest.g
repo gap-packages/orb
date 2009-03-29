@@ -72,3 +72,28 @@ Print("time=",Runtimes().user_time-ti,"\n");
 if List(ss,x->x[1]) <> s then
     Error("AVLToList returned wrong list!");
 fi;
+Print("Inserting entries by position...\c");
+ti := Runtimes().user_time;
+for i in [1..n] do
+    AVLIndexAdd(t,i+17,true,2*i);
+od;
+Print("time=",Runtimes().user_time-ti,"\n");
+Print("Checking status using AVLIndex...\c");
+ti := Runtimes().user_time;
+lllll := EmptyPlist(n);
+for i in [1..n] do
+    lllll[i] := AVLIndex(t,2*i);
+od;
+Print("time=",Runtimes().user_time-ti,"\n");
+if lllll <> [1..n]+17 then
+    Error("Something is messed up with IndexAdd!");
+fi;
+Print("Cleaning up the mess using AVLIndexDelete...\c");
+ti := Runtimes().user_time;
+for i in [n,n-1..1] do
+    AVLIndexDelete(t,2*i);
+od;
+Print("time=",Runtimes().user_time-ti,"\n");
+if AVLTest(t).ok <> true then
+    Error("Index delete messed up!");
+fi;

@@ -10,6 +10,7 @@
   - Fixed a bug in the depth and depthmarks of orbits
   - Improved MakeSchreierTreeShallow for great depths
   - New implementation of AVL trees.
+  - C-part to speed up AVL trees and hash tables.
 
 
 ==========================
