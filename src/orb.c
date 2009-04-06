@@ -841,6 +841,179 @@ Obj static AVLDelete_C( Obj self, Obj tree, Obj data)
   return True;
 }
  
+Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
+  /* Parameters: tree, index
+      tree is an AVL tree
+      index is the index of the element to be deleted, must be between 1 and
+          AVLNodes(tree) inclusively
+     returns fail if index is out of range, otherwise true;  */
+
+{
+  Int p;
+  int path[64];   /* Trees will never be deeper than that! */
+  Int nodes[64];
+  int n;
+  int c;
+  Int offset;
+  int m;
+  Int r,l;
+  Int ind;
+
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+      ErrorQuit( "Usage: AVLIndexDelete(avltree, index)", 0L, 0L );
+      return 0L;
+  }
+  if (!IS_INTOBJ(index)) {
+      ErrorQuit( "Usage2: AVLIndexDelete(avltree, index)", 0L, 0L );
+      return 0L;
+  }
+
+  p = AVLTop(tree);
+  if (p == 0)     /* Nothing to delete or find */
+      return Fail;
+
+  ind = INT_INTOBJ(index);
+  if (ind < 1 || ind > AVLNodes(tree))   /* out of range */
+      return Fail;
+
+  if (AVLNodes(tree) == 1) {
+      SetAVLNodes(tree,0);
+      SetAVLTop(tree,0);
+      AVLFreeNode(tree,p);
+      return True;
+  }
+  
+  /* let's first find the right position in the tree:
+     and: remember the nodes where the Rank entry is decremented in case we
+          find an "equal" element */
+  nodes[1] = p;   /* here we store all nodes on our way, nodes[i+1] is reached
+                     from nodes[i] by walking one step path[i] */
+  n = 1;      
+  offset = 0;     /* number of "smaller" nodes than subtree in whole tree */
+  
+  do {
+      
+      /* what is the next step? */
+      if (ind == offset + AVLRank(tree,p)) 
+          c = 0;   /* we found our node! */
+      else if (ind < offset + AVLRank(tree,p))
+          c = -1;  /* we have to go left */
+      else
+          c = 1;   /* we have to go right */
+      
+      if (c != 0) {    /* only if data not found! */
+          if (c < 0) {    /* data < AVLData(tree,p) */
+              SetAVLRank(tree,p,AVLRank(tree,p) - 1);
+              p = AVLLeft(tree,p);
+          } else {        /* data > AVLData(tree,p) */
+              offset += AVLRank(tree,p);
+              p = AVLRight(tree,p);
+          }
+          path[n] = c > 0 ? 1 : 2;   /* Internal representation! */
+          nodes[++n] = p;
+      }
+      
+  } while (c != 0);   /* until we find the right node */
+  /* now index is right, so this node p must be removed.
+     the tree must be modified between AVLTop(tree) and nodes[n] along path
+     Ranks are already done up there. */
+  
+  /* now we have to search a neighbour, we modify "nodes" and "path" but 
+   * not n! */
+  m = n;
+  if (AVLBalFactor(tree,p) == 2) {   /* (was: < 0) search to the left */
+      l = AVLLeft(tree,p);   /* must be a node! */
+      SetAVLRank(tree,p,AVLRank(tree,p) - 1);   
+      /* we will delete in left subtree! */
+      path[m] = 2;   /* was: -1 */
+      nodes[++m] = l;
+      while (AVLRight(tree,l) != 0) {
+          l = AVLRight(tree,l);
+          path[m] = 1;
+          nodes[++m] = l;
+      }
+      c = -1;       /* we got predecessor */
+  } else if (AVLBalFactor(tree,p) > 0) {  /* search to the right */
+      l = AVLRight(tree,p);      /* must be a node! */
+      path[m] = 1;
+      nodes[++m] = l;
+      while (AVLLeft(tree,l) != 0) {
+          SetAVLRank(tree,l,AVLRank(tree,l) - 1); 
+          /* we will delete in left subtree! */
+          l = AVLLeft(tree,l);
+          path[m] = 2;  /* was: -1 */
+          nodes[++m] = l;
+      }
+      c = 1;        /* we got successor */
+  } else {   /* equal depths */
+      if (AVLLeft(tree,p) != 0) {
+          l = AVLLeft(tree,p);
+          SetAVLRank(tree,p,AVLRank(tree,p) - 1);
+          path[m] = 2;   /* was: -1 */
+          nodes[++m] = l;
+          while (AVLRight(tree,l) != 0) {
+              l = AVLRight(tree,l);
+              path[m] = 1;
+              nodes[++m] = l;
+          }
+          c = -1;     /* we got predecessor */
+      } else {        /* we got an end node */
+          l = p;
+          c = 0;      
+      }
+  }
+  /* l points now to a neighbour, in case c = -1 to the predecessor, in case
+     c = 1 to the successor, or to p itself in case c = 0
+     "nodes" and "path" is updated, but n could be < m */
+  
+  /* Copy Data from l up to p: order is NOT modified */
+  SetAVLData(tree,p,AVLData(tree,l));   
+     /* works for m = n, i.e. if p is end node */
+  
+  /* Delete node at l = nodes[m] by modifying nodes[m-1]:
+     Note: nodes[m] has maximal one subtree! */
+  if (c <= 0)
+      r = AVLLeft(tree,l);
+  else    /*  c > 0 */
+      r = AVLRight(tree,l);
+  
+  if (path[m-1] == 2)    /* was: < 0 */
+      SetAVLLeft(tree,nodes[m-1],r);
+  else
+      SetAVLRight(tree,nodes[m-1],r);
+  SetAVLNodes(tree,AVLNodes(tree)-1);
+  AVLFreeNode(tree,l);
+  
+  /* modify balance factors:
+     the subtree nodes[m-1] has become shorter at its left (resp. right)
+     subtree, if path[m-1]=-1 (resp. +1). We have to react according to
+     the BalFactor at this node and then up the tree, if the whole subtree
+     has shrunk:
+     (we decrement m and work until the corresponding subtree has not shrunk) */
+  m--;   /* start work HERE */
+  while (m >= 1) {
+      if (AVLBalFactor(tree,nodes[m]) == 0) {
+          SetAVLBalFactor(tree,nodes[m],3-path[m]); /* we made path[m] shorter*/
+          return True;
+      } else if (AVLBalFactor(tree,nodes[m]) == path[m]) {
+          SetAVLBalFactor(tree,nodes[m],0);     /* we made path[m] shorter */
+      } else {   /* tree is out of balance */
+          int shorter;
+          AVLRebalance(tree,nodes[m],&p,&shorter);
+          if (m == 1) {
+              SetAVLTop(tree,p);
+              return True;               /* everything is done */
+          } else if (path[m-1] == 2)   /* was: = -1 */
+              SetAVLLeft(tree,nodes[m-1],p);
+          else
+              SetAVLRight(tree,nodes[m-1],p);
+          if (!shorter) return True;    /* nothing happens further up */
+      }
+      m--;
+  }
+  return True;
+}
+ 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
 /******************************************************************************
@@ -891,6 +1064,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "AVLDelete_C", 2, "tree, data", 
     AVLDelete_C,
     "orb.c:AVLDelete_C" },
+
+  { "AVLIndexDelete_C", 2, "tree, index", 
+    AVLIndexDelete_C,
+    "orb.c:AVLIndexDelete_C" },
 
   { 0 }
 
