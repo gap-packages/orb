@@ -240,7 +240,7 @@ static Obj AVLFindIndex_C( Obj self, Obj t, Obj d )
         ErrorQuit( "Usage: AVLFindIndex(avltree, object)", 0L, 0L );
         return 0L;
     }
-    Int tmp = AVLFind(t,d);
+    Int tmp = AVLFindIndex(t,d);
     if (tmp == 0)
         return Fail;
     else

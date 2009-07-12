@@ -1271,6 +1271,18 @@ InstallOtherMethod( Length, "for an avl tree",
     return t![3];
   end );
   
+InstallOtherMethod( ADD_LIST, "for an avl tree and an object",
+  [ IsAVLTree and IsAVLTreeFlatRep, IsObject ],
+  function( t, x )
+    AVLIndexAdd(t,x,true,t![3]+1);
+  end );
+
+InstallOtherMethod( ADD_LIST, "for an avl tree, an object and a position",
+  [ IsAVLTree and IsAVLTreeFlatRep, IsObject, IsPosInt ],
+  function( t, x, pos )
+    AVLIndexAdd(t,x,true,pos);
+  end );
+
         
 ##
 ##  This program is free software: you can redistribute it and/or modify
