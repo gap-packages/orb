@@ -204,11 +204,47 @@ static Obj AVLFind_C( Obj self, Obj t, Obj d )
         ErrorQuit( "Usage: AVLFind(avltree, object)", 0L, 0L );
         return 0L;
     }
-    Obj tmp = INTOBJ_INT(AVLFind(t,d));
-    if (tmp == INTOBJ_INT(0)) 
+    Int tmp = AVLFind(t,d);
+    if (tmp == 0)
         return Fail;
     else
-        return tmp;
+        return INTOBJ_INT(tmp);
+}
+            
+static inline Int AVLFindIndex( Obj t, Obj d )
+{
+    Obj compare,c;
+    Int p;
+    Int offset;
+
+    compare = AVL3Comp(t);
+    p = AVLTop(t);
+    offset = 0;
+    while (p >= 8) {
+        c = CALL_2ARGS(compare,d,AVLData(t,p));
+        if (c == INTOBJ_INT(0))
+            return offset + AVLRank(t,p);
+        else if (INT_INTOBJ(c) < 0)   /* d < AVLData(t,p) */
+            p = AVLLeft(t,p);
+        else {                         /* d > AVLData(t,p) */
+            offset += AVLRank(t,p);
+            p = AVLRight(t,p);
+        }
+    }
+    return 0;
+}
+
+static Obj AVLFindIndex_C( Obj self, Obj t, Obj d )
+{
+    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLFindIndex(avltree, object)", 0L, 0L );
+        return 0L;
+    }
+    Int tmp = AVLFind(t,d);
+    if (tmp == 0)
+        return Fail;
+    else
+        return INTOBJ_INT(tmp);
 }
             
 static Obj AVLLookup_C( Obj self, Obj t, Obj d )
@@ -1039,6 +1075,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "AVLFind_C", 2, "tree, data",
     AVLFind_C,
     "orb.c:AVLFind_C" },
+
+  { "AVLFindIndex_C", 2, "tree, data",
+    AVLFindIndex_C,
+    "orb.c:AVLFindIndex_C" },
 
   { "AVLLookup_C", 2, "tree, data",
     AVLLookup_C,
