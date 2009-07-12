@@ -53,6 +53,16 @@ An AVL tree is created using the following function:
 </Description>
 </ManSection>
 
+Missing:
+
+AVLData, AVLValue, AVLFind, AVLFindIndex, AVLLookup, AVLIndex,
+AVLIndexLookup, AVLIndexAdd, AVLDelete, AVLIndexDelete, AVLToList,
+Display, AVLAdd, ELM_LIST, Position, Remove, Add, Length, IN
+
+</Section>
+
+<Section>
+<Heading>The internal data structures</Heading>
 
 </Section>
 
