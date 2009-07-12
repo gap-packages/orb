@@ -1,0 +1,61 @@
+<!-- 
+
+         avl.xml            orb package documentation             
+                                                               Juergen Mueller
+                                                               Max Neunhoeffer
+                                                                  Felix Noeske
+
+         Copyright (C) 2009 by the authors
+
+This chapter explains functionality for AVL trees.
+
+-->
+
+<Chapter Label="avl">
+<Heading>AVL trees</Heading>
+
+<Section Label="avlidea">
+<Heading>The idea of AVL trees</Heading>
+
+AVL trees are
+</Section>
+
+<Section Label="avlusage">
+    <Heading>Using AVL trees</Heading>
+
+An AVL tree is created using the following function:
+
+<ManSection>
+<Func Name="AVLTree" Arg="[ cmpfunc ]"/>
+<Returns> A new AVL tree object </Returns>
+<Description>
+    This function creates a new AVL tree object. The optional argument
+    <A>cmpfunc</A> is a three-way comparison function taking two
+    arguments <A>a</A> and <A>b</A> and returning <M>-1</M> if
+    <M><A>a</A> &lt; <A>b</A></M>, <M>+1</M> if
+    <M><A>a</A> &gt; <A>b</A></M> and <M>0</M> if
+    <M><A>a</A> = <A>b</A></M>. If no function is given then
+    the generic function <Ref Func="AVLCmp"/> is taken. This three-way
+    comparison function is stored with the tree and is used for all
+    comparisons in tree operations.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLCmp" Arg="a, b"/>
+<Returns> -1, 0 or 1 </Returns>
+<Description>
+    This function calls the <K>&lt;</K> operation and the <K>=</K>
+    operation to provide a generic three-way comparison function
+    to be used in AVL tree operations. See <Ref Func="AVLTree"/>
+    for a description of the return value. This function is implemented in
+    the kernel and should be particularly fast.
+</Description>
+</ManSection>
+
+
+</Section>
+
+<!-- ############################################################ -->
+
+</Chapter>

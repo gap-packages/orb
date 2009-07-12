@@ -91,6 +91,7 @@ along with this program.  If not, see
 <#Include SYSTEM "cache.xml">
 <#Include SYSTEM "random.xml">
 <#Include SYSTEM "search.xml">
+<#Include SYSTEM "avl.xml">
 <#Include SYSTEM "bysuborbit.xml">
 <#Include SYSTEM "quotfinder.xml">
 <#Include SYSTEM "examples.xml">

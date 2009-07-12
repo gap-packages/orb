@@ -1,8 +1,7 @@
 AVLTrees and Hashes:
-  Make AVLTrees more convenient by some method installations.
+  Document AVL trees
   Speed up hashing by putting it into kernel
   HashTrees, including optimization
-  Checks for AVLIndexAdd?
 
 OrbitStatisticsInVectorSpace: orbit limit instead of group size limit
 Beispiel laufen lassen

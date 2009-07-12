@@ -17,15 +17,15 @@ PackageName := "orb",
 
 Subtitle := "orb - Methods to enumerate Orbits",
 
-Version := "2.1",
+Version := "3.0",
 ##  Please adjust also the VERSION file in the package directory when
 ##  changing this.
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-Date := "22/06/2008",
+Date := "13/07/2009",
 
-ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-2.1",
+ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-3.0",
 
 ArchiveFormats := ".tar.gz",
 
@@ -160,7 +160,7 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">=4.4.10",
   NeededOtherPackages := [["GAPDoc", ">= 1.1"]],
-  SuggestedOtherPackages := [["IO",">= 2.3"]],
+  SuggestedOtherPackages := [["IO",">= 3.0"]],
   ExternalConditions := []
                       
 ),
