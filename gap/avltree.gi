@@ -71,8 +71,8 @@ InstallGlobalFunction( AVLTree_GAP, function(arg)
   # second argument.
   # A comparison function is NOT necessary for trees where the ordering is
   # only defined by the tree and not by an ordering of the elements. Such
-  # trees are managed by the special functions below. Specify "false"
-  # as the cmpfunc.
+  # trees are managed by the special functions below. Specify nothing
+  # for the cmpfunc.
   local t,cmpfunc;
   if Length(arg) = 0 then
       cmpfunc := AVLCmp;
@@ -97,7 +97,7 @@ else
 fi;
 
 InstallMethod( ViewObj, "for an avltree object",
-  [IsAVLTree],
+  [IsAVLTree and IsAVLTreeFlatRep],
   function( t )
     Print("<avltree nodes=",t![3]," alloc=",t![4],">");
   end );
@@ -282,7 +282,7 @@ else
 fi;
 
 InstallMethod( Display, "for an avltree object",
-  [IsAVLTree],
+  [IsAVLTree and IsAVLTreeFlatRep],
   function( t )
     local DoRecursion;
     DoRecursion := function(p,depth,P)
@@ -958,8 +958,8 @@ InstallGlobalFunction( AVLIndexDelete_GAP, function(tree,index)
   #  index is the index of the element to be deleted, must be between 1 and
   #          tree![3] inclusively
   #  tree is a AVL
-  # returns fail if index is out of range, otherwise true;
-  local p, path, nodes, n, offset, c, m, l, r;
+  # returns fail if index is out of range, otherwise the deleted key;
+  local p, path, nodes, n, offset, c, m, l, r, x;
   
   if index < 1 or index > tree![3] then
     return fail;
@@ -971,10 +971,11 @@ InstallGlobalFunction( AVLIndexDelete_GAP, function(tree,index)
   fi;
   if tree![3] = 1 then
     # index must be equal to 1
+    x := AVLData(tree,tree![6]);
     tree![3] := 0;
     tree![6] := 0;
     AVLFreeNode(tree,p);
-    return true;
+    return x;
   fi;
   
   # let's first find the right position in the tree:
@@ -990,6 +991,7 @@ InstallGlobalFunction( AVLIndexDelete_GAP, function(tree,index)
     # what is the next step?
     if index = offset+AVLRank(tree,p) then
       c := 0;   # we found our node!
+      x := AVLData(tree,p);
     elif index < offset+AVLRank(tree,p) then
       c := -1;  # we have to go left
     else
@@ -1097,24 +1099,24 @@ InstallGlobalFunction( AVLIndexDelete_GAP, function(tree,index)
   while m >= 1 do
     if AVLBalFactor(tree,nodes[m]) = 0 then
       AVLSetBalFactor(tree,nodes[m],-path[m]);  # we made path[m] shorter
-      return true;
+      return x;
     elif AVLBalFactor(tree,nodes[m]) = path[m] then
       AVLSetBalFactor(tree,nodes[m],0);         # we made path[m] shorter
     else    # tree is out of balance
       p := AVLRebalance(tree,nodes[m]);
       if m = 1 then
         tree![6] := p.newroot;
-        return true;               # everything is done
+        return x;               # everything is done
       elif path[m-1] = -1 then
         AVLSetLeft(tree,nodes[m-1],p.newroot);
       else
         AVLSetRight(tree,nodes[m-1],p.newroot);
       fi;
-      if not p.shorter then return true; fi;   # nothing happens further up
+      if not p.shorter then return x; fi;   # nothing happens further up
     fi;
     m := m - 1;
   od;
-  return true;
+  return x;
 end);
 if IsBound(AVLIndexDelete_C) then
     AVLIndexDelete := AVLIndexDelete_C;
@@ -1212,6 +1214,64 @@ BindGlobal( "AVLTest", function(tree)
   fi;
 end);
 
+InstallGlobalFunction( AVLFindIndex_GAP, function(tree,data)
+  # Parameters: tree, data
+  #  t is a AVL
+  #  data is a data structure defined by the user
+  # Searches in tree for a node equal to data, returns its index or fail
+  # if not found.
+  local compare, p, c, index;
+  compare := tree![5];
+  p := tree![6];
+  index := 0;
+  while p >= 8 do
+    c := compare(data,AVLData(tree,p));
+    if c = 0 then
+      return index + AVLRank(tree,p);
+    elif c < 0 then    # data < AVLData(tree,p)
+      p := AVLLeft(tree,p);
+    else               # data > AVLData(tree,p)
+      index := index + AVLRank(tree,p);
+      p := AVLRight(tree,p);
+    fi;
+  od;
+  return fail;
+end );
+if IsBound(AVLFindIndex_C) then AVLFindIndex := AVLFindIndex_C; fi;
+
+InstallOtherMethod( ELM_LIST, "for an avl tree and an index",
+  [ IsAVLTree and IsAVLTreeFlatRep, IsPosInt ],
+  AVLIndex );
+
+InstallOtherMethod( Position, "for an avl tree, an object, and an index",
+  [ IsAVLTree and IsAVLTreeFlatRep, IsObject, IsInt ],
+  function( t, x, pos )
+    local i,j;
+    i := AVLFindIndex(t,x);
+    if i = fail or i <= pos then 
+        return fail; 
+    else
+        return i;
+    fi;
+  end);
+
+InstallOtherMethod( Remove, "for an avl tree and an index",
+  [ IsAVLTree and IsAVLTreeFlatRep, IsPosInt ],
+  AVLIndexDelete );
+
+InstallOtherMethod( Remove, "for an avl tree",
+  [ IsAVLTree and IsAVLTreeFlatRep ],
+  function( t )
+    return AVLIndexDelete(t,t![3]);
+  end );
+
+InstallOtherMethod( Length, "for an avl tree",
+  [ IsAVLTree and IsAVLTreeFlatRep ],
+  function( t )
+    return t![3];
+  end );
+  
+        
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by

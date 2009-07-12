@@ -846,7 +846,7 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
       tree is an AVL tree
       index is the index of the element to be deleted, must be between 1 and
           AVLNodes(tree) inclusively
-     returns fail if index is out of range, otherwise true;  */
+     returns fail if index is out of range, otherwise the deleted key;  */
 
 {
   Int p;
@@ -858,6 +858,7 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
   int m;
   Int r,l;
   Int ind;
+  Obj x;
 
   if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
       ErrorQuit( "Usage: AVLIndexDelete(avltree, index)", 0L, 0L );
@@ -877,10 +878,11 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
       return Fail;
 
   if (AVLNodes(tree) == 1) {
+      x = AVLData(tree,p);
       SetAVLNodes(tree,0);
       SetAVLTop(tree,0);
       AVLFreeNode(tree,p);
-      return True;
+      return x;
   }
   
   /* let's first find the right position in the tree:
@@ -894,9 +896,10 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
   do {
       
       /* what is the next step? */
-      if (ind == offset + AVLRank(tree,p)) 
+      if (ind == offset + AVLRank(tree,p)) {
           c = 0;   /* we found our node! */
-      else if (ind < offset + AVLRank(tree,p))
+          x = AVLData(tree,p);
+      } else if (ind < offset + AVLRank(tree,p))
           c = -1;  /* we have to go left */
       else
           c = 1;   /* we have to go right */
@@ -994,7 +997,7 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
   while (m >= 1) {
       if (AVLBalFactor(tree,nodes[m]) == 0) {
           SetAVLBalFactor(tree,nodes[m],3-path[m]); /* we made path[m] shorter*/
-          return True;
+          return x;
       } else if (AVLBalFactor(tree,nodes[m]) == path[m]) {
           SetAVLBalFactor(tree,nodes[m],0);     /* we made path[m] shorter */
       } else {   /* tree is out of balance */
@@ -1002,16 +1005,16 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
           AVLRebalance(tree,nodes[m],&p,&shorter);
           if (m == 1) {
               SetAVLTop(tree,p);
-              return True;               /* everything is done */
+              return x;               /* everything is done */
           } else if (path[m-1] == 2)   /* was: = -1 */
               SetAVLLeft(tree,nodes[m-1],p);
           else
               SetAVLRight(tree,nodes[m-1],p);
-          if (!shorter) return True;    /* nothing happens further up */
+          if (!shorter) return x;    /* nothing happens further up */
       }
       m--;
   }
-  return True;
+  return x;
 }
  
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */

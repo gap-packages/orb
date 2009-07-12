@@ -97,3 +97,20 @@ Print("time=",Runtimes().user_time-ti,"\n");
 if AVLTest(t).ok <> true then
     Error("Index delete messed up!");
 fi;
+Print("Checking AVLFindIndex...\c");
+ti := Runtimes().user_time;
+for i in [1..n] do
+    if AVLFindIndex(t,AVLIndex(t,i)) <> i then 
+        Error("AVLFindIndex does not work...");
+    fi;
+od;
+Print("time=",Runtimes().user_time-ti,"\n");
+Print("Checking Position and ELM_LIST...\c");
+ti := Runtimes().user_time;
+for i in [1..n] do
+    if Position(t,t[i]) <> i then 
+        Error("Position or ELM_LIST do not work...");
+    fi;
+od;
+Print("time=",Runtimes().user_time-ti,"\n");
+

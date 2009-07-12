@@ -19,7 +19,8 @@
 
 BindGlobal( "AVLTreeFamily", NewFamily("AVLTreeFamily") );
 DeclareCategory( "IsAVLTree", IsPositionalObjectRep );
-BindGlobal( "AVLTreeType", NewType(AVLTreeFamily,IsAVLTree) );
+DeclareRepresentation( "IsAVLTreeFlatRep", IsAVLTree, [] );
+BindGlobal( "AVLTreeType", NewType(AVLTreeFamily,IsAVLTreeFlatRep) );
 
 # All of the following functions exist on the GAP level and some of
 # them on the C level for speedup. The GAP versions have "_GAP" appended
@@ -61,6 +62,8 @@ DeclareGlobalFunction( "AVLSetValue_GAP" );
 AVLSetValue := fail;     # placeholder for later assignment
 DeclareGlobalFunction( "AVLFind_GAP" );
 AVLFind := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLFindIndex_GAP" );
+AVLFindIndex := AVLFindIndex_GAP;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLLookup_GAP" );
 AVLLookup := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLIndex_GAP" );
