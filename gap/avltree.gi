@@ -1283,6 +1283,12 @@ InstallOtherMethod( ADD_LIST, "for an avl tree, an object and a position",
     AVLIndexAdd(t,x,true,pos);
   end );
 
+InstallOtherMethod( IN, "for an object and an avl tree",
+  [ IsObject, IsAVLTree and IsAVLTreeFlatRep ],
+  function( x, t )
+    return AVLFind(t,x) <> fail;
+  end );
+
         
 ##
 ##  This program is free software: you can redistribute it and/or modify
