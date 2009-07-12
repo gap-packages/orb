@@ -23,7 +23,7 @@
 #
 # A balanced binary tree (AVLTree) is a positional object having the 
 # following entries:
-#   ![1]     len: last used entry, never shrinks), always = 3 mod 4
+#   ![1]     len: last used entry (never shrinks), always = 3 mod 4
 #   ![2]     free: index of first freed entry, if 0, none free
 #   ![3]     nodes: number of nodes currently in the tree
 #   ![4]     alloc: highest allocated index, always = 3 mod 4
@@ -63,7 +63,7 @@ else
 fi;
 
 InstallGlobalFunction( AVLTree_GAP, function(arg)
-  # Parameters: cmpfunc (optional), default value is AVLCmp
+  # Parameters: options record (optional)
   # Initializes balanced binary tree object, optionally with comparison 
   # function. Returns empty tree object.
   # A comparison function takes 2 arguments and returns respectively -1, 0
@@ -72,21 +72,36 @@ InstallGlobalFunction( AVLTree_GAP, function(arg)
   # A comparison function is NOT necessary for trees where the ordering is
   # only defined by the tree and not by an ordering of the elements. Such
   # trees are managed by the special functions below. Specify nothing
-  # for the cmpfunc.
-  local t,cmpfunc;
-  if Length(arg) = 0 then
-      cmpfunc := AVLCmp;
-  elif Length(arg) = 1 then
-      cmpfunc := arg[1];
-      if not(IsFunction(cmpfunc)) then
-          Error("Argument must be a three-way comparison function");
+  # for the cmpfunc (or leave the default one).
+  local t,cmpfunc,alloc,opt;
+  # defaults:
+  cmpfunc := AVLCmp;
+  alloc := 11;
+  if Length(arg) = 1 then
+      opt := arg[1];
+      if not(IsRecord(opt)) then
+          Error("Argument must be an options record!");
           return fail;
       fi;
-  else
-      Error("Usage: AVLTree( [three-way comparison function] )");
+      if IsBound(opt.cmpfunc) then
+          cmpfunc := opt.cmpfunc;
+          if not(IsFunction(cmpfunc)) then
+              Error("cmdfunc must be a three-way comparison function");
+              return fail;
+          fi;
+      fi;
+      if IsBound(opt.allocsize) then
+          alloc := opt.allocsize;
+          if not(IsInt(alloc)) then
+              Error("allocsize must be a positive integer");
+          fi;
+          alloc := alloc*4+3;
+      fi;
+  elif Length(arg) <> 0 then
+      Error("Usage: AVLTree( [options-record] )");
       return fail;
   fi;
-  t := [11,8,0,11,cmpfunc,0,fail,0,0,0,0];
+  t := [11,8,0,alloc,cmpfunc,0,fail,0,0,0,0];
   Objectify(AVLTreeType,t);
   return t;
 end);
