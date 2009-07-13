@@ -19,7 +19,7 @@ for i in [1..Length(o)] do
     AddTHT(t,o[i],i);
 od;
 for i in [1..Length(o)] do
-    if ValueHTH(t,o[i]) <> i then Error(); fi;
+    if ValueTHT(t,o[i]) <> i then Error(); fi;
 od;
 
 LoadPackage("cvec");
