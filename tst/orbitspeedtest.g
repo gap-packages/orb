@@ -1,4 +1,5 @@
 # mygap4currL -m 500m
+LoadPackage("atlasrep");
 LoadPackage("orb");
 gens := AtlasGenerators("HN",8).generators;                         
 s := AtlasStraightLineProgram("HN",1).program;
@@ -12,6 +13,14 @@ o := Orb(gens,v,OnRight,rec( hashlen := 2000000, report := 100000,
                              storenumbers := true ));
 Enumerate(o);
 time;
+
+t := NewTHT(o[1],200000);
+for i in [1..Length(o)] do
+    AddTHT(t,o[i],i);
+od;
+for i in [1..Length(o)] do
+    if ValueHTH(t,o[i]) <> i then Error(); fi;
+od;
 
 LoadPackage("cvec");
 cgens := List(gens,CMat);

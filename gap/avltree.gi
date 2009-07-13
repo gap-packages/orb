@@ -102,6 +102,7 @@ InstallGlobalFunction( AVLTree_GAP, function(arg)
       return fail;
   fi;
   t := [11,8,0,alloc,cmpfunc,0,fail,0,0,0,0];
+  if alloc > 11 then t[alloc] := fail; fi;    # expand object
   Objectify(AVLTreeType,t);
   return t;
 end);
