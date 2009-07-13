@@ -146,12 +146,16 @@ fi;
 
 
 InstallGlobalFunction( AVLFreeNode_GAP, function(t,n)
+  local o;
   t![n] := t![2];
   t![2] := n;
   n := n/4;
   if t![7] <> fail and IsBound(t![7][n]) then
+      o := t![7][n];
       Unbind(t![7][n]);
+      return o;
   fi;
+  return true;
 end);
 if IsBound(AVLFreeNode_C) then
     AVLFreeNode := AVLFreeNode_C;
@@ -800,9 +804,9 @@ InstallGlobalFunction( AVLDelete_GAP, function(tree,data)
   #  tree is a AVL
   #  data is a data structure defined by the user
   # Tries to find data as a node in the tree. If found, this node is deleted
-  # and the tree rebalanced. It is an error, of the node is not found.
-  # Returns fail in this case, and true normally.
-  local compare, p, path, nodes, n, ranksubs, c, m, l, r, i;
+  # and the tree rebalanced. It is an error, if the node is not found.
+  # Returns fail in this case, and the stored value normally.
+  local compare, p, path, nodes, n, ranksubs, c, m, l, r, i, old;
   
   compare := tree![5];
   
@@ -814,8 +818,7 @@ InstallGlobalFunction( AVLDelete_GAP, function(tree,data)
     if compare(data,AVLData(tree,p)) = 0 then
       tree![3] := 0;
       tree![6] := 0;
-      AVLFreeNode(tree,p);
-      return true;
+      return AVLFreeNode(tree,p);
     else
       return fail;
     fi;
@@ -932,7 +935,7 @@ InstallGlobalFunction( AVLDelete_GAP, function(tree,data)
     AVLSetRight(tree,nodes[m-1],r);
   fi;
   tree![3] := tree![3] - 1;
-  AVLFreeNode(tree,l);
+  old := AVLFreeNode(tree,l);
   
   # modify balance factors:
   # the subtree nodes[m-1] has become shorter at its left (resp. right)
@@ -944,24 +947,24 @@ InstallGlobalFunction( AVLDelete_GAP, function(tree,data)
   while m >= 1 do
     if AVLBalFactor(tree,nodes[m]) = 0 then
       AVLSetBalFactor(tree,nodes[m],-path[m]);  # we made path[m] shorter
-      return true;
+      return old;
     elif AVLBalFactor(tree,nodes[m]) = path[m] then
       AVLSetBalFactor(tree,nodes[m],0);         # we made path[m] shorter
     else    # tree is out of balance
       p := AVLRebalance(tree,nodes[m]);
       if m = 1 then
         tree![6] := p.newroot;
-        return true;               # everything is done
+        return old;               # everything is done
       elif path[m-1] = -1 then
         AVLSetLeft(tree,nodes[m-1],p.newroot);
       else
         AVLSetRight(tree,nodes[m-1],p.newroot);
       fi;
-      if not p.shorter then return true; fi;   # nothing happens further up
+      if not p.shorter then return old; fi;   # nothing happens further up
     fi;
     m := m - 1;
   od;
-  return true;
+  return old;
 end);
 if IsBound(AVLDelete_C) then
     AVLDelete := AVLDelete_C;

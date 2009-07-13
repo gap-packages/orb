@@ -136,16 +136,19 @@ static Obj AVLNewNode_C( Obj self, Obj t )
     return INTOBJ_INT(AVLNewNode(t));
 }
 
-static inline void AVLFreeNode( Obj t, Int n )
+static inline Obj AVLFreeNode( Obj t, Int n )
 {
-    Obj v;
+    Obj v,o;
     SET_ELM_PLIST(t,n,AVLFreeObj(t));
     SetAVLFree(t,n);
     n /= 4;
     v = AVLValues(t);
     if (v != Fail && ISB_LIST(v,n)) {
+        o = ELM_PLIST(v,n);
         UNB_LIST(v,n);
+        return o;
     }
+    return True;
 }
 
 static Obj AVLFreeNode_C( Obj self, Obj t, Obj n)
@@ -155,8 +158,7 @@ static Obj AVLFreeNode_C( Obj self, Obj t, Obj n)
         ErrorQuit( "Usage: AVLFreeNode(avltree,integer)", 0L, 0L );
         return 0L;
     }
-    AVLFreeNode(t,INT_INTOBJ(n));
-    return (Obj) 0;
+    return AVLFreeNode(t,INT_INTOBJ(n));
 }
 
 Obj static inline AVLValue( Obj t, Int n )
@@ -721,10 +723,11 @@ Obj static AVLDelete_C( Obj self, Obj tree, Obj data)
   Int r,l;
   Int ranksubs[64];
   int ranksubslen;    /* length of list randsubs */
+  Obj old;
   
   if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
       ErrorQuit( "Usage: AVLDelete(avltree, object)", 0L, 0L );
-      return 0L;
+      return Fail;
   }
 
   compare = AVL3Comp(tree);
@@ -736,8 +739,7 @@ Obj static AVLDelete_C( Obj self, Obj tree, Obj data)
       if (INT_INTOBJ(CALL_2ARGS(compare,data,AVLData(tree,p))) == 0) {
           SetAVLNodes(tree,0);
           SetAVLTop(tree,0);
-          AVLFreeNode(tree,p);
-          return True;
+          return AVLFreeNode(tree,p);
       } else {
           return Fail;
       }
@@ -845,7 +847,7 @@ Obj static AVLDelete_C( Obj self, Obj tree, Obj data)
   else
       SetAVLRight(tree,nodes[m-1],r);
   SetAVLNodes(tree,AVLNodes(tree)-1);
-  AVLFreeNode(tree,l);
+  old = AVLFreeNode(tree,l);
   
   /* modify balance factors:
      the subtree nodes[m-1] has become shorter at its left (resp. right)
@@ -857,7 +859,7 @@ Obj static AVLDelete_C( Obj self, Obj tree, Obj data)
   while (m >= 1) {
       if (AVLBalFactor(tree,nodes[m]) == 0) {
           SetAVLBalFactor(tree,nodes[m],3-path[m]); /* we made path[m] shorter*/
-          return True;
+          return old;
       } else if (AVLBalFactor(tree,nodes[m]) == path[m]) {
           SetAVLBalFactor(tree,nodes[m],0);     /* we made path[m] shorter */
       } else {   /* tree is out of balance */
@@ -865,16 +867,16 @@ Obj static AVLDelete_C( Obj self, Obj tree, Obj data)
           AVLRebalance(tree,nodes[m],&p,&shorter);
           if (m == 1) {
               SetAVLTop(tree,p);
-              return True;               /* everything is done */
+              return old;               /* everything is done */
           } else if (path[m-1] == 2)   /* was: = -1 */
               SetAVLLeft(tree,nodes[m-1],p);
           else
               SetAVLRight(tree,nodes[m-1],p);
-          if (!shorter) return True;    /* nothing happens further up */
+          if (!shorter) return old;    /* nothing happens further up */
       }
       m--;
   }
-  return True;
+  return old;
 }
  
 Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)

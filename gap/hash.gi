@@ -161,6 +161,180 @@ InstallGlobalFunction( GrowHT, function(ht,x)
   Info(InfoOrb,3,"Done.");
 end );
 
+InstallMethod( HTCreate, "for an object",
+  [ IsObject ],
+  function( x )
+    return HTCreate(x,rec());
+  end );
+
+InstallMethod( HTCreate, "for an object and an options record",
+  [ IsObject, IsRecord ],
+  function( x, opt )
+    local ht,ty,hfun;
+    ht := ShallowCopy(opt);
+    if IsBound(ht.hashlen) then
+        ty := HashTabType;
+        ht.len := ht.hashlen;
+    elif IsBound(ht.treehashsize) then
+        ty := TreeHashTabType;
+        ht.len := ht.treehashsize;
+    elif IsBound(ht.treehashtab) then
+        ty := TreeHashTabType;
+        ht.len := 100003;
+    elif IsBound(ht.hashtab) then
+        ty := HashTabType;
+        ht.len := 10007;
+    else
+        ty := TreeHashTabType;
+        ht.len := 100003;
+    fi;
+    ht.els := EmptyPlist(ht.len);
+    ht.vals := [];
+    ht.nr := 0;
+    if not(IsBound(ht.hf) and IsBound(ht.hfd)) then
+        hfun := ChooseHashFunction(x,ht.len);
+        if hfun = fail then
+            Error("Could not find hash function for sample object");
+            return fail;
+        fi;
+        ht.hf := hfun.func;
+        ht.hfd := hfun.data;
+    fi;
+    ht.collisions := 0;
+    ht.accesses := 0;
+    if ty = TreeHashTabType and not(IsBound(ht.cmpfunc)) then
+        ht.cmpfunc := AVLCmp;
+    fi;
+    Objectify(ty,ht);
+    return ht;
+  end);
+
+InstallMethod(ViewObj, "for tree hash tables", 
+  [IsHashTab and IsTreeHashTabRep],
+  function(ht)
+    Print("<tree hash table len=",ht!.len," used=",ht!.nr," colls=",
+          ht!.collisions," accs=",ht!.accesses);
+    if IsBound(ht!.alert) then
+        Print(" COLLISION ALERT!>");
+    fi;
+    Print(">");
+  end);
+
+InstallMethod( HTAdd, "for a tree hash table, an object and a value",
+  [ IsTreeHashTabRep, IsObject, IsObject ],
+  function(ht, x, val)
+    local h,t,r;
+    ht!.accesses := ht!.accesses + 1;
+    h := ht!.hf(x,ht!.hfd);
+    if not(IsBound(ht!.els[h])) then
+        ht!.els[h] := x;
+        if val <> true then ht!.vals[h] := val; fi;
+        ht!.nr := ht!.nr+1;
+        return h;
+    fi;
+    ht!.collisions := ht!.collisions + 1;
+    t := ht!.els[h];
+    if not(IsAVLTree(t)) then
+        # Exactly one element there!
+        t := AVLTree(rec(cmpfunc := ht!.cmpfunc, allocsize := 3));
+        if IsBound(ht!.vals[h]) then
+            AVLAdd(t,ht!.els[h],ht!.vals[h]);
+            Unbind(ht!.vals[h]);
+        else
+            AVLAdd(t,ht!.els[h],true);
+        fi;
+        ht!.els[h] := t;
+    fi;
+    if val <> true then
+        r := AVLAdd(t,x,val);
+    else
+        r := AVLAdd(t,x,true);
+    fi;
+    if r <> fail then ht!.nr := ht!.nr + 1; fi;
+    return h;
+end );
+
+InstallMethod( HTValue, "for a tree hash table and an object",
+  [ IsTreeHashTabRep, IsObject ],
+  function(ht, x)
+    local h,t;
+    ht!.accesses := ht!.accesses + 1;
+    h := ht!.hf(x,ht!.hfd);
+    if not(IsBound(ht!.els[h])) then
+        return fail;
+    fi;
+    t := ht!.els[h];
+    if not(IsAVLTree(t)) then
+        if ht!.cmpfunc(x,t) = 0 then
+            if IsBound(ht!.vals[h]) then
+                return ht!.vals[h];
+            else
+                return true;
+            fi;
+        fi;
+        return fail;
+    fi;
+    return AVLLookup(t,x);
+end );
+
+InstallMethod( HTDelete, "for a tree hash table and an object",
+  [ IsTreeHashTabRep, IsObject ],
+  function(ht, x)
+    local h,t,v;
+    h := ht!.hf(x,ht!.hfd);
+    if not(IsBound(ht!.els[h])) then
+        return fail;
+    fi;
+    t := ht!.els[h];
+    if not(IsAVLTree(t)) then
+        if ht!.cmpfunc(x,t) = 0 then
+            if IsBound(ht!.vals[h]) then
+                v := ht!.vals[h];
+                Unbind(ht!.vals);
+            else
+                v := true;
+            fi;
+            Unbind(ht!.els[h]);
+            ht!.nr := ht!.nr - 1;
+            return v;
+        fi;
+        return fail;
+    fi;
+    v := AVLDelete(t,x);
+    if v <> fail then ht!.nr := ht!.nr - 1; fi;
+    return v;
+end );
+
+InstallMethod( HTUpdate, "for a tree hash table and an object",
+  [ IsTreeHashTabRep, IsObject, IsObject ],
+  function( ht, x, v )
+    local h,t,o;
+    h := ht!.hf(x,ht!.hfd);
+    if not(IsBound(ht!.els[h])) then
+        return fail;
+    fi;
+    t := ht!.els[h];
+    if not(IsAVLTree(t)) then
+        if ht!.cmpfunc(x,t) = 0 then
+            if IsBound(ht!.vals[h]) then
+                o := ht!.vals[h];
+            else
+                o := true;
+            fi;
+            ht!.vals[h] := v;
+            return o;
+        fi;
+        return fail;
+    fi;
+    h := AVLFind(t,x);
+    if h = fail then return fail; fi;
+    o := AVLValue(t,h);
+    AVLSetValue(t,h,v);
+    return o;
+end );
+
+
+
 InstallGlobalFunction( InitTHT, function(len, hfun, cmpfun)
   return rec(els := [],        # the elements to treehash 
              vals := [],       # a value for each element, "true" not stored
