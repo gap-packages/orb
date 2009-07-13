@@ -1,7 +1,9 @@
 AVLTrees and Hashes:
-  Document AVL trees
+  HashTrees: nicer general setup, optimization, documentation
+  Better Orb using HashTrees
+  some more tests
   Speed up hashing by putting it into kernel
-  HashTrees, including optimization
+  Document AVL trees, Hashtrees
 
 OrbitStatisticsInVectorSpace: orbit limit instead of group size limit
 Beispiel laufen lassen
