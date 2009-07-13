@@ -161,6 +161,107 @@ InstallGlobalFunction( GrowHT, function(ht,x)
   Info(InfoOrb,3,"Done.");
 end );
 
+InstallGlobalFunction( InitTHT, function(len, hfun, cmpfun)
+  return rec(els := [],        # the elements to treehash 
+             vals := [],       # a value for each element, "true" not stored
+             len := len,       # the length of the treehash
+             nr := 0,          # number of elements in treehash
+             hf := hfun.func,  # the hash function
+             hfd := hfun.data, # data for the second argument to hf
+             cmpfun := cmpfun, # a three-way comparison function
+             collisions := 0,  # number of collisions
+             accesses := 0,    # number of accesses
+             istreehash := true,   # a "magic" entry
+            );
+  # Each element is either stored directly or in a binary tree after
+  # the first collision.
+end );
+
+InstallGlobalFunction( NewTHT, function(sample,len)
+  local cmpfun,hfun,ht;
+  hfun := ChooseHashFunction(sample,len);
+  if hfun = fail then
+      return fail;
+  fi;
+  cmpfun := ApplicableMethod(\<,[sample,sample]);
+  if cmpfun = fail then 
+      Error("Cannot compare elements with <");
+      return fail;
+  fi;
+  ht := InitTHT(len,hfun,AVLCmp);
+  return ht;
+end );
+
+InstallMethod(ViewObj, "for tree hash tables", [IsRecord],
+  function(ht)
+    if IsBound(ht.istreehash) and
+       IsBound(ht.len) and IsBound(ht.nr) and IsBound(ht.els) and
+       IsBound(ht.vals) and IsBound(ht.hf) and IsBound(ht.cmpfun) and
+       IsBound(ht.collisions) and IsBound(ht.hfd) then
+      # This is obviously a tree hash table
+      Print("<tree hash table len=",ht.len," used=",ht.nr," colls=",
+            ht.collisions," accs=",ht.accesses);
+      if IsBound(ht.alert) then
+          Print(" COLLISION ALERT!>");
+      fi;
+      Print(">");
+    else
+      TryNextMethod();
+    fi;
+  end);
+
+InstallGlobalFunction( AddTHT, function(ht, x, val)
+  local h,t;
+  ht.accesses := ht.accesses + 1;
+  h := ht.hf(x,ht.hfd);
+  if not(IsBound(ht.els[h])) then
+      ht.els[h] := x;
+      if val <> true then ht.vals[h] := val; fi;
+      ht.nr := ht.nr+1;
+      return h;
+  fi;
+  ht.collisions := ht.collisions + 1;
+  t := ht.els[h];
+  if not(IsAVLTree(t)) then
+      # Exactly one element there!
+      t := AVLTree(rec(cmpfunc := ht.cmpfun, allocsize := 3));
+      if IsBound(ht.vals[h]) then
+          AVLAdd(t,ht.els[h],ht.vals[h]);
+          Unbind(ht.vals[h]);
+      else
+          AVLAdd(t,ht.els[h],true);
+      fi;
+      ht.els[h] := t;
+  fi;
+  if val <> true then
+      AVLAdd(t,x,val);
+  else
+      AVLAdd(t,x,true);
+  fi;
+  return h;
+end );
+
+InstallGlobalFunction( ValueTHT, function(ht, x)
+  local h,t;
+  ht.accesses := ht.accesses + 1;
+  h := ht.hf(x,ht.hfd);
+  if not(IsBound(ht.els[h])) then
+      return fail;
+  fi;
+  t := ht.els[h];
+  if not(IsAVLTree(t)) then
+      if ht.cmpfun(x,t) = 0 then
+          if IsBound(ht.vals[h]) then
+              return ht.vals[h];
+          else
+              return true;
+          fi;
+      fi;
+      return fail;
+  fi;
+  return AVLLookup(t,x);
+end );
+
 
 # Here comes stuff for hash functions:
 

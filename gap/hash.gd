@@ -23,6 +23,10 @@ DeclareGlobalFunction( "NewHT" );
 DeclareGlobalFunction( "AddHT" );
 DeclareGlobalFunction( "ValueHT" );
 DeclareGlobalFunction( "GrowHT" );
+DeclareGlobalFunction( "InitTHT" );
+DeclareGlobalFunction( "NewTHT" );
+DeclareGlobalFunction( "AddTHT" );
+DeclareGlobalFunction( "ValueTHT" );
 
 
 #########################################################################
