@@ -1055,6 +1055,47 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
   return x;
 }
  
+static Int RNam_accesses = 0;
+static Int RNam_hfd = 0;
+static Int RNam_hf = 0;
+static Int RNam_els = 0;
+static Int RNam_vals = 0;
+static Int RNam_nr = 0;
+
+static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
+{
+    Obj els;
+    Obj vals;
+    Obj tmp;
+    Obj hfd;
+    Obj h;
+
+    /* Find RNams if not already done: */
+    if (!RNam_accesses) {
+        RNam_accesses = RNamName("accesses");
+        RNam_hfd = RNamName("hfd");
+        RNam_hf = RNamName("hf");
+        RNam_els = RNamName("els");
+        RNam_vals = RNamName("vals");
+        RNam_nr = RNamName("nr");
+    }
+
+    /* Incremenet accesses entry: */
+    tmp = ElmPRec(ht,RNam_accesses);
+    tmp = INTOBJ_INT(INT_INTOBJ(tmp)+1);
+    AssPRec(ht,RNam_accesses,tmp);
+
+    /* Compute hash value: */
+    hfd = ElmPRec(ht,RNam_hfd);
+    tmp = ElmPRec(ht,RNam_hf);
+    h = CALL_2ARGS(tmp,x,hfd);
+
+    /* Lookup slot: */
+    els = ElmPRec(ht,RNam_els);
+    vals = ElmPRec(ht,RNam_vals);
+    return els;
+}
+
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
 /******************************************************************************
@@ -1113,6 +1154,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "AVLIndexDelete_C", 2, "tree, index", 
     AVLIndexDelete_C,
     "orb.c:AVLIndexDelete_C" },
+
+  { "HTAdd_TreeHash_C", 3, "treehash, x, v",
+    HTAdd_TreeHash_C,
+    "orb.c:HTAdd_TreeHash_C" },
 
   { 0 }
 

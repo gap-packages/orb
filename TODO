@@ -4,6 +4,7 @@ AVLTrees and Hashes:
   some more tests
   Speed up hashing by putting it into kernel
   Document AVL trees, Hashtrees
+  Test Jenkins hash function
 
 OrbitStatisticsInVectorSpace: orbit limit instead of group size limit
 Beispiel laufen lassen
