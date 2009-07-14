@@ -342,7 +342,7 @@ InstallMethod( StoreSuborbit,
   # in the hash, in addition "p" is appended as representative to
   # "suborbits" and the orbit length is calculated and appended to
   # "lengths".
-  local i,infolevel,j,l,length,m,o,setup;
+  local i,infolevel,j,l,length,m,o,setup,percentage;
         
   setup := db!.setup;
   if db!.l = setup!.k+1 and db!.i = setup!.k and
@@ -373,12 +373,14 @@ InstallMethod( StoreSuborbit,
   else
       infolevel := 1;
   fi;
+  percentage := QuoInt(db!.totallength * fullstabsize * 100,setup!.size[l]);
   Info(InfoOrb,infolevel+ORB.ORBITBYSUBORBITDEPTH,
        "j=",j," l=",l," i=",i," #",Length(db!.reps),
        " Size:",ORB_PrettyStringBigNumber(length),
        "\c Mins:",Length(o!.orbit)," \cTotal:",
        ORB_PrettyStringBigNumber(db!.totallength),
-       "\c Stab:",ORB_PrettyStringBigNumber(fullstabsize));
+       "\c Stab:",ORB_PrettyStringBigNumber(fullstabsize),
+       "\c (",percentage,"%)");
   return length;
 end );
 
