@@ -78,7 +78,7 @@ HappyBirthday := function( gens, pt, op, L, limit, timeout )
   starttime := Runtime();
   endtime := starttime + timeout;
   pr := ProductReplacer( gens, rec( maxdepth:=400 ) );
-  ht := NewHT( pt, NextPrimeInt( Minimum( 100000, limit ) ) );
+  ht := HTCreate( pt, rec( hashlen := NextPrimeInt( Minimum( 100000, limit))) );
   tries := 0;
   coinc := 0;
   grpcoinc := 0;
@@ -94,10 +94,10 @@ HappyBirthday := function( gens, pt, op, L, limit, timeout )
       
     x := Next( pr );
     ptx := op( pt, x );
-    elm := ValueHT( ht, ptx );
+    elm := HTValue( ht, ptx );
     if elm = fail then
       # new
-      AddHT( ht, ptx, x );
+      HTAdd( ht, ptx, x );
     else
       # coincidence
       coinc := coinc + 1;

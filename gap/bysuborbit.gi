@@ -97,11 +97,11 @@ InstallMethod( Memory, "for an orbit-by-suborbit setup object",
 InstallGlobalFunction( ORB_StoreWordInCache,
 function(setup,w)
   local v;
-  v := ValueHT(setup!.wordhash,w);
+  v := HTValue(setup!.wordhash,w);
   if v = fail then
       Add(setup!.wordcache,w);
       v := Length(setup!.wordcache);
-      AddHT(setup!.wordhash,w,v);
+      HTAdd(setup!.wordhash,w,v);
   fi;
   return v;
 end );
@@ -129,7 +129,7 @@ function(p,j,i,setup,stab,w)
     else
       q := p;
     fi;
-    v := ValueHT(setup!.info[1],q);
+    v := HTValue(setup!.info[1],q);
     if v = fail then    # we do not yet know this point
       o := Enumerate(Orb(setup!.els[1],q,setup!.op[1],
                          rec( schreier := true, 
@@ -141,12 +141,12 @@ function(p,j,i,setup,stab,w)
       tups := List(o!.stabwords,w->ORB_SiftWord(setup,1,w));
       v := rec( tups := tups, size := o!.stabsize, 
                 cache := List([1..setup!.k+1],i->WeakPointerObj([])) );
-      AddHT(setup!.info[1],q,v);
+      HTAdd(setup!.info[1],q,v);
       # Now we have to store backward words via the wordcache:
       for m in [2..Length(o!.orbit)] do
           ww := -TraceSchreierTreeBack(o,m);
           ww := ORB_StoreWordInCache(setup,ww);
-          AddHT(setup!.info[1],o!.orbit[m],ww);
+          HTAdd(setup!.info[1],o!.orbit[m],ww);
       od;
       setup!.suborbnr[1] := setup!.suborbnr[1] + 1;
       setup!.sumstabl[1] := setup!.sumstabl[1] + o!.stabsize;
@@ -161,7 +161,7 @@ function(p,j,i,setup,stab,w)
         else
           q := p;
         fi;
-        v := ValueHT(setup!.info[1],q);  # look up stabilizer
+        v := HTValue(setup!.info[1],q);  # look up stabilizer
       fi; # otherwise we are already U_1-minimal:
     fi;
     if IsRecord(stab) then 
@@ -183,7 +183,7 @@ function(p,j,i,setup,stab,w)
     else
       q := p;
     fi;
-    v := ValueHT(setup!.info[i],q);
+    v := HTValue(setup!.info[i],q);
 
     if v = fail then    # we do not yet know this U_i-suborbit
 
@@ -194,7 +194,7 @@ function(p,j,i,setup,stab,w)
       tups := List(o!.stabwords,w->ORB_SiftWord(setup,i,w));
       v := rec( tups := tups, size := o!.stabsize,
                 cache := List([1..setup!.k+1],i->WeakPointerObj([])) );
-      AddHT(setup!.info[i],q,v);
+      HTAdd(setup!.info[i],q,v);
       # Now find all U_{i-1}-minimal elements in q*U_{i-1}, note that
       # tempstab contains generators for Stab_{U_{i-1}}(q)!
       Info(InfoOrb,2+ORB.ORBITBYSUBORBITDEPTH,
@@ -206,10 +206,10 @@ function(p,j,i,setup,stab,w)
           ww := ORB_WordTuple(setup,ORB_SiftWord(setup,i,ww));
           ww := ORB_StoreWordInCache(setup,ww);
           # FIXME: Throw this out eventually?
-          if ValueHT(setup!.info[i],oo!.orbit[m]) <> fail then
+          if HTValue(setup!.info[i],oo!.orbit[m]) <> fail then
               Error(1);
           fi;
-          AddHT(setup!.info[i],oo!.orbit[m],-ww);
+          HTAdd(setup!.info[i],oo!.orbit[m],-ww);
       od;
       
       # Now store all U_{i-1}-minimal elements in the other U_{i-1}-orbits
@@ -231,10 +231,10 @@ function(p,j,i,setup,stab,w)
               cos := setup!.cosetrecog[i]
                         (i,ORB_InvWord(Concatenation(ww,www)),setup);
               # FIXME: Throw this out eventually?
-              if ValueHT(setup!.info[i],oo!.orbit[mm]) <> fail then
+              if HTValue(setup!.info[i],oo!.orbit[mm]) <> fail then
                   Error(2);
               fi;
-              AddHT(setup!.info[i],oo!.orbit[mm],cos);
+              HTAdd(setup!.info[i],oo!.orbit[mm],cos);
           od;
           Info(InfoOrb,4+ORB.ORBITBYSUBORBITDEPTH,"done 1 suborbit.");
       od;
@@ -266,7 +266,7 @@ function(p,j,i,setup,stab,w)
         else
           q := p;
         fi;
-        v := ValueHT(setup!.info[i],q);
+        v := HTValue(setup!.info[i],q);
       fi;
       if IsInt(v) then
         # FIXME: Throw this out eventually?
@@ -285,7 +285,7 @@ function(p,j,i,setup,stab,w)
         else
           q := p;
         fi;
-        v := ValueHT(setup!.info[i],q);
+        v := HTValue(setup!.info[i],q);
       fi;
       # now q is the U_i-minimal element in qU_i
       # v is now a record with generators for Stab_{U_i}(q)
@@ -317,7 +317,7 @@ InstallMethod( SuborbitDatabase, "for an orbit by suborbit setup object",
     local r;
     r := rec( reps := [], lengths := [], setup := setup, totallength := 0,
               i := i, l := l, j := j, nrmins := [] );
-    r.mins := NewHT( setup!.sample[j], setup!.hashlen[j] );
+    r.mins := HTCreate( setup!.sample[j], rec( hashlen := setup!.hashlen[j]) );
     Objectify( StdSuborbitDatabasesType, r );
     return r;
   end );
@@ -359,10 +359,10 @@ InstallMethod( StoreSuborbit,
   j := db!.j;
   l := db!.l;
   Add(db!.reps,p);
-  AddHT(db!.mins,p,Length(db!.reps));
+  HTAdd(db!.mins,p,Length(db!.reps));
   o := ORB_StabOrbitComplete(stab,setup,j,p);
   for m in [2..Length(o!.orbit)] do
-      AddHT( db!.mins, o!.orbit[m], Length(db!.reps) );
+      HTAdd( db!.mins, o!.orbit[m], Length(db!.reps) );
   od;
   length := setup!.size[i] / (stab.size / Length(o!.orbit));
   Add(db!.lengths,length);
@@ -386,7 +386,7 @@ InstallMethod( LookupSuborbit,
   "for a (minimal) point and a std suborbit database",
   [ IsObject, IsSuborbitDatabase and IsStdSuborbitDbRep ],
   function( p, db )
-    return ValueHT( db!.mins, p );
+    return HTValue( db!.mins, p );
   end );
 
 InstallMethod( TotalLength, "for a std suborbit database",
@@ -1157,7 +1157,8 @@ function(gens,permgens,sizes,codims,opt)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [NewHT(setup.sample[1],NextPrimeInt((q^codims[1]) * 3))];
+  setup.info := [HTCreate(setup.sample[1],
+                          rec( hashlen := NextPrimeInt((q^codims[1]) * 3)))];
   for j in [2..k+1] do
       setup.pi[j] := [];
       setup.pifunc[j] := [];
@@ -1167,8 +1168,9 @@ function(gens,permgens,sizes,codims,opt)
       od;
       if j < k+1 then
           setup.info[j] :=
-             NewHT(setup.sample[j],
-                   NextPrimeInt(QuoInt((q^codims[j])*3,sizes[j-1])));
+             HTCreate(setup.sample[j],
+                      rec( hashlen := 
+                           NextPrimeInt(QuoInt((q^codims[j])*3,sizes[j-1]))) );
       fi;
   od;
   setup.suborbnr := 0*[1..k];
@@ -1176,7 +1178,7 @@ function(gens,permgens,sizes,codims,opt)
   setup.regvecs := [];
   setup.op := List([1..k+1],i->OnRight);
   setup.wordcache := [];
-  setup.wordhash := NewHT([1,2,3],1000);
+  setup.wordhash := HTCreate([1,2,3],rec( hashlen := 1000 ));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
                      IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
@@ -1406,8 +1408,9 @@ function(gens,permgens,sizes,codims,opt)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [NewHT(setup.sample[1],
-                       NextPrimeInt((q^codims[1]-1)/(q-1) * 3))];
+  setup.info := [HTCreate(setup.sample[1],
+                          rec( hashlen := 
+                               NextPrimeInt((q^codims[1]-1)/(q-1) * 3) ))];
   for j in [2..k+1] do
       setup.pi[j] := [];
       setup.pifunc[j] := [];
@@ -1416,9 +1419,8 @@ function(gens,permgens,sizes,codims,opt)
           setup.pifunc[j][i] := \{\};
       od;
       if j < k+1 then
-          setup.info[j] :=
-             NewHT(setup.sample[j],
-                   NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])));
+          setup.info[j] := HTCreate(setup.sample[j], rec( hashlen := 
+                   NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])) ));
       fi;
   od;
   setup.suborbnr := 0*[1..k];
@@ -1426,7 +1428,7 @@ function(gens,permgens,sizes,codims,opt)
   setup.regvecs := [];
   setup.op := List([1..k+1],i->OnLines);
   setup.wordcache := [];
-  setup.wordhash := NewHT([1,2,3],1000);
+  setup.wordhash := HTCreate([1,2,3],rec( hashlen := 1000 ));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
                      IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
@@ -1665,8 +1667,8 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [NewHT(setup.sample[1],
-                       NextPrimeInt((q^codims[1]-1)/(q-1) * 3))];
+  setup.info := [HTCreate(setup.sample[1], rec( hashlen := 
+                          NextPrimeInt((q^codims[1]-1)/(q-1) * 3) ))];
   for j in [2..k+1] do
       setup.pi[j] := [];
       setup.pifunc[j] := [];
@@ -1675,9 +1677,8 @@ function(gens,permgens,sizes,codims,spcdim,opt)
           setup.pifunc[j][i] := ORB_ProjDownForSpaces;
       od;
       if j < k+1 then
-          setup.info[j] :=
-             NewHT(setup.sample[j],
-                   NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])));
+          setup.info[j] := HTCreate( setup.sample[j], rec( hashlen :=
+                   NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])) ));
       fi;
   od;
   setup.suborbnr := 0*[1..k];
@@ -1685,7 +1686,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   setup.regvecs := [];
   setup.op := List([1..k+1],i->OnSubspacesByCanonicalBasis);
   setup.wordcache := [];
-  setup.wordhash := NewHT([1,2,3],1000);
+  setup.wordhash := CreateHT([1,2,3],rec(hashlen := 1000));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
                      IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
