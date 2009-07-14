@@ -1686,7 +1686,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   setup.regvecs := [];
   setup.op := List([1..k+1],i->OnSubspacesByCanonicalBasis);
   setup.wordcache := [];
-  setup.wordhash := CreateHT([1,2,3],rec(hashlen := 1000));
+  setup.wordhash := HTCreate([1,2,3],rec(hashlen := 1000));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
                      IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
