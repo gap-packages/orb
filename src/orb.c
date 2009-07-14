@@ -18,6 +18,7 @@ const char * Revision_orb_c =
  * its functionality on the C level for better performance. */
 
 Obj AVLTreeType;    /* Imported from the library to be able to check type */
+Obj AVLTree;        /* Constructor function imported from the library */
 
 /* Conventions:
  *
@@ -29,7 +30,7 @@ Obj AVLTreeType;    /* Imported from the library to be able to check type */
  *   ![4]     alloc: highest allocated index, always = 3 mod 4
  *   ![5]     three-way comparison function
  *   ![6]     top: reference to top node
- *   ![7]     unused
+ *   ![7]     vals: stored values
  * 
  * From index 8 on for every position = 0 mod 4:
  *   ![4n]    obj: an object
@@ -1056,11 +1057,14 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
 }
  
 static Int RNam_accesses = 0;
+static Int RNam_collisions = 0;
 static Int RNam_hfd = 0;
 static Int RNam_hf = 0;
 static Int RNam_els = 0;
 static Int RNam_vals = 0;
 static Int RNam_nr = 0;
+static Int RNam_cmpfunc = 0;
+static Int RNam_allocsize = 0;
 
 static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
 {
@@ -1068,16 +1072,21 @@ static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     Obj vals;
     Obj tmp;
     Obj hfd;
-    Obj h;
+    Int h;
+    Obj t;
+    Obj r;
 
     /* Find RNams if not already done: */
     if (!RNam_accesses) {
         RNam_accesses = RNamName("accesses");
+        RNam_collisions = RNamName("collisions");
         RNam_hfd = RNamName("hfd");
         RNam_hf = RNamName("hf");
         RNam_els = RNamName("els");
         RNam_vals = RNamName("vals");
         RNam_nr = RNamName("nr");
+        RNam_cmpfunc = RNamName("cmpfunc");
+        RNam_allocsize = RNamName("allocsize");
     }
 
     /* Incremenet accesses entry: */
@@ -1088,12 +1097,52 @@ static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     /* Compute hash value: */
     hfd = ElmPRec(ht,RNam_hfd);
     tmp = ElmPRec(ht,RNam_hf);
-    h = CALL_2ARGS(tmp,x,hfd);
+    h = INT_INTOBJ(CALL_2ARGS(tmp,x,hfd));
 
     /* Lookup slot: */
     els = ElmPRec(ht,RNam_els);
     vals = ElmPRec(ht,RNam_vals);
-    return els;
+    if (LEN_PLIST(els) < h || ELM_PLIST(els,h) == 0L) { /* Unbound entry! */
+        ASS_LIST(els,h,x);
+        if (v != True) ASS_LIST(vals,h,v);
+        AssPRec(ht,RNam_nr,INTOBJ_INT(INT_INTOBJ(ElmPRec(ht,RNam_nr))+1));
+        return INTOBJ_INT(h);
+    }
+    tmp = ELM_PLIST(els,h);    /* Note that hash values are always within
+                                  the boundaries of this list */
+
+    /* Count collision: */
+    AssPRec(ht,RNam_collisions,
+            INTOBJ_INT(INT_INTOBJ(ElmPRec(ht,RNam_collisions))+1));
+    
+    /* Now check whether it is an AVLTree or not: */
+    if (TNUM_OBJ(tmp) != T_POSOBJ || TYPE_POSOBJ(tmp) != AVLTreeType) {
+        r = NEW_PREC(2);   /* This might trigger a garbage collection */
+        AssPRec(r,RNam_cmpfunc,ElmPRec(ht,RNam_cmpfunc));
+        AssPRec(r,RNam_allocsize,INTOBJ_INT(3));
+        t = CALL_1ARGS(AVLTree,r);
+        if (LEN_PLIST(vals) >= h && ELM_PLIST(vals,h) != 0L) {
+            AVLAdd_C(self,t,tmp,ELM_PLIST(vals,h));
+            UNB_LIST(vals,h);
+        } else {
+            AVLAdd_C(self,t,tmp,True);
+        }
+        SET_ELM_PLIST(els,h,t);
+        CHANGED_BAG(els);
+    } else t = tmp;
+
+    /* Finally add value into tree: */
+    if (v != True) {
+        r = AVLAdd_C(self,t,x,v);
+    } else {
+        r = AVLAdd_C(self,t,x,True);
+    }
+
+    if (r != Fail) {
+        AssPRec(ht,RNam_nr,INTOBJ_INT(INT_INTOBJ(ElmPRec(ht,RNam_nr))+1));
+        return INTOBJ_INT(h);
+    } else
+        return Fail;
 }
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
@@ -1172,6 +1221,7 @@ static Int InitKernel ( StructInitInfo *module )
     InitHdlrFuncsFromTable( GVarFuncs );
 
     ImportGVarFromLibrary( "AVLTreeType", &AVLTreeType );
+    ImportFuncFromLibrary( "AVLTree", &AVLTree );
 
     /* return success                                                      */
     return 0;

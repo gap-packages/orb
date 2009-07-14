@@ -18,9 +18,20 @@ t := NewTHT(o[1],200000);
 for i in [1..Length(o)] do
     AddTHT(t,o[i],i);
 od;
+time;
 for i in [1..Length(o)] do
     if ValueTHT(t,o[i]) <> i then Error(); fi;
 od;
+time;
+t := HTCreate(o[1],rec(treehashsize := 200000));
+for i in [1..Length(o)] do
+    HTAdd(t,o[i],i);
+od;
+time;
+for i in [1..Length(o)] do
+    if HTValue(t,o[i]) <> i then Error(); fi;
+od;
+time;
 
 LoadPackage("cvec");
 cgens := List(gens,CMat);

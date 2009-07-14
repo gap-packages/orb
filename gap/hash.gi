@@ -250,9 +250,20 @@ InstallMethod( HTAdd, "for a tree hash table, an object and a value",
     else
         r := AVLAdd(t,x,true);
     fi;
-    if r <> fail then ht!.nr := ht!.nr + 1; fi;
-    return h;
+    if r <> fail then 
+        ht!.nr := ht!.nr + 1; 
+        return h;
+    else
+        return fail;
+    fi;
 end );
+if IsBound(HTAdd_TreeHash_C) then
+    InstallMethod( HTAdd, 
+      "for a tree hash table, an object and a value (C version)",
+      [ IsTreeHashTabRep, IsObject, IsObject ], 1,
+      HTAdd_TreeHash_C );
+fi;
+
 
 InstallMethod( HTValue, "for a tree hash table and an object",
   [ IsTreeHashTabRep, IsObject ],
