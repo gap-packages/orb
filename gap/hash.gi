@@ -66,7 +66,7 @@ InstallMethod(ViewObj, "for hash tables", [IsRecord],
 InstallGlobalFunction( AddHT, function(ht, x, val)
   local h,g;
   ht.accesses := ht.accesses + 1;
-  if ht.nr * 10 > ht.len * 9 then
+  if ht.nr * 10 > ht.len * 8 then
     if IsBound(ht.cangrow) then
       Info(InfoOrb,3,"Hash table too full, growing...");
       GrowHT(ht,x);
@@ -392,7 +392,7 @@ InstallMethod(HTAdd, "for a hash table, an object and a value",
   function(ht, x, val)
     local h,g;
     ht!.accesses := ht!.accesses + 1;
-    if ht!.nr * 10 > ht!.len * 9 then
+    if ht!.nr * 10 > ht!.len * 8 then
       if IsBound(ht!.cangrow) then
         Info(InfoOrb,3,"Hash table too full, growing...");
         GrowHTObj(ht,x);
