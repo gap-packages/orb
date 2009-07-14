@@ -9,7 +9,7 @@ guck := List(guck,NullspaceMat);
 v := SumIntersectionMat(guck[1],guck[2])[2][1];
 v*ugens[1]=v;
 v*ugens[2]=v;
-o := Orb(gens,v,OnRight,rec( hashlen := 2000000, report := 100000,
+o := Orb(gens,v,OnRight,rec( treehashsize := 2000000, report := 100000,
                              storenumbers := true ));
 Enumerate(o);
 time;
@@ -57,12 +57,6 @@ for i in [1..Length(l)] do
 od;
 Print("Time: ",Runtime()-ti,"\n");
 
-ti := Runtime();
-for i in [1..Length(l)] do
-    if HTValue_Test(guck,l[i]) <> i then Error(); fi;
-od;
-Print("Time: ",Runtime()-ti,"\n");
-
 meths := ApplicableMethod(HTValue,[t,o[1]],1,"all");;
 
 f := meths[1];
@@ -97,7 +91,7 @@ guck := List(guck,NullspaceMat);
 v := SumIntersectionMat(guck[1],guck[2])[2][1];
 v*ugens[1]=v;
 v*ugens[2]=v;
-o := Orb(gens,v,OnRight,rec( hashlen := 10000000, report := 1000000,
+o := Orb(gens,v,OnRight,rec( treehashsize := 100000, report := 1000000,
                              storenumbers := true ));
 Enumerate(o);
 time;
@@ -106,7 +100,7 @@ cgens := List(gens,CMat);
 cv := CVec(v);
 Unbind(o);
 GASMAN("collect");
-o := Orb(cgens,cv,OnRight,rec( hashlen := 10000000, report := 1000000,
+o := Orb(cgens,cv,OnRight,rec( treehashsize := 100000, report := 1000000,
                                storenumbers := true ));
 Enumerate(o);
 time;

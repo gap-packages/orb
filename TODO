@@ -1,10 +1,9 @@
 AVLTrees and Hashes:
-  generic high speed hash function like HASHKEY_BAG with data.
-  HashTrees: HTDelete and HTUpdate: optimization, documentation
-  HashTabs: New nicer interface
-  Better Orb using HashTrees (schaltbar)
+  Test files for hashes and tree hashes
   Document AVL trees, Hashtrees, new hash functionality
-  Test Jenkins hash function (->need offset?)
+
+README fuer compilierung updaten
+Webpage: alle versionen
 
 OrbitStatisticsInVectorSpace: orbit limit instead of group size limit
 Beispiel laufen lassen

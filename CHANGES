@@ -3,7 +3,7 @@
 ===========================================================================
 
 ==========================
- Changes from 2.0 -> 2.1:
+ Changes from 2.0 -> 3.0:
 ==========================
 
   - Fixed some bugs for hash functions for compressed vectors/matrices.
@@ -11,6 +11,12 @@
   - Improved MakeSchreierTreeShallow for great depths
   - New implementation of AVL trees.
   - C-part to speed up AVL trees and hash tables.
+  - New interface to hash functionality.
+  - New tree hash tables.
+  - C-port to speed up tree hash tables.
+  - New generic hash function in particular for compressed vectors/mats.
+  - ORB_EstimateOrbitSize using birthday paradox.
+  - Various big fixes and improvements of orbit-by-suborbit stuff.
 
 
 ==========================

@@ -161,6 +161,8 @@ InstallGlobalFunction( GrowHT, function(ht,x)
   Info(InfoOrb,3,"Done.");
 end );
 
+# The new interface for hashes:
+
 InstallMethod( HTCreate, "for an object",
   [ IsObject ],
   function( x )
@@ -200,15 +202,23 @@ InstallMethod( HTCreate, "for an object and an options record",
         fi;
         ht.hf := hfun.func;
         ht.hfd := hfun.data;
+        ht.cangrow := true;
+    else
+        ht.cangrow := false;
     fi;
     ht.collisions := 0;
     ht.accesses := 0;
-    if ty = TreeHashTabType and not(IsBound(ht.cmpfunc)) then
+    if IsIdenticalObj(ty,TreeHashTabType) and not(IsBound(ht.cmpfunc)) then
         ht.cmpfunc := AVLCmp;
+    fi;
+    if IsIdenticalObj(ty,HashTabType) and not(IsBound(ht.eqf)) then
+        ht.eqf := EQ;
     fi;
     Objectify(ty,ht);
     return ht;
   end);
+
+# We first to tree hashes and then standard hash tables:
 
 InstallMethod(ViewObj, "for tree hash tables", 
   [IsHashTab and IsTreeHashTabRep],
@@ -217,8 +227,9 @@ InstallMethod(ViewObj, "for tree hash tables",
           ht!.collisions," accs=",ht!.accesses);
     if IsBound(ht!.alert) then
         Print(" COLLISION ALERT!>");
+    else
+        Print(">");
     fi;
-    Print(">");
   end);
 
 InstallMethod( HTAdd, "for a tree hash table, an object and a value",
@@ -321,6 +332,11 @@ InstallMethod( HTDelete, "for a tree hash table and an object",
     if v <> fail then ht!.nr := ht!.nr - 1; fi;
     return v;
 end );
+if IsBound(HTDelete_TreeHash_C) then
+    InstallMethod( HTDelete, "for a tree hash table and an object (C version)",
+      [ IsTreeHashTabRep, IsObject ], 1,
+      HTDelete_TreeHash_C );
+fi;
 
 InstallMethod( HTUpdate, "for a tree hash table and an object",
   [ IsTreeHashTabRep, IsObject, IsObject ],
@@ -348,6 +364,167 @@ InstallMethod( HTUpdate, "for a tree hash table and an object",
     o := AVLValue(t,h);
     AVLSetValue(t,h,v);
     return o;
+end );
+if IsBound(HTUpdate_TreeHash_C) then
+    InstallMethod( HTUpdate, "for a tree hash table and an object (C version)",
+      [ IsTreeHashTabRep, IsObject, IsObject ], 1,
+      HTUpdate_TreeHash_C );
+fi;
+
+# Now standard hash tables with the new interface:
+
+InstallMethod(ViewObj, "for hash tables", 
+  [IsHashTab and IsHashTabRep],
+  function(ht)
+    Print("<hash table obj len=",ht!.len," used=",ht!.nr," colls=",
+          ht!.collisions," accs=",ht!.accesses);
+    if IsBound(ht!.alert) then
+        Print(" COLLISION ALERT!>");
+    elif IsBound(ht!.cangrow) then
+        Print(" (can grow)>");
+    else
+        Print(">");
+    fi;
+  end);
+
+InstallMethod(HTAdd, "for a hash table, an object and a value",
+  [ IsHashTabRep, IsObject, IsObject ],
+  function(ht, x, val)
+    local h,g;
+    ht!.accesses := ht!.accesses + 1;
+    if ht!.nr * 10 > ht!.len * 9 then
+      if IsBound(ht!.cangrow) then
+        Info(InfoOrb,3,"Hash table too full, growing...");
+        GrowHTObj(ht,x);
+      else
+        Info(InfoOrb,1,"Hash table too full, cannot grow...");
+        return fail;
+      fi;
+    fi;
+    h := ht!.hf(x,ht!.hfd);
+    if IsBound(ht!.els[h]) then
+      g := GcdInt(ht!.len,h);
+      if g = 1 then g := h; else g := 1; fi;
+      repeat
+        ht!.collisions := ht!.collisions + 1;
+        h := h+g;
+        if h>ht!.len then h := h - ht!.len; fi;
+        if not(IsBound(ht!.alert)) and 
+           QuoInt(ht!.collisions,ht!.accesses) > 100 then
+          # We have a problem!
+          Info(InfoOrb,1,"Alarm: Collision warning: Collisions: ",
+               ht!.collisions," Accesses: ",ht!.accesses,"!");
+          if not(IsBound(ht!.cangrow)) then
+            ht!.alert := true;
+          else
+            GrowHTObj(ht,x);
+            return AddHT(ht,x,val);
+          fi;
+        fi;
+      until not(IsBound(ht!.els[h]));
+    fi;
+    ht!.els[h] := x;
+    if val <> true then ht!.vals[h] := val; fi;
+    ht!.nr := ht!.nr+1;
+    return h;
+end );
+
+InstallMethod( HTValue, "for a hash table and an object",
+  [ IsHashTabRep, IsObject ],
+  function(ht, x)
+    local h,g;
+    ht!.accesses := ht!.accesses + 1;
+    h := ht!.hf(x,ht!.hfd);
+    g := 0;
+    while IsBound(ht!.els[h]) do
+      if ht!.eqf(ht!.els[h],x) then
+          if IsBound(ht!.vals[h]) then
+              return ht!.vals[h];
+          else
+              return true;
+          fi;
+      fi;
+      if g = 0 then
+        g := GcdInt(ht!.len,h);
+        if g = 1 then g := h; else g := 1; fi;
+      fi;
+      ht!.collisions := ht!.collisions + 1;
+      h := h+g;
+      if h>ht!.len then h := h - ht!.len; fi;
+    od;
+    return fail;
+end );
+
+InstallMethod( HTDelete, "for a hash table and an object",
+  [ IsHashTabRep, IsObject ],
+  function( ht, x )
+    Error("Hash tables do not support HTDelete, use a tree hash table");
+    return fail;
+  end );
+
+InstallMethod( HTUpdate, "for a hash table, an object and a value",
+  [ IsHashTabRep, IsObject, IsObject ],
+  function( ht, x, v )
+    local old,h,g;
+
+    ht!.accesses := ht!.accesses + 1;
+    h := ht!.hf(x,ht!.hfd);
+    g := 0;
+    while IsBound(ht!.els[h]) do
+      if ht!.eqf(ht!.els[h],x) then
+          if IsBound(ht!.vals[h]) then
+              old := ht!.vals[h];
+              ht!.vals[h] := v;
+              return old;
+          else
+              ht!.vals[h] := v;
+              return true;
+          fi;
+      fi;
+      if g = 0 then
+        g := GcdInt(ht!.len,h);
+        if g = 1 then g := h; else g := 1; fi;
+      fi;
+      ht!.collisions := ht!.collisions + 1;
+      h := h+g;
+      if h>ht!.len then h := h - ht!.len; fi;
+    od;
+    return fail;
+end );
+
+InstallGlobalFunction( GrowHTObj, function(ht,x)
+  local i,oldels,oldlen,oldvals;
+
+  oldels := ht!.els;
+  oldvals := ht!.vals;
+  oldlen := ht!.len;
+
+  ht!.els := [];
+  ht!.vals := [];
+  ht!.len := NextPrimeInt(ht!.len * 2+1);
+  Info(InfoOrb,2,"Growing hash table to length ",ht!.len," !!!");
+  if IsBound(ht!.hfbig) and IsBound(ht!.htdbig) then
+      ht!.hf := ORB_HashFunctionModWrapper;
+      ht!.hfd := [ht!.hfbig,ht!.hfdbig,ht!.len];
+  else
+      ht!.hf := ChooseHashFunction(x,ht!.len);
+      ht!.hfd := ht!.hf.data;
+      ht!.hf := ht!.hf.func;
+  fi;
+  ht!.nr := 0;
+  ht!.collisions := 0;
+  ht!.accesses := 0;
+  # Now copy into new hash:
+  for i in [1..oldlen] do
+      if IsBound(oldels[i]) then
+          if IsBound(oldvals[i]) then
+              HTAdd(ht,oldels[i],oldvals[i]);
+          else
+              HTAdd(ht,oldels[i],true);
+          fi;
+      fi;
+  od;
+  Info(InfoOrb,3,"Done.");
 end );
 
 

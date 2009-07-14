@@ -23,6 +23,7 @@ DeclareGlobalFunction( "NewHT" );
 DeclareGlobalFunction( "AddHT" );
 DeclareGlobalFunction( "ValueHT" );
 DeclareGlobalFunction( "GrowHT" );
+DeclareGlobalFunction( "GrowHTObj" );
 
 BindGlobal( "HashTabFamily", NewFamily("HashTabFamily") );
 DeclareCategory( "IsHashTab", IsComponentObjectRep );

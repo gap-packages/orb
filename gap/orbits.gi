@@ -40,6 +40,7 @@ InstallValue( ORB, rec( ) );
 #  .stabchainrandom
 #  .stabsizebound
 #  .storenumbers    indicates whether positions are stored in the hash
+#  .treehashsize    indicates that we want to use a tree hash of this size
 
 # Outputs:
 #  .depth
@@ -74,7 +75,7 @@ InstallGlobalFunction( Orb,
     # First parse the arguments:
     if Length(arg) = 3 then
         gens := arg[1]; x := arg[2]; op := arg[3];
-        hashlen := 10000; opt := rec();
+        hashlen := 10007; opt := rec();
     elif Length(arg) = 4 and IsInt(arg[4]) then
         gens := arg[1]; x := arg[2]; op := arg[3]; hashlen := arg[4];
         opt := rec();
@@ -83,7 +84,7 @@ InstallGlobalFunction( Orb,
         if IsBound(opt.hashlen) then
             hashlen := opt.hashlen;
         else
-            hashlen := 10000;
+            hashlen := 10007;
         fi;
     elif Length(arg) = 5 then
         gens := arg[1]; x := arg[2]; op := arg[3]; hashlen := arg[4];
@@ -264,16 +265,22 @@ InstallGlobalFunction( Orb,
         o.storenumbers := true;  # we do this anyway!
     else
         # The standard case using a hash:
-        if IsBound(o.eqfunc) and IsBound(o.hashfunc) then
-            o.ht := InitHT( hashlen, o.hashfunc, o.eqfunc );
+        if IsBound(o.treehashsize) then
+            o.ht := HTCreate(x,rec(treehashsize := o.treehashsize));
+            filts := filts and IsHashOrbitRep;
+        elif IsBound(o.eqfunc) and IsBound(o.hashfunc) then
+            o.ht := HTCreate(x,rec( hf := o.hashfunc.func,
+                                    hfd := o.hashfunc.data,
+                                    eqf := o.eqfunc,
+                                    hashlen := hashlen ));
             if IsBound(o.hfbig) and IsBound(o.hfdbig) then
-                o.ht.hfbig := o.hfbig;
-                o.ht.hfdbig := o.hfdbig;
-                o.ht.cangrow := true;
+                o.ht!.hfbig := o.hfbig;
+                o.ht!.hfdbig := o.hfdbig;
+                o.ht!.cangrow := true;
             fi;
             filts := filts and IsHashOrbitRep;
         else
-            o.ht := NewHT(x,hashlen);
+            o.ht := HTCreate(x,rec( hashlen := hashlen ));
             if o.ht = fail then    # probably we found no hash function
                 Info(InfoOrb,1,"Warning: No hash function found!");
                 filts := filts and IsSlowOrbitRep;
@@ -284,9 +291,9 @@ InstallGlobalFunction( Orb,
         if o.ht <> fail then
             # Store the first point, if it is a hash orbit:
             if o.storenumbers then
-                AddHT(o.ht,x,1);
+                HTAdd(o.ht,x,1);
             else
-                AddHT(o.ht,x,true);
+                HTAdd(o.ht,x,true);
             fi;
         fi;
     fi;
@@ -339,7 +346,7 @@ InstallMethod( Position,
   [IsOrbit and IsHashOrbitRep and IsDenseList, IsObject, IsInt],
   function( orb, ob, pos )
     local p;
-    p := ValueHT(orb!.ht,ob);
+    p := HTValue(orb!.ht,ob);
     if p = fail then
         return fail;
     elif p = true then   # we did not store numbers!
@@ -382,7 +389,7 @@ InstallMethod( \in,
   [IsObject, IsOrbit and IsHashOrbitRep and IsDenseList],
   function( ob, orb )
     local p;
-    p := ValueHT( orb!.ht, ob );
+    p := HTValue( orb!.ht, ob );
     if p = fail then
       return false;
     else
@@ -472,7 +479,7 @@ InstallGlobalFunction( ORB_LookForList,
 
 InstallGlobalFunction( ORB_LookForHash,
   function( o, p )
-    return ValueHT(o!.lookingfor,p) <> fail;
+    return HTValue(o!.lookingfor,p) <> fail;
   end );
 
 
@@ -597,14 +604,14 @@ InstallMethod( Enumerate,
             else
                 yy := op(orb[i],gens[j]);
             fi;
-            pos := ValueHT(ht,yy);
+            pos := HTValue(ht,yy);
             if pos = fail then
                 nr := nr + 1;
                 orb[nr] := yy;
                 if storenumbers then
-                    AddHT(ht,yy,nr);
+                    HTAdd(ht,yy,nr);
                 else
-                    AddHT(ht,yy,true);
+                    HTAdd(ht,yy,true);
                 fi;
 
                 # Handle Schreier tree if desired:
@@ -1045,15 +1052,15 @@ InstallMethod( AddGeneratorsToOrbit,
             else
                 yy := op(orb[i],gens[j]);
             fi;
-            pos := ValueHT(ht,yy);
+            pos := HTValue(ht,yy);
             if pos = fail then   # a completely new point
                 # Put it into the database:
                 nr := nr + 1;
                 orb[nr] := yy;
                 if storenumbers then
-                    AddHT(ht,yy,nr);
+                    HTAdd(ht,yy,nr);
                 else
-                    AddHT(ht,yy,true);
+                    HTAdd(ht,yy,true);
                 fi;
 
                 # Now put it into the new orbit:
@@ -1425,13 +1432,13 @@ InstallMethod( ActionOnOrbit,
         for i in [1..Length(gens)] do
           Add(res,PermList(
            List([1..Length(o!.orbit)],
-                j->ValueHT(o!.ht,o!.op(o!.orbit[j],gens[i]!.el)))));
+                j->HTValue(o!.ht,o!.op(o!.orbit[j],gens[i]!.el)))));
         od;
     else
         for i in [1..Length(gens)] do
           Add(res,PermList(
            List([1..Length(o!.orbit)],
-                j->ValueHT(o!.ht,o!.op(o!.orbit[j],gens[i])))));
+                j->HTValue(o!.ht,o!.op(o!.orbit[j],gens[i])))));
         od;
     fi;
     return res;
@@ -1440,21 +1447,21 @@ InstallMethod( ActionOnOrbit,
 InstallGlobalFunction( ORB_ActionOnOrbitIntermediateHash,
   function( o, gens )
     local ht,i,res;
-    ht := NewHT( o!.orbit[1], Length(o!.orbit)*2+1 );
+    ht := HTCreate( o!.orbit[1], rec( hashlen := Length(o!.orbit)*2+1 ) );
     for i in [1..Length(o!.orbit)] do
-        AddHT(ht,o!.orbit[i],i);
+        HTAdd(ht,o!.orbit[i],i);
     od;
     res := [];
     if o!.memorygens then
         for i in [1..Length(gens)] do
           Add(res,PermList(
-           List([1..Length(o!.orbit)],j->ValueHT(ht,
+           List([1..Length(o!.orbit)],j->HTValue(ht,
                                       o!.op(o!.orbit[j],gens[i]!.el)))));
         od;
     else
         for i in [1..Length(gens)] do
           Add(res,PermList(
-           List([1..Length(o!.orbit)],j->ValueHT(ht,
+           List([1..Length(o!.orbit)],j->HTValue(ht,
                                       o!.op(o!.orbit[j],gens[i])))));
         od;
     fi;
@@ -1750,7 +1757,7 @@ InstallGlobalFunction( ORB_EstimateOrbitSize,
     starttime := Runtime();
     endtime := starttime + timeout;
     pr := ProductReplacer( gens, rec( maxdepth:=400 ) );
-    ht := NewHT( pt, NextPrimeInt( Minimum( 100000, limit ) ) );
+    ht := HTCreate( pt, NextPrimeInt( Minimum( 100000, limit ) ) );
     tries := 0;
     coinc := 0;
     grpcoinc := 0;
@@ -1766,10 +1773,10 @@ InstallGlobalFunction( ORB_EstimateOrbitSize,
 
       x := Next( pr );
       ptx := op( pt, x );
-      elm := ValueHT( ht, ptx );
+      elm := HTValue( ht, ptx );
       if elm = fail then
         # new
-        AddHT( ht, ptx, x );
+        HTAdd( ht, ptx, x );
       else
         # coincidence
         coinc := coinc + 1;
