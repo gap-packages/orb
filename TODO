@@ -1,10 +1,10 @@
 AVLTrees and Hashes:
-  HashTrees: nicer general setup, optimization, documentation
-  Better Orb using HashTrees
-  some more tests
-  Speed up hashing by putting it into kernel
-  Document AVL trees, Hashtrees
-  Test Jenkins hash function
+  generic high speed hash function like HASHKEY_BAG with data.
+  HashTrees: HTDelete and HTUpdate: optimization, documentation
+  HashTabs: New nicer interface
+  Better Orb using HashTrees (schaltbar)
+  Document AVL trees, Hashtrees, new hash functionality
+  Test Jenkins hash function (->need offset?)
 
 OrbitStatisticsInVectorSpace: orbit limit instead of group size limit
 Beispiel laufen lassen
@@ -39,3 +39,4 @@ assumestabcomplete fuer normale orbit-Algorithmen, wenn grpsizebound da?
 Zukunft:
   OrbitBySuborbit schaltbar? was war das nochmal???
   permbase einbauen (lohnt sich das???)
+  HashTabs in Kernel

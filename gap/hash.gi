@@ -188,7 +188,8 @@ InstallMethod( HTCreate, "for an object and an options record",
         ty := TreeHashTabType;
         ht.len := 100003;
     fi;
-    ht.els := EmptyPlist(ht.len);
+    ht.els := EmptyPlist(ht.len+1);
+    ht.els[ht.len+1] := fail;   # To create proper length!
     ht.vals := [];
     ht.nr := 0;
     if not(IsBound(ht.hf) and IsBound(ht.hfd)) then
@@ -287,6 +288,11 @@ InstallMethod( HTValue, "for a tree hash table and an object",
     fi;
     return AVLLookup(t,x);
 end );
+if IsBound(HTValue_TreeHash_C) then
+    InstallMethod( HTValue, "for a tree hash table and an object (C version)",
+      [ IsTreeHashTabRep, IsObject ], 1,
+      HTValue_TreeHash_C );
+fi;
 
 InstallMethod( HTDelete, "for a tree hash table and an object",
   [ IsTreeHashTabRep, IsObject ],

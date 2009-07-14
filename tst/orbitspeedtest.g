@@ -14,24 +14,70 @@ o := Orb(gens,v,OnRight,rec( hashlen := 2000000, report := 100000,
 Enumerate(o);
 time;
 
-t := NewTHT(o[1],200000);
-for i in [1..Length(o)] do
-    AddTHT(t,o[i],i);
-od;
-time;
-for i in [1..Length(o)] do
-    if ValueTHT(t,o[i]) <> i then Error(); fi;
-od;
-time;
+meths := ApplicableMethod(HTAdd,[t,o[1],1],1,"all");;
+l := o!.orbit;;
+
 t := HTCreate(o[1],rec(treehashsize := 200000));
-for i in [1..Length(o)] do
-    HTAdd(t,o[i],i);
+a:=1;;b:=2;;c:=3;; GASMAN("collect");
+ti := Runtime();
+for i in [1..Length(l)] do
+    HTAdd(t,l[i],i);
 od;
-time;
-for i in [1..Length(o)] do
-    if HTValue(t,o[i]) <> i then Error(); fi;
+Print("Time: ",Runtime()-ti,"\n");
+
+t := HTCreate(o[1],rec(treehashsize := 200000));
+f := meths[1];
+a:=1;b:=2;c:=3; GASMAN("collect");
+ti := Runtime();
+for i in [1..Length(l)] do
+    f(t,l[i],i);
 od;
-time;
+Print("Time: ",Runtime()-ti,"\n");
+
+t := HTCreate(o[1],rec(treehashsize := 200000));
+f := meths[2];
+a:=1;b:=2;c:=3; GASMAN("collect");
+ti := Runtime();
+for i in [1..Length(l)] do
+    f(t,l[i],i);
+od;
+Print("Time: ",Runtime()-ti,"\n");
+
+t := NewHT(o[1],200000);
+a:=1;b:=2;c:=3; GASMAN("collect");
+ti := Runtime();
+for i in [1..Length(l)] do
+    AddHT(t,l[i],i);
+od;
+Print("Time: ",Runtime()-ti,"\n");
+
+ti := Runtime();
+for i in [1..Length(l)] do
+    if HTValue(t,l[i]) <> i then Error(); fi;
+od;
+Print("Time: ",Runtime()-ti,"\n");
+
+ti := Runtime();
+for i in [1..Length(l)] do
+    if HTValue_Test(guck,l[i]) <> i then Error(); fi;
+od;
+Print("Time: ",Runtime()-ti,"\n");
+
+meths := ApplicableMethod(HTValue,[t,o[1]],1,"all");;
+
+f := meths[1];
+ti := Runtime();
+for i in [1..Length(l)] do
+    if f(t,l[i]) <> i then Error(); fi;
+od;
+Print("Time: ",Runtime()-ti,"\n");
+
+f := meths[2];
+ti := Runtime();
+for i in [1..Length(l)] do
+    if f(t,l[i]) <> i then Error(); fi;
+od;
+Print("Time: ",Runtime()-ti,"\n");
 
 LoadPackage("cvec");
 cgens := List(gens,CMat);
