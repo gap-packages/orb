@@ -32,12 +32,26 @@ distributes the actually stored objects well enough over the array,
 the access time is constant in average. Of course, a hash function
 will usually not be injective, so one needs a strategy what to do
 in case of so-called <Q>collision</Q>, that is, if more than one
-object with the same hash value has to be stored.
+object with the same hash value has to be stored. This package
+provides two ways to deal with collisions, one is implemented in the
+so called <Q>HashTabs</Q> and another in the <Q>TreeHashTabs</Q>. The
+former simply uses other parts of the array to store the data involved
+in the collisions and the latter uses an AVL tree (see Chapter <Ref
+    Chap="avl"/>) to store all data objects with the same hash value.
+Both are used basically in the same way but sometimes behave a bit
+differently.
 
 <P/>
-The basic functions to work with hash tables are <Ref Func="NewHT"/>,
+The basic functions to work with hash tables are <Ref
+    Oper="HTCreate"/>, <Ref Oper="HTAdd"/>, <Ref Oper="HTValue"/>,
+<Ref Oper="HTDelete"/> and <Ref Oper="HTUpdate"/>. They are described
+in Section <Ref Sect="hashtables"/>.
+
+<P/>
+The legacy functions from older versions of this package 
+to work with hash tables are <Ref Func="NewHT"/>,
 <Ref Func="AddHT"/>, and <Ref Func="ValueHT"/>. They are described
-in Section <Ref Sect="hashtables"/>. In the next section, we first
+in Section <Ref Sect="oldhashtables"/>. In the next section, we first
 describe the infrastructure for hash functions.
 </Section>
 
@@ -184,8 +198,58 @@ This method is for lists of matrices.
 </Section>
 
 <Section Label="hashtables">
-<Heading>Using hash tables</Heading>
+    <Heading>Using hash tables</Heading>
 
+<ManSection>
+<Oper Name="HTCreate" Arg="sample [, opt]"/>
+<Returns> a new hash table object </Returns>
+<Description>
+    Blabla.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="HTAdd" Arg="ht, key, value"/>
+<Returns> a hash value </Returns>
+<Description>
+    Blabla.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="HTValue" Arg="ht, key"/>
+<Returns> <K>fail</K> or <K>true</K> or a value</Returns>
+<Description>
+    Blabla.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="HTUpdate" Arg="ht, key, value"/>
+<Returns> <K>fail</K> or <K>true</K> or a value</Returns>
+<Description>
+    Blabla.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="HTDelete" Arg="ht, key"/>
+<Returns> <K>fail</K> or <K>true</K> or a value</Returns>
+<Description>
+    Blabla.
+</Description>
+</ManSection>
+</Section>
+
+<Section Label="oldhashtables">
+<Heading>Using hash tables (legacy code)</Heading>
+
+Note that the functions described in this section are obsolete since
+version 3.0 of <Package>orb</Package> and are only kept for backward
+compatibility. Please use the functions in Section <Ref
+    Sect="hashtables"/> in new code.
+
+<P/>
 The following functions are needed to use hash tables. For details
 about the data structures see Section <Ref Sect="hashdata"/>.
 
