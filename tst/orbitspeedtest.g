@@ -14,6 +14,7 @@ o := Orb(gens,v,OnRight,rec( treehashsize := 2000000, report := 100000,
 Enumerate(o);
 time;
 
+t := HTCreate(o[1],rec(treehashsize := 200000));
 meths := ApplicableMethod(HTAdd,[t,o[1],1],1,"all");;
 l := o!.orbit;;
 
@@ -43,13 +44,13 @@ for i in [1..Length(l)] do
 od;
 Print("Time: ",Runtime()-ti,"\n");
 
-t := NewHT(o[1],200000);
-a:=1;b:=2;c:=3; GASMAN("collect");
-ti := Runtime();
-for i in [1..Length(l)] do
-    AddHT(t,l[i],i);
-od;
-Print("Time: ",Runtime()-ti,"\n");
+#t := NewHT(o[1],200000);
+#a:=1;b:=2;c:=3; GASMAN("collect");
+#ti := Runtime();
+#for i in [1..Length(l)] do
+#    AddHT(t,l[i],i);
+#od;
+#Print("Time: ",Runtime()-ti,"\n");
 
 ti := Runtime();
 for i in [1..Length(l)] do
@@ -78,6 +79,8 @@ cgens := List(gens,CMat);
 cv := CVec(v);
 Unbind(o);
 GASMAN("collect");
+GreaseMat(cgens[1]);
+GreaseMat(cgens[2]);
 o := Orb(cgens,cv,OnRight,rec( hashlen := 2000000, report := 100000,
                                storenumbers := true ));
 Enumerate(o);
@@ -97,6 +100,8 @@ Enumerate(o);
 time;
 
 cgens := List(gens,CMat);
+GreaseMat(cgens[1]);
+GreaseMat(cgens[2]);
 cv := CVec(v);
 Unbind(o);
 GASMAN("collect");
