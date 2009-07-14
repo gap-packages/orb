@@ -1200,6 +1200,18 @@ static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
     return AVLValue(t,h);
 }
 
+static Obj GenericHashFunc_C(Obj self, Obj x, Obj data)
+{
+     Int mult = INT_INTOBJ(ELM_PLIST(data,1));
+     UChar *p = (UChar *) ADDR_OBJ(x) + INT_INTOBJ(ELM_PLIST(data,2));
+     Int len = INT_INTOBJ(ELM_PLIST(data,3));
+     UInt mod = INT_INTOBJ(ELM_PLIST(data,4));
+     UInt n = 0;
+     Int i;
+     for (i = 0;i < len;i++) n = ((n*mult)+(UInt)(*p++));
+     return INTOBJ_INT((n % mod) + 1);
+}
+
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
@@ -1267,6 +1279,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "HTValue_TreeHash_C", 2, "treehash, x",
     HTValue_TreeHash_C,
     "orb.c:HTAdd_TreeHash_C" },
+
+  { "GenericHashFunc_C", 2, "x, data",
+    GenericHashFunc_C,
+    "orb.c:GenericHashFunc_C" }, 
 
   { 0 }
 

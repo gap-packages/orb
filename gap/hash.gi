@@ -394,6 +394,9 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
     if bytelen <= 8 then
         return rec( func := ORB_HashFunctionForShortGF2Vectors,
                     data := [hashlen] );
+    elif IsBound(GenericHashFunc_C) then
+        return rec( func := GenericHashFunc_C,
+                    data := [101,2*GAPInfo.BytesPerVariable,bytelen,hashlen] );
     else
         return rec( func := ORB_HashFunctionForGF2Vectors,
                     data := [hashlen,bytelen] );
@@ -419,6 +422,9 @@ InstallMethod( ChooseHashFunction, "for compressed 8bit vectors",
     if bytelen <= 8 then
         return rec( func := ORB_HashFunctionForShort8BitVectors,
                     data := [hashlen,q] );
+    elif IsBound(GenericHashFunc_C) then
+        return rec( func := GenericHashFunc_C,
+                    data := [101,3*GAPInfo.BytesPerVariable,bytelen,hashlen] );
     else
         return rec( func := ORB_HashFunctionFor8BitVectors,
                     data := [hashlen,bytelen] );

@@ -37,11 +37,6 @@ DeclareOperation( "HTAdd", [ IsHashTab, IsObject, IsObject ] );
 DeclareOperation( "HTValue", [ IsHashTab, IsObject ] );
 DeclareOperation( "HTDelete", [ IsHashTab, IsObject ] );
 DeclareOperation( "HTUpdate", [ IsHashTab, IsObject, IsObject ] );
-DeclareGlobalFunction( "InitTHT" );
-DeclareGlobalFunction( "NewTHT" );
-DeclareGlobalFunction( "AddTHT" );
-DeclareGlobalFunction( "ValueTHT" );
-
 
 #########################################################################
 # Infrastructure for choosing hash functions looking at example objects:
