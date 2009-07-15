@@ -23,7 +23,6 @@ DeclareGlobalFunction( "NewHT" );
 DeclareGlobalFunction( "AddHT" );
 DeclareGlobalFunction( "ValueHT" );
 DeclareGlobalFunction( "GrowHT" );
-DeclareGlobalFunction( "GrowHTObj" );
 
 BindGlobal( "HashTabFamily", NewFamily("HashTabFamily") );
 DeclareCategory( "IsHashTab", IsComponentObjectRep );
@@ -38,6 +37,8 @@ DeclareOperation( "HTAdd", [ IsHashTab, IsObject, IsObject ] );
 DeclareOperation( "HTValue", [ IsHashTab, IsObject ] );
 DeclareOperation( "HTDelete", [ IsHashTab, IsObject ] );
 DeclareOperation( "HTUpdate", [ IsHashTab, IsObject, IsObject ] );
+DeclareOperation( "HTGrow", [ IsHashTab, IsObject ] );
+
 
 #########################################################################
 # Infrastructure for choosing hash functions looking at example objects:

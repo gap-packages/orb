@@ -395,7 +395,7 @@ InstallMethod(HTAdd, "for a hash table, an object and a value",
     if ht!.nr * 10 > ht!.len * 8 then
       if IsBound(ht!.cangrow) then
         Info(InfoOrb,3,"Hash table too full, growing...");
-        GrowHTObj(ht,x);
+        HTGrow(ht,x);
       else
         Info(InfoOrb,1,"Hash table too full, cannot grow...");
         return fail;
@@ -417,7 +417,7 @@ InstallMethod(HTAdd, "for a hash table, an object and a value",
           if not(IsBound(ht!.cangrow)) then
             ht!.alert := true;
           else
-            GrowHTObj(ht,x);
+            HTGrow(ht,x);
             return AddHT(ht,x,val);
           fi;
         fi;
@@ -492,7 +492,15 @@ InstallMethod( HTUpdate, "for a hash table, an object and a value",
     return fail;
 end );
 
-InstallGlobalFunction( GrowHTObj, function(ht,x)
+InstallMethod( HTGrow, "for a tree hash table and an object",
+  [ IsTreeHashTabRep, IsObject],
+  function(ht,x)
+    Error("growing of tree hash tables is currently not implemented");
+  end );
+
+InstallMethod( HTGrow, "for a hash table and an object",
+  [ IsHashTabRep, IsObject ],
+function(ht,x)
   local i,oldels,oldlen,oldvals;
 
   oldels := ht!.els;

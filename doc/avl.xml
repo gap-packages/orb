@@ -17,7 +17,55 @@ This chapter explains functionality for AVL trees.
 <Section Label="avlidea">
 <Heading>The idea of AVL trees</Heading>
 
-AVL trees are
+AVL trees are balanced binary trees called <Q>AVL trees</Q> in honour
+of their inventors G.M. Adelson-Velskii and E.M. Landis (see <Cite
+    Key="AVL"/>). A description in English can be found in
+<Cite Key="ACP3"/> in Section 6.2.3 about balanced trees.
+
+<P/>
+The general idea is to store data in a binary tree such that all
+entries in the left subtree of a node are smaller than the entry at
+the node and all entries in the right subtree are bigger. The tree is
+kept <Q>balanced</Q> which means that for each node the depth of the
+left and right subtrees differs by at most 1. In this way, finding
+something in the tree, adding a new entry, deleting an entry all have
+complexity <M>log(n)</M> where <M>n</M> is the number of entries in
+the tree. If one additionally stores the number of entries in the left
+subtree of each node, then finding the <M>k</M>-th entry, removing the
+<M>k</M>-th entry and inserting an entry in position <M>k</M> also
+have complexity <M>log(n)</M>. The <Package>orb</Package> contains an
+implementation of such tree objects providing all these operations.
+
+<P/>
+<Q>Entries</Q> in AVL tree objects are key-value pairs and the sorting
+is done by the key. If all values as <K>true</K> then no memory is
+needed to store the values (see the corresponding behaviour for hash
+tables). The only requirement on the type of the keys is that two
+arbitrary keys must be comparable in the sense that one can decide
+which of them is smaller. If &GAP;s standard comparison operations
+<M>&lt;</M> and <M>=</M> work for your keys, no further action is
+required, if not, then you must provide your own three-way comparison
+function (see below).
+
+<P/>
+Note that the AVL trees implemented here can be used in basically two
+different ways, which can sometimes be mixed: The usual way is by
+accessing entries by their key, the tree is then automatically kept
+sorted. The alternative way is by accessing entries by their index in
+the tree! Since the nodes of the trees remember how many elements are
+stored in their left subtree, it is in fact possible to access the
+<M>k</M>-th entry in the tree or delete it. It is even possible to
+insert something in position <M>k</M>. However, note that if you do
+this latter operation, you are yourself responsible to keep the
+entries in the tree sorted. You can ignore this responsibility, but
+then you can no longer access the entries in the tree by their key
+and the corresponding functions might fail or even run into errors.
+<P/>
+This usage can be useful, since in this way AVL trees provide an
+implementation of a list data structure where the operation list
+access (by index), adding an element (in an arbitrary position) and
+deleting an element (by its index) all have complexity
+<M>log(n)</M> where <M>n</M> is the number of entries in the list.
 </Section>
 
 <Section Label="avlusage">
@@ -26,11 +74,14 @@ AVL trees are
 An AVL tree is created using the following function:
 
 <ManSection>
-<Func Name="AVLTree" Arg="[ cmpfunc ]"/>
+<Func Name="AVLTree" Arg="[ opt ]"/>
 <Returns> A new AVL tree object </Returns>
 <Description>
     This function creates a new AVL tree object. The optional argument
-    <A>cmpfunc</A> is a three-way comparison function taking two
+    <A>opt</A> is an options record, in which you can bind the
+    following components:
+    <P/>
+    <C>cmpfunc</C> is a three-way comparison function taking two
     arguments <A>a</A> and <A>b</A> and returning <M>-1</M> if
     <M><A>a</A> &lt; <A>b</A></M>, <M>+1</M> if
     <M><A>a</A> &gt; <A>b</A></M> and <M>0</M> if
@@ -38,8 +89,15 @@ An AVL tree is created using the following function:
     the generic function <Ref Func="AVLCmp"/> is taken. This three-way
     comparison function is stored with the tree and is used for all
     comparisons in tree operations.
+    <C>allocsize</C> is the number of nodes which are allocated for
+    the tree initially. It can be useful to specify this if you know
+    that your tree will eventually contain a lot of entries, since
+    then the tree object does not have to grow that many times.
 </Description>
 </ManSection>
+
+For every AVL tree a three-way comparison function is needed, usually
+you can get away with using the following default one:
 
 <ManSection>
 <Func Name="AVLCmp" Arg="a, b"/>
@@ -53,16 +111,204 @@ An AVL tree is created using the following function:
 </Description>
 </ManSection>
 
-Missing:
+The following functions are used to access entries by key:
 
-AVLData, AVLValue, AVLFind, AVLFindIndex, AVLLookup, AVLIndex,
-AVLIndexLookup, AVLIndexAdd, AVLDelete, AVLIndexDelete, AVLToList,
-Display, AVLAdd, ELM_LIST, Position, Remove, Add, Length, IN
+<ManSection>
+<Func Name="AVLAdd" Arg="t, key, val"/>
+<Returns> <K>true</K> or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLLookup" Arg="t, key"/>
+<Returns> an value or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLDelete" Arg="t, key"/>
+<Returns> an value or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLFindIndex" Arg="t, index"/>
+<Returns> an integer or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+The following functions are used to access entries in trees by their
+index:
+
+<ManSection>
+<Func Name="AVLIndex" Arg="t, index"/>
+<Returns> a key or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLIndexLookup" Arg="t, index"/>
+<Returns> a key or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLIndexAdd" Arg="t, index"/>
+<Returns> a key or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLIndexDelete" Arg="t, index"/>
+<Returns> a key or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+The following functions allow low level access to the AVL tree object:
+
+<ManSection>
+<Func Name="AVLFind" Arg="t, key"/>
+<Returns> an integer or <K>fail</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLData" Arg="t, pos"/>
+<Returns> an key </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLValue" Arg="t, pos"/>
+<Returns> a value </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+The following convenience methods for standard list methods are
+implemented for AVL tree objects:
+
+<ManSection>
+<Meth Name="Display" Arg="t"/>
+<Returns> nothing </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ELM_LIST" Arg="t, index"/>
+<Returns> nothing </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Position" Arg="t, key"/>
+<Returns> nothing </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Add" Arg="t, key, value"/>
+<Returns> nothing </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Remove" Arg="t, index"/>
+<Returns> a key </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="Length" Arg="t"/>
+<Returns> a key </Returns>
+<Description>
+
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="\in" Arg="key, t"/>
+<Returns> <K>true</K> or <K>false</K> </Returns>
+<Description>
+
+</Description>
+</ManSection>
 
 </Section>
 
 <Section>
 <Heading>The internal data structures</Heading>
+
+An AVL tree is a positional object in which the first 7 positions are
+used for administrative data (see table below) and then from position
+8 on follow the nodes of the tree. Each node uses 4 positions such
+that all nodes begin at positions divisible by 4. The following table
+contains the information what is stored in each of the first 7
+entries:
+
+<Table Align="l|l">
+    <Row>
+        <Item>1</Item>
+        <Item>last actually used position, is always congruent 3 mod 4
+        </Item>
+    </Row>
+    <Row>
+        <Item>2</Item>
+        <Item>position of first node in free list</Item>
+    </Row>
+    <Row>
+        <Item>3</Item>
+        <Item>number of currently used nodes in the tree</Item>
+    </Row>
+    <Row>
+        <Item>4</Item>
+        <Item>position of largest allocated position</Item>
+    </Row>
+    <Row>
+        <Item>5</Item>
+        <Item>three-way comparison function</Item>
+    </Row>
+    <Row>
+        <Item>6</Item>
+        <Item>position of the top node</Item>
+    </Row>
+    <Row>
+        <Item>7</Item>
+        <Item>a plain list holding the values stored under the keys</Item>
+    </Row>
+</Table>
+
 
 </Section>
 

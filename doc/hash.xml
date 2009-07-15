@@ -31,7 +31,7 @@ array to store a certain object. If this so called hash function
 distributes the actually stored objects well enough over the array,
 the access time is constant in average. Of course, a hash function
 will usually not be injective, so one needs a strategy what to do
-in case of so-called <Q>collision</Q>, that is, if more than one
+in case of a so-called <Q>collision</Q>, that is, if more than one
 object with the same hash value has to be stored. This package
 provides two ways to deal with collisions, one is implemented in the
 so called <Q>HashTabs</Q> and another in the <Q>TreeHashTabs</Q>. The
@@ -204,7 +204,98 @@ This method is for lists of matrices.
 <Oper Name="HTCreate" Arg="sample [, opt]"/>
 <Returns> a new hash table object </Returns>
 <Description>
-    Blabla.
+A new hash table for objects like <A>sample</A>
+is created. The second argument <A>opt</A> is an optional options
+record, which will supplied in most cases, if only to specify the
+length and type of the hash table to be used. 
+The following components in this record can be bound:
+
+<List>
+    <Mark><C>treehashsize</C></Mark>
+    <Item>
+If this component is bound the type of the hash table is a
+TreeHashTab.
+The value must be a positive integer and will be the size of
+the hash table. Note that for this type of hash table the keys to be
+stored in the hash must be comparable using <M>&lt;</M>. A three-way
+comparison function can be supplied using the component <C>cmpfunc</C>
+(see below).
+    </Item>
+    <Mark><C>treehashtab</C></Mark>
+    <Item>
+If this component is bound the type of the hash table is a
+TreeHashTab.
+This option is superfluous if <C>treehashsize</C> is used.
+    </Item>
+    <Mark><C>hf</C> and <C>hfd</C></Mark>
+    <Item>
+If these components are bound, they are used as the hash function. The
+value of <C>hf</C> must be a function taking two arguments, the first
+being the object for which the hash function shall be computed and the
+second being the value of <C>hfd</C>. The returned value must be an
+integer in the range from <M>1</M> to the length of the hash.
+If either of these components is not bound, an automatic choice
+for the hash function is done using <Ref Oper="ChooseHashFunction"/>
+and the supplied sample object <A>sample</A>.
+<P/>
+Note that if you specify these two components and are using a HashTab
+table then this table cannot grow unless you also bind the
+components <C>hfbig</C>, <C>hfdbig</C> and <C>cangrow</C>.
+    </Item>
+    <Mark><C>cmpfunc</C></Mark>
+    <Item>
+This component can be bound to a three-way comparison function taking
+two arguments <A>a</A> and <A>b</A> (which will be keys for the
+TreeHashTab) and returns <M>-1</M> if <M><A>a</A>&lt;<A>b</A></M>,
+<M>0</M> if <M><A>a</A> = <A>b</A></M> and <M>1</M> if <M><A>a</A>
+    &gt; <A>b</A></M>. If this component is not bound the function
+<Ref Func="AVLCmp"/> is taken, which simply calls the generic
+operations <C>&lt;</C> and <C>=</C> to do the job.
+    </Item>
+    <Mark><C>hashlen</C></Mark>
+    <Item>
+If this component is bound the type of the hash table is a standard
+HashTab table. That is, collisions are dealt with by storing
+additional entries in other slots. This is the traditional way to
+implement a hash table. Note that currently deleting entries in such a
+hash table is not implemented, since it could only be done by leaving
+a <Q>deleted</Q> mark which could pollute that hash table. Use
+TreeHashTabs
+instead if you need deletion. The value bound to
+<C>hashlen</C> must be a positive integer and will be the initial
+length of the hash table.
+<P/>
+Note that it is a good idea to choose a prime number as
+the hash length due to the algorithm for collision handling which 
+works particularly well in that case. The hash function is chosen
+automatically.
+    </Item>
+    <Mark><C>hashtab</C></Mark>
+    <Item>
+If this component is bound the type of the hash table is a standard
+HashTab table. This component is superfluous if <C>hashlen</C> is
+bound.
+    </Item>
+    <Mark><C>eqf</C></Mark>
+    <Item>
+For HashTab tables the function taking two arguments bound to this
+component is used to compare keys in the hash table. If this component
+is not bound the usual <C>=</C> operation is taken.
+</Item>
+<Mark><C>hfbig</C> and <C>hfdbig</C> and <C>cangrow</C></Mark>
+    <Item>
+        If you have used the components <C>hf</C> and <C>hfd</C> then
+        your hash table cannot automatically grow when it fills up.
+        This is because the length of the table is built into the hash
+        function. If you still want your hash table to be able to grow
+        automatically, then bind a hash function returning arbitrary
+        integers to <C>hfbig</C>, the corresponding data for the
+        second argument to <C>hfdbig</C> and bind <C>cangrow</C> to
+        <K>true</K>. Then the hash table will automatically grow and
+        take this new hash function modulo the new length of the hash
+        table as hash function.
+    </Item>
+</List>
 </Description>
 </ManSection>
 
@@ -212,7 +303,24 @@ This method is for lists of matrices.
 <Oper Name="HTAdd" Arg="ht, key, value"/>
 <Returns> a hash value </Returns>
 <Description>
-    Blabla.
+Stores the object <A>key</A> into the hash table <A>ht</A> and stores
+the value <A>val</A> together with <A>ob</A>. The result is <K>fail</K>
+if an error occurred, which can be that an object equal to <A>key</A> is
+already stored in the hash table or that the hash table is already full.
+The latter can only happen, if the hash table is no TreeHashTab and
+cannot grow automatically.
+<P/>
+If no error occurs, the result is an integer indicating the place in the
+hash table where the object is stored. Note that once the hash table
+grows automatically this number is no longer the same!
+<P/>
+If the value <A>val</A> is <K>true</K> for all objects in the hash,
+no extra memory is used for the values. All other values are stored
+in the hash. The value <K>fail</K> cannot be stored as it indicates
+that the object is not found in the hash.
+<P/>
+See Section <Ref Sect="hashdata"/> for details on the data structures and
+especially about memory requirements.
 </Description>
 </ManSection>
 
@@ -220,7 +328,10 @@ This method is for lists of matrices.
 <Oper Name="HTValue" Arg="ht, key"/>
 <Returns> <K>fail</K> or <K>true</K> or a value</Returns>
 <Description>
-    Blabla.
+Looks up the object <A>key</A> in the hash table <A>ht</A>. If the object
+is not found, <K>fail</K> is returned. Otherwise, the value stored with
+the object is returned. Note that if this value was <K>true</K> 
+no extra memory is used for this.
 </Description>
 </ManSection>
 
@@ -228,7 +339,11 @@ This method is for lists of matrices.
 <Oper Name="HTUpdate" Arg="ht, key, value"/>
 <Returns> <K>fail</K> or <K>true</K> or a value</Returns>
 <Description>
-    Blabla.
+    The object <A>key</A> must already be stored in the hash table
+    <A>ht</A>,
+    otherwise this operation returns <K>fail</K>. The value stored
+    with <A>key</A> in the hash is replaced by <A>value</A> and the
+    previously stored value is returned.
 </Description>
 </ManSection>
 
@@ -236,9 +351,37 @@ This method is for lists of matrices.
 <Oper Name="HTDelete" Arg="ht, key"/>
 <Returns> <K>fail</K> or <K>true</K> or a value</Returns>
 <Description>
-    Blabla.
+    The object <A>key</A> along with its stored value is removed from
+    the hash table <A>ht</A>. Note that this currently only works for
+    TreeHashTabs and not for HashTab tables. It is an error
+    if <A>key</A> is not found in the hash table and <K>fail</K> is
+    returned in this case.
 </Description>
 </ManSection>
+
+<ManSection>
+<Func Name="HTGrow" Arg="ht, ob"/>
+<Returns> nothing </Returns>
+<Description>
+This is a more or less internal operation. It is called when the space
+in a hash table becomes scarce. The first argument <A>ht</A> must be a
+hash table object, the second a sample point. 
+The function increases the hash size
+by a factor of 2. This makes it necessary to choose a new hash
+function. Usually this is done with the usual
+<C>ChooseHashFunction</C> method. However, one can bind the two
+components <C>hfbig</C> and <C>hfdbig</C> in the options record
+of <Ref Oper="HTCreate"/> to a function and a record
+respectively and bind <C>cangrow</C> to <K>true</K>. 
+In that case, upon growing the hash, a new hash function
+is created by taking the function <C>hfbig</C> together with
+<C>hfdbig</C> as second data argument and reducing the resulting
+integer modulo the hash length. In this way one can specify a hash
+function suitable for all hash sizes by simply producing big enough
+hash values.
+</Description>
+</ManSection>
+
 </Section>
 
 <Section Label="oldhashtables">
@@ -349,7 +492,7 @@ hash values.
 <Section Label="hashdata">
 <Heading> The data structures for hash tables </Heading>
 
-A hash table object is just a record with the following components:
+A legacy hash table object is just a record with the following components:
 <List>
 <Mark><C>els</C></Mark>
 <Item> A &GAP; list storing the elements. Its length can be as long
@@ -383,7 +526,26 @@ the <C>data</C> component in the record returned by
 or not.</Item>
 <Mark><C>ishash</C></Mark>
 <Item> Is <K>true</K> to indicate that this is a hash table record.</Item>
+<Mark><C>hfbig</C> and <C>hfdbig</C></Mark>
+<Item> Used for hash tables which need to be able to grow but where
+    the user supplied the hash function. See Section <Ref
+        Oper="HTCreate"/> for more details.</Item>
 </List>
+
+A new style HashTab objects are component objects with the same
+components except that there is no component <C>ishash</C> since
+these objects are recognised by their type.
+<P/>
+
+A TreeHashTab is very similar. It is a positional object with
+basically the same components, except that <C>eqf</C> is replaced
+by the three-way comparison function <C>cmpfunc</C>. Since
+TreeHashTabs do not grow, the components <C>hfbig</C>, <C>hfdbig</C>
+and <C>cangrow</C> are never bound. Each slot in the <C>els</C>
+component is either unbound (empty), or bound to the only key stored
+in the hash which has this hash value or, if there is more than one
+key for that hash value, the slot is bound to an AVL tree containing
+all such keys (and values).
 
 <Subsection>
 <Heading> Memory requirements </Heading>
@@ -398,11 +560,23 @@ of objects actually stored in the hash!
 <P/>
 In addition one of course needs the memory to store
 the objects themselves.
+<P/>
+For TreeHashTabs there are additional memory requirements. As soon as
+there are more than one key hashing to the same value, the memory for
+an AVL tree object is needed in addition. An AVL tree objects needs
+about 10 machine words for the tree object and then another 4 machine
+words for each entry stored in the tree. Note that for many collisions
+this can be significantly more than for HashTab tables. However, the
+advantage of TreeHashTabs is that even for a bad hash function the
+performance is never worse than <M>log(n)</M> for each operation where
+<M>n</M> is the number of keys in the hash with the same hash value.
 </Subsection>
 
 <Subsection>
 <Heading> Handling of collisions </Heading>
 
+This section is only relevant for HashTab objects.
+<P/>
 If two or more objects have the same hash value, the following is done:
 If the hash value is coprime to the hash length, the hash value is 
 taken as <Q>the
@@ -429,7 +603,13 @@ A high number of collisions can be caused by a bad hash function,
 because the hash table is too small (do not fill a hash table to
 more than about 80&percent;), or because the objects to store
 are just not well enough distributed. Hash tables will grow automatically
-if too many collisions are detected.
+if too many collisions are detected or if they are filled to
+80&percent;.
+<P/>
+The advantage of TreeHashTabs is that even for a bad hash function the
+performance is never worse than <M>log(n)</M> for each operation where
+<M>n</M> is the number of keys in the hash with the same hash value.
+However, they need a bit more memory.
 </Subsection>
 
 </Section>
