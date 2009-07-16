@@ -266,7 +266,12 @@ InstallGlobalFunction( Orb,
     else
         # The standard case using a hash:
         if IsBound(o.treehashsize) then
-            o.ht := HTCreate(x,rec(treehashsize := o.treehashsize));
+            if IsBound(o.cmpfunc) then
+                o.ht := HTCreate(x,rec(treehashsize := o.treehashsize,
+                                       cmpfunc := o.cmpfunc));
+            else    
+                o.ht := HTCreate(x,rec(treehashsize := o.treehashsize));
+            fi;
             filts := filts and IsHashOrbitRep;
         elif IsBound(o.eqfunc) and IsBound(o.hashfunc) then
             o.ht := HTCreate(x,rec( hf := o.hashfunc.func,

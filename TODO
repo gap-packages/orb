@@ -1,9 +1,9 @@
-AVLTrees and Hashes:
-  Test files for hashes and tree hashes
-  Document AVL trees, Hashtrees, new hash functionality
-
-README fuer compilierung updaten
+README und Installationskapitel fuer compilierung updaten
 Webpage: alle versionen
+HappyBirthday dokumentieren
+normalin in ordnung bringen
+
+Naechste Version:
 
 OrbitStatisticsInVectorSpace: orbit limit instead of group size limit
 Beispiel laufen lassen
@@ -39,3 +39,6 @@ Zukunft:
   OrbitBySuborbit schaltbar? was war das nochmal???
   permbase einbauen (lohnt sich das???)
   HashTabs in Kernel
+  AVLTrees and Hashes:
+    Test files for hashes and tree hashes
+

@@ -622,6 +622,7 @@ function(G,U,opt)
   if IsFunction(opt) then
       membershiptest := opt;
       sizetester := Size;
+      su := Size(U);
   elif IsRecord(opt) then
       if IsBound(opt.membershiptest) then
           membershiptest := opt.membershiptest;
@@ -633,8 +634,16 @@ function(G,U,opt)
       else
           sizetester := Size;
       fi;
+      if IsBound(opt.sizeU) then
+          su := opt.sizeU;
+      else
+          if HasSize(U) then
+              su := Size(U);
+          else
+              su := sizetester(U);
+          fi;
+      fi;
   fi;
-  su := sizetester(U);
   if su = 1 then   # the trivial subgroup is easy to generate:
       return rec( gens := [One(U)], 
                   slp := StraightLineProgram( [[[1,0]]],

@@ -189,6 +189,23 @@ improves performance to give a sensible hash size in advance. </Item>
     to still be able to grow the hash table if need be. See Section
     <Ref Sect="hashdata"/> for more details.
 </Item>
+<Mark><C>treehashsize</C></Mark>
+<Item>This component indicates that instead of a normal hash table a tree
+hash table (TreeHashTab) should be used (see Section <Ref
+Sect="hashidea"/>). If bound, it must be set to the length of the tree hash
+table. You should still choose this length big enough, however, this type
+of hash table should be more resilient to bad hash functions since the
+performance of operations will only deteriorate up to <M>log(n)</M> instead
+of to <M>n</M> (number of entries). If you use this option your hash keys
+must be comparable by <C>&lt;</C> and not only by <C>=</C>. You can supply
+your own three-way comparison function (see <Ref Oper="HTCreate"/>) by
+using the <C>cmpfunc</C> component.
+</Item>
+<Mark><C>cmpfunc</C></Mark>
+<Item>If the previous component <C>treehashsize</C> is bound, you can
+specify a three-way comparison function for the hash keys in this
+component. See <Ref Oper="HTCreate"/> and <Ref Func="AVLCmp"/> for details.
+</Item>
 <Mark><C>log</C></Mark>
 <Item>If this component is set to <K>true</K> then a log of the
     enumeration of the orbit is written into the components

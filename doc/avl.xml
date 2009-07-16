@@ -117,7 +117,13 @@ The following functions are used to access entries by key:
 <Func Name="AVLAdd" Arg="t, key, val"/>
 <Returns> <K>true</K> or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function stores the
+key <A>key</A> with value <A>value</A> in the tree assuming that the keys
+in it are sorted according to the three-way comparison function stored
+with the tree. If <A>value</A> is <K>true</K> then no additional memory
+is needed. It is an error if there is already a key equal to <A>key</A>
+in the tree, in this case the function returns <K>fail</K>. Otherwise it
+returns <K>true</K>.
 </Description>
 </ManSection>
 
@@ -125,7 +131,11 @@ The following functions are used to access entries by key:
 <Func Name="AVLLookup" Arg="t, key"/>
 <Returns> an value or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function looks up the
+key <A>key</A> in the tree and returns the value which is associated to it. 
+If the key is not in the tree, the value <K>fail</K> is returned. This
+function assumes that the keys in the tree are sorted according to the
+three-way comparison function stored with the tree.
 </Description>
 </ManSection>
 
@@ -133,7 +143,12 @@ The following functions are used to access entries by key:
 <Func Name="AVLDelete" Arg="t, key"/>
 <Returns> an value or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function looks up the
+key <A>key</A> in the tree, deletes it and returns the value which was
+associated with it. If <A>key</A> is not contained in the tree then
+<K>fail</K> is returned. This function assumes that the keys in the 
+tree are sorted according to the three-way comparison function stored
+with the tree.
 </Description>
 </ManSection>
 
@@ -141,7 +156,13 @@ The following functions are used to access entries by key:
 <Func Name="AVLFindIndex" Arg="t, index"/>
 <Returns> an integer or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function looks up the
+key <A>key</A> in the tree and returns the index, under which it is stored
+in the tree. This index is one-based, that is, it takes values from 1 to
+the number of entries in the tree. If <A>key</A> is not contained in the
+tree then <K>fail</K> is returned. This function assumes that the keys in
+the tree are sorted according to the three-way comparison function
+stored with the tree.
 </Description>
 </ManSection>
 
@@ -152,23 +173,50 @@ index:
 <Func Name="AVLIndex" Arg="t, index"/>
 <Returns> a key or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function returns the
+key at index <A>index</A> in the tree, so <A>index</A> must be an integer
+in the range 1 to the number of elements in the tree. If the value is out
+of these bounds, <K>fail</K> is returned. Note that to use this function it
+is not necessary that the keys in the tree are sorted according to the
+three-way comparison function stored with the tree.
 </Description>
 </ManSection>
 
 <ManSection>
 <Func Name="AVLIndexLookup" Arg="t, index"/>
-<Returns> a key or <K>fail</K> </Returns>
+<Returns> a value or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function returns the
+value associated to the key at index <A>index</A> in the tree, so
+<A>index</A> must be an integer in the range 1 to the number of elements
+in the tree. If the value is out of these bounds, <K>fail</K> is
+returned. Note that to use this function it is not necessary that the keys
+in the tree are sorted according to the three-way comparison function
+stored with the tree.
 </Description>
 </ManSection>
 
 <ManSection>
-<Func Name="AVLIndexAdd" Arg="t, index"/>
+<Func Name="AVLIndexAdd" Arg="t, key, value, index"/>
 <Returns> a key or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function inserts
+the key <A>key</A> at index <A>index</A> in the tree and associates the
+value <A>value</A> with it. If <A>value</A> is <K>true</K> then no
+additional memory is needed to store the value. The index <A>index</A>
+must be an integer in the range 1 to <M>n+1</M> where <M>n</M> is the
+number of entries in the tree. The new key is inserted before the key which
+currently is stored at index <A>index</A>, so calling with <A>index</A>
+equal to <M>n+1</M> puts the new key at the end. If <A>index</A> is not in
+the corrent range, this function returns <K>fail</K> and the tree remains
+unchanged.
+<P/>
+<B>Caution:</B> With this function it is possible to put a key into the tree
+at a position such that the keys in the tree are no longer sorted according
+to the three-way comparison function stored with the tree! If you do this,
+the functions <Ref Func="AVLAdd"/>, <Ref Func="AVLLookup"/>, <Ref
+Func="AVLDelete"/> and <Ref Func="AVLFindIndex"/> will no longer work since
+they assume that the keys are sorted!
 </Description>
 </ManSection>
 
@@ -176,7 +224,9 @@ index:
 <Func Name="AVLIndexDelete" Arg="t, index"/>
 <Returns> a key or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function deletes
+the key at index <A>index</A> in the tree and returns the value which was
+associated with it.
 </Description>
 </ManSection>
 
@@ -186,7 +236,15 @@ The following functions allow low level access to the AVL tree object:
 <Func Name="AVLFind" Arg="t, key"/>
 <Returns> an integer or <K>fail</K> </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree. This function locates the
+key <A>key</A> in the tree and returns the position in the positional
+object, at which the node which contains the key is stored. This position
+will always be divisible by 4. Use the functions <Ref Func="AVLData"/> and
+<Ref Func="AVLValue"/> to access the key and value of the node
+respectively. The function returns <K>fail</K> if the key is not found in
+the tree. This function assumes that the keys in
+the tree are sorted according to the three-way comparison function
+stored with the tree.
 </Description>
 </ManSection>
 
@@ -194,7 +252,9 @@ The following functions allow low level access to the AVL tree object:
 <Func Name="AVLData" Arg="t, pos"/>
 <Returns> an key </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree and the second a position
+in the positional object corresponding to a node as returned by <Ref
+Func="AVLFind"/>. The function returns the key associated with this node.
 </Description>
 </ManSection>
 
@@ -202,7 +262,9 @@ The following functions allow low level access to the AVL tree object:
 <Func Name="AVLValue" Arg="t, pos"/>
 <Returns> a value </Returns>
 <Description>
-
+The first argument <A>t</A> must be an AVL tree and the second a position
+in the positional object corresponding to a node as returned by <Ref
+Func="AVLFind"/>. The function returns the value associated with this node.
 </Description>
 </ManSection>
 
@@ -213,31 +275,42 @@ implemented for AVL tree objects:
 <Meth Name="Display" Arg="t"/>
 <Returns> nothing </Returns>
 <Description>
-
+This function displays the tree in a user-friendly way. Do not try this
+with trees containing many nodes!
 </Description>
 </ManSection>
 
 <ManSection>
 <Meth Name="ELM_LIST" Arg="t, index"/>
-<Returns> nothing </Returns>
+<Returns> A key or <K>fail</K> </Returns>
 <Description>
-
+This method allows for easy access to the key at index <A>index</A> in the
+tree using the square bracket notation <C><A>t</A>[<A>index</A>]</C>.
+It does exactly the same as <Ref Func="AVLIndex"/>.
+This is to make AVL trees behave more like lists.
 </Description>
 </ManSection>
 
 <ManSection>
 <Meth Name="Position" Arg="t, key"/>
-<Returns> nothing </Returns>
+<Returns> an integer or <K>fail</K> </Returns>
 <Description>
-
+This method allows to use the <C>Position</C> operation to locate the index
+at which the key <A>key</A> is stored in the tree. It does exactly the same
+as <Ref Func="AVLFindIndex"/>. This is to make AVL trees behave more like
+lists.
 </Description>
 </ManSection>
 
 <ManSection>
-<Meth Name="Add" Arg="t, key, value"/>
+<Meth Name="Add" Arg="t, key [, index]"/>
 <Returns> nothing </Returns>
 <Description>
-
+This method allows to use the <C>Add</C> operation to add a key (with
+associated value <K>true</K>) to the tree at index <A>index</A>. It does
+exactly the same as <Ref Func="AVLIndexAdd"/>, so the same warning about
+sortedness as there applies! If <A>index</A> is omitted, the key is
+added at the end. This is to make AVL trees behave more like lists.
 </Description>
 </ManSection>
 
@@ -245,7 +318,10 @@ implemented for AVL tree objects:
 <Meth Name="Remove" Arg="t, index"/>
 <Returns> a key </Returns>
 <Description>
-
+This method allows to use the <C>Remove</C> operation to remove a key from
+the tree at index <A>index</A>. If <A>index</A> is omitted, the last key in
+the tree is remove. This method returns the deleted key or <K>fail</K> if
+the tree was empty. This is to make AVL trees behave more like lists.
 </Description>
 </ManSection>
 
@@ -253,7 +329,8 @@ implemented for AVL tree objects:
 <Meth Name="Length" Arg="t"/>
 <Returns> a key </Returns>
 <Description>
-
+This method returns the number of entries stored in the tree <A>t</A>. This
+is to make AVL trees behave more like lists.
 </Description>
 </ManSection>
 
@@ -261,7 +338,8 @@ implemented for AVL tree objects:
 <Meth Name="\in" Arg="key, t"/>
 <Returns> <K>true</K> or <K>false</K> </Returns>
 <Description>
-
+This method tests whether or not the key <A>key</A> is stored in the AVL
+tree <A>t</A>. This is to make AVL trees behave more like lists.
 </Description>
 </ManSection>
 
@@ -273,9 +351,13 @@ implemented for AVL tree objects:
 An AVL tree is a positional object in which the first 7 positions are
 used for administrative data (see table below) and then from position
 8 on follow the nodes of the tree. Each node uses 4 positions such
-that all nodes begin at positions divisible by 4. The following table
-contains the information what is stored in each of the first 7
-entries:
+that all nodes begin at positions divisible by 4. The system allocates
+the positional object larger than actually needed such that not every new
+node leads to the object being copied. Nodes which become free are
+collected in a free list.
+
+The following table contains the information what is stored in each of
+the first 7 entries:
 
 <Table Align="l|l">
     <Row>
@@ -293,7 +375,8 @@ entries:
     </Row>
     <Row>
         <Item>4</Item>
-        <Item>position of largest allocated position</Item>
+        <Item>position of largest allocated position is always congruent 3
+        mod 4</Item>
     </Row>
     <Row>
         <Item>5</Item>
@@ -309,7 +392,54 @@ entries:
     </Row>
 </Table>
 
+The four positions used for a node contain the following information,
+recall that each node starts at a position divisible by 4:
 
+<Table Align="l|l">
+<Row>
+<Item>0 mod 4</Item>
+<Item>reference to the key</Item>
+</Row>
+<Row>
+<Item>1 mod 4</Item>
+<Item>position of left node or 0 if empty, balance factor (see below)</Item>
+</Row>
+<Row>
+<Item>2 mod 4</Item>
+<Item>position of right node or 0 if empty</Item>
+</Row>
+<Row>
+<Item>3 mod 4</Item>
+<Item>index: number of nodes in left subtree plus one</Item>
+</Row>
+</Table>
+
+Since all positions of nodes are divisible by 4, we can use the least
+significant two bits of the left node reference for the so called balance
+factor. Balance factor 0 (both bits 0) indicates that the depth of the
+left subtree is equal to the depth of the right subtree. Balance factor 1
+(bits 01) indicates that the depth of the right subtree is one greater than
+the depth of the left subtree. Balance factor 2 (or -1 in <Cite
+Key="ACP3"/>, here bits 10) indicates that the depth of the left subtree is
+one greater than the depth of the right subtree.
+
+<P/>
+For freed nodes the position of the next free node in the free list is held
+in the 0 mod 4 position and 0 means the end of the free list.
+
+<P/>
+Position 7 in the positional object can contain the value <K>fail</K>, in
+this case all stored values are <K>true</K>. This is a measure to limit the
+memory usage in the case that the only relevant information in the tree is
+the key and no values are stored there. This is in particular interesting
+if the tree structure is just used as a list implementation.
+
+<P/>
+Note that all functions dealing with AVL trees are both implemented on the
+&GAP; level and on the kernel level. Both implementations do exactly the
+same thing, the kernel version is only much faster and tuned for efficiency
+whereas the &GAP; version documents the functionality better and is used 
+as a fallback if the C-part of the <Package>orb</Package> is not compiled.
 </Section>
 
 <!-- ############################################################ -->
