@@ -1769,7 +1769,8 @@ InstallGlobalFunction( ORB_EstimateOrbitSize,
     starttime := Runtime();
     endtime := starttime + timeout;
     pr := ProductReplacer( gens, rec( maxdepth:=400 ) );
-    ht := HTCreate( pt, NextPrimeInt( Minimum( 100000, limit ) ) );
+    ht := HTCreate( pt, 
+               rec( hashlen := NextPrimeInt( Minimum( 100000, limit ) ) ) );
     tries := 0;
     coinc := 0;
     grpcoinc := 0;
