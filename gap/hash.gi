@@ -568,7 +568,7 @@ InstallMethod( ChooseHashFunction, "failure method if all fails",
     return fail;
   end );
 
-if not(IsBound(GenericHashFunc_C)) then GenerticHashFunc_C := fail; fi;
+if not(IsBound(GenericHashFunc_C)) then GenericHashFunc_C := fail; fi;
 InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
   [IsGF2VectorRep and IsList,IsInt],
   function(p,hashlen)
