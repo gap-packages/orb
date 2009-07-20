@@ -50,7 +50,7 @@ You can create a new statically linked 'gap' binary as follows:
 Go into the main GAP directory and then into 'bin/BINDIR'. Here
 BINDIR means the directory containing the 'gap' executable after
 compiling GAP. This directory also contains the GAP compiler script
-'gac'. Assuming IO in the standard location you can then say
+'gac'. Assuming orb in the standard location you can then say
 
    ./gac -o gap-static -p "-DORBSTATIC" -P "-static" ../../pkg/orb/src/orb.c
 
@@ -58,7 +58,7 @@ Note that you have to replace BINDIR by the name containing the 'gap'
 executable after compiling GAP as above. If you have installed the
 package in a different place than the standard, you have to replace
 '../..' in the above command by the path to the directory containing
-the 'pkg' directory into which you installed IO.
+the 'pkg' directory into which you installed orb.
 
 Then copy your `gap' start script to, say, `gaps' and change the
 references to the GAP binary to `gap-static'.
