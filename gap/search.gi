@@ -94,7 +94,7 @@ InstallMethod( ProductReplacer,
         pr.randomsource := GlobalRandomSource;
     fi;
     if not IsBound(pr.turbo) then
-        pr.turbo := true;
+        pr.turbo := false;
     fi;
     if not IsBound(pr.scramble) then 
         if pr.turbo then

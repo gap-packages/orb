@@ -620,6 +620,28 @@ operation has the integer <M>|O_i \cdot <A>g</A> \cap O_j|</M> in its
 RegularRepresentationSchurBasisElm intentionally left out.
 -->
 
+<ManSection>
+<Func Name="ORB_EstimateOrbitSize" Arg="gens, pt, op, L, limit, timeout"/>
+<Returns><K>fail</K> or a record</Returns>
+<Description>
+The argument <A>gens</A> is a list of group generators for a group <M>G</M>, 
+the argument <A>pt</A> a point and <A>op</A> and action function for a
+group action of <M>G</M> acting on points like <A>pt</A>. This function
+starts to act with random elements of <M>G</M> on <A>pt</A> producing
+random elements of the orbit <M><A>pt</A>*G</M> and uses the birthday
+paradox to estimate the orbit size. To this end it creates points of the
+orbit until <A>L</A> coincidences (points found twice) have been found.
+If before this happens <A>limit</A> tries have been reached or if more than
+<A>timeout</A> milliseconds have ellapsed, the function gives up and
+returns <K>fail</K>. Otherwise it estimates the orbit size giving
+an estimate in the component <C>estimate</C>, a confidence interval 
+described by the components <C>lowerbound</C> and <C>upperbound</C>, a list
+of generators for the stabiliser in the component <C>Sgens</C> and the
+number of coincidences that were caused by picking the same group element.
+The length of <C>Sgens</C> is
+<M><A>L</A>-</M><C>grpcoinc</C>. Use at least <M>15</M> for <A>L</A>,
+otherwise the statistics are not valid.
+</Description></ManSection>
 </Section>
 
 

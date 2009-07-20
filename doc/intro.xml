@@ -52,7 +52,9 @@ orbit-by-suborbit algorithms to work.
 Chapter <Ref Chap="install"/> describes the installation of this package.
 Chapter <Ref Chap="basic"/> describes our reimplementation of the basic 
 orbit algorithm. Chapter <Ref Chap="hash"/> describes our
-toolbox for hash tables, whereas Chapter <Ref Chap="random"/> covers
+toolbox for hash tables, Chapter <Ref Chap="cache"/> explains
+caching data structures, whereas Chapter <Ref Chap="avl"/> describes
+our implementation of AVL trees. Chapter <Ref Chap="random"/> covers
 tools to use random methods in groups. Chapter <Ref Chap="search"/>
 describes a lot of tools to search in groups and orbits. These
 techniques are basically intended to provide the data structures
