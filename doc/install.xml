@@ -71,8 +71,7 @@ compiling <Q><F>gap</F></Q>. This directory also contains the &GAP; compiler scr
 in the standard location you can then say
 
 <Verb>
-    ./gac -o gap-static -p "-DORBSTATIC -I../../pkg/orb/bin/BINDIR" \
-        -P "-static" ../../pkg/orb/src/orb.c
+    ./gac -o gap-static -p "-DORBSTATIC" -P "-static" ../../pkg/orb/src/orb.c
 </Verb>
 
 Then copy your <Q><F>gap</F></Q> start script to, say, <Q><F>gaps</F></Q> and change the
@@ -92,7 +91,7 @@ combining all the compile and link options and all the .c files as
 in the ./gac command above. For the <Package>orb</Package> 
 package, you have to add
 <Verb>
-    -DORBSTATIC -I../../pkg/orb/bin/BINDIR
+    -DORBSTATIC
 </Verb>
 to the string of the -p option and the file
 <Verb>

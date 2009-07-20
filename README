@@ -12,16 +12,68 @@ respectively
     unzoo -x orb-x.x.zoo
 and so on.
 
-(Note that if you use a browser like `netscape' for downloading the
-archive file the `gunzip' step above may already be done by the browser,
-although the name of your file may still have the misleading `.gz'
-extension.)
-
 Do this preferably (but not necessarily) inside the `pkg' subdirectory
 of your GAP 4 installation. It creates a subdirectory called `orb'.
 
-This completes the installation of the package.
+This completes the basic installation of the package.
 
+To compile the C code of this package to improve performance do
+(in the `pkg' directory):
+
+    cd orb 
+    ./configure [path]
+
+where 'path' is a path to the main GAP root directory (if not given the
+default '../..' is assumed).
+
+Afterwards call 'make' to compile a binary file.
+
+If you installed GAP on several architectures, you must execute this
+configure/make step on each of the architectures immediately after
+configuring GAP itself on this architecture.
+
+If you installed the package in another 'pkg' directory than the standard
+'pkg' directory in your GAP 4 installation, then you have to add the path
+to the directory containing your 'pkg' directory to GAP's list of directories.
+This can be done by starting GAP with the '-l' command line option
+followed by the name of the directory and a semicolon. Then your directory
+is prepended to the list of directories searched. Otherwise the package 
+is not found by GAP. Of course, you can add this option to your GAP
+startup script.
+
+----------------------------------------------------------------------------
+
+STATIC LINKING: This might be interesting for M$ Windows users, as
+dynamic loading of binary modules does not always work there.
+You can create a new statically linked 'gap' binary as follows:
+
+Go into the main GAP directory and then into 'bin/BINDIR'. Here
+BINDIR means the directory containing the 'gap' executable after
+compiling GAP. This directory also contains the GAP compiler script
+'gac'. Assuming IO in the standard location you can then say
+
+   ./gac -o gap-static -p "-DORBSTATIC" -P "-static" ../../pkg/orb/src/orb.c
+
+Note that you have to replace BINDIR by the name containing the 'gap'
+executable after compiling GAP as above. If you have installed the
+package in a different place than the standard, you have to replace
+'../..' in the above command by the path to the directory containing
+the 'pkg' directory into which you installed IO.
+
+Then copy your `gap' start script to, say, `gaps' and change the
+references to the GAP binary to `gap-static'.
+
+If you want to install more than one package with a C-part like this
+package, you can still create a statically linked GAP executable by
+combining all the compile and link options and all the .c files as
+in the ./gac command above. For the orb package, you have to add
+  -DORBSTATIC
+to the string of the -p option and the file
+  ../../pkg/orb/src/orb.c
+somewhere on the command line. As above, '../..' and 'BINDIR' have
+to be replaced if you installed in a non-standard location.
+
+----------------------------------------------------------------------------
 Recompiling the documentation is possible by the command `gap makedoc.g'
 in the orb directory. But this should not be necessary.
 
