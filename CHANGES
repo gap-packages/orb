@@ -18,7 +18,7 @@
   - ORB_EstimateOrbitSize using birthday paradox.
   - Fix normalin component for product replacer objects.
   - Various fixes and improvements of orbit-by-suborbit stuff.
-  - Release revision 268 as version 3.0
+  - Release revision 269 as version 3.0
 
 
 ==========================

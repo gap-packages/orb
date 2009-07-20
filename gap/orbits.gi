@@ -1754,6 +1754,13 @@ InstallMethod( SizeMC, "standard method for permutation groups",
     return SizeStabChain(S);
   end );
 
+if not(IsBound(MACFLOAT_INT)) then
+  MACFLOAT_INT := FLOAT_INT;
+  SQRT_MACFLOAT := function(x)
+    return EXP_FLOAT(LOG_FLOAT(x)/FLOAT_INT(2));
+  end;
+fi;
+
 ## Orbit size estimation using the birthday principle
 InstallGlobalFunction( ORB_EstimateOrbitSize,
   function( gens, pt, op, L, limit, timeout )
