@@ -16,7 +16,9 @@
   - C-port to speed up tree hash tables.
   - New generic hash function in particular for compressed vectors/mats.
   - ORB_EstimateOrbitSize using birthday paradox.
-  - Various big fixes and improvements of orbit-by-suborbit stuff.
+  - Fix normalin component for product replacer objects.
+  - Various fixes and improvements of orbit-by-suborbit stuff.
+  - Release revision XXX as version 3.0
 
 
 ==========================
