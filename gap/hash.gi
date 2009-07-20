@@ -568,6 +568,7 @@ InstallMethod( ChooseHashFunction, "failure method if all fails",
     return fail;
   end );
 
+if not(IsBound(GenericHashFunc_C)) then GenerticHashFunc_C := fail; fi;
 InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
   [IsGF2VectorRep and IsList,IsInt],
   function(p,hashlen)
@@ -579,7 +580,7 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
     if bytelen <= 8 then
         return rec( func := ORB_HashFunctionForShortGF2Vectors,
                     data := [hashlen] );
-    elif IsBound(GenericHashFunc_C) then
+    elif IsFunction(GenericHashFunc_C) then
         return rec( func := GenericHashFunc_C,
                     data := [101,2*GAPInfo.BytesPerVariable,bytelen,hashlen] );
     else
@@ -607,7 +608,7 @@ InstallMethod( ChooseHashFunction, "for compressed 8bit vectors",
     if bytelen <= 8 then
         return rec( func := ORB_HashFunctionForShort8BitVectors,
                     data := [hashlen,q] );
-    elif IsBound(GenericHashFunc_C) then
+    elif IsFunction(GenericHashFunc_C) then
         return rec( func := GenericHashFunc_C,
                     data := [101,3*GAPInfo.BytesPerVariable,bytelen,hashlen] );
     else
