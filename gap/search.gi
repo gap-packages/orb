@@ -177,6 +177,11 @@ InstallMethod( Reset, "for a product replacer", [IsProductReplacer],
     while Length(pr!.state) < pr!.slots do
         Add(pr!.state,pr!.gens[Random(pr!.randomsource,1,pr!.nrgens)]);
     od;
+    if pr.turbo then
+        pr.settled := ListWithIdenticalEntries(pr.slots,3);
+    else
+        pr.settled := ListWithIdenticalEntries(pr.slots,0);
+    fi;
     pr!.initialized := false;
     pr!.steps := 0;
     if pr!.noaccu = false then
