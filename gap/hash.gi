@@ -418,7 +418,7 @@ InstallMethod(HTAdd, "for a hash table, an object and a value",
             ht!.alert := true;
           else
             HTGrow(ht,x);
-            return AddHT(ht,x,val);
+            return HTAdd(ht,x,val);
           fi;
         fi;
       until not(IsBound(ht!.els[h]));

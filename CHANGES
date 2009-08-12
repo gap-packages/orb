@@ -7,6 +7,7 @@
 ==========================
 
   - Fixed minor bug in Reset for product replacers using turbo.
+  - Fixed bug in HTAdd (calling AddHT).
 
 
 ==========================
