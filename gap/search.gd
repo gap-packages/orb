@@ -29,6 +29,8 @@ DeclareGlobalVariable( "ProductReplacersType" );
 # The constructors:
 DeclareOperation( "ProductReplacer", [IsList, IsRecord] );
 DeclareOperation( "ProductReplacer", [IsList] );
+DeclareOperation( "ProductReplacer", [IsGroup, IsRecord] );
+DeclareOperation( "ProductReplacer", [IsGroup] );
 
 # Usage:
 DeclareOperation( "Next", [IsProductReplacer] );

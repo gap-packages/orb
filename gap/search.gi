@@ -83,52 +83,55 @@ InstallMethod( ProductReplacer, "for a list of group generators",
     return ProductReplacer( gens, rec( ) );
   end );
 
+InstallMethod( ProductReplacer,
+  "for a group object and an options record",
+  [IsGroup, IsRecord],
+  function(g,r) return ProductReplacer(GeneratorsOfGroup(g),r); end );
+
+InstallMethod( ProductReplacer,
+  "for a group object",
+  [IsGroup],
+  function(g) return ProductReplacer(GeneratorsOfGroup(g),rec()); end );
+
 InstallMethod( ProductReplacer, 
   "for a list of group generators and an options record",
   [IsList, IsRecord],
   function( gens, opt )
     # First add some default options if not set:
     local pr;
+    if Length(gens) = 0 then
+        Error("ProductReplacer: need at least one generator");
+        return fail;
+    fi;
     pr := ShallowCopy(opt);
     if not IsBound(pr.randomsource) then
         pr.randomsource := GlobalRandomSource;
     fi;
-    if not IsBound(pr.turbo) then
-        pr.turbo := false;
-    fi;
     if not IsBound(pr.scramble) then 
-        if pr.turbo then
-            pr.scramble := 0; 
-        else
-            pr.scramble := 100; 
-        fi;
+        pr.scramble := 100; 
     fi;
     if not IsBound(pr.scramblefactor) then 
-        if pr.turbo then
-            pr.scramblefactor := 0;
-        else
-            pr.scramblefactor := 10;
-        fi;
+        pr.scramblefactor := 10;
     fi;
     if not IsBound(pr.addslots) then
-        if pr.turbo then
-            pr.addslots := 0;
-        else
-            pr.addslots := 10;
-        fi;
+        pr.addslots := 10;
     fi;
     if not IsBound(pr.minslots) then
-        if pr.turbo then
-            pr.minslots := 12;
-        else
-            pr.minslots := 0;
-        fi;
+        pr.minslots := 0;
     fi;
     if not IsBound(pr.maxdepth) then
         pr.maxdepth := infinity;
     fi;
     if not IsBound(pr.noaccu) then
         pr.noaccu := false;
+    fi;
+    if not IsBound(pr.accus) or pr.accus < 0 then
+        pr.accus := 5;
+    elif pr.accus = 0 then
+        pr.noaccu := true;
+    fi;
+    if not IsBound(pr.accelerator) then
+        pr.accelerator := true;
     fi;
     if not IsBound(pr.normalin) then
         pr.normalin := false;
@@ -148,45 +151,44 @@ InstallMethod( ProductReplacer,
         pr.gens := gens;
     fi;
     if Length(gens) = 1 and pr.addslots = 0 then
-         # Make sure that the case of one generator is OK!
-         pr.minslots := 2;
+        # Make sure that the case of one generator is OK!
+        pr.minslots := 2;
     fi;
     pr.nrgens := Length(pr.gens);
     pr.slots := pr.nrgens + pr.addslots;
     if pr.slots < pr.minslots then
         pr.slots := pr.minslots;
     fi;
-    if pr.turbo then
-        pr.settled := ListWithIdenticalEntries(pr.slots,3);
-    else
-        pr.settled := ListWithIdenticalEntries(pr.slots,0);
-    fi;
     pr.initialized := false;
     pr.steps := 0;
     if pr.noaccu = false then
-        pr.accu := pr.gens[1]^0;
+        pr.accu := ListWithIdenticalEntries(pr.accus,pr.gens[1]^0);
+        pr.accupos := 0;
+    else
+        pr.accu := fail;
+        pr.accupos := 0;
+    fi;
+    if pr.accelerator = true then
+        pr.captain := pr.gens[1]^0;
+    else
+        pr.captain := fail;
     fi;
     Objectify(ProductReplacersType,pr);
-    Reset(pr);
+    pr!.team := ShallowCopy(pr!.gens);
+    while Length(pr!.team) < pr!.slots do
+         Add(pr!.team,pr!.gens[Random(pr!.randomsource,1,pr!.nrgens)]);
+    od;
     return pr;
   end );
 
 InstallMethod( Reset, "for a product replacer", [IsProductReplacer],
   function(pr)
-    pr!.state := ShallowCopy(pr!.gens);
-    while Length(pr!.state) < pr!.slots do
-        Add(pr!.state,pr!.gens[Random(pr!.randomsource,1,pr!.nrgens)]);
-    od;
-    if pr!.turbo then
-        pr!.settled := ListWithIdenticalEntries(pr!.slots,3);
-    else
-        pr!.settled := ListWithIdenticalEntries(pr!.slots,0);
-    fi;
-    pr!.initialized := false;
-    pr!.steps := 0;
-    if pr!.noaccu = false then
-        pr!.accu := pr!.gens[1]^0;
-    fi;
+    if not(pr!.initialized) then return; fi;
+    pr!.team := ShallowCopy(pr!.resetteam);
+    pr!.captain := pr!.resetcaptain;
+    pr!.accu := ShallowCopy(pr!.resetaccu);
+    pr!.accupos := pr!.resetaccupos;
+    pr!.steps := pr!.resetsteps;
     if pr!.normalin <> false then
         Reset(pr!.normalin);
     fi;
@@ -199,55 +201,52 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
         local a, b, c, l, x, result, i;
         pr!.steps := pr!.steps + 1;
         a := Random(pr!.randomsource,1,pr!.slots);
-        if pr!.settled[a] = 0 then  # traditional and long term behaviour
-            b := Random(pr!.randomsource,1,pr!.slots-1);
-            if b >= a then b := b + 1; fi;
-            c := Random(pr!.randomsource,1,2);
+        c := Random(pr!.randomsource,1,2);
+        if pr!.accelerator then
+            b := Random(pr!.randomsource,1,pr!.slots);
             if c = 1 then
                 if pr!.normalin <> false then
-                    pr!.state[a]:=pr!.state[a]*pr!.state[b]^Next(pr!.normalin);
+                    pr!.captain := pr!.captain*pr!.team[b]^Next(pr!.normalin);
+                    pr!.team[a]:=pr!.team[a]*pr!.captain;
                 else
-                    pr!.state[a]:=pr!.state[a]*pr!.state[b];
+                    pr!.captain := pr!.captain*pr!.team[b];
+                    pr!.team[a]:=pr!.team[a]*pr!.captain;
                 fi;
             else
                 if pr!.normalin <> false then
-                    pr!.state[a]:=pr!.state[b]^Next(pr!.normalin)*pr!.state[a];
+                    pr!.captain  := pr!.team[b]^Next(pr!.normalin)*pr!.captain;
+                    pr!.team[a] := pr!.captain * pr!.team[a];
                 else
-                    pr!.state[a]:=pr!.state[b]*pr!.state[a];
+                    pr!.captain  := pr!.team[b] * pr!.captain;
+                    pr!.team[a] := pr!.captain * pr!.team[a];
                 fi;
             fi;
-        else   # turbo behaviour
-            pr!.settled[a] := pr!.settled[a] - 1;
-            # Form a random subproduct of all other gens and multiply
-            # either from left or from right:
-            c := Random(pr!.randomsource,1,2);
-            if c = 1 then  # left to right:
-                l := Concatenation([a+1..pr!.slots],[1..a-1]);
+            result := pr!.team[a];
+        else
+            b := Random(pr!.randomsource,1,pr!.slots-1);
+            if b >= a then b := b + 1; fi;
+            if c = 1 then
+                if pr!.normalin <> false then
+                    pr!.team[a]:=pr!.team[a]*pr!.team[b]^Next(pr!.normalin);
+                else
+                    pr!.team[a]:=pr!.team[a]*pr!.team[b];
+                fi;
             else
-                l := Concatenation([a-1,a-2..1],[pr!.slots,pr!.slots-1..a+1]);
-            fi;
-            c := Random(pr!.randomsource,1,2);
-            for i in l do
-                b := Random(pr!.randomsource,0,4);
-                if b > 0 then
-                    x := pr!.state[i]^b;
-                    if pr!.normalin <> false then
-                        x := x^Next(pr!.normalin);
-                    fi;
-                    if c = 1 then    # from right:
-                        pr!.state[a] := pr!.state[a] * x;
-                    else   # from left:
-                        pr!.state[a] := x * pr!.state[a];
-                    fi;
+                if pr!.normalin <> false then
+                    pr!.team[a]:=pr!.team[b]^Next(pr!.normalin)*pr!.team[a];
+                else
+                    pr!.team[a]:=pr!.team[b]*pr!.team[a];
                 fi;
-            od;
+            fi;
+            result := pr!.team[a];
         fi;
-        result := pr!.state[a];
         if pr!.noaccu then
             return result;
         else
-            pr!.accu := pr!.accu * result;   # Rattle
-            return pr!.accu;
+            pr!.accupos := pr!.accupos + 1;
+            if pr!.accupos > pr!.accus then pr!.accupos := 1; fi;
+            pr!.accu[pr!.accupos] := pr!.accu[pr!.accupos] * result;   # Rattle
+            return pr!.accu[pr!.accupos];
         fi;
     end;
     if pr!.steps > pr!.maxdepth then Reset(pr); fi;
@@ -255,6 +254,11 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
         for i in [1..Maximum(pr!.nrgens * pr!.scramblefactor, pr!.scramble)] do
             OneStep(pr);
         od;
+        pr!.resetteam := ShallowCopy(pr!.team);  # Remember for reset
+        pr!.resetcaptain := pr!.captain;
+        pr!.resetaccu := ShallowCopy(pr!.accu);
+        pr!.resetaccupos := pr!.accupos;
+        pr!.resetsteps := pr!.steps;
         pr!.initialized := true;
     fi;
     return OneStep(pr);
@@ -262,15 +266,15 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
 
 InstallMethod( ViewObj, "for a product replacer", [IsProductReplacer],
   function(pr)
-    Print("<product replacer ");
-    if pr!.turbo then Print("(turbo) "); fi;
-    Print("gens=",pr!.nrgens," slots=",pr!.slots,
+    Print("<product replacer gens=",pr!.nrgens," slots=",pr!.slots,
           " scramble=",Maximum(pr!.nrgens*pr!.scramblefactor,pr!.scramble),
-          "\n         maxdepth=",pr!.maxdepth," steps=",pr!.steps);
-    if pr!.noaccu then Print(" (without accu)");
-    else Print(" (rattle)"); fi;
+          " maxdepth=",pr!.maxdepth,"\n         steps=",pr!.steps);
+    if pr!.noaccu then Print(" (without accu");
+    else Print(" (rattle accus=",pr!.accus); fi;
+    if pr!.accelerator then Print(", with accelerator)");
+    else Print(")"); fi;
     if pr!.normalin <> false then
-        Print(" normalin=");
+        Print("\n         normalin=");
         ViewObj(pr!.normalin);
     fi;
     Print(">");
