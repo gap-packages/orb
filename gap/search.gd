@@ -35,6 +35,8 @@ DeclareOperation( "ProductReplacer", [IsGroup] );
 # Usage:
 DeclareOperation( "Next", [IsProductReplacer] );
 DeclareOperation( "Reset", [IsProductReplacer] );
+DeclareOperation( "AddGeneratorToProductReplacer",
+                  [IsProductReplacer,IsObject] );
 
 
 #####################

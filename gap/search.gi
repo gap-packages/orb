@@ -104,20 +104,34 @@ InstallMethod( ProductReplacer,
         return fail;
     fi;
     pr := ShallowCopy(opt);
+    if CanEasilySortElementsFamily(FamilyObj(gens[1])) then
+        pr.gens := Set(gens);
+    else
+        pr.gens := ShallowCopy(gens);
+    fi;
+    pr.nrgens := Length(pr.gens);
+    if not IsBound(pr.minslots) then
+        pr.minslots := 0;
+    fi;
+    if Length(gens) = 1 and pr.addslots = 0 then
+        # Make sure that the case of one generator is OK!
+        pr.minslots := Maximum(2,pr.minslots);
+    fi;
     if not IsBound(pr.randomsource) then
         pr.randomsource := GlobalRandomSource;
     fi;
     if not IsBound(pr.scramble) then 
-        pr.scramble := 100; 
+        pr.scramble := 30; 
     fi;
     if not IsBound(pr.scramblefactor) then 
-        pr.scramblefactor := 10;
+        pr.scramblefactor := 4;
+    fi;
+    pr.scramble := Maximum(pr.scramble,pr.scramblefactor*pr.nrgens);
+    if not IsBound(pr.retirecaptain) then
+        pr.retirecaptain := 2 * pr.scramble;
     fi;
     if not IsBound(pr.addslots) then
-        pr.addslots := 10;
-    fi;
-    if not IsBound(pr.minslots) then
-        pr.minslots := 0;
+        pr.addslots := 5;
     fi;
     if not IsBound(pr.maxdepth) then
         pr.maxdepth := infinity;
@@ -141,20 +155,6 @@ InstallMethod( ProductReplacer,
             Error("normalin option must be a product replacer");
         fi;
     fi;
-    if Length(gens) = 0 then
-        Error("Need at least one generator");
-        return;
-    fi;
-    if CanEasilySortElementsFamily(FamilyObj(gens[1])) then
-        pr.gens := Set(gens);
-    else
-        pr.gens := gens;
-    fi;
-    if Length(gens) = 1 and pr.addslots = 0 then
-        # Make sure that the case of one generator is OK!
-        pr.minslots := 2;
-    fi;
-    pr.nrgens := Length(pr.gens);
     pr.slots := pr.nrgens + pr.addslots;
     if pr.slots < pr.minslots then
         pr.slots := pr.minslots;
@@ -168,11 +168,6 @@ InstallMethod( ProductReplacer,
         pr.accu := fail;
         pr.accupos := 0;
     fi;
-    if pr.accelerator = true then
-        pr.captain := pr.gens[1]^0;
-    else
-        pr.captain := fail;
-    fi;
     Objectify(ProductReplacersType,pr);
     pr!.team := ShallowCopy(pr!.gens);
     while Length(pr!.team) < pr!.slots do
@@ -185,7 +180,6 @@ InstallMethod( Reset, "for a product replacer", [IsProductReplacer],
   function(pr)
     if not(pr!.initialized) then return; fi;
     pr!.team := ShallowCopy(pr!.resetteam);
-    pr!.captain := pr!.resetcaptain;
     pr!.accu := ShallowCopy(pr!.resetaccu);
     pr!.accupos := pr!.resetaccupos;
     pr!.steps := pr!.resetsteps;
@@ -200,29 +194,30 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
     OneStep := function(pr)
         local a, b, c, l, x, result, i;
         pr!.steps := pr!.steps + 1;
-        a := Random(pr!.randomsource,1,pr!.slots);
         c := Random(pr!.randomsource,1,2);
-        if pr!.accelerator then
-            b := Random(pr!.randomsource,1,pr!.slots);
+        if pr!.accelerator and pr!.steps <= pr!.retirecaptain then
+            a := Random(pr!.randomsource,2,pr!.slots);
+            b := Random(pr!.randomsource,2,pr!.slots);
             if c = 1 then
                 if pr!.normalin <> false then
-                    pr!.captain := pr!.captain*pr!.team[b]^Next(pr!.normalin);
-                    pr!.team[a]:=pr!.team[a]*pr!.captain;
+                    pr!.team[1] := pr!.team[1]*pr!.team[b]^Next(pr!.normalin);
+                    pr!.team[a] := pr!.team[a]*pr!.team[1];
                 else
-                    pr!.captain := pr!.captain*pr!.team[b];
-                    pr!.team[a]:=pr!.team[a]*pr!.captain;
+                    pr!.team[1] := pr!.team[1]*pr!.team[b];
+                    pr!.team[a] := pr!.team[a]*pr!.team[1];
                 fi;
             else
                 if pr!.normalin <> false then
-                    pr!.captain  := pr!.team[b]^Next(pr!.normalin)*pr!.captain;
-                    pr!.team[a] := pr!.captain * pr!.team[a];
+                    pr!.team[1] := pr!.team[b]^Next(pr!.normalin)*pr!.team[1];
+                    pr!.team[a] := pr!.team[1] * pr!.team[a];
                 else
-                    pr!.captain  := pr!.team[b] * pr!.captain;
-                    pr!.team[a] := pr!.captain * pr!.team[a];
+                    pr!.team[1] := pr!.team[b] * pr!.team[1];
+                    pr!.team[a] := pr!.team[1] * pr!.team[a];
                 fi;
             fi;
             result := pr!.team[a];
         else
+            a := Random(pr!.randomsource,1,pr!.slots);
             b := Random(pr!.randomsource,1,pr!.slots-1);
             if b >= a then b := b + 1; fi;
             if c = 1 then
@@ -255,13 +250,32 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
             OneStep(pr);
         od;
         pr!.resetteam := ShallowCopy(pr!.team);  # Remember for reset
-        pr!.resetcaptain := pr!.captain;
         pr!.resetaccu := ShallowCopy(pr!.accu);
         pr!.resetaccupos := pr!.accupos;
         pr!.resetsteps := pr!.steps;
         pr!.initialized := true;
     fi;
     return OneStep(pr);
+  end );
+
+InstallMethod( AddGeneratorToProductReplacer, 
+  "for a product replacer and a new generator",
+  [ IsProductReplacer, IsObject ],
+  function(pr,el)
+    local i;
+    Add(pr!.gens,el);
+    pr!.nrgens := pr!.nrgens + 1;
+    for i in [1..Length(pr!.team)] do
+        pr!.team[i] := pr!.team[i] * el^Random(0,7);
+    od;
+    Add(pr!.team,el);
+    if pr!.initialized then
+        for i in [1..Length(pr!.resetteam)] do
+            pr!.resetteam[i] := pr!.resetteam[i] * el^Random(0,7);
+        od;
+        Add(pr!.resetteam,el);
+    fi;
+    pr!.slots := pr!.slots + 1;
   end );
 
 InstallMethod( ViewObj, "for a product replacer", [IsProductReplacer],
