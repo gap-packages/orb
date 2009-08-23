@@ -474,7 +474,8 @@ This is a more or less internal function. It is called when the space
 in a hash table becomes scarce. The first argument <A>ht</A> must be a
 hash table object, the second a sample point. 
 The function increases the hash size
-by a factor of 2. This makes it necessary to choose a new hash
+by a factor of 2 for hash tables and 20 for tree hash tables. 
+This makes it necessary to choose a new hash
 function. Usually this is done with the usual
 <C>ChooseHashFunction</C> method. However, one can assign the two
 components <C>hfbig</C> and <C>hfdbig</C> to a function and a record

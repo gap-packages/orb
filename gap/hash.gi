@@ -204,7 +204,7 @@ InstallMethod( HTCreate, "for an object and an options record",
         ht.hfd := hfun.data;
         ht.cangrow := true;
     else
-        ht.cangrow := false;
+        ht.cangrow := IsBound(ht.hfbig) and IsBound(ht.hfdbig);
     fi;
     ht.collisions := 0;
     ht.accesses := 0;
@@ -237,6 +237,10 @@ InstallMethod( HTAdd, "for a tree hash table, an object and a value",
   function(ht, x, val)
     local h,t,r;
     ht!.accesses := ht!.accesses + 1;
+    if ht!.cangrow and ht!.nr > ht!.len * 10 then
+        Info(InfoOrb,3,"Tree hash table too full, growing...");
+        HTGrow(ht,x);
+    fi;
     h := ht!.hf(x,ht!.hfd);
     if not(IsBound(ht!.els[h])) then
         ht!.els[h] := x;
@@ -495,7 +499,45 @@ end );
 InstallMethod( HTGrow, "for a tree hash table and an object",
   [ IsTreeHashTabRep, IsObject],
   function(ht,x)
-    Error("growing of tree hash tables is currently not implemented");
+    local i,j,oldels,oldlen,oldvals,pos,t;
+    oldels := ht!.els;
+    oldvals := ht!.vals;
+    oldlen := ht!.len;
+
+    ht!.len := NextPrimeInt(ht!.len * 20+1);
+    Info(InfoOrb,2,"Growing tree hash table to length ",ht!.len," !!!");
+    ht!.els := EmptyPlist(ht!.len+1);
+    ht!.els[ht!.len+1] := fail;
+    ht!.vals := [];
+    if IsBound(ht!.hfbig) and IsBound(ht!.htdbig) then
+        ht!.hf := ORB_HashFunctionModWrapper;
+        ht!.hfd := [ht!.hfbig,ht!.hfdbig,ht!.len];
+    else
+        ht!.hf := ChooseHashFunction(x,ht!.len);
+        ht!.hfd := ht!.hf.data;
+        ht!.hf := ht!.hf.func;
+    fi;
+    ht!.nr := 0;
+    ht!.collisions := 0;
+    ht!.accesses := 0;
+    # Now copy into new hash:
+    for i in [1..oldlen] do
+        if IsBound(oldels[i]) then
+            t := oldels[i];
+            if not(IsAVLTree(t)) then
+                if IsBound(oldvals[i]) then
+                    HTAdd(ht,t,oldvals[i]);
+                else
+                    HTAdd(ht,t,true);
+                fi;
+            else
+                for j in [1..Length(t)] do
+                    pos := AVLIndexFind(t,j);
+                    HTAdd(ht,AVLData(t,pos),AVLValue(t,pos));
+                od;
+            fi;
+        fi;
+    od;
   end );
 
 InstallMethod( HTGrow, "for a hash table and an object",

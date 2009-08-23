@@ -68,6 +68,8 @@ DeclareGlobalFunction( "AVLLookup_GAP" );
 AVLLookup := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLIndex_GAP" );
 AVLIndex := fail;  # placeholder for later assignment
+DeclareGlobalFunction( "AVLIndexFind_GAP" );
+AVLIndexFind := AVLIndexFind_GAP;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLRebalance_GAP" );
 AVLRebalance := fail;  # placeholder for later assignment
 DeclareGlobalFunction( "AVLIndexLookup_GAP" );

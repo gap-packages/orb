@@ -400,6 +400,43 @@ else
     AVLIndex := AVLIndex_GAP;
 fi;
 
+InstallGlobalFunction( AVLIndexFind_GAP, function(tree,index)
+  # Parameters: tree, index
+  #  tree is a AVL
+  #  index is an index in the tree
+  # Searches in tree for the node with index index, returns the position of
+  # this node or fail if not found. Works without comparison function, 
+  # just by index.
+  local p, offset, r;
+
+  if index < 1 or index > tree![3] then
+    return fail;
+  fi;
+  
+  p := tree![6];
+  offset := 0;         # Offset of subtree p in tree
+  
+  while true do   # will terminate!
+    r := offset + AVLRank(tree,p);
+    if index < r then
+      # go left
+      p := AVLLeft(tree,p);
+    elif index = r then
+      # found!
+      return p;
+    else
+      # go right!
+      offset := r;
+      p := AVLRight(tree,p);
+    fi;
+  od;
+end);
+if IsBound(AVLIndexFind_C) then
+    AVLIndexFind := AVLIndexFind_C;
+else
+    AVLIndexFind := AVLIndexFind_GAP;
+fi;
+
 InstallGlobalFunction( AVLIndexLookup_GAP, function(tree,i)
   local p;
   p := AVLIndex(tree,i);

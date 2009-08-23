@@ -19,6 +19,7 @@ const char * Revision_orb_c =
 
 Obj AVLTreeType;    /* Imported from the library to be able to check type */
 Obj AVLTree;        /* Constructor function imported from the library */
+Obj HTGrow;         /* Operation function imported from the library */
 
 /* Conventions:
  *
@@ -293,6 +294,20 @@ static Obj AVLIndex_C( Obj self, Obj t, Obj i )
         return Fail;
     else
         return AVLData(t,p);
+}
+
+static Obj AVLIndexFind_C( Obj self, Obj t, Obj i )
+{
+    if (!IS_INTOBJ(i) || 
+        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        ErrorQuit( "Usage: AVLIndexFind(avltree, integer)", 0L, 0L );
+        return 0L;
+    }
+    Int p = AVLIndex( t, INT_INTOBJ(i) );
+    if (p == 0) 
+        return Fail;
+    else
+        return INTOBJ_INT(p);
 }
 
 static Obj AVLIndexLookup_C( Obj self, Obj t, Obj i )
@@ -1065,6 +1080,26 @@ static Int RNam_vals = 0;
 static Int RNam_nr = 0;
 static Int RNam_cmpfunc = 0;
 static Int RNam_allocsize = 0;
+static Int RNam_cangrow = 0;
+static Int RNam_len = 0;
+
+static inline void initRNams(void)
+{
+    /* Find RNams if not already done: */
+    if (!RNam_accesses) {
+        RNam_accesses = RNamName("accesses");
+        RNam_collisions = RNamName("collisions");
+        RNam_hfd = RNamName("hfd");
+        RNam_hf = RNamName("hf");
+        RNam_els = RNamName("els");
+        RNam_vals = RNamName("vals");
+        RNam_nr = RNamName("nr");
+        RNam_cmpfunc = RNamName("cmpfunc");
+        RNam_allocsize = RNamName("allocsize");
+        RNam_cangrow = RNamName("cangrow");
+        RNam_len = RNamName("len");
+    }
+}
 
 static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
 {
@@ -1077,22 +1112,18 @@ static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     Obj r;
 
     /* Find RNams if not already done: */
-    if (!RNam_accesses) {
-        RNam_accesses = RNamName("accesses");
-        RNam_collisions = RNamName("collisions");
-        RNam_hfd = RNamName("hfd");
-        RNam_hf = RNamName("hf");
-        RNam_els = RNamName("els");
-        RNam_vals = RNamName("vals");
-        RNam_nr = RNamName("nr");
-        RNam_cmpfunc = RNamName("cmpfunc");
-        RNam_allocsize = RNamName("allocsize");
-    }
+    initRNams();
 
     /* Increment accesses entry: */
     tmp = ElmPRec(ht,RNam_accesses);
     tmp = INTOBJ_INT(INT_INTOBJ(tmp)+1);
     AssPRec(ht,RNam_accesses,tmp);
+
+    if (ElmPRec(ht,RNam_cangrow) == True &&
+        INT_INTOBJ(ElmPRec(ht,RNam_nr))/10 > INT_INTOBJ(ElmPRec(ht,RNam_len)))
+    {
+        CALL_2ARGS(HTGrow,ht,x);
+    }
 
     /* Compute hash value: */
     hfd = ElmPRec(ht,RNam_hfd);
@@ -1154,17 +1185,7 @@ static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
     Obj t;
 
     /* Find RNams if not already done: */
-    if (!RNam_accesses) {
-        RNam_accesses = RNamName("accesses");
-        RNam_collisions = RNamName("collisions");
-        RNam_hfd = RNamName("hfd");
-        RNam_hf = RNamName("hf");
-        RNam_els = RNamName("els");
-        RNam_vals = RNamName("vals");
-        RNam_nr = RNamName("nr");
-        RNam_cmpfunc = RNamName("cmpfunc");
-        RNam_allocsize = RNamName("allocsize");
-    }
+    initRNams();
 
     /* Increment accesses entry: */
     t = ElmPRec(ht,RNam_accesses);
@@ -1210,17 +1231,7 @@ static Obj HTDelete_TreeHash_C(Obj self, Obj ht, Obj x)
     Obj v;
 
     /* Find RNams if not already done: */
-    if (!RNam_accesses) {
-        RNam_accesses = RNamName("accesses");
-        RNam_collisions = RNamName("collisions");
-        RNam_hfd = RNamName("hfd");
-        RNam_hf = RNamName("hf");
-        RNam_els = RNamName("els");
-        RNam_vals = RNamName("vals");
-        RNam_nr = RNamName("nr");
-        RNam_cmpfunc = RNamName("cmpfunc");
-        RNam_allocsize = RNamName("allocsize");
-    }
+    initRNams();
 
     /* Compute hash value: */
     hfd = ElmPRec(ht,RNam_hfd);
@@ -1266,17 +1277,7 @@ static Obj HTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     Obj old;
 
     /* Find RNams if not already done: */
-    if (!RNam_accesses) {
-        RNam_accesses = RNamName("accesses");
-        RNam_collisions = RNamName("collisions");
-        RNam_hfd = RNamName("hfd");
-        RNam_hf = RNamName("hf");
-        RNam_els = RNamName("els");
-        RNam_vals = RNamName("vals");
-        RNam_nr = RNamName("nr");
-        RNam_cmpfunc = RNamName("cmpfunc");
-        RNam_allocsize = RNamName("allocsize");
-    }
+    initRNams();
 
     /* Compute hash value: */
     hfd = ElmPRec(ht,RNam_hfd);
@@ -1346,6 +1347,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "AVLFind_C", 2, "tree, data",
     AVLFind_C,
     "orb.c:AVLFind_C" },
+
+  { "AVLIndexFind_C", 2, "tree, i",
+    AVLIndexFind_C,
+    "orb.c:AVLIndexFind_C" },
 
   { "AVLFindIndex_C", 2, "tree, data",
     AVLFindIndex_C,
@@ -1417,6 +1422,7 @@ static Int InitKernel ( StructInitInfo *module )
 
     ImportGVarFromLibrary( "AVLTreeType", &AVLTreeType );
     ImportFuncFromLibrary( "AVLTree", &AVLTree );
+    ImportFuncFromLibrary( "HTGrow", &HTGrow );
 
     /* return success                                                      */
     return 0;

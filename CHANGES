@@ -9,6 +9,8 @@
   - Fixed bug in HTAdd (calling AddHT).
   - Major reorganisation of product replacers (accelerator, multiple accus)
   - AddGeneratorToProductReplacer new
+  - added AVLIndexFind
+  - allow automatic growing of tree hash tables
 
 
 ==========================

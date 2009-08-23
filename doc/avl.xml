@@ -153,7 +153,7 @@ with the tree.
 </ManSection>
 
 <ManSection>
-<Func Name="AVLFindIndex" Arg="t, index"/>
+<Func Name="AVLFindIndex" Arg="t, key"/>
 <Returns> an integer or <K>fail</K> </Returns>
 <Description>
 The first argument <A>t</A> must be an AVL tree. This function looks up the
@@ -243,6 +243,22 @@ will always be divisible by 4. Use the functions <Ref Func="AVLData"/> and
 <Ref Func="AVLValue"/> to access the key and value of the node
 respectively. The function returns <K>fail</K> if the key is not found in
 the tree. This function assumes that the keys in
+the tree are sorted according to the three-way comparison function
+stored with the tree.
+</Description>
+</ManSection>
+
+<ManSection>
+<Func Name="AVLIndexFind" Arg="t, index"/>
+<Returns> an integer or <K>fail</K> </Returns>
+<Description>
+The first argument <A>t</A> must be an AVL tree. This function locates the
+index <A>index</A> in the tree and returns the position in the positional
+object, at which the node which hash this index is stored. This position
+will always be divisible by 4. Use the functions <Ref Func="AVLData"/> and
+<Ref Func="AVLValue"/> to access the key and value of the node
+respectively. The function returns <K>fail</K> if the key is not found in
+the tree. This function does not assume that the keys in
 the tree are sorted according to the three-way comparison function
 stored with the tree.
 </Description>
