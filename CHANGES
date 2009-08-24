@@ -11,6 +11,7 @@
   - AddGeneratorToProductReplacer new
   - added AVLIndexFind
   - allow automatic growing of tree hash tables
+  - change fallback for ChooseHashFunction to return 1 function
 
 
 ==========================

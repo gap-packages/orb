@@ -604,10 +604,13 @@ end );
 
 # Now the choosing methods for compressed vectors:
 
+InstallGlobalFunction( ORB_HashFunctionReturn1,
+  function(v,data) return 1; end );
+
 InstallMethod( ChooseHashFunction, "failure method if all fails",
   [IsObject,IsInt],
   function(p,hashlen)
-    return fail;
+    return rec( func := ORB_HashFunctionReturn1, data := fail );
   end );
 
 if not(IsBound(GenericHashFunc_C)) then GenericHashFunc_C := fail; fi;
