@@ -109,15 +109,15 @@ The following components in the options record have a defined meaning:
 </Item>
 <Mark><C>scramble</C></Mark>
 <Item>The <C>scramble</C> value in the algorithm described below can be
-    set using this option. The default value is <M>100</M>.
+    set using this option. The default value is <M>30</M>.
 </Item>
 <Mark><C>scramblefactor</C></Mark>
 <Item>The <C>scramblefactor</C> value in the algorithm described below
-    can be set using this option. The default value is <M>10</M>.
+    can be set using this option. The default value is <M>4</M>.
 </Item>
 <Mark><C>addslots</C></Mark>
 <Item>The <C>addslots</C> value in the algorithm described below
-    can be set using this option. The default value is <M>10</M>.
+    can be set using this option. The default value is <M>5</M>.
 </Item>
 <Mark><C>maxdepth</C></Mark>
 <Item>If <C>maxdepth</C> is set, then the production of pseudo random
@@ -125,14 +125,16 @@ The following components in the options record have a defined meaning:
     have been performed. The rationale behind this is that the elements
     created should be evenly distributed but that the expressions in
     the generators should not be too long. A good compromise is usually
-    to set <C>maxdepth</C> to <M>200</M> or <M>300</M>.
+    to set <C>maxdepth</C> to <M>300</M> or <M>400</M>.
 </Item>
 <Mark><C>noaccu</C></Mark>
 <Item>Without this option set to <K>true</K> the <Q>rattle</Q> version
     of product replacement is used which involves an accumulator and
-    uses two products per random element. To use the <Q>shake</Q>
-    version with only one product replacement per random element set
-    this component to <K>true</K>.
+    uses two or three products per random element. To use the <Q>shake</Q>
+    version with only one or two product replacement per random element set
+    this component to <K>true</K>. The exact number of multiplications
+    per random element also depends on the value of the
+    <C>accelerator</C> component.
 </Item>
 <Mark><C>normalin</C></Mark>
 <Item>There is a variant of the product replacement algorithm that
@@ -145,21 +147,56 @@ The following components in the options record have a defined meaning:
     by <M>a*b^c</M> or <M>b^c*a</M> (with equal probability), where
     <M>c</M> is a random element from the ambient group produced by the
     product replacer in the <C>normalin</C> component. It is recommended
-    to switch off the accumulator in the product replacer object for
+    to switch off the accumulator and accelerator 
+    in the product replacer object for
     the ambient group. Then to produce one random element in the normal
-    closure needs three multiplications.
+    closure needs four multiplications.
+</Item>
+<Mark><C>accelerator</C></Mark>
+<Item>If this option is set to <K>true</K> (which is the default),
+    then the accelerator is used. This means that in each step two
+    product replacement steps are performed, where both involve one
+    distinguished slot called the <Q>captain</Q>. The idea is that
+    the current <Q>team</Q> of random elements uses one amongst them
+    more often to increase the length of the words produced. See below
+    for details of the algorithm with and without accelerator.
+</Item>
+<Mark><C>retirecaptain</C></Mark>
+<Item>If this component is bound to a positive integer then the
+    captain retires after so many steps of the algorithm. This is to
+    use only two multiplications for each random element in the long
+    run after proper mixing. The default value for
+    <C>retirecaptain</C> is twice the scrambling time.
+</Item>
+<Mark><C>accus</C></Mark>
+<Item>This component (default is 5) is the number of accumulators to
+    use in the rattle variant. All accus are used in a round robin
+    fashion. The purpose of multiple accus is to have a greater
+    stochastical independence of adjacent random elements in the
+    sequence.
 </Item>
 </List>
 
 The algorithm used does the following: A list of 
 <C>Length(</C><A>gens</A><C>)+addslots</C>
 elements is created that starts with the elements <A>gens</A> and is
-filled up with random generators from <A>gens</A>. A product replacement
+filled up with random generators from <A>gens</A>. This element is
+called the <Q>team</Q>. A product replacement without accelerator
 randomly chooses two elements in the list and replaces one of them
-by the product of the two.
+by the product of the two. If an accelerator is used, then one
+product replacement step randomly chooses two slots <M>i</M> and
+<M>j</M> where <M>i,j > 1</M> but <M>i=j</M> is possible. Then first
+<M>l[1]</M> is replaced by <M>l[1]*l[i]</M> and after that <M>l[j]</M> is
+replaced by <M>l[j]*l[1]</M>. The first team member is called the
+<Q>captain</Q>, so the captain is involved in every product
+replacement.
+<P/>
 One step in the algorithm is to do
 one product replacement followed by post-multiplying the result to 
-the accumulator if one is used. First
+the accumulator if one (or more) is used. Multiple accus (see the
+<C>accus</C> component) are used in a round robin fashion.
+<P/>
+First
 <C>Maximum(Length(</C><A>gens</A><C>)*scramblefactor,scramble)</C>
 steps are performed. After this initialisation
 for every random element requested one step is done
@@ -180,10 +217,24 @@ object generate the next random element and return it.
 <Returns> nothing </Returns>
 <Description>
     <A>pr</A> must be a product replacer object. This operation resets the
-    object in the sense that it resets its random source 
-    (see <Ref Oper="Reset" BookName="ref"/>) and reinitialises the
-    random element generation as described above.
+    object in the sense that it resets the product replacement back to
+    the state it had after scrambling. Note that since the random
+    source is not reset, the product replacer object will return
+    another sequence of random elements than before.
 </Description>
+</ManSection>
+
+<ManSection>
+    <Oper Name="AddGeneratorToProductReplacer" Arg="pr, el"/>
+    <Returns> nothing </Returns>
+    <Description>
+        <A>pr</A> must be a product replacer object. This operation
+        adds the new generator <A>el</A> to the product replacer
+        without needing a completely new initialisation phase. From
+        after this call on the product replacer will generate random
+        elements in the group generated by the old generators and the
+        new element <A>el</A>.
+    </Description>
 </ManSection>
 
 </Section>
