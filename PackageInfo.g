@@ -23,9 +23,9 @@ Version := "3.1",
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-Date := "22/07/2009",
+Date := "26/08/2009",
 
-ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-3.0",
+ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-3.1",
 
 ArchiveFormats := ".tar.gz",
 
