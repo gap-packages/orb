@@ -1756,6 +1756,9 @@ InstallMethod( SizeMC, "standard method for permutation groups",
 
 if not(IsBound(MACFLOAT_INT)) then
   MACFLOAT_INT := FLOAT_INT;
+fi;
+
+if not(IsBound(SQRT_MACFLOAT)) then
   SQRT_MACFLOAT := function(x)
     return EXP_FLOAT(LOG_FLOAT(x)/FLOAT_INT(2));
   end;
