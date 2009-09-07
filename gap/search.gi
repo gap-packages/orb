@@ -110,6 +110,9 @@ InstallMethod( ProductReplacer,
         pr.gens := ShallowCopy(gens);
     fi;
     pr.nrgens := Length(pr.gens);
+    if not IsBound(pr.addslots) then
+        pr.addslots := 5;
+    fi;
     if not IsBound(pr.minslots) then
         pr.minslots := 0;
     fi;
@@ -129,9 +132,6 @@ InstallMethod( ProductReplacer,
     pr.scramble := Maximum(pr.scramble,pr.scramblefactor*pr.nrgens);
     if not IsBound(pr.retirecaptain) then
         pr.retirecaptain := 2 * pr.scramble;
-    fi;
-    if not IsBound(pr.addslots) then
-        pr.addslots := 5;
     fi;
     if not IsBound(pr.maxdepth) then
         pr.maxdepth := infinity;
