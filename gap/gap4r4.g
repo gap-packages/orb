@@ -146,7 +146,7 @@ InstallMethod( SlotUsagePattern, "for an slp",
                 Add(slotusage[cur],-step);
                 res := cur;
                 cur := cur + 1;
-            elif IsList(li[1]) and IsInt(li[2]) then  # a standard line with w.
+            elif Length(li) = 2 and IsInt(li[2]) then # a standard line with w.
                 if not(IsBound(slotusage[li[2]])) then 
                     slotusage[li[2]] := []; 
                 fi;
@@ -188,7 +188,7 @@ InstallMethod( SlotUsagePattern, "for an slp",
                 if su[Length(su)] < 0 then
                     Add(unnecessary,-su[Length(su)]);
                     addedun := true;
-                elif su[Length(su)] < Length(l) then
+                elif su[Length(su)] > 0 and su[Length(su)] < Length(l) then
                     Add(deletions[su[Length(su)]],i);
                 fi;
             fi;
