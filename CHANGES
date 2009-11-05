@@ -7,6 +7,7 @@
 ==========================
 
   - Fixed a bug in the gap4r4 compatibility file in SlotUsagePattern.
+  - Switch off accus in initialisation phase because there is no point.
 
 
 ==========================

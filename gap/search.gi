@@ -235,7 +235,9 @@ InstallMethod( Next, "for a product replacer", [IsProductReplacer],
             fi;
             result := pr!.team[a];
         fi;
-        if pr!.noaccu then
+        if pr!.noaccu or
+           pr!.steps <= Maximum(pr!.nrgens * pr!.scramblefactor, pr!.scramble)
+                        - pr!.accus then
             return result;
         else
             pr!.accupos := pr!.accupos + 1;
