@@ -198,7 +198,7 @@ InstallMethod( SlotUsagePattern, "for an slp",
         fi;
     until not(addedun);
     if Length(unnecessary) > 0 then
-        Info(InfoSLP,1,"#Warning: Total unnecessary steps: ",
+        Info(InfoSLP,2,"#Warning: Total unnecessary steps: ",
              Length(unnecessary));
     fi;
     return rec( slotusage := slotusage, largestused := Length(slotusage),
