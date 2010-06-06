@@ -107,6 +107,8 @@ InstallGlobalFunction( Orb,
             o.grpsizebound := Size(gens);
         fi;
         gens := GeneratorsOfGroup(gens);
+    elif IsSemigroup(gens) then
+        gens := GeneratorsOfSemigroup(gens);
     fi;
 
     # We collect the filters for the type:
@@ -233,6 +235,18 @@ InstallGlobalFunction( Orb,
         o.stopper := false;   # no stopping condition
     fi;
 
+    # Do we compute a grading?
+    if IsBound(o.gradingfunc) then
+        o.grades := [o.gradincfunc(x)];
+        if not(IsBound(o.onlygrades)) then
+            o.onlygrades := false;
+        fi;
+    else
+        o.gradingfunc := false;
+        o.grades := false;
+        o.onlygrades := false;
+    fi;
+
     # Now take this record as our orbit record and return:
     o.gens := gens;
     if Length(gens) > 0 and IsObjWithMemory(gens[1]) then
@@ -319,6 +333,7 @@ InstallMethod( ViewObj, "for an orbit", [IsOrbit and IsList and IsFinite],
     fi;
     if o!.looking then Print(" looking for sth."); fi;
     if o!.log <> false then Print(" with log"); fi;
+    if o!.grades <> false then Print(" with grading"); fi;
     Print(">");
   end );
 
@@ -541,7 +556,8 @@ InstallMethod( Enumerate,
     local depth,depthmarks,gens,genstoapply,grpsizebound,ht,i,j,log,logind,
           logpos,lookfunc,looking,memorygens,nr,onlystab,op,orb,orbsizebound,
           permgens,pos,rep,schreier,schreiergen,schreiergenaction,schreierpos,
-          stabsizebound,stopper,storenumbers,suc,yy;
+          stabsizebound,stopper,storenumbers,suc,yy,gradingfunc,grades,
+          onlygrades,grade;
 
     # Set a few local variables for faster access:
     orb := o!.orbit;
@@ -578,6 +594,9 @@ InstallMethod( Enumerate,
         depth := o!.depth;
         depthmarks := o!.depthmarks;
     fi;
+    grades := o!.grades;
+    gradingfunc := o!.gradingfunc;
+    onlygrades := o!.onlygrades;
 
     # Maybe we are looking for something and it is the start point:
     if i = 1 and o!.found = false and looking then
@@ -610,9 +629,19 @@ InstallMethod( Enumerate,
                 yy := op(orb[i],gens[j]);
             fi;
             pos := HTValue(ht,yy);
+            if gradingfunc <> false then
+                grade := gradingfunc(yy);
+                if not(onlygrades) or not(grade in onlygrades) then
+                    pos := false;
+                fi;
+            fi;
+                
             if pos = fail then
                 nr := nr + 1;
                 orb[nr] := yy;
+                if grades <> false then
+                    grades[nr] := grade;
+                fi;
                 if storenumbers then
                     HTAdd(ht,yy,nr);
                 else
@@ -669,7 +698,8 @@ InstallMethod( Enumerate,
                     fi;
                 fi;
 
-            elif schreiergenaction <> false and not(o!.stabcomplete) then
+            elif pos <> false and    # if point was rejected by grade
+                 schreiergenaction <> false and not(o!.stabcomplete) then
 
                 # Trigger some action usually to produce Schreier generator:
                 if schreiergenaction(o,i,j,pos) then
