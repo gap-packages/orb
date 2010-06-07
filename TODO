@@ -1,3 +1,13 @@
+For James:
+
+Implement grading in AddGeneratorsToOrbit
+Document gradingfunc, grades, onlygrades
+Document semigroup and monoid argument
+Document and implement Grades
+Implement orbit graph
+Document orbit graph
+
+
 Naechste Version:
 
 MACFLOAT_INT und fr Paket in Ordnung bringen

@@ -107,6 +107,8 @@ InstallGlobalFunction( Orb,
             o.grpsizebound := Size(gens);
         fi;
         gens := GeneratorsOfGroup(gens);
+    elif IsMonoid(gens) then
+        gens := GeneratorsOfMonoid(gens);
     elif IsSemigroup(gens) then
         gens := GeneratorsOfSemigroup(gens);
     fi;
@@ -237,7 +239,7 @@ InstallGlobalFunction( Orb,
 
     # Do we compute a grading?
     if IsBound(o.gradingfunc) then
-        o.grades := [o.gradingfunc(x)];
+        o.grades := [];
         if not(IsBound(o.onlygrades)) then
             o.onlygrades := false;
         fi;
@@ -317,6 +319,9 @@ InstallGlobalFunction( Orb,
         fi;
     fi;
     Objectify( NewType(CollectionsFamily(FamilyObj(x)),filts), o );
+    if o!.gradingfunc <> false then
+        o!.grades[1] := o!.gradingfunc(o,x);
+    fi;
     return o;
 end );
 
@@ -630,7 +635,7 @@ InstallMethod( Enumerate,
             fi;
             pos := HTValue(ht,yy);
             if gradingfunc <> false then
-                grade := gradingfunc(yy);
+                grade := gradingfunc(o,yy);
                 if onlygrades <> false and not(grade in onlygrades) then
                     pos := false;
                 fi;
@@ -994,7 +999,7 @@ InstallMethod( AddGeneratorsToOrbit,
     local depth,depthmarks,gen,genabs,gens,genstoapply,ht,i,ii,inneworbit,j,
           log,logind,logpos,memorygens,nr,nr2,nrgens,oldlog,oldlogind,oldnr,
           oldnrgens,op,orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,
-          storenumbers,suc,yy;
+          storenumbers,suc,yy,gradingfunc,grades,onlygrades,grade;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -1030,6 +1035,9 @@ InstallMethod( AddGeneratorsToOrbit,
     orbind[1] := 1;       # the start point
     o!.orbind := orbind;
     inneworbit := BlistList([1..nr],[1]);  # only first point is already there
+    grades := o!.grades;
+    gradingfunc := o!.gradingfunc;
+    onlygrades := o!.onlygrades;
 
     rep := o!.report;
     # In the following loop ii is always a position in the new tree
@@ -1088,10 +1096,20 @@ InstallMethod( AddGeneratorsToOrbit,
                 yy := op(orb[i],gens[j]);
             fi;
             pos := HTValue(ht,yy);
+            if gradingfunc <> false then
+                grade := gradingfunc(o,yy);
+                if onlygrades <> false and not(grade in onlygrades) then
+                    pos := false;
+                fi;
+            fi;
+
             if pos = fail then   # a completely new point
                 # Put it into the database:
                 nr := nr + 1;
                 orb[nr] := yy;
+                if grades <> false then
+                    grades[nr] := grade;
+                fi;
                 if storenumbers then
                     HTAdd(ht,yy,nr);
                 else
@@ -1113,7 +1131,8 @@ InstallMethod( AddGeneratorsToOrbit,
                 log[logpos] := j;
                 log[logpos+1] := nr;
                 logpos := logpos+2;
-            elif pos <= oldnr and not(inneworbit[pos]) then
+            elif pos <> false and
+                 pos <= oldnr and not(inneworbit[pos]) then
                 # we know this point, is it already in the new orbit?
                 # no, transfer it:
                 nr2 := nr2 + 1;
@@ -1421,6 +1440,28 @@ InstallMethod( PositionOfFound,"for an orbit",
         return fail;
     else
         return o!.found; 
+    fi;
+  end );
+
+InstallMethod( DepthOfSchreierTree, "for an orbit",
+  [IsOrbit],
+  function( o )
+    if not(o!.schreier) then
+        Error("Orbit does not have a Schreier tree");
+        return fail;
+    else
+        return o!.depth;
+    fi;
+  end );
+
+InstallMethod( Grades, "for an orbit",
+  [IsOrbit],
+  function( o )
+    if o!.grades = false then
+        Error("Orbit does not have a grading");
+        return fail;
+    else
+        return o!.grades;
     fi;
   end );
 
