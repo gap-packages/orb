@@ -68,6 +68,7 @@ DeclareOperation( "StabWords", [ IsOrbit ] );
 DeclareOperation( "PositionOfFound", [ IsOrbit ] );
 DeclareOperation( "DepthOfSchreierTree", [ IsOrbit ] );
 DeclareOperation( "Grades", [ IsOrbit ] );
+DeclareOperation( "OrbitGraph", [ IsOrbit ] );
 
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );

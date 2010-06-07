@@ -33,6 +33,7 @@ InstallValue( ORB, rec( ) );
 #  .matgens
 #  .onlystab
 #  .orbsizebound
+#  .orbitgraph
 #  .permbase
 #  .permgens
 #  .report
@@ -266,6 +267,13 @@ InstallGlobalFunction( Orb,
     if o.schreier or o.log <> false then
         o.depth := 0;
         o.depthmarks := [2];  # depth 1 starts at point number 2
+    fi;
+
+    if not(IsBound(o.orbitgraph)) then
+        o.orbitgraph := false;
+    elif o.orbitgraph <> false then
+        o.orbitgraph := [EmptyPlist(Length(gens))];
+        o.storenumbers := true;
     fi;
 
     # We distinguish three cases, first permutations on integers:
@@ -568,7 +576,7 @@ InstallMethod( Enumerate,
           logpos,lookfunc,looking,memorygens,nr,onlystab,op,orb,orbsizebound,
           permgens,pos,rep,schreier,schreiergen,schreiergenaction,schreierpos,
           stabsizebound,stopper,storenumbers,suc,yy,gradingfunc,grades,
-          onlygrades,grade;
+          onlygrades,grade,orbitgraph;
 
     # Set a few local variables for faster access:
     orb := o!.orbit;
@@ -608,6 +616,7 @@ InstallMethod( Enumerate,
     grades := o!.grades;
     gradingfunc := o!.gradingfunc;
     onlygrades := o!.onlygrades;
+    orbitgraph := o!.orbitgraph;
 
     # Maybe we are looking for something and it is the start point:
     if i = 1 and o!.found = false and looking then
@@ -657,6 +666,10 @@ InstallMethod( Enumerate,
                     HTAdd(ht,yy,nr);
                 else
                     HTAdd(ht,yy,true);
+                fi;
+                if orbitgraph <> false then
+                    orbitgraph[nr] := EmptyPlist(Length(gens));
+                    orbitgraph[i][j] := nr;
                 fi;
 
                 # Handle Schreier tree if desired:
@@ -709,21 +722,24 @@ InstallMethod( Enumerate,
                     fi;
                 fi;
 
-            elif pos <> false and    # if point was rejected by grade
-                 schreiergenaction <> false and not(o!.stabcomplete) then
-
-                # Trigger some action usually to produce Schreier generator:
-                if schreiergenaction(o,i,j,pos) then
-                    # o!.stabsize has changed:
-                    if stabsizebound <> false and
-                       o!.stabsize >= stabsizebound then
-                        o!.stabcomplete := true;
-                        Info(InfoOrb,3,"Stabilizer complete.");
-                    fi;
-                    if grpsizebound <> false and
-                       nr*o!.stabsize*2 > grpsizebound then
-                        o!.stabcomplete := true;
-                        Info(InfoOrb,3,"Stabilizer complete.");
+            elif pos <> false then    # false if point was rejected by grade
+                if orbitgraph <> false then
+                    orbitgraph[i][j] := pos;
+                fi;
+                if schreiergenaction <> false and not(o!.stabcomplete) then
+                    # Trigger some action usually to produce Schreier generator:
+                    if schreiergenaction(o,i,j,pos) then
+                        # o!.stabsize has changed:
+                        if stabsizebound <> false and
+                           o!.stabsize >= stabsizebound then
+                            o!.stabcomplete := true;
+                            Info(InfoOrb,3,"Stabilizer complete.");
+                        fi;
+                        if grpsizebound <> false and
+                           nr*o!.stabsize*2 > grpsizebound then
+                            o!.stabcomplete := true;
+                            Info(InfoOrb,3,"Stabilizer complete.");
+                        fi;
                     fi;
                 fi;
             fi;
@@ -767,7 +783,7 @@ InstallMethod( Enumerate,
     local depth,depthmarks,gens,genstoapply,grpsizebound,i,j,log,logind,
           logpos,lookfunc,looking,memorygens,nr,onlystab,orb,orbsizebound,
           permgens,rep,schreier,schreiergen,schreiergenaction,schreierpos,
-          stabsizebound,stopper,suc,tab,yy;
+          stabsizebound,stopper,suc,tab,yy,orbitgraph;
 
     orb := o!.orbit;
     i := o!.pos;  # we go on here
@@ -801,6 +817,7 @@ InstallMethod( Enumerate,
         depth := o!.depth;
         depthmarks := o!.depthmarks;
     fi;
+    orbitgraph := o!.orbitgraph;
 
     # Maybe we are looking for something and it is the start point:
     if i = 1 and o!.found = false and looking then
@@ -836,6 +853,10 @@ InstallMethod( Enumerate,
                 nr := nr + 1;
                 orb[nr] := yy;
                 tab[yy] := nr;
+                if orbitgraph <> false then
+                    orbitgraph[nr] := EmptyPlist(Length(gens));
+                    orbitgraph[i][j] := nr;
+                fi;
 
                 # Handle Schreier tree if desired:
                 if schreier then
@@ -887,20 +908,25 @@ InstallMethod( Enumerate,
                     fi;
                 fi;
 
-            elif schreiergenaction <> false and not(o!.stabcomplete) then
-
-                # Trigger some action usually to produce Schreier generator:
-                if schreiergenaction(o,i,j,tab[yy]) then
-                    # o!.stabsize has changed:
-                    if stabsizebound <> false and
-                       o!.stabsize >= stabsizebound then
-                        o!.stabcomplete := true;
-                        Info(InfoOrb,3,"Stabilizer complete.");
-                    fi;
-                    if grpsizebound <> false and 
-                       nr*o!.stabsize*2 > grpsizebound then
-                        o!.stabcomplete := true;
-                        Info(InfoOrb,3,"Stabilizer complete.");
+            else
+                if orbitgraph <> false then
+                    orbitgraph[i][j] := tab[yy];
+                fi;
+                
+                if schreiergenaction <> false and not(o!.stabcomplete) then
+                    # Trigger some action usually to produce Schreier generator:
+                    if schreiergenaction(o,i,j,tab[yy]) then
+                        # o!.stabsize has changed:
+                        if stabsizebound <> false and
+                           o!.stabsize >= stabsizebound then
+                            o!.stabcomplete := true;
+                            Info(InfoOrb,3,"Stabilizer complete.");
+                        fi;
+                        if grpsizebound <> false and 
+                           nr*o!.stabsize*2 > grpsizebound then
+                            o!.stabcomplete := true;
+                            Info(InfoOrb,3,"Stabilizer complete.");
+                        fi;
                     fi;
                 fi;
             fi;
@@ -1005,7 +1031,7 @@ InstallMethod( AddGeneratorsToOrbit,
     local depth,depthmarks,gen,genabs,gens,genstoapply,ht,i,ii,inneworbit,j,
           log,logind,logpos,memorygens,nr,nr2,nrgens,oldlog,oldlogind,oldnr,
           oldnrgens,op,orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,
-          storenumbers,suc,yy,gradingfunc,grades,onlygrades,grade;
+          storenumbers,suc,yy,gradingfunc,grades,onlygrades,grade,orbitgraph;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -1044,6 +1070,7 @@ InstallMethod( AddGeneratorsToOrbit,
     grades := o!.grades;
     gradingfunc := o!.gradingfunc;
     onlygrades := o!.onlygrades;
+    orbitgraph := o!.orbitgraph;
 
     rep := o!.report;
     # In the following loop ii is always a position in the new tree
@@ -1121,6 +1148,10 @@ InstallMethod( AddGeneratorsToOrbit,
                 else
                     HTAdd(ht,yy,true);
                 fi;
+                if orbitgraph <> false then
+                    orbitgraph[nr] := EmptyPlist(Length(gens));
+                    orbitgraph[i][j] := nr;
+                fi;
 
                 # Now put it into the new orbit:
                 nr2 := nr2 + 1;
@@ -1137,26 +1168,30 @@ InstallMethod( AddGeneratorsToOrbit,
                 log[logpos] := j;
                 log[logpos+1] := nr;
                 logpos := logpos+2;
-            elif pos <> false and
-                 pos <= oldnr and not(inneworbit[pos]) then
-                # we know this point, is it already in the new orbit?
-                # no, transfer it:
-                nr2 := nr2 + 1;
-                orbind[nr2] := pos;
-                inneworbit[pos] := true;
-
-                # Handle Schreier tree if desired:
-                if schreier then
-                    schreiergen[pos] := j;
-                    schreierpos[pos] := i;
+            elif pos <> false then
+                if orbitgraph <> false then
+                    orbitgraph[i][j] := pos;
                 fi;
-                
-                # Handle logging:
-                suc := true;
-                log[logpos] := j;
-                log[logpos+1] := pos;
-                logpos := logpos+2;
-                # Otherwise: nothing to do (we do not create Schreier gens
+                if pos <= oldnr and not(inneworbit[pos]) then
+                    # we know this point, is it already in the new orbit?
+                    # no, transfer it:
+                    nr2 := nr2 + 1;
+                    orbind[nr2] := pos;
+                    inneworbit[pos] := true;
+
+                    # Handle Schreier tree if desired:
+                    if schreier then
+                        schreiergen[pos] := j;
+                        schreierpos[pos] := i;
+                    fi;
+                    
+                    # Handle logging:
+                    suc := true;
+                    log[logpos] := j;
+                    log[logpos+1] := pos;
+                    logpos := logpos+2;
+                    # Otherwise: nothing to do (we do not create Schreier gens
+                fi;
             fi;
         od;
         # Now close the log for this point:
@@ -1191,7 +1226,7 @@ InstallMethod( AddGeneratorsToOrbit,
     local depth,depthmarks,gen,genabs,gens,genstoapply,i,ii,inneworbit,j,log,
           logind,logpos,memorygens,nr,nr2,nrgens,oldlog,oldlogind,oldnr,
           oldnrgens,orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,
-          suc,tab,yy;
+          suc,tab,yy,orbitgraph;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -1225,6 +1260,7 @@ InstallMethod( AddGeneratorsToOrbit,
     orbind[1] := 1;       # the start point
     o!.orbind := orbind;
     inneworbit := BlistList([1..nr],[1]);  # only first point is already there
+    orbitgraph := o!.orbitgraph;
 
     rep := o!.report;
     # In the following loop ii is always a position in the new tree
@@ -1292,6 +1328,10 @@ InstallMethod( AddGeneratorsToOrbit,
                 nr := nr + 1;
                 orb[nr] := yy;
                 tab[yy] := nr;
+                if orbitgraph <> false then
+                    orbitgraph[nr] := EmptyPlist(Length(gens));
+                    orbitgraph[i][j] := nr;
+                fi;
 
                 # Now put it into the new orbit:
                 nr2 := nr2 + 1;
@@ -1308,25 +1348,31 @@ InstallMethod( AddGeneratorsToOrbit,
                 log[logpos] := j;
                 log[logpos+1] := nr;
                 logpos := logpos+2;
-            elif pos <= oldnr and not(inneworbit[pos]) then
-                # we know this point, is it already in the new orbit?
-                # no, transfer it:
-                nr2 := nr2 + 1;
-                orbind[nr2] := pos;
-                inneworbit[pos] := true;
-
-                # Handle Schreier tree if desired:
-                if schreier then
-                    schreiergen[pos] := j;
-                    schreierpos[pos] := i;
+            else
+                if orbitgraph <> false then
+                    orbitgraph[i][j] := pos;
                 fi;
                 
-                # Handle logging:
-                suc := true;
-                log[logpos] := j;
-                log[logpos+1] := pos;
-                logpos := logpos+2;
-                # Otherwise: nothing to do (we do not create Schreier gens
+                if pos <= oldnr and not(inneworbit[pos]) then
+                    # we know this point, is it already in the new orbit?
+                    # no, transfer it:
+                    nr2 := nr2 + 1;
+                    orbind[nr2] := pos;
+                    inneworbit[pos] := true;
+
+                    # Handle Schreier tree if desired:
+                    if schreier then
+                        schreiergen[pos] := j;
+                        schreierpos[pos] := i;
+                    fi;
+                    
+                    # Handle logging:
+                    suc := true;
+                    log[logpos] := j;
+                    log[logpos+1] := pos;
+                    logpos := logpos+2;
+                    # Otherwise: nothing to do (we do not create Schreier gens
+                fi;
             fi;
         od;
         # Now close the log for this point:
@@ -1468,6 +1514,26 @@ InstallMethod( Grades, "for an orbit",
         return fail;
     else
         return o!.grades;
+    fi;
+  end );
+
+InstallMethod( OrbitGraph, "for an orbit",
+  [IsOrbit],
+  function( o )
+    local g,gg,pos,i,j;
+    if o!.orbitgraph = false then
+        g := EmptyPlist(Length(o));
+        for i in [1..Length(o)] do
+            gg := EmptyPlist(Length(o!.gens));
+            for j in [1..Length(o!.gens)] do
+                pos := Position(o,o!.op(o[i],o!.gens[j]));
+                if pos <> fail then Add(gg,pos); fi;
+            od;
+            Add(g,Set(gg));
+        od;
+        return g;
+    else
+        return List(o!.orbitgraph,Set);
     fi;
   end );
 
