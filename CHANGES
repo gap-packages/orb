@@ -3,6 +3,18 @@
 ===========================================================================
 
 ==========================
+ Changes from 3.4 -> 3.5:
+==========================
+
+  - Weak orbits of semigroups and monoids in Orb
+  - grading for an orbit
+  - Jenkins Hash Function
+  - Slight improvement of hashfunc options
+  - Documentation improvements
+  - orbitgraph for Orb
+
+
+==========================
  Changes from 3.3 -> 3.4:
 ==========================
 

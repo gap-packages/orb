@@ -1,12 +1,11 @@
 For James:
 
-Implement grading in AddGeneratorsToOrbit
 Document gradingfunc, grades, onlygrades
 Document semigroup and monoid argument
-Document and implement Grades
-Implement orbit graph
-Document orbit graph
+Document Grades
 Document Jenkins Hash function and MakeHashFunctionForPlainFlatList
+Document orbit graph
+Adjust Documentation for hashfunc option (for tree hashes)
 
 
 Naechste Version:
