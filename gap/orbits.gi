@@ -21,6 +21,8 @@ InstallValue( ORB, rec( ) );
 # Possible options:
 #  .eqfunc
 #  .genstoapply
+#  .gradingfunc
+#  .onlygrades
 #  .grpsizebound
 #  .hashfunc        only together with next option, hashs cannot grow!
 #  .hashlen         for the call version with 3 or 4 arguments with options
@@ -47,6 +49,7 @@ InstallValue( ORB, rec( ) );
 #  .depthmarks
 #  .found
 #  .gens
+#  .grades
 #  .ht
 #  .log
 #  .logind          index into log
@@ -70,7 +73,7 @@ InstallValue( ORB, rec( ) );
 
 InstallGlobalFunction( Orb, 
   function( arg )
-    local comp,filts,gens,hashlen,lmp,o,op,opt,x;
+    local comp,filts,gens,hashlen,lmp,o,op,opt,re,x;
 
     # First parse the arguments:
     if Length(arg) = 3 then
@@ -282,12 +285,15 @@ InstallGlobalFunction( Orb,
     else
         # The standard case using a hash:
         if IsBound(o.treehashsize) then
+            re := rec( treehashsize := o.treehashsize );
             if IsBound(o.cmpfunc) then
-                o.ht := HTCreate(x,rec(treehashsize := o.treehashsize,
-                                       cmpfunc := o.cmpfunc));
-            else    
-                o.ht := HTCreate(x,rec(treehashsize := o.treehashsize));
+                re.cmpfunc := o.cmpfunc;
             fi;
+            if IsBound(o.hashfunc) then
+                re.hf := o.hashfunc.func;
+                re.hfd := o.hashfunc.data;
+            fi;
+            o.ht := HTCreate(x,re);
             filts := filts and IsHashOrbitRep;
         elif IsBound(o.eqfunc) and IsBound(o.hashfunc) then
             o.ht := HTCreate(x,rec( hf := o.hashfunc.func,

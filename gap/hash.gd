@@ -59,6 +59,8 @@ DeclareGlobalFunction( "ORB_HashFunctionForIntList" );
 DeclareGlobalFunction( "ORB_HashFunctionForNBitsPcWord" );
 DeclareGlobalFunction( "ORB_HashFunctionModWrapper" );
 DeclareGlobalFunction( "ORB_HashFunctionForMatList" );
+DeclareGlobalFunction( "ORB_HashFunctionForPlainFlatList" );
+DeclareGlobalFunction( "MakeHashFunctionForPlainFlatList" );
 
 ##
 ##  This program is free software: you can redistribute it and/or modify
