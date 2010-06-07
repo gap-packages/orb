@@ -237,7 +237,7 @@ InstallGlobalFunction( Orb,
 
     # Do we compute a grading?
     if IsBound(o.gradingfunc) then
-        o.grades := [o.gradincfunc(x)];
+        o.grades := [o.gradingfunc(x)];
         if not(IsBound(o.onlygrades)) then
             o.onlygrades := false;
         fi;
@@ -631,7 +631,7 @@ InstallMethod( Enumerate,
             pos := HTValue(ht,yy);
             if gradingfunc <> false then
                 grade := gradingfunc(yy);
-                if not(onlygrades) or not(grade in onlygrades) then
+                if onlygrades <> false and not(grade in onlygrades) then
                     pos := false;
                 fi;
             fi;
