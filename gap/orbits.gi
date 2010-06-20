@@ -1436,44 +1436,7 @@ InstallMethod( MakeSchreierTreeShallow, "for a closed orbit with log",
   end );
             
 InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
-  [ IsOrbit and IsClosed, IsPosInt ],
-  function( o, l )
-    local i,w,x,tries,nr;
-    if not(o!.schreier) then
-        Error("Orbit has no Schreier tree");
-        return;
-    fi;
-    if Length(o) < 20 then 
-        Info(InfoOrb,2,"Very small orbit, doing nothing.");
-        return;
-    fi;
-    Info(InfoOrb,2,"Warning: Trying MakeSchreierTreeShallow without log!");
-    tries := 1;
-    while o!.depth > l and tries <= 3 do
-        tries := tries + 1;
-        x := [];
-        nr := QuoInt(o!.depth,l)+1;
-        if nr > 9 then 
-            nr := 9;
-        elif nr < 3 then
-            nr := 3;
-        fi;
-        for i in [1..nr] do
-            w := TraceSchreierTreeForward(o,Random(2,QuoInt(Length(o),2)));
-            Add(x,Product(o!.gens{w}));
-        od;
-        Info(InfoOrb,2,"Adding ",Length(x),
-             " new generators to decrease depth...");
-        AddGeneratorsToOrbit(o,x);
-        Info(InfoOrb,2,"Depth is now ",o!.depth);
-    od;
-    if tries > 3 then
-        Info(InfoOrb,1,"Giving up, Schreier tree is not shallow.");
-    fi;
-  end );
-            
-InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
-  [ IsOrbit and IsClosed ],
+  [ IsOrbit and IsClosed and IsOrbitWithLog ],
   function( o )
     MakeSchreierTreeShallow(o, LogInt(Length(o),2) );
   end );
