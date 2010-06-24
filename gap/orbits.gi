@@ -118,7 +118,7 @@ InstallGlobalFunction( Orb,
     fi;
 
     # We collect the filters for the type:
-    filts := IsOrbit;
+    filts := IsOrbit and IsMutable;
 
     # Now set some default options:
 
@@ -247,6 +247,7 @@ InstallGlobalFunction( Orb,
         if not(IsBound(o.onlygrades)) then
             o.onlygrades := false;
         fi;
+        filts := filts and IsGradedOrbit;
     else
         o.gradingfunc := false;
         o.grades := false;
@@ -1506,6 +1507,12 @@ InstallMethod( DepthOfSchreierTree, "for an orbit",
     fi;
   end );
 
+InstallMethod( Grades, "for a graded orbit",
+  [IsOrbit and IsGradedOrbit],
+  function( o )
+    return o!.grades;
+  end );
+
 InstallMethod( Grades, "for an orbit",
   [IsOrbit],
   function( o )
@@ -1515,6 +1522,24 @@ InstallMethod( Grades, "for an orbit",
     else
         return o!.grades;
     fi;
+  end );
+
+InstallMethod( ConstantTimeAccessList, "for an orb orbit",
+  [IsOrbit and IsList and IsDenseList],
+  function( o )
+    return ShallowCopy( o!.orbit );
+  end );
+
+InstallMethod( Enumerator, "for an orb orbit",
+  [IsOrbit and IsList and IsDenseList],
+  function( o )
+    return ShallowCopy( o!.orbit );
+  end );
+
+InstallMethod( AsList, "for an orb orbit",
+  [IsOrbit and IsList and IsDenseList],
+  function( o )
+    return ShallowCopy( o!.orbit );
   end );
 
 InstallMethod( OrbitGraph, "for an orbit",

@@ -38,6 +38,7 @@ DeclareFilter( "IsClosed", IsOrbit );
 DeclareRepresentation( "IsPermOnIntOrbitRep", IsOrbit, [] );
 DeclareRepresentation( "IsHashOrbitRep", IsOrbit, [] );
 DeclareRepresentation( "IsSlowOrbitRep", IsOrbit, [] );
+DeclareRepresentation( "IsGradedOrbit", IsOrbit, [] );
 DeclareFilter( "IsOrbitWithLog" );
 
 # Now the constructor method:

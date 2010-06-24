@@ -12,6 +12,8 @@
   - Slight improvement of hashfunc options
   - Documentation improvements
   - orbitgraph for Orb
+  - IsGradedOrbit
+  - New fast methods for AsList, Enumerator and ConstantTimeAccessList
 
 
 ==========================
