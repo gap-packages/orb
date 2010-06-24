@@ -1542,6 +1542,12 @@ InstallMethod( AsList, "for an orb orbit",
     return ShallowCopy( o!.orbit );
   end );
 
+InstallMethod( Iterator, "for an orb orbit",
+  [IsOrbit and IsList and IsDenseList],
+  function( o )
+    return IteratorList( Immutable( o!.orbit ) );
+  end );
+
 InstallMethod( OrbitGraph, "for an orbit",
   [IsOrbit],
   function( o )

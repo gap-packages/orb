@@ -14,6 +14,7 @@
   - orbitgraph for Orb
   - IsGradedOrbit
   - New fast methods for AsList, Enumerator and ConstantTimeAccessList
+  - Method for Iterator for Orb orbits
 
 
 ==========================
