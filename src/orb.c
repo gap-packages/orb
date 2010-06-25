@@ -1850,6 +1850,37 @@ Obj FuncJenkinsHashInOrb(Obj self, Obj x, Obj offset, Obj bytelen, Obj hashlen)
    return INTOBJ_INT((Int)(key % mod + 1));
 }
 
+Obj FuncPermLeftQuoTransformationNC(Obj self, Obj t1, Obj t2)
+{
+    Obj l1, l2;
+    Int deg;
+    Obj pl;
+    Int i;
+    Int x;
+
+    /* Get the plain lists out: */
+    l1 = ELM_PLIST(t1,1);
+    PLAIN_LIST(l1);
+    l2 = ELM_PLIST(t2,1);
+    PLAIN_LIST(l2);
+    deg = LEN_PLIST(l1);
+    pl = NEW_PLIST(T_PLIST_CYC_NSORT,deg);
+    SET_LEN_PLIST(pl,deg);
+    /* From now on no more garbage collections! */
+    for (i = 1;i <= deg;i++) {
+        x = INT_INTOBJ(ELM_PLIST(l1,i));
+        if (ELM_PLIST(pl,x) == NULL) {
+            SET_ELM_PLIST(pl,x,ELM_PLIST(l2,i));
+        }
+    }
+    for (i = 1;i <= deg;i++) {
+        if (ELM_PLIST(pl,i) == NULL) {
+            SET_ELM_PLIST(pl,i,INTOBJ_INT(i));
+        }
+    }
+    return pl;
+}
+
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
@@ -1937,6 +1968,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "JENKINS_HASH_IN_ORB", 4, "x, offset, bytelen, hashlen",
     FuncJenkinsHashInOrb, 
     "pkg/orb/src/orb.c:JENKINS_HASH_IN_ORB" },
+
+  { "PermLeftQuoTransformationNC_C", 2, "t1, t2",
+    FuncPermLeftQuoTransformationNC,
+    "pkg/orb/src/orb.c:FuncPermLeftQuoTransformationNC" },
 
   { 0 }
 
