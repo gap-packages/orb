@@ -17,7 +17,7 @@ PackageName := "orb",
 
 Subtitle := "orb - Methods to enumerate Orbits",
 
-Version := "3.47",
+Version := "3.48",
 ##  Please adjust also the VERSION file in the package directory when
 ##  changing this.
 
@@ -25,7 +25,7 @@ Version := "3.47",
 # 
 Date := "25/06/2010",
 
-ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-3.47",
+ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-3.48",
 
 ArchiveFormats := ".tar.gz",
 

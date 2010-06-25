@@ -1881,6 +1881,46 @@ Obj FuncPermLeftQuoTransformationNC(Obj self, Obj t1, Obj t2)
     return pl;
 }
 
+Obj FuncMappingPermSetSetNC(Obj self, Obj src, Obj dst)
+{
+    Int l;
+    Int d,dd;
+    Obj out;
+    Int i = 1;
+    Int j = 1;
+    Int next = 1;  /* The next candidate, possibly prevented by being in dst */
+    Int k;
+
+    PLAIN_LIST(src);
+    PLAIN_LIST(dst);
+    l = LEN_PLIST(src);
+    d = INT_INTOBJ(ELM_PLIST(src,l));
+    dd = INT_INTOBJ(ELM_PLIST(dst,l));
+    if (dd > d) d = dd;
+
+    out = NEW_PLIST(T_PLIST_CYC_NSORT,d);
+    SET_LEN_PLIST(out,d);
+    /* No garbage collection from here on! */
+
+    for (k = 1;k <= d;k++) {
+        if (i <= l && k == INT_INTOBJ(ELM_PLIST(src,i))) {
+            SET_ELM_PLIST(out,k,ELM_PLIST(dst,i));
+            i++;
+        } else {
+            /* Skip things in dst: */
+            while (j <= l) {
+                dd = INT_INTOBJ(ELM_PLIST(dst,j));
+                if (next < dd) break;
+                if (next == dd) next++;
+                j++;
+            }
+            SET_ELM_PLIST(out,k,INTOBJ_INT(next));
+            next++;
+        }
+    }
+    return out;
+} 
+    
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
@@ -1972,6 +2012,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "PermLeftQuoTransformationNC_C", 2, "t1, t2",
     FuncPermLeftQuoTransformationNC,
     "pkg/orb/src/orb.c:FuncPermLeftQuoTransformationNC" },
+
+  { "MappingPermSetSetNC_C", 2, "src, dst",
+    FuncMappingPermSetSetNC,
+    "pkg/orb/src/orb.c:FuncMappingPermSetSetNC" },
 
   { 0 }
 

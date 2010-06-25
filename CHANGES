@@ -16,6 +16,7 @@
   - New fast methods for AsList, Enumerator and ConstantTimeAccessList
   - Method for Iterator for Orb orbits
   - Kernel method for PermLeftQuoTransformationNC_C
+  - Kernel method for MappingPermSetSetNC_C
 
 
 ==========================
