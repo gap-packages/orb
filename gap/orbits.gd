@@ -85,8 +85,12 @@ DeclareGlobalFunction( "ORB_ComputeStabChain" );
 DeclareOperation( "Memory", [IsObject] );
   
 # Things to work with suborbits:
+DeclareOperation( "FindSuborbits", [ ] );
 DeclareOperation( "FindSuborbits", [ IsOrbit, IsList ] );
 DeclareOperation( "FindSuborbits", [ IsOrbit, IsList, IsCyclotomic ] );
+DeclareOperation( "FindSuborbits", [ IsOrbit, IsList, IsFunction ] );
+DeclareOperation( "FindSuborbits", 
+  [ IsOrbit, IsList, IsFunction, IsCyclotomic ] );
 DeclareOperation( "OrbitIntersectionMatrix", [ IsRecord, IsObject ] );
 DeclareOperation( "RegularRepresentationSchurBasisElm",
   [ IsRecord, IsList, IsPosInt ] );

@@ -1729,25 +1729,31 @@ InstallMethod( Memory, "fallback method returning fail",
 
 InstallOtherMethod( FindSuborbits, "without args", [ ],
   function()
-    Error("Usage: FindSuborbits( o, subgens [,nrsuborbits] )");
+    Error("Usage: FindSuborbits( o, subgens [,op] [,nrsuborbits] )");
   end );
 
 InstallMethod( FindSuborbits, "for an orbit, and subgroup gens",
   [ IsOrbit, IsList ],
-  function( o, subgens) return FindSuborbits(o,subgens,1); end );
+  function( o, subgens) return FindSuborbits(o,subgens,o!.op,1); end );
+
+InstallMethod( FindSuborbits, "for an orbit, subgroup gens and an action",
+  [ IsOrbit, IsList, IsFunction ],
+  function( o, subgens, op) return FindSuborbits(o,subgens,op,1); end );
+
+InstallMethod( FindSuborbits, "for an orbit, subgroup gens and a limit",
+  [ IsOrbit, IsList, IsCyclotomic ],
+  function( o, subgens, limit) 
+    return FindSuborbits(o,subgens,o!.op,limit); 
+  end);
 
 InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
-  [ IsOrbit, IsList, IsCyclotomic ],
-  function( o, subgens, nrsubs )
+  [ IsOrbit, IsList, IsFunction, IsCyclotomic ],
+  function( o, subgens, op, nrsubs )
     local fusetrupps,gensi,h,i,j,l,len,min,nr,nrtrupps,res,succ,
           tried,truppnr,truppst,v,wo,x;
 
     if not(IsClosed(o)) then
         Error("Orbit must be closed");
-        return fail;
-    fi;
-    if not(o!.schreier) then
-        Error("Orbit must have Schreier vector");
         return fail;
     fi;
     len := Length(o);
@@ -1788,7 +1794,7 @@ InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
     i := 1;
     while i <= len and nrtrupps > nrsubs do
         for h in subgens do
-            j := Position(o,o!.op(o[i],h));
+            j := Position(o,op(o[i],h));
             fusetrupps(i,j);
         od;
         tried := tried + 1;
@@ -1828,23 +1834,27 @@ InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
             nr := nr + 1;
         od;
         res.reps[i] := min;
-        res.words[i] := TraceSchreierTreeForward(o,min);
+        if o!.schreier then
+            res.words[i] := TraceSchreierTreeForward(o,min);
+        fi;
         res.lens[i] := nr;
         Sort(l);
         res.suborbs[i] := l;
     od;
     
     # Now provide information about conjugate suborbits:
-    Info(InfoOrb,1,"Computing conjugate suborbits...");
-    gensi := List(o!.gens,x->x^-1);
-    for i in [1..nrtrupps] do
-        v := o[1];
-        wo := res.words[i];
-        for x in [Length(wo),Length(wo)-1..1] do
-            v := o!.op(v,gensi[wo[x]]);
+    if o!.schreier and IsIdenticalObj(op,o!.op) then
+        Info(InfoOrb,1,"Computing conjugate suborbits...");
+        gensi := List(o!.gens,x->x^-1);
+        for i in [1..nrtrupps] do
+            v := o[1];
+            wo := res.words[i];
+            for x in [Length(wo),Length(wo)-1..1] do
+                v := o!.op(v,gensi[wo[x]]);
+            od;
+            res.conjsuborbit[i] := res.suborbnr[Position(o,v)];
         od;
-        res.conjsuborbit[i] := res.suborbnr[Position(o,v)];
-    od;
+    fi;
     
     return res;
   end ); 
