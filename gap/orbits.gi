@@ -250,10 +250,10 @@ InstallGlobalFunction( Orb,
         else
             if IsList(o.onlygrades) then
                 o.onlygradesdata := o.onlygrades;
-                o.onlygrades := ORB_LookForList;
+                o.onlygrades := IN;
             elif IsHashTab(o.onlygrades) then
                 o.onlygradesdata := o.onlygrades;
-                o.onlygrades := ORB_LookForHash;
+                o.onlygrades := ORB_CheckGradeForHash;
             elif IsFunction(o.onlygrades) then
                 if not(IsBound(o.onlygradesdata)) then
                     o.onlygradesdata := fail;
