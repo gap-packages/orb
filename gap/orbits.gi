@@ -23,6 +23,7 @@ InstallValue( ORB, rec( ) );
 #  .genstoapply
 #  .gradingfunc
 #  .onlygrades
+#  .onlygradesdata
 #  .grpsizebound
 #  .hashfunc        only together with next option, hashs cannot grow!
 #  .hashlen         for the call version with 3 or 4 arguments with options
@@ -246,12 +247,27 @@ InstallGlobalFunction( Orb,
         o.grades := [];
         if not(IsBound(o.onlygrades)) then
             o.onlygrades := false;
+        else
+            if IsList(o.onlygrades) then
+                o.onlygradesdata := o.onlygrades;
+                o.onlygrades := ORB_LookForList;
+            elif IsHashTab(o.onlygrades) then
+                o.onlygradesdata := o.onlygrades;
+                o.onlygrades := ORB_LookForHash;
+            elif IsFunction(o.onlygrades) then
+                if not(IsBound(o.onlygradesdata)) then
+                    o.onlygradesdata := fail;
+                fi;
+            else
+                Error("option onlygrades must be a list, a hash or a function");
+            fi;
         fi;
         filts := filts and IsGradedOrbit;
     else
         o.gradingfunc := false;
         o.grades := false;
         o.onlygrades := false;
+        o.onlygradesdata := false;
     fi;
 
     # Now take this record as our orbit record and return:
@@ -522,6 +538,11 @@ InstallGlobalFunction( ORB_LookForHash,
     return HTValue(o!.lookingfor,p) <> fail;
   end );
 
+InstallGlobalFunction( ORB_CheckGradeForHash,
+  function( p, data )
+    return HTValue(data,p) <> fail;
+  end );
+
 
 InstallGlobalFunction(ORB_MakeSchreierGeneratorPerm,
   function( o, i, j, pos )
@@ -577,7 +598,7 @@ InstallMethod( Enumerate,
           logpos,lookfunc,looking,memorygens,nr,onlystab,op,orb,orbsizebound,
           permgens,pos,rep,schreier,schreiergen,schreiergenaction,schreierpos,
           stabsizebound,stopper,storenumbers,suc,yy,gradingfunc,grades,
-          onlygrades,grade,orbitgraph;
+          onlygrades,onlygradesdata,grade,orbitgraph;
 
     # Set a few local variables for faster access:
     orb := o!.orbit;
@@ -617,6 +638,7 @@ InstallMethod( Enumerate,
     grades := o!.grades;
     gradingfunc := o!.gradingfunc;
     onlygrades := o!.onlygrades;
+    onlygradesdata := o!.onlygradesdata;
     orbitgraph := o!.orbitgraph;
 
     # Maybe we are looking for something and it is the start point:
@@ -652,7 +674,8 @@ InstallMethod( Enumerate,
             pos := HTValue(ht,yy);
             if gradingfunc <> false then
                 grade := gradingfunc(o,yy);
-                if onlygrades <> false and not(grade in onlygrades) then
+                if onlygrades <> false and 
+                   not(onlygrades(grade,onlygradesdata)) then
                     pos := false;
                 fi;
             fi;
@@ -1032,7 +1055,8 @@ InstallMethod( AddGeneratorsToOrbit,
     local depth,depthmarks,gen,genabs,gens,genstoapply,ht,i,ii,inneworbit,j,
           log,logind,logpos,memorygens,nr,nr2,nrgens,oldlog,oldlogind,oldnr,
           oldnrgens,op,orb,orbind,pos,pt,rep,schreier,schreiergen,schreierpos,
-          storenumbers,suc,yy,gradingfunc,grades,onlygrades,grade,orbitgraph;
+          storenumbers,suc,yy,gradingfunc,grades,onlygrades,onlygradesdata,
+          grade,orbitgraph;
 
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
@@ -1071,6 +1095,7 @@ InstallMethod( AddGeneratorsToOrbit,
     grades := o!.grades;
     gradingfunc := o!.gradingfunc;
     onlygrades := o!.onlygrades;
+    onlygradesdata := o!.onlygradesdata;
     orbitgraph := o!.orbitgraph;
 
     rep := o!.report;
@@ -1132,7 +1157,8 @@ InstallMethod( AddGeneratorsToOrbit,
             pos := HTValue(ht,yy);
             if gradingfunc <> false then
                 grade := gradingfunc(o,yy);
-                if onlygrades <> false and not(grade in onlygrades) then
+                if onlygrades <> false and 
+                   not(onlygrades(grade,onlygradesdata)) then
                     pos := false;
                 fi;
             fi;
@@ -1548,6 +1574,12 @@ InstallMethod( Iterator, "for an orb orbit",
     return IteratorList( Immutable( o!.orbit ) );
   end );
 
+InstallMethod( OrbitGraphAsSets, "for an orbit",
+  [IsOrbit],
+  function(o)
+    return List(OrbitGraph(o),Set);
+  end );
+
 InstallMethod( OrbitGraph, "for an orbit",
   [IsOrbit],
   function( o )
@@ -1558,13 +1590,15 @@ InstallMethod( OrbitGraph, "for an orbit",
             gg := EmptyPlist(Length(o!.gens));
             for j in [1..Length(o!.gens)] do
                 pos := Position(o,o!.op(o[i],o!.gens[j]));
-                if pos <> fail then Add(gg,pos); fi;
+                if pos <> fail then 
+                    gg[j] := pos; 
+                fi;
             od;
-            Add(g,Set(gg));
+            Add(g,gg);
         od;
         return g;
     else
-        return List(o!.orbitgraph,Set);
+        return o!.orbitgraph;
     fi;
   end );
 

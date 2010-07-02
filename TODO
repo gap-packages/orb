@@ -1,12 +1,12 @@
 For James:
 
-Document gradingfunc, grades, onlygrades
+Document gradingfunc, grades, onlygrades, onlygradesdata
 Document semigroup and monoid argument
 Document Grades, IsGradedOrbit
 Document Jenkins Hash function and MakeHashFunctionForPlainFlatList
-Document orbit graph
+Document orbit graph and orbit graph as sets
 Adjust Documentation for hashfunc option (for tree hashes)
-
+Look into schreiergenaction and its doc
 
 Naechste Version:
 

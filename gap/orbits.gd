@@ -59,6 +59,7 @@ DeclareOperation( "MakeSchreierTreeShallow", [ IsOrbit ] );
 # whether a newly found is one of the points we are looking for:
 DeclareGlobalFunction( "ORB_LookForList" );
 DeclareGlobalFunction( "ORB_LookForHash" );
+DeclareGlobalFunction( "ORB_CheckGradeForHash" );
 
 # Things to get information out of an orbit enumeration:
 DeclareOperation( "TraceSchreierTreeBack", [ IsOrbit, IsPosInt ] );
@@ -70,6 +71,7 @@ DeclareOperation( "PositionOfFound", [ IsOrbit ] );
 DeclareOperation( "DepthOfSchreierTree", [ IsOrbit ] );
 DeclareOperation( "Grades", [ IsOrbit ] );
 DeclareOperation( "OrbitGraph", [ IsOrbit ] );
+DeclareOperation( "OrbitGraphAsSets", [ IsOrbit ] );
 
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );

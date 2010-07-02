@@ -11,7 +11,7 @@
   - Jenkins Hash Function
   - Slight improvement of hashfunc options
   - Documentation improvements
-  - orbitgraph for Orb
+  - OrbitGraph for Orb
   - IsGradedOrbit
   - New fast methods for AsList, Enumerator and ConstantTimeAccessList
   - Method for Iterator for Orb orbits
