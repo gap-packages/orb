@@ -18,6 +18,7 @@
   - Kernel method for PermLeftQuoTransformationNC_C
   - Kernel method for MappingPermSetSetNC_C
   - Allow a different operation in FindSuborbits
+  - Kernel method for MappingPermListListNC_C
 
 
 ==========================
