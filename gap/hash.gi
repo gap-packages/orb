@@ -582,6 +582,7 @@ end );
 
 if not(IsBound(JENKINS_HASH_IN_ORB)) then 
     GenericHashFunc := fail; 
+    JENKINS_HASH_IN_ORB := fail;
 else
     GenericHashFunc := function(x,data)
       return JENKINS_HASH_IN_ORB(x, data[2], data[3], data[4] );
@@ -610,8 +611,6 @@ function(v,data)
   return HASHKEY_BAG(v,101,3*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
-# Now the choosing methods for compressed vectors:
-
 InstallGlobalFunction( ORB_HashFunctionReturn1,
   function(v,data) return 1; end );
 
@@ -620,6 +619,8 @@ InstallMethod( ChooseHashFunction, "failure method if all fails",
   function(p,hashlen)
     return rec( func := ORB_HashFunctionReturn1, data := fail );
   end );
+
+# Now the choosing methods for compressed vectors:
 
 InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
   [IsGF2VectorRep and IsList,IsInt],
@@ -742,15 +743,27 @@ function(p,data)
    return HashKeyBag(p,255,0,2*l) mod data + 1;
 end );
 
-InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
-  function( x, data )
-    return JENKINS_HASH_IN_ORB(x, GAPInfo.BytesPerVariable,
-                                  GAPInfo.BytesPerVariable*Length(x), data);
-  end );
+if JENKINS_HASH_IN_ORB <> fail then
+    InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
+      function( x, data )
+        return JENKINS_HASH_IN_ORB(x, GAPInfo.BytesPerVariable,
+                                      GAPInfo.BytesPerVariable*Length(x), data);
+      end );
+else
+    InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
+      function(v,data)
+        local i,res;
+        res := 0;
+        for i in v do
+            res := (res * data[1] + i) mod data[2];
+        od;
+        return res+1;
+      end );
+fi;
 
 InstallGlobalFunction( MakeHashFunctionForPlainFlatList,
   function( len )
-    if not(IsBound(JENKINS_HASH_IN_ORB)) then
+    if JENKINS_HASH_IN_ORB = fail then
         Error("Please compile the C-part, containing the Jenkinks Hash Func");
         return fail;
     fi;

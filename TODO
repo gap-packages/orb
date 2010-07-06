@@ -4,6 +4,7 @@ Document gradingfunc, grades, onlygrades, onlygradesdata
 Document semigroup and monoid argument
 Document Grades, IsGradedOrbit
 Document Jenkins Hash function and MakeHashFunctionForPlainFlatList
+         and ORB_HashFunctionForPlainFlatList
 Document orbit graph and orbit graph as sets
 Adjust Documentation for hashfunc option (for tree hashes)
 Look into schreiergenaction and its doc
