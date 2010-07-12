@@ -755,7 +755,7 @@ else
         local i,res;
         res := 0;
         for i in v do
-            res := (res * data[1] + i) mod data[2];
+            res := (res * 101 + i) mod data;
         od;
         return res+1;
       end );
