@@ -1137,6 +1137,7 @@ static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
                                   the boundaries of this list */
     if (tmp == 0L) { /* Unbound entry! */
         SET_ELM_PLIST(els,h,x);
+        CHANGED_BAG(els);
         if (v != True) ASS_LIST(vals,h,v);
         AssPRec(ht,RNam_nr,INTOBJ_INT(INT_INTOBJ(ElmPRec(ht,RNam_nr))+1));
         return INTOBJ_INT(h);
