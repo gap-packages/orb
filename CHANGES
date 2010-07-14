@@ -21,6 +21,7 @@
   - Kernel method for MappingPermListListNC_C
   - Provide ORB_HashFunctionForPlainFlatList
   - Kernel method for ImageSetOfTransformation and KernelOfTransformation
+  - Make ProfileGlobalFunctions(true) work for C functions
 
 
 ==========================
