@@ -2014,6 +2014,154 @@ Obj FuncMappingPermListListNC(Obj self, Obj src, Obj dst)
     return out;
 }
 
+Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
+{
+    Int bufstack[DEGREELIMITONSTACK+1];
+    Obj bufgap;
+    Int *buf;
+    Int comps;
+    Int i;
+    Obj image;
+    Int j;
+    Obj kernel;
+    Obj l;
+    Int n;
+    Obj tmp;
+
+    l = ELM_PLIST(t,1);
+    PLAIN_LIST(l);
+    n = LEN_PLIST(l);
+    if (n <= DEGREELIMITONSTACK) {
+        buf = bufstack;
+        for (i = 1;i <= n;i++) buf[i] = 0;
+        bufgap = 0L;   /* Just to please the compiler */
+    } else{
+        bufgap = NEW_PLIST(T_PLIST,n);   /* Only used internally */
+        buf = (Int *) (ADDR_OBJ(bufgap));
+    }
+    /* No garbage collection from here... */
+    comps = 0;
+    for (j = 1;j <= n;j++) {
+        i = INT_INTOBJ(ELM_PLIST(l,j));
+        if (!buf[i]) comps++;
+        buf[i]++;
+    }
+    /* ...until here. No there could be some, buf might be wrong then! */
+    kernel = NEW_PLIST(T_PLIST,comps);
+    image = NEW_PLIST(T_PLIST,comps);
+    buf = (n <= DEGREELIMITONSTACK) ? bufstack : (Int *) ADDR_OBJ(bufgap);
+    j = 1;
+    for (i = 1;i <= n;i++) {
+        if (buf[i]) {
+            SET_ELM_PLIST(image,j,INTOBJ_INT(i));
+            SET_LEN_PLIST(image,j);
+            tmp = NEW_PLIST(T_PLIST,buf[i]);
+            buf = (n <= DEGREELIMITONSTACK) ? bufstack 
+                                            : (Int *) ADDR_OBJ(bufgap);
+            SET_ELM_PLIST(kernel,j,tmp);
+            SET_LEN_PLIST(kernel,j);
+            CHANGED_BAG(kernel);
+            buf[i] = j++;
+        }
+    }
+    for (i = 1;i <= n;i++) {
+        tmp = ELM_PLIST(kernel,buf[INT_INTOBJ(ELM_PLIST(l,i))]);
+        j = LEN_PLIST(tmp);
+        SET_ELM_PLIST(tmp,j+1,INTOBJ_INT(i));
+        SET_LEN_PLIST(tmp,j+1);
+    }
+    /* Now sort it: */
+    SortDensePlist(kernel);
+
+    tmp = NEW_PLIST(T_PLIST,2);
+    SET_LEN_PLIST(tmp,2);
+    SET_ELM_PLIST(tmp,1,image);
+    SET_ELM_PLIST(tmp,2,kernel);
+    return tmp;
+}
+
+Obj FuncImageAndKernelOfTransformation2( Obj self, Obj t )
+{
+    Int bufstack[DEGREELIMITONSTACK+1];
+    Obj bufgap;
+    Int *buf;
+    Int comps;
+    Int i;
+    Obj image;
+    Int j;
+    Int k;
+    Obj kernel;
+    Obj l;
+    Int n;
+    Obj tmp;
+
+    l = ELM_PLIST(t,1);
+    PLAIN_LIST(l);
+    n = LEN_PLIST(l);
+    kernel = NEW_PLIST(T_PLIST,n);   /* Will hold result */
+    SET_LEN_PLIST(kernel,n);
+    if (n <= DEGREELIMITONSTACK) {
+        buf = bufstack;
+        for (i = 1;i <= n;i++) buf[i] = 0;
+        bufgap = 0L;   /* Just to please the compiler */
+    } else{
+        bufgap = NewBag(T_DATOBJ,sizeof(Int)*(n+1));/* Only used internally */
+        buf = (Int *) (ADDR_OBJ(bufgap));
+    }
+    
+    comps = 0;
+    for (i = 1;i <= n;i++) {
+        j = INT_INTOBJ(ELM_PLIST(l,i));
+        if (buf[j] == 0) {
+            comps++;
+            tmp = NEW_PLIST(T_PLIST,1);
+            if (n > DEGREELIMITONSTACK) buf = (Int *) ADDR_OBJ(bufgap);
+            SET_LEN_PLIST(tmp,1);
+            SET_ELM_PLIST(tmp,1,INTOBJ_INT(i));
+            SET_ELM_PLIST(kernel,i,tmp);
+            CHANGED_BAG(kernel);
+            buf[j] = i;
+        } else {
+            tmp = ELM_PLIST(kernel,buf[j]);
+            k = LEN_PLIST(tmp);
+            GROW_PLIST(tmp,k+1);
+            if (n > DEGREELIMITONSTACK) buf = (Int *) ADDR_OBJ(bufgap);
+            SET_ELM_PLIST(tmp,k+1,INTOBJ_INT(i));
+            SET_LEN_PLIST(tmp,k+1);
+        }
+    }
+    image = NEW_PLIST(T_PLIST,comps);
+    if (n > DEGREELIMITONSTACK) buf = (Int *) ADDR_OBJ(bufgap);
+    SET_LEN_PLIST(image,comps);
+    /* No garbage collection from here on ... */
+    k = 1;
+    for (j = 1;j <= n;j++) {
+        i = buf[j];
+        if (i) {
+            SET_ELM_PLIST(image,k,INTOBJ_INT(j));
+        }
+    }
+    /* ... until here. We do not need buf any more from here on. */
+
+    /* Now compactify kernel: */
+    j = 1;
+    for (i = 1;i <= n;i++) {
+        tmp = ELM_PLIST(kernel,i);
+        if (tmp) SET_ELM_PLIST(kernel,j++,tmp);
+    }
+    SET_LEN_PLIST(kernel,comps);
+    SHRINK_PLIST(kernel,comps);
+
+    tmp = NEW_PLIST(T_PLIST,2);
+    SET_LEN_PLIST(tmp,2);
+    SET_ELM_PLIST(tmp,1,image);
+    SET_ELM_PLIST(tmp,2,kernel);
+    MakeImmutable(tmp);
+    return tmp;
+}
+
+
+
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
@@ -2113,6 +2261,14 @@ static StructGVarFunc GVarFuncs [] = {
   { "MappingPermListListNC_C", 2, "src, dst",
     FuncMappingPermListListNC,
     "pkg/orb/src/orb.c:FuncMappingPermListListNC" },
+
+  { "ImageAndKernelOfTransformation_C", 1, "t",
+    FuncImageAndKernelOfTransformation,
+    "pkg/orb/src/orb.c:FuncImageAndKernelOfTransformation" },
+
+  { "ImageAndKernelOfTransformation2_C", 1, "t",
+    FuncImageAndKernelOfTransformation2,
+    "pkg/orb/src/orb.c:FuncImageAndKernelOfTransformation2" },
 
   { 0 }
 

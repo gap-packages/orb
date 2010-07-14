@@ -20,6 +20,7 @@ ReadPackage("orb","gap/cache.gi");
 ReadPackage("orb","gap/orbits.gi");
 ReadPackage("orb","gap/search.gi");
 ReadPackage("orb","gap/bysuborbit.gi");
+ReadPackage("orb","gap/transform.gi");
 
 if IsBound(IO_PackageIsLoaded) then
     ReadPackage("orb","gap/picklers.gi");
