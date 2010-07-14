@@ -2138,7 +2138,7 @@ Obj FuncImageAndKernelOfTransformation2( Obj self, Obj t )
     for (j = 1;j <= n;j++) {
         i = buf[j];
         if (i) {
-            SET_ELM_PLIST(image,k,INTOBJ_INT(j));
+            SET_ELM_PLIST(image,k++,INTOBJ_INT(j));
         }
     }
     /* ... until here. We do not need buf any more from here on. */
