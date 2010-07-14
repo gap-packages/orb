@@ -1,9 +1,5 @@
 For James:
 
-ImageAndKernelOfTransformation{,_C}
-Profiling of global functions
-MappingPermListListNC?
-MappingPermSetSetNC?
 Document gradingfunc, grades, onlygrades, onlygradesdata
 Document semigroup and monoid argument
 Document Grades, IsGradedOrbit

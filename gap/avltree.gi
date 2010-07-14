@@ -46,8 +46,7 @@
 #                    2 - balance factor -1
 # 
 
-InstallGlobalFunction( AVLCmp_GAP, 
-function(a,b)
+AVLCmp_GAP := function(a,b)
   if a = b then 
     return 0;
   elif a < b then
@@ -55,14 +54,14 @@ function(a,b)
   else
     return 1;
   fi;
-end);
+end;
 if IsBound(AVLCmp_C) then
-    AVLCmp := AVLCmp_C;
+    InstallGlobalFunction(AVLCmp, AVLCmp_C);
 else
-    AVLCmp := AVLCmp_GAP;
+    InstallGlobalFunction(AVLCmp, AVLCmp_GAP);
 fi;
 
-InstallGlobalFunction( AVLTree_GAP, function(arg)
+AVLTree_GAP := function(arg)
   # Parameters: options record (optional)
   # Initializes balanced binary tree object, optionally with comparison 
   # function. Returns empty tree object.
@@ -105,11 +104,11 @@ InstallGlobalFunction( AVLTree_GAP, function(arg)
   if alloc > 11 then t[alloc] := fail; fi;    # expand object
   Objectify(AVLTreeType,t);
   return t;
-end);
+end;
 if IsBound(AVLTree_C) then
-    AVLTree := AVLTree_C;
+    InstallGlobalFunction(AVLTree, AVLTree_C);
 else
-    AVLTree := AVLTree_GAP;
+    InstallGlobalFunction(AVLTree, AVLTree_GAP);
 fi;
 
 InstallMethod( ViewObj, "for an avltree object",
@@ -118,7 +117,7 @@ InstallMethod( ViewObj, "for an avltree object",
     Print("<avltree nodes=",t![3]," alloc=",t![4],">");
   end );
 
-InstallGlobalFunction( AVLNewNode_GAP, function(t)
+AVLNewNode_GAP := function(t)
   local n;
   if t![2] > 0 then
       n := t![2];
@@ -137,15 +136,15 @@ InstallGlobalFunction( AVLNewNode_GAP, function(t)
   t![n+2] := 0;
   t![n+3] := 0;
   return n;
-end);
+end;
 if IsBound(AVLNewNode_C) then
-    AVLNewNode := AVLNewNode_C;
+    InstallGlobalFunction(AVLNewNode, AVLNewNode_C);
 else
-    AVLNewNode := AVLNewNode_GAP;
+    InstallGlobalFunction(AVLNewNode, AVLNewNode_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLFreeNode_GAP, function(t,n)
+AVLFreeNode_GAP := function(t,n)
   local o;
   t![n] := t![2];
   t![2] := n;
@@ -156,95 +155,95 @@ InstallGlobalFunction( AVLFreeNode_GAP, function(t,n)
       return o;
   fi;
   return true;
-end);
+end;
 if IsBound(AVLFreeNode_C) then
-    AVLFreeNode := AVLFreeNode_C;
+    InstallGlobalFunction(AVLFreeNode, AVLFreeNode_C);
 else
-    AVLFreeNode := AVLFreeNode_GAP;
+    InstallGlobalFunction(AVLFreeNode, AVLFreeNode_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLData_GAP, function(t,n)
+AVLData_GAP := function(t,n)
   return t![n];
-end);
+end;
 if IsBound(AVLData_C) then
-    AVLData := AVLData_C;
+    InstallGlobalFunction(AVLData, AVLData_C);
 else
-    AVLData := AVLData_GAP;
+    InstallGlobalFunction(AVLData, AVLData_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLSetData_GAP, function(t,n,d)
+AVLSetData_GAP := function(t,n,d)
   t![n] := d;
-end);
+end;
 if IsBound(AVLSetData_C) then
-    AVLSetData := AVLSetData_C;
+    InstallGlobalFunction(AVLSetData, AVLSetData_C);
 else
-    AVLSetData := AVLSetData_GAP;
+    InstallGlobalFunction(AVLSetData, AVLSetData_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLLeft_GAP, function(t,n)
+AVLLeft_GAP := function(t,n)
   return QuoInt(t![n+1],4)*4;
-end);
+end;
 if IsBound(AVLLeft_C) then
-    AVLLeft := AVLLeft_C;
+    InstallGlobalFunction(AVLLeft, AVLLeft_C);
 else
-    AVLLeft := AVLLeft_GAP;
+    InstallGlobalFunction(AVLLeft, AVLLeft_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLSetLeft_GAP, function(t,n,m)
+AVLSetLeft_GAP := function(t,n,m)
   t![n+1] := m + t![n+1] mod 4;
-end);
+end;
 if IsBound(AVLSetLeft_C) then
-    AVLSetLeft := AVLSetLeft_C;
+    InstallGlobalFunction(AVLSetLeft, AVLSetLeft_C);
 else
-    AVLSetLeft := AVLSetLeft_GAP;
+    InstallGlobalFunction(AVLSetLeft, AVLSetLeft_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLRight_GAP, function(t,n)
+AVLRight_GAP := function(t,n)
   return QuoInt(t![n+2],4)*4;
-end);
+end;
 if IsBound(AVLRight_C) then
-    AVLRight := AVLRight_C;
+    InstallGlobalFunction(AVLRight, AVLRight_C);
 else
-    AVLRight := AVLRight_GAP;
+    InstallGlobalFunction(AVLRight, AVLRight_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLSetRight_GAP, function(t,n,m)
+AVLSetRight_GAP := function(t,n,m)
   t![n+2] := m;
-end);
+end;
 if IsBound(AVLSetRight_C) then
-    AVLSetRight := AVLSetRight_C;
+    InstallGlobalFunction(AVLSetRight, AVLSetRight_C);
 else
-    AVLSetRight := AVLSetRight_GAP;
+    InstallGlobalFunction(AVLSetRight, AVLSetRight_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLRank_GAP, function(t,n)
+AVLRank_GAP := function(t,n)
   return t![n+3];
-end);
+end;
 if IsBound(AVLRank_C) then
-    AVLRank := AVLRank_C;
+    InstallGlobalFunction(AVLRank, AVLRank_C);
 else
-    AVLRank := AVLRank_GAP;
+    InstallGlobalFunction(AVLRank, AVLRank_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLSetRank_GAP, function(t,n,r)
+AVLSetRank_GAP := function(t,n,r)
   t![n+3] := r;
-end);
+end;
 if IsBound(AVLSetRank_C) then
-    AVLSetRank := AVLSetRank_C;
+    InstallGlobalFunction(AVLSetRank, AVLSetRank_C);
 else
-    AVLSetRank := AVLSetRank_GAP;
+    InstallGlobalFunction(AVLSetRank, AVLSetRank_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLBalFactor_GAP, function(t,n)
+AVLBalFactor_GAP := function(t,n)
   local bf;
   bf := t![n+1] mod 4;    # 0, 1 or 2
   if bf = 2 then
@@ -252,28 +251,28 @@ InstallGlobalFunction( AVLBalFactor_GAP, function(t,n)
   else
     return bf;
   fi;
-end);
+end;
 if IsBound(AVLBalFactor_C) then
-    AVLBalFactor := AVLBalFactor_C;
+    InstallGlobalFunction(AVLBalFactor, AVLBalFactor_C);
 else
-    AVLBalFactor := AVLBalFactor_GAP;
+    InstallGlobalFunction(AVLBalFactor, AVLBalFactor_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLSetBalFactor_GAP, function(t,n,bf)
+AVLSetBalFactor_GAP := function(t,n,bf)
   if bf = -1 then
     t![n+1] := QuoInt(t![n+1],4)*4 + 2;
   else
     t![n+1] := QuoInt(t![n+1],4)*4 + bf;
   fi;
-end);
+end;
 if IsBound(AVLSetBalFactor_C) then
-    AVLSetBalFactor := AVLSetBalFactor_C;
+    InstallGlobalFunction(AVLSetBalFactor, AVLSetBalFactor_C);
 else
-    AVLSetBalFactor := AVLSetBalFactor_GAP;
+    InstallGlobalFunction(AVLSetBalFactor, AVLSetBalFactor_GAP);
 fi;
 
-InstallGlobalFunction( AVLValue_GAP, function(t,n)
+AVLValue_GAP := function(t,n)
   if t![7] = fail then 
       return true;
   elif not(IsBound(t![7][n/4])) then
@@ -281,24 +280,24 @@ InstallGlobalFunction( AVLValue_GAP, function(t,n)
   else
       return t![7][n/4];
   fi;
-end);
+end;
 if IsBound(AVLValue_C) then
-    AVLValue := AVLValue_C;
+    InstallGlobalFunction(AVLValue, AVLValue_C);
 else
-    AVLValue := AVLValue_GAP;
+    InstallGlobalFunction(AVLValue, AVLValue_GAP);
 fi;
 
-InstallGlobalFunction( AVLSetValue_GAP, function(t,n,v)
+AVLSetValue_GAP := function(t,n,v)
   n := n/4;
   if t![7] = fail then
       t![7] := EmptyPlist(n);
   fi;
   t![7][n] := v;
-end);
+end;
 if IsBound(AVLSetValue_C) then
-    AVLSetValue := AVLSetValue_C;
+    InstallGlobalFunction(AVLSetValue, AVLSetValue_C);
 else
-    AVLSetValue := AVLSetValue_GAP;
+    InstallGlobalFunction(AVLSetValue, AVLSetValue_GAP);
 fi;
 
 InstallMethod( Display, "for an avltree object",
@@ -320,7 +319,7 @@ InstallMethod( Display, "for an avltree object",
     Print(">\n");
   end );
 
-InstallGlobalFunction( AVLFind_GAP, function(tree,data)
+AVLFind_GAP := function(tree,data)
   # Parameters: tree, data
   #  t is a AVL
   #  data is a data structure defined by the user
@@ -341,14 +340,14 @@ InstallGlobalFunction( AVLFind_GAP, function(tree,data)
   od;
   
   return fail;
-end);
+end;
 if IsBound(AVLFind_C) then
-    AVLFind := AVLFind_C;
+    InstallGlobalFunction(AVLFind, AVLFind_C);
 else
-    AVLFind := AVLFind_GAP;
+    InstallGlobalFunction(AVLFind, AVLFind_GAP);
 fi;
 
-InstallGlobalFunction( AVLLookup_GAP, function(t,d)
+AVLLookup_GAP := function(t,d)
   local p;
   p := AVLFind(t,d);
   if p = fail then
@@ -356,14 +355,14 @@ InstallGlobalFunction( AVLLookup_GAP, function(t,d)
   else
       return AVLValue(t,p);
   fi;
-end);
+end;
 if IsBound(AVLLookup_C) then
-    AVLLookup := AVLLookup_C;
+    InstallGlobalFunction(AVLLookup, AVLLookup_C);
 else
-    AVLLookup := AVLLookup_GAP;
+    InstallGlobalFunction(AVLLookup, AVLLookup_GAP);
 fi;
 
-InstallGlobalFunction( AVLIndex_GAP, function(tree,index)
+AVLIndex_GAP := function(tree,index)
   # Parameters: tree, index
   #  tree is a AVL
   #  index is an index in the tree
@@ -393,14 +392,14 @@ InstallGlobalFunction( AVLIndex_GAP, function(tree,index)
       p := AVLRight(tree,p);
     fi;
   od;
-end);
+end;
 if IsBound(AVLIndex_C) then
-    AVLIndex := AVLIndex_C;
+    InstallGlobalFunction(AVLIndex, AVLIndex_C);
 else
-    AVLIndex := AVLIndex_GAP;
+    InstallGlobalFunction(AVLIndex, AVLIndex_GAP);
 fi;
 
-InstallGlobalFunction( AVLIndexFind_GAP, function(tree,index)
+AVLIndexFind_GAP := function(tree,index)
   # Parameters: tree, index
   #  tree is a AVL
   #  index is an index in the tree
@@ -430,14 +429,14 @@ InstallGlobalFunction( AVLIndexFind_GAP, function(tree,index)
       p := AVLRight(tree,p);
     fi;
   od;
-end);
+end;
 if IsBound(AVLIndexFind_C) then
-    AVLIndexFind := AVLIndexFind_C;
+    InstallGlobalFunction(AVLIndexFind, AVLIndexFind_C);
 else
-    AVLIndexFind := AVLIndexFind_GAP;
+    InstallGlobalFunction(AVLIndexFind, AVLIndexFind_GAP);
 fi;
 
-InstallGlobalFunction( AVLIndexLookup_GAP, function(tree,i)
+AVLIndexLookup_GAP := function(tree,i)
   local p;
   p := AVLIndex(tree,i);
   if p = fail then 
@@ -445,14 +444,14 @@ InstallGlobalFunction( AVLIndexLookup_GAP, function(tree,i)
   else
       return AVLValue(tree,p);
   fi;
-end);
+end;
 if IsBound(AVLIndexLookup_C) then
-    AVLIndexLookup := AVLIndexLookup_C;
+    InstallGlobalFunction(AVLIndexLookup, AVLIndexLookup_C);
 else
-    AVLIndexLookup := AVLIndexLookup_GAP;
+    InstallGlobalFunction(AVLIndexLookup, AVLIndexLookup_GAP);
 fi;
 
-InstallGlobalFunction( AVLRebalance_GAP, function(tree,q)
+AVLRebalance_GAP := function(tree,q)
   # the tree starting at q has balanced subtrees but is out of balance:
   # the depth of the deeper subtree is 2 bigger than the depth of the other
   # tree. This function changes this situation following the procedure
@@ -562,16 +561,15 @@ InstallGlobalFunction( AVLRebalance_GAP, function(tree,q)
     shrink := false;    
   fi;
   return rec(newroot := p, shorter := shrink);
-end);
+end;
 if IsBound(AVLRebalance_C) then
-    AVLRebalance := AVLRebalance_C;
+    InstallGlobalFunction(AVLRebalance, AVLRebalance_C);
 else
-    AVLRebalance := AVLRebalance_GAP;
+    InstallGlobalFunction(AVLRebalance, AVLRebalance_GAP);
 fi;
 
 
-
-InstallGlobalFunction( AVLAdd_GAP, function(tree,data,value)
+AVLAdd_GAP := function(tree,data,value)
   # Parameters: tree, data, value
   #  tree is a AVL
   #  data is a data structure defined by the user
@@ -696,15 +694,15 @@ InstallGlobalFunction( AVLAdd_GAP, function(tree,data,value)
   fi;
   
   return true;
-end);
+end;
 if IsBound(AVLAdd_C) then
-    AVLAdd := AVLAdd_C;
+    InstallGlobalFunction(AVLAdd, AVLAdd_C);
 else
-    AVLAdd := AVLAdd_GAP;
+    InstallGlobalFunction(AVLAdd, AVLAdd_GAP);
 fi;
 
 
-InstallGlobalFunction( AVLIndexAdd_GAP, function(tree,data,value,index)
+AVLIndexAdd_GAP := function(tree,data,value,index)
   # Parameters: index, data, value, tree
   #  tree is a AVL
   #  data is a data structure defined by the user
@@ -829,14 +827,14 @@ InstallGlobalFunction( AVLIndexAdd_GAP, function(tree,data,value,index)
   fi;
   
   return true;
-end);
+end;
 if IsBound(AVLIndexAdd_C) then
-    AVLIndexAdd := AVLIndexAdd_C;
+    InstallGlobalFunction(AVLIndexAdd, AVLIndexAdd_C);
 else
-    AVLIndexAdd := AVLIndexAdd_GAP;
+    InstallGlobalFunction(AVLIndexAdd, AVLIndexAdd_GAP);
 fi;
 
-InstallGlobalFunction( AVLDelete_GAP, function(tree,data)
+AVLDelete_GAP := function(tree,data)
   # Parameters: tree, data
   #  tree is a AVL
   #  data is a data structure defined by the user
@@ -1002,14 +1000,14 @@ InstallGlobalFunction( AVLDelete_GAP, function(tree,data)
     m := m - 1;
   od;
   return old;
-end);
+end;
 if IsBound(AVLDelete_C) then
-    AVLDelete := AVLDelete_C;
+    InstallGlobalFunction(AVLDelete, AVLDelete_C);
 else
-    AVLDelete := AVLDelete_GAP;
+    InstallGlobalFunction(AVLDelete, AVLDelete_GAP);
 fi;
 
-InstallGlobalFunction( AVLIndexDelete_GAP, function(tree,index)
+AVLIndexDelete_GAP := function(tree,index)
   # Parameters: tree, index
   #  index is the index of the element to be deleted, must be between 1 and
   #          tree![3] inclusively
@@ -1173,16 +1171,15 @@ InstallGlobalFunction( AVLIndexDelete_GAP, function(tree,index)
     m := m - 1;
   od;
   return x;
-end);
+end;
 if IsBound(AVLIndexDelete_C) then
-    AVLIndexDelete := AVLIndexDelete_C;
+    InstallGlobalFunction(AVLIndexDelete, AVLIndexDelete_C);
 else
-    AVLIndexDelete := AVLIndexDelete_GAP;
+    InstallGlobalFunction(AVLIndexDelete, AVLIndexDelete_GAP);
 fi;
 
 
-
-InstallGlobalFunction( AVLToList_GAP, function(tree)
+AVLToList_GAP := function(tree)
   # walks recursively through the tree and builds a list, where every entry 
   # belongs to a node in the order of the tree and each entry is a list, 
   # containing the data as first entry, the depth in the tree as second 
@@ -1205,11 +1202,11 @@ InstallGlobalFunction( AVLToList_GAP, function(tree)
   
   DoRecursion(tree![6],1);
   return l;
-end);
+end;
 if IsBound(AVLToList_C) then
-    AVLToList := AVLToList_C;
+    InstallGlobalFunction(AVLToList, AVLToList_C);
 else
-    AVLToList := AVLToList_GAP;
+    InstallGlobalFunction(AVLToList, AVLToList_GAP);
 fi;
 
 BindGlobal( "AVLTest", function(tree)
@@ -1270,7 +1267,7 @@ BindGlobal( "AVLTest", function(tree)
   fi;
 end);
 
-InstallGlobalFunction( AVLFindIndex_GAP, function(tree,data)
+AVLFindIndex_GAP := function(tree,data)
   # Parameters: tree, data
   #  t is a AVL
   #  data is a data structure defined by the user
@@ -1292,8 +1289,12 @@ InstallGlobalFunction( AVLFindIndex_GAP, function(tree,data)
     fi;
   od;
   return fail;
-end );
-if IsBound(AVLFindIndex_C) then AVLFindIndex := AVLFindIndex_C; fi;
+end ;
+if IsBound(AVLFindIndex_C) then 
+    InstallGlobalFunction(AVLFindIndex, AVLFindIndex_C); 
+else
+    InstallGlobalFunction(AVLFindIndex, AVLFindIndex_GAP); 
+fi;
 
 InstallOtherMethod( ELM_LIST, "for an avl tree and an index",
   [ IsAVLTree and IsAVLTreeFlatRep, IsPosInt ],

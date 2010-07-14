@@ -14,10 +14,7 @@
 #############################################################################
 
 
-if IsBound(ImageAndKernelOfTransformation_C) then
-  InstallGlobalFunction( ImageAndKernelOfTransformation,
-                         ImageAndKernelOfTransformation_C );
-else
+if not(IsBound(ImageAndKernelOfTransformation_C)) then
   InstallGlobalFunction( ImageAndKernelOfTransformation,
     function( t )
       local buf,comps,i,image,j,kernel,l,ll,n;
@@ -48,6 +45,9 @@ else
       MakeImmutable(ll);
       return ll;
     end );
+else
+    InstallGlobalFunction( ImageAndKernelOfTransformation,
+                           ImageAndKernelOfTransformation_C );
 fi;
 
 InstallMethod( ImageSetOfTransformation, "for a transformation",

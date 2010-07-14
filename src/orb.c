@@ -2306,6 +2306,8 @@ static Int InitKernel ( StructInitInfo *module )
     return 0;
 }
 
+Obj FuncADD_SET(Obj self, Obj set, Obj obj);
+
 /******************************************************************************
 *F  InitLibrary( <module> ) . . . . . . .  initialise library data structures
 */
