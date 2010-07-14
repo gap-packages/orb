@@ -1851,6 +1851,8 @@ Obj FuncJenkinsHashInOrb(Obj self, Obj x, Obj offset, Obj bytelen, Obj hashlen)
    return INTOBJ_INT((Int)(key % mod + 1));
 }
 
+Obj FuncPermList(Obj self, Obj list);
+
 Obj FuncPermLeftQuoTransformationNC(Obj self, Obj t1, Obj t2)
 {
     Obj l1, l2;
@@ -1879,10 +1881,10 @@ Obj FuncPermLeftQuoTransformationNC(Obj self, Obj t1, Obj t2)
             SET_ELM_PLIST(pl,i,INTOBJ_INT(i));
         }
     }
-    return pl;
+    return FuncPermList(self,pl);
 }
 
-Obj FuncMappingPermSetSetNC(Obj self, Obj src, Obj dst)
+Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
 {
     Int l;
     Int d,dd;
@@ -1895,6 +1897,11 @@ Obj FuncMappingPermSetSetNC(Obj self, Obj src, Obj dst)
     PLAIN_LIST(src);
     PLAIN_LIST(dst);
     l = LEN_PLIST(src);
+    if (l != LEN_PLIST(dst)) {
+        ErrorReturnVoid( "both arguments must be sets of equal length", 
+                     0L, 0L, "type 'return;' or 'quit;' to exit break loop" );
+        return 0L;
+    }
     d = INT_INTOBJ(ELM_PLIST(src,l));
     dd = INT_INTOBJ(ELM_PLIST(dst,l));
     if (dd > d) d = dd;
@@ -1919,12 +1926,12 @@ Obj FuncMappingPermSetSetNC(Obj self, Obj src, Obj dst)
             next++;
         }
     }
-    return out;
+    return FuncPermList(self,out);
 } 
  
 #define DEGREELIMITONSTACK 512
 
-Obj FuncMappingPermListListNC(Obj self, Obj src, Obj dst)
+Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
 {
     Int l;
     Int i;
@@ -1940,7 +1947,8 @@ Obj FuncMappingPermListListNC(Obj self, Obj src, Obj dst)
     PLAIN_LIST(dst);
     l = LEN_PLIST(src);
     if (l != LEN_PLIST(dst)) {
-        ErrorQuit( "the lists must have equal length", 0L, 0L );
+        ErrorReturnVoid( "both arguments must be lists of equal length", 
+                     0L, 0L, "type 'return;' or 'quit;' to exit break loop" );
         return 0L;
     }
     d = 0;
@@ -2011,10 +2019,13 @@ Obj FuncMappingPermListListNC(Obj self, Obj src, Obj dst)
         }
         /* ... to here! No CHANGED_BAG needed since this is a new object! */
     }
-    return out;
+    return FuncPermList(self,out);
 }
 
-Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
+#if 0
+/* The version below has better complexity and is only slightly slower
+ * for very small transformations. */
+Obj FuncImageAndKernelOfTransformation2( Obj self, Obj t )
 {
     Int bufstack[DEGREELIMITONSTACK+1];
     Obj bufgap;
@@ -2079,8 +2090,9 @@ Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
     SET_ELM_PLIST(tmp,2,kernel);
     return tmp;
 }
+#endif
 
-Obj FuncImageAndKernelOfTransformation2( Obj self, Obj t )
+Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
 {
     Int bufstack[DEGREELIMITONSTACK+1];
     Obj bufgap;
@@ -2254,21 +2266,25 @@ static StructGVarFunc GVarFuncs [] = {
     FuncPermLeftQuoTransformationNC,
     "pkg/orb/src/orb.c:FuncPermLeftQuoTransformationNC" },
 
-  { "MappingPermSetSetNC_C", 2, "src, dst",
-    FuncMappingPermSetSetNC,
-    "pkg/orb/src/orb.c:FuncMappingPermSetSetNC" },
+  { "MappingPermSetSet_C", 2, "src, dst",
+    FuncMappingPermSetSet,
+    "pkg/orb/src/orb.c:FuncMappingPermSetSet_C" },
 
-  { "MappingPermListListNC_C", 2, "src, dst",
-    FuncMappingPermListListNC,
-    "pkg/orb/src/orb.c:FuncMappingPermListListNC" },
+  { "MappingPermListList_C", 2, "src, dst",
+    FuncMappingPermListList,
+    "pkg/orb/src/orb.c:FuncMappingPermListList" },
+
+#if 0
+/* The following one has better complexity and is only slightly slower
+ * for very small transformations. */
+  { "ImageAndKernelOfTransformation2_C", 1, "t",
+    FuncImageAndKernelOfTransformation,
+    "pkg/orb/src/orb.c:FuncImageAndKernelOfTransformation" },
+#endif
 
   { "ImageAndKernelOfTransformation_C", 1, "t",
     FuncImageAndKernelOfTransformation,
     "pkg/orb/src/orb.c:FuncImageAndKernelOfTransformation" },
-
-  { "ImageAndKernelOfTransformation2_C", 1, "t",
-    FuncImageAndKernelOfTransformation2,
-    "pkg/orb/src/orb.c:FuncImageAndKernelOfTransformation2" },
 
   { 0 }
 
