@@ -6,7 +6,7 @@
 
 LoadPackage("GAPDoc");
 
-MakeGAPDocDoc("doc", "orb", [], "orb");
+MakeGAPDocDoc("doc", "orb", [], "orb", "../../..");
 
 GAPDocManualLab("orb");
 

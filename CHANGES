@@ -8,20 +8,21 @@
 
   - Weak orbits of semigroups and monoids in Orb
   - grading for an orbit
-  - Jenkins Hash Function
+  - Jenkins Hash Function (as yet undocumented)
   - Slight improvement of hashfunc options
   - Documentation improvements
-  - OrbitGraph for Orb
+  - OrbitGraph for Orb orbits
   - IsGradedOrbit
   - New fast methods for AsList, Enumerator and ConstantTimeAccessList
   - Method for Iterator for Orb orbits
-  - Kernel method for PermLeftQuoTransformationNC_C
-  - Kernel method for MappingPermSetSetNC_C
-  - Allow a different operation in FindSuborbits
-  - Kernel method for MappingPermListListNC_C
-  - Provide ORB_HashFunctionForPlainFlatList
+  - Kernel method for PermLeftQuoTransformationNC
+  - Kernel method for MappingPermSetSet
+  - Kernel method for MappingPermListList
   - Kernel method for ImageSetOfTransformation and KernelOfTransformation
+  - Allow a different operation in FindSuborbits
+  - Provide ORB_HashFunctionForPlainFlatList
   - Make ProfileGlobalFunctions(true) work for C functions
+  - Slightly change OrbitStatisticOn* with respect to orbit length limit
 
 
 ==========================

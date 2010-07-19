@@ -547,7 +547,7 @@ InstallGlobalFunction( OrbitStatisticOnVectorSpace,
 
   while Runtime() < t + ti*1000 do
       Randomize(v);
-      o := Orb(gens,v,OnRight,rec(grpsizebound := size,
+      o := Orb(gens,v,OnRight,rec(orbsizebound := size,
                                   hashlen := 3*size, report := 0));
       Enumerate(o);
       len := Length(o!.orbit);
@@ -575,7 +575,7 @@ InstallGlobalFunction( OrbitStatisticOnVectorSpaceLines,
       if c <= Length(v) then
           v := v / v[c];
       fi;
-      o := Orb(gens,v,OnLines,rec(grpsizebound := size,
+      o := Orb(gens,v,OnLines,rec(orbsizebound := size,
                                   hashlen := 3*size, report := 0));
       Enumerate(o);
       len := Length(o!.orbit);
