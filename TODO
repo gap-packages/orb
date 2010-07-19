@@ -1,9 +1,8 @@
-Naechste Version:
+Next version:
 
 Document Jenkins Hash function and MakeHashFunctionForPlainFlatList
          and ORB_HashFunctionForPlainFlatList
 MACFLOAT_INT und fr Paket in Ordnung bringen, what was this???
-OrbitStatisticsInVectorSpace: orbit limit instead of group size limit
 Beispiel laufen lassen
 Speicher kucken
 Datenstrukturen besser erklaeren
