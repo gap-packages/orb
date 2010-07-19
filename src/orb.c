@@ -1867,7 +1867,7 @@ Obj FuncPermLeftQuoTransformationNC(Obj self, Obj t1, Obj t2)
     l2 = ELM_PLIST(t2,1);
     PLAIN_LIST(l2);
     deg = LEN_PLIST(l1);
-    pl = NEW_PLIST(T_PLIST_CYC_NSORT,deg);
+    pl = NEW_PLIST(T_PLIST_CYC,deg);
     SET_LEN_PLIST(pl,deg);
     /* From now on no more garbage collections! */
     for (i = 1;i <= deg;i++) {
@@ -1906,7 +1906,7 @@ Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
     dd = INT_INTOBJ(ELM_PLIST(dst,l));
     if (dd > d) d = dd;
 
-    out = NEW_PLIST(T_PLIST_CYC_NSORT,d);
+    out = NEW_PLIST(T_PLIST_CYC,d);
     SET_LEN_PLIST(out,d);
     /* No garbage collection from here on! */
 
@@ -1970,7 +1970,7 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
         for (i = 1;i <= l;i++) {
             mytabd[INT_INTOBJ(ELM_PLIST(dst,i))] = i;
         }
-        out = NEW_PLIST(T_PLIST_CYC_NSORT,d);
+        out = NEW_PLIST(T_PLIST_CYC,d);
         SET_LEN_PLIST(out,d);
         /* No garbage collection from here ... */
         next = 1;
@@ -2002,7 +2002,7 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
             SET_ELM_PLIST(tabdst,INT_INTOBJ(ELM_PLIST(dst,i)),INTOBJ_INT(i));
         }
         /* ... to here! No CHANGED_BAG needed since this is a new object! */
-        out = NEW_PLIST(T_PLIST_CYC_NSORT,d);
+        out = NEW_PLIST(T_PLIST_CYC,d);
         SET_LEN_PLIST(out,d);
         /* No garbage collection from here ... */
         next = 1;
