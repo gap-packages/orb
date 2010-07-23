@@ -1,5 +1,6 @@
 Next version:
 
+David Bremner's Hash functions? --> email
 Document Jenkins Hash function and MakeHashFunctionForPlainFlatList
          and ORB_HashFunctionForPlainFlatList
 MACFLOAT_INT und fr Paket in Ordnung bringen, what was this???
