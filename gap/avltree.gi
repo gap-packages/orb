@@ -438,7 +438,7 @@ fi;
 
 AVLIndexLookup_GAP := function(tree,i)
   local p;
-  p := AVLIndex(tree,i);
+  p := AVLIndexFind(tree,i);
   if p = fail then 
       return fail;
   else
