@@ -1984,12 +1984,11 @@ fi;
 
 ## Orbit size estimation using the birthday principle
 InstallGlobalFunction( ORB_EstimateOrbitSize,
-  function( gens, pt, op, L, limit, timeout )
-    local starttime, endtime, pr, ht, tries, coinc, grpcoinc, S, x, ptx,
+  function( pr, pt, op, L, limit, timeout )
+    local starttime, endtime, ht, tries, coinc, grpcoinc, S, x, ptx,
           elm, estimate, upper, lower;
     starttime := Runtime();
     endtime := starttime + timeout;
-    pr := ProductReplacer( gens, rec( maxdepth:=400 ) );
     ht := HTCreate( pt, 
                rec( hashlen := NextPrimeInt( Minimum( 100000, limit ) ) ) );
     tries := 0;
