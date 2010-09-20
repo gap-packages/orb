@@ -515,6 +515,8 @@ ORB.ORBITBYSUBORBITDEPTH := 0;   # this means outside!
 ORB.PLEASEEXITNOW := false;
 ORB.TRIESINQUOTIENT := 3;
 ORB.TRIESINWHOLESPACE := 20;
+ORB.STARTTIME := 0;
+ORB.TIMEOUT := infinity;
 
 InstallMethod( ORB_StabilizerChainKnownSize,
   "GAP library method for permutation groups",
@@ -696,12 +698,14 @@ InstallGlobalFunction( ORB_WordTuple,
 InstallGlobalFunction( OrbitBySuborbit,
 function(setup,p,j,l,i,percentage)
   ORB.ORBITBYSUBORBITDEPTH := 0;
+  ORB.STARTTIME := Runtime();
   return OrbitBySuborbitInner(setup,p,j,l,i,percentage,fail);
 end );
 
 InstallGlobalFunction( OrbitBySuborbitKnownSize,
 function(setup,p,j,l,i,percentage,knownsize)
   ORB.ORBITBYSUBORBITDEPTH := 0;
+  ORB.STARTTIME := Runtime();
   return OrbitBySuborbitInner(setup,p,j,l,i,percentage,knownsize);
 end );
   
@@ -771,7 +775,9 @@ function(setup,p,j,l,i,percentage,knownsize)
   # Start a database with the first U-suborbit:
   db := SuborbitDatabase(setup,j,l,i);
   if StoreSuborbit(db,p,stab,1,percentage) = fail then
-      Error("Cannot store first suborbit");
+      Print("Error: Cannot store first suborbit\n");
+      ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
+      return ["didnotfinish",db,1]; 
   fi;
 
   stabgens := [];
@@ -828,7 +834,9 @@ function(setup,p,j,l,i,percentage,knownsize)
 
     ii := 1;
     while ii <= Length(todo) do
-      if ORB.ORBITBYSUBORBITDEPTH = 1 and ORB.PLEASEEXITNOW = true then 
+      if ORB.ORBITBYSUBORBITDEPTH = 1 and 
+         (ORB.PLEASEEXITNOW = true or
+          QuoInt(Runtime() - ORB.STARTTIME,1000) > ORB.TIMEOUT) then 
           ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
           ORB.PLEASEEXITNOW := false;  # for next time
           return ["didnotfinish",db,fullstabsize]; 
