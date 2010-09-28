@@ -111,12 +111,15 @@ InstallGlobalFunction( Orb,
         if HasSize(gens) then
             o.grpsizebound := Size(gens);
         fi;
-        gens := GeneratorsOfGroup(gens);
+        gens := ShallowCopy(GeneratorsOfGroup(gens));
     elif IsMonoid(gens) then
-        gens := GeneratorsOfMonoid(gens);
+        gens := ShallowCopy(GeneratorsOfMonoid(gens));
     elif IsSemigroup(gens) then
-        gens := GeneratorsOfSemigroup(gens);
+        gens := ShallowCopy(GeneratorsOfSemigroup(gens));
+    elif not(IsMutable(gens)) then
+        gens := ShallowCopy(gens);
     fi;
+
 
     # We collect the filters for the type:
     filts := IsOrbit and IsMutable;
