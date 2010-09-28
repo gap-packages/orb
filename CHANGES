@@ -7,6 +7,7 @@
 ==========================
 
   - Fix calling convention for ORB_EstimateOrbitSize
+  - Fix the bug that orb!.gens could be immutable.
 
 
 ==========================
