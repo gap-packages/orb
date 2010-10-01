@@ -802,8 +802,10 @@ function(setup,p,j,l,i,percentage,knownsize)
       ##                                         reduced := false ));
       fullstabsize := 1;
   fi;
-  stabpr := ProductReplacer(GeneratorsWithMemory(setup!.els[l]),
-                            rec( maxdepth := 1000 ));
+  # note j >= l:
+  stabpr := ProductReplacer(
+               GeneratorsWithMemory(setup!.els[j]{[firstgen..lastgen]}),
+               rec( maxdepth := 1000 ));
   
   words := [[]];
   todo := [[]];
@@ -1009,7 +1011,8 @@ function(setup,p,j,l,i,percentage,knownsize)
                                        ORB_InvWord(mw) );
                   slp := SLPOfElm(el);
                   newperm := ORB_ApplyWord( 
-                      ResultOfStraightLineProgram(slp,setup!.permgens[l]),
+                      ResultOfStraightLineProgram(slp,
+                         setup!.permgens[l]{[firstgen..lastgen]}),
                       ORB_InvWord(sw), setup!.permgens[l], 
                       setup!.permgensinv[l], OnRight);
                   if not ORB_IsElementInStabilizerChain(newperm,stabchain) then
