@@ -8,6 +8,8 @@
 
   - Fix calling convention for ORB_EstimateOrbitSize
   - Fix the bug that orb!.gens could be immutable.
+  - Improve OrbitBySuborbit to use random elements to find stabiliser els
+  - New operation TestMembership for OrbitBySuborbits
 
 
 ==========================
