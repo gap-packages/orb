@@ -1123,7 +1123,10 @@ function(gens,permgens,sizes,codims,opt)
   # That is, projection is taking the components [1..codim].
 
   local counter,dim,doConversions,g,i,j,k,neededfullspace,nrgens,nrgenssum,
-        o,q,regvec,sample,setup,sm,sum;
+        o,q,regvec,sample,setup,sm,sum,merk;
+
+  merk := ORB.RANDOMSTABGENERATION;
+  ORB.RANDOMSTABGENERATION := 0;
 
   # For the old compressed matrices:
   if IsGF2MatrixRep(gens[1][1]) or Is8BitMatrixRep(gens[1][1]) then
@@ -1136,6 +1139,7 @@ function(gens,permgens,sizes,codims,opt)
   k := Length(sizes)-1;
   if Length(gens) <> k+1 or Length(permgens) <> k+1 or Length(codims) <> k then
       Error("Need generators for ",k+1," groups and ",k," codimensions.");
+      ORB.RANDOMSTABGENERATION := merk;
       return;
   fi;
   nrgens := List(gens,Length);
@@ -1340,6 +1344,7 @@ function(gens,permgens,sizes,codims,opt)
               counter >= ORB.TRIESINWHOLESPACE;
         if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
+            ORB.RANDOMSTABGENERATION := merk;
             return;
         fi;
       fi;
@@ -1359,6 +1364,7 @@ function(gens,permgens,sizes,codims,opt)
   else
       setup!.stabchainrandom := 1000;  # no randomization by default
   fi;
+  ORB.RANDOMSTABGENERATION := merk;
   return setup;
 end );
 
@@ -1374,7 +1380,10 @@ function(gens,permgens,sizes,codims,opt)
   # That is, projection is taking the components [1..codim].
 
   local counter,dim,doConversions,g,i,j,k,neededfullspace,nrgens,nrgenssum,
-        o,q,regvec,sample,setup,sm,sum;
+        o,q,regvec,sample,setup,sm,sum,merk;
+
+  merk := ORB.RANDOMSTABGENERATION;
+  ORB.RANDOMSTABGENERATION := 0;
 
   # For the old compressed matrices:
   if IsGF2MatrixRep(gens[1][1]) or Is8BitMatrixRep(gens[1][1]) then
@@ -1387,6 +1396,7 @@ function(gens,permgens,sizes,codims,opt)
   k := Length(sizes)-1;
   if Length(gens) <> k+1 or Length(permgens) <> k+1 or Length(codims) <> k then
       Error("Need generators for ",k+1," groups and ",k," codimensions.");
+      ORB.RANDOMSTABGENERATION := merk;
       return;
   fi;
   nrgens := List(gens,Length);
@@ -1592,6 +1602,7 @@ function(gens,permgens,sizes,codims,opt)
               counter >= ORB.TRIESINWHOLESPACE;
         if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
+            ORB.RANDOMSTABGENERATION := merk;
             return;
         fi;
       fi;
@@ -1611,6 +1622,7 @@ function(gens,permgens,sizes,codims,opt)
   else
       setup!.stabchainrandom := 1000;  # no randomization by default
   fi;
+  ORB.RANDOMSTABGENERATION := merk;
   return setup;
 end );
 
@@ -1632,7 +1644,10 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   # That is, projection is taking the components [1..codim].
 
   local counter,dim,doConversions,g,i,j,k,neededfullspace,nrgens,nrgenssum,
-        o,q,regvec,sample,setup,sm,sum;
+        o,q,regvec,sample,setup,sm,sum,merk;
+
+  merk := ORB.RANDOMSTABGENERATION;
+  ORB.RANDOMSTABGENERATION := 0;
 
   # For the old compressed matrices:
   if IsGF2MatrixRep(gens[1][1]) or Is8BitMatrixRep(gens[1][1]) then
@@ -1645,6 +1660,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   k := Length(sizes)-1;
   if Length(gens) <> k+1 or Length(permgens) <> k+1 or Length(codims) <> k then
       Error("Need generators for ",k+1," groups and ",k," codimensions.");
+      ORB.RANDOMSTABGENERATION := merk;
       return;
   fi;
   nrgens := List(gens,Length);
@@ -1852,6 +1868,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
               counter >= ORB.TRIESINWHOLESPACE;
         if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
+            ORB.RANDOMSTABGENERATION := merk;
             return;
         fi;
       fi;
@@ -1871,6 +1888,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   else
       setup!.stabchainrandom := 1000;  # no randomization by default
   fi;
+  ORB.RANDOMSTABGENERATION := merk;
   return setup;
 end );
 
