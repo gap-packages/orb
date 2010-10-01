@@ -513,10 +513,13 @@ ORB.REPORTSUBORBITS := 1000;
 ORB.MINSHASHLEN := 257;
 ORB.ORBITBYSUBORBITDEPTH := 0;   # this means outside!
 ORB.PLEASEEXITNOW := false;
+ORB.PLEASEEXITNOWWITHRESULT := false;
 ORB.TRIESINQUOTIENT := 3;
 ORB.TRIESINWHOLESPACE := 20;
 ORB.STARTTIME := 0;
 ORB.TIMEOUT := infinity;
+ORB.RANDOMSTABGENERATION := 100;
+ORB.NRSTABHITSLIMIT := 20;
 
 InstallMethod( ORB_StabilizerChainKnownSize,
   "GAP library method for permutation groups",
@@ -558,6 +561,12 @@ InstallMethod( ORB_IsWordInStabilizerChain,
     return ORB_SiftBaseImage(S,bi,1);
   end );
 
+InstallMethod( ORB_IsElementInStabilizerChain,
+  "GAP library method for permutation groups",
+  [IsPerm, IsRecord],
+  function( el, S )
+    return IsOne(SiftedPermutation(S,el));
+  end );
 
 InstallGlobalFunction( ORB_WordOp,
   function(p,w)
@@ -729,10 +738,10 @@ function(setup,p,j,l,i,percentage,knownsize)
   # a list of words in gens which can be used to reach U-orbit in the G-orbit
   local assumestabcomplete,db,firstgen,fullstabsize,ii,lastgen,m,miniwords,
         mw,newperm,newword,o,oldtodo,stab,stabg,stabgens,stabchain,prep,
-        stabilizer,stabperms,sw,todo,v,words,x,firstgenU,lastgenU,
+        stabilizer,stabperms,stabpr,sw,todo,v,words,x,firstgenU,lastgenU,
         triedstabgens,haveappliedU,MakeReturnObj,y,repforsuborbit,
         oldrepforsuborbit,xx,stab2,mw2,sw2,stabg2,todovecs,oldtodovecs,xxx,bi,
-        origp;
+        origp,pp,el,slp,count,nrstabhits;
 
   Info(InfoOrb,3,"Entering OrbitBySuborbit j=",j," l=",l," i=",i);
   ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH + 1;
@@ -793,6 +802,8 @@ function(setup,p,j,l,i,percentage,knownsize)
       ##                                         reduced := false ));
       fullstabsize := 1;
   fi;
+  stabpr := ProductReplacer(GeneratorsWithMemory(setup!.els[l]),
+                            rec( maxdepth := 1000 ));
   
   words := [[]];
   todo := [[]];
@@ -813,6 +824,7 @@ function(setup,p,j,l,i,percentage,knownsize)
     return Objectify( StdOrbitBySuborbitsType,
                       rec(db := db,
                       words := words,
+                      miniwords := miniwords,
                       stabsize := fullstabsize,
                       stab := stabilizer,
                       stabwords := stabgens,
@@ -834,6 +846,16 @@ function(setup,p,j,l,i,percentage,knownsize)
 
     ii := 1;
     while ii <= Length(todo) do
+      # Note: The following only guarantees the correct stabilizer
+      # if percentage is >= 50!
+      if TotalLength(db) * fullstabsize * 100 >= 
+                         setup!.size[l]*percentage or
+         ORB.PLEASEEXITNOWWITHRESULT = true then 
+          Info(InfoOrb,3,"Leaving OrbitBySuborbit j=",j," l=",l," i=",i);
+          ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
+          ORB.PLEASEEXITNOWWITHRESULT := false;   # for next time
+          return MakeReturnObj();
+      fi;
       if ORB.ORBITBYSUBORBITDEPTH = 1 and 
          (ORB.PLEASEEXITNOW = true or
           QuoInt(Runtime() - ORB.STARTTIME,1000) > ORB.TIMEOUT) then 
@@ -963,6 +985,53 @@ function(setup,p,j,l,i,percentage,knownsize)
           fi;
         fi;
       od;   # for m in [firstgen..lastgen]
+      # Try a random element for the stabiliser:
+      if ORB.RANDOMSTABGENERATION > 0 and
+         assumestabcomplete = false and
+         TotalLength(db) * fullstabsize * 2 <= setup!.size[l] then
+          Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+               "Trying ",ORB.RANDOMSTABGENERATION,
+               " random elements to find a stabiliser element...");
+          nrstabhits := 0;
+          for count in [1..ORB.RANDOMSTABGENERATION] do
+              el := Next(stabpr);
+              pp := setup!.op[j](p,StripMemory(el));
+              mw := [];
+              pp := ORB_Minimalize(pp,j,i,setup,stab,mw);
+              v := LookupSuborbit(pp,db);
+              if v <> fail then
+                  nrstabhits := nrstabhits + 1;
+                  o := ORB_StabOrbitSearch(stab,setup,j,
+                                           Representatives(db)[v],pp);
+                  sw := TraceSchreierTreeForward(o,o!.found);
+                  sw := Concatenation( o!.bysuborbitstabgens.words{sw} );
+                  sw := Concatenation( words[v], miniwords[v], sw,
+                                       ORB_InvWord(mw) );
+                  slp := SLPOfElm(el);
+                  newperm := ORB_ApplyWord( 
+                      ResultOfStraightLineProgram(slp,setup!.permgens[l]),
+                      ORB_InvWord(sw), setup!.permgens[l], 
+                      setup!.permgensinv[l], OnRight);
+                  if not ORB_IsElementInStabilizerChain(newperm,stabchain) then
+                      nrstabhits := 0;
+                      triedstabgens := 0;   # we actually found a new one!
+                      Add(stabgens,"unknown");
+                      Add(stabperms,newperm);
+                      stabilizer := GroupWithGenerators(stabperms);
+                      Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+                           "Calculating new estimate of the stabilizer...");
+                      stabchain := ORB_StabilizerChainKnownBase(stabilizer,
+                                            setup!.permbase[l]);
+                      fullstabsize := ORB_SizeStabilizerChain(stabchain);
+                      Info(InfoOrb,ORB.ORBITBYSUBORBITDEPTH,
+                           "New stabilizer order: ",fullstabsize," (l=",l,")");
+                  fi;
+              fi;
+          od;
+          if nrstabhits > ORB.NRSTABHITSLIMIT then
+              assumestabcomplete := true;
+          fi;
+      fi;
       ii := ii + 1;
     od;
   
@@ -1880,6 +1949,28 @@ InstallOtherMethod( Length, "for an orbit-by-suborbit-list",
   function( obsol )
     return Length(obsol!.obsos);
   end );
+
+InstallMethod( TestMembership, "for a point, an orbit-by suborbit, and a plist",
+  [ IsObject, IsOrbitBySuborbit, IsMutable and IsList ],
+  function( p, o, w )
+    local i,j,mw,oo,pp,setup,stab,sw,v,word;
+    setup := o!.db!.setup;
+    j := o!.db!.j;
+    i := o!.db!.i;
+    mw := [];
+    stab := rec();
+    pp := ORB_Minimalize(p,j,i,setup,stab,mw);
+    v := LookupSuborbit(pp,o!.db);
+    if v = fail then return false; fi;
+    oo := ORB_StabOrbitSearch(stab,setup,j,Representatives(o!.db)[v],pp);
+    sw := TraceSchreierTreeForward(oo,oo!.found);
+    sw := Concatenation( oo!.bysuborbitstabgens.words{sw} );
+    word := Concatenation( o!.words[v], o!.miniwords[v], sw,
+                           ORB_InvWord(mw) );
+    Append(w,word);
+    return true;
+  end );
+
 
 InstallGlobalFunction( IsVectorInOrbitBySuborbitList,
 function(v,obsol)

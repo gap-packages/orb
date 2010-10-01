@@ -173,6 +173,8 @@ DeclareOperation( "StabWords", [IsOrbitBySuborbit] );
 DeclareOperation( "TotalLength", [ IsOrbitBySuborbit ] );
 DeclareOperation( "SavingFactor", [ IsOrbitBySuborbit ] );
 
+DeclareOperation( "TestMembership", [IsObject, IsOrbitBySuborbit, IsList] );
+
 ##################
 # The real thing:
 ##################
@@ -185,6 +187,7 @@ DeclareOperation( "ORB_SizeStabilizerChain", [IsObject] );
 DeclareOperation( "ORB_IsWordInStabilizerChain", 
   [IsList,IsList,IsList,IsObject] );
     # word, permgens, permgensinv, and stabilizer chain
+DeclareOperation( "ORB_IsElementInStabilizerChain", [IsObject,IsObject] );
 
 DeclareGlobalFunction( "ORB_WordOp" );
 DeclareGlobalFunction( "ORB_GetTransversalElement" );
