@@ -988,7 +988,7 @@ function(setup,p,j,l,i,percentage,knownsize)
         fi;
       od;   # for m in [firstgen..lastgen]
       # Try a random element for the stabiliser:
-      if ORB.RANDOMSTABGENERATION > 0 and
+      if ORB.ORBITBYSUBORBITDEPTH = 1 and ORB.RANDOMSTABGENERATION > 0 and
          assumestabcomplete = false and
          TotalLength(db) * fullstabsize * 2 <= setup!.size[l] then
           Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
