@@ -1029,6 +1029,8 @@ function(setup,p,j,l,i,percentage,knownsize)
               fi;
           od;
           if nrstabhits > ORB.NRSTABHITSLIMIT then
+              Info(InfoOrb,ORB.ORBITBYSUBORBITDEPTH,
+                   "Enough hits of stabiliser, assuming it is complete...");
               assumestabcomplete := true;
           fi;
       fi;
