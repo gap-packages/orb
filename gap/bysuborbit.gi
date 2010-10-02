@@ -511,7 +511,7 @@ InstallMethod( SavingFactor, "for an orbit-by-suborbit",
 ORB.PATIENCEFORSTAB := 1000;
 ORB.REPORTSUBORBITS := 1000;
 ORB.MINSHASHLEN := 257;
-ORB.ORBITBYSUBORBITDEPTH := 0;   # this means outside!
+ORB.ORBITBYSUBORBITDEPTH := 1;   # this means inside!
 ORB.PLEASEEXITNOW := false;
 ORB.PLEASEEXITNOWWITHRESULT := false;
 ORB.TRIESINQUOTIENT := 3;
@@ -706,16 +706,22 @@ InstallGlobalFunction( ORB_WordTuple,
 # Internally, we always use OrbitBySuborbitInner below.
 InstallGlobalFunction( OrbitBySuborbit,
 function(setup,p,j,l,i,percentage)
+  local o;
   ORB.ORBITBYSUBORBITDEPTH := 0;
   ORB.STARTTIME := Runtime();
-  return OrbitBySuborbitInner(setup,p,j,l,i,percentage,fail);
+  o := OrbitBySuborbitInner(setup,p,j,l,i,percentage,fail);
+  ORB.ORBITBYSUBORBITDEPTH := 1;
+  return o;
 end );
 
 InstallGlobalFunction( OrbitBySuborbitKnownSize,
 function(setup,p,j,l,i,percentage,knownsize)
+  local o;
   ORB.ORBITBYSUBORBITDEPTH := 0;
   ORB.STARTTIME := Runtime();
-  return OrbitBySuborbitInner(setup,p,j,l,i,percentage,knownsize);
+  o := OrbitBySuborbitInner(setup,p,j,l,i,percentage,knownsize);
+  ORB.ORBITBYSUBORBITDEPTH := 1;
+  return o;
 end );
   
 InstallGlobalFunction( OrbitBySuborbitInner,
