@@ -844,6 +844,8 @@ function(setup,p,j,l,i,percentage,knownsize)
     return MakeReturnObj();
   fi;
 
+  nrstabhits := 0;
+
   while true do
 
     ii := 1;
@@ -957,6 +959,7 @@ function(setup,p,j,l,i,percentage,knownsize)
               newperm := ORB_ApplyWord(setup!.permgens[l][1]^0,newword,
                             setup!.permgens[l],setup!.permgensinv[l],OnRight);
               triedstabgens := 0;   # we actually found a new one!
+              nrstabhits := 0;
               Add(stabgens,newword);
               Add(stabperms,newperm);
               stabilizer := GroupWithGenerators(stabperms);
@@ -994,7 +997,6 @@ function(setup,p,j,l,i,percentage,knownsize)
           Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
                "Trying ",ORB.RANDOMSTABGENERATION,
                " random elements to find a stabiliser element...");
-          nrstabhits := 0;
           for count in [1..ORB.RANDOMSTABGENERATION] do
               el := Next(stabpr);
               pp := setup!.op[j](p,StripMemory(el));
