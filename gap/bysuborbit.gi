@@ -1005,6 +1005,9 @@ function(setup,p,j,l,i,percentage,knownsize)
               v := LookupSuborbit(pp,db);
               if v <> fail then
                   nrstabhits := nrstabhits + 1;
+                  Info(InfoOrb,1+ORB.ORBITBYSUBORBITDEPTH,
+                       "Random element hit enumerated part, nrhits=",
+                       nrstabhits);
                   o := ORB_StabOrbitSearch(stab,setup,j,
                                            Representatives(db)[v],pp);
                   sw := TraceSchreierTreeForward(o,o!.found);
