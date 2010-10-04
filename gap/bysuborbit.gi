@@ -350,7 +350,7 @@ InstallMethod( StoreSuborbit,
      IsBound(setup!.stabsizelimitnostore) and
      stab.size > setup!.stabsizelimitnostore then
       # we always enumerate things in the quotient completely!
-      Info(InfoOrb,3,"Ignored suborbit because of stabsizelimitnostore, ",
+      Info(InfoOrb,1,"Ignored suborbit because of stabsizelimitnostore, ",
            "stabiliser size: ",stab.size);
       return fail;
   fi;
