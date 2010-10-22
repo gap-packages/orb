@@ -1280,7 +1280,7 @@ function(gens,permgens,sizes,codims,opt)
   setup.wordhash := HTCreate([1,2,3],rec( hashlen := 1000 ));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
-                     IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
+                     IsStdOrbitBySuborbitSetupRep and IsMutable),
              setup );
   # From now on we can use it and it is an object!
 
@@ -1536,7 +1536,7 @@ function(gens,permgens,sizes,codims,opt)
   setup.wordhash := HTCreate([1,2,3],rec( hashlen := 1000 ));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
-                     IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
+                     IsStdOrbitBySuborbitSetupRep and IsMutable),
              setup );
   # From now on we can use it and it is an object!
 
@@ -1800,7 +1800,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   setup.wordhash := HTCreate([1,2,3],rec(hashlen := 1000));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
-                     IsOrbitBySuborbitSetup and IsStdOrbitBySuborbitSetupRep),
+                     IsStdOrbitBySuborbitSetupRep and IsMutable),
              setup );
   # From now on we can use it and it is an object!
 

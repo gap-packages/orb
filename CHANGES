@@ -10,6 +10,8 @@
   - Fix the bug that orb!.gens could be immutable.
   - Improve OrbitBySuborbit to use random elements to find stabiliser els
   - New operation TestMembership for OrbitBySuborbits
+  - Make all mutable objects properly mutable to allow for
+    StructuralCopy.
 
 
 ==========================

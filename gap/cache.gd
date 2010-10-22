@@ -28,7 +28,7 @@ DeclareCategory("IsCacheNode", IsComponentObjectRep);
 DeclareRepresentation("IsLinkedListCacheNodeRep", IsCacheNode,
   [ "next", "prev", "ob", "mem" ] );
 BindGlobal( "LinkedListCacheNodeType", 
-  NewType( CacheNodesFamily, IsLinkedListCacheNodeRep ) );
+  NewType( CacheNodesFamily, IsLinkedListCacheNodeRep and IsMutable) );
 
 DeclareOperation("LinkedListCache", [IsInt]);
 DeclareOperation("ClearCache", [IsCache]);

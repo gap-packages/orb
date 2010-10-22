@@ -23,7 +23,7 @@ InstallMethod( LinkedListCache, "for an integer", [ IsInt ],
     local c;
     c := rec(head := fail, tail := fail, nrobs := 0,
              memory := 0, memorylimit := memorylimit);
-    Objectify( NewType( CachesFamily, IsLinkedListCacheRep ), c );
+    Objectify(NewType(CachesFamily,IsLinkedListCacheRep and IsMutable),c);
     return c;
 end );
 

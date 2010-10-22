@@ -76,7 +76,7 @@ InstallGlobalFunction( MakeRandomLines,
 # Product replacers:
 
 InstallValue( ProductReplacersType, 
-   NewType( ProductReplacersFamily, IsProductReplacer ) );
+   NewType( ProductReplacersFamily, IsProductReplacer and IsMutable) );
 
 InstallMethod( ProductReplacer, "for a list of group generators",
   [IsList], function( gens )
@@ -300,7 +300,8 @@ InstallMethod( ViewObj, "for a product replacer", [IsProductReplacer],
 # Finding things in groups, random searchers:
 
 InstallValue( RandomSearchersType, 
-              NewType( RandomSearchersFamily, IsRandomSearcher ) );
+              NewType( RandomSearchersFamily, 
+                       IsRandomSearcher and IsMutable ) );
 
 InstallMethod( RandomSearcher, 
   "for a list of generators and a test function", 

@@ -25,11 +25,12 @@ DeclareGlobalFunction( "ValueHT" );
 DeclareGlobalFunction( "GrowHT" );
 
 BindGlobal( "HashTabFamily", NewFamily("HashTabFamily") );
-DeclareCategory( "IsHashTab", IsComponentObjectRep );
+DeclareCategory( "IsHashTab", IsComponentObjectRep);
 DeclareRepresentation( "IsHashTabRep", IsHashTab, [] );
 DeclareRepresentation( "IsTreeHashTabRep", IsHashTab, [] );
-BindGlobal( "HashTabType", NewType(HashTabFamily,IsHashTabRep) );
-BindGlobal( "TreeHashTabType", NewType(HashTabFamily,IsTreeHashTabRep) );
+BindGlobal( "HashTabType", NewType(HashTabFamily,IsHashTabRep and IsMutable) );
+BindGlobal( "TreeHashTabType", 
+  NewType(HashTabFamily,IsTreeHashTabRep and IsMutable) );
 
 DeclareOperation( "HTCreate", [ IsObject, IsRecord ] );
 DeclareOperation( "HTCreate", [ IsObject ] );

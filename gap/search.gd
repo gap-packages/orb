@@ -23,7 +23,7 @@ DeclareGlobalFunction( "MakeRandomLines" );
 ######################
 
 BindGlobal( "ProductReplacersFamily", NewFamily( "ProductReplacersFamily" ) );
-DeclareCategory( "IsProductReplacer", IsComponentObjectRep );
+DeclareCategory( "IsProductReplacer", IsComponentObjectRep);
 DeclareGlobalVariable( "ProductReplacersType" );
 
 # The constructors:
@@ -44,7 +44,7 @@ DeclareOperation( "AddGeneratorToProductReplacer",
 #####################
 
 BindGlobal( "RandomSearchersFamily", NewFamily( "RandomSearchersFamily" ) );
-DeclareCategory( "IsRandomSearcher", IsComponentObjectRep );
+DeclareCategory( "IsRandomSearcher", IsComponentObjectRep);
 DeclareGlobalVariable( "RandomSearchersType" );
 
 # The constructors:

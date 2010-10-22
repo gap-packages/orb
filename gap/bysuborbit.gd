@@ -37,7 +37,7 @@ DeclareGlobalFunction( "ORB_ApplyWord" );
 
 BindGlobal( "OrbitBySuborbitSetupFamily", 
             NewFamily( "OrbitBySuborbitSetupFamily" ) );
-DeclareCategory( "IsOrbitBySuborbitSetup", IsComponentObjectRep );
+DeclareCategory( "IsOrbitBySuborbitSetup", IsComponentObjectRep);
 DeclareRepresentation( "IsStdOrbitBySuborbitSetupRep", IsOrbitBySuborbitSetup,
   [ "k",          # number of helper subgroups U_1 < U_2 < ... < U_k
     "size",       # sizes of those groups (i:1..k+1)
@@ -118,7 +118,7 @@ DeclareGlobalFunction( "ORB_Minimalize" );
 # Suborbit databases: #
 #######################
 
-DeclareCategory( "IsSuborbitDatabase", IsComponentObjectRep );
+DeclareCategory( "IsSuborbitDatabase", IsComponentObjectRep);
 DeclareRepresentation( "IsStdSuborbitDbRep", IsSuborbitDatabase, 
   [ "reps",        # a list of suborbit representatives
     "mins",        # a hash table to recognise minimal vectors
@@ -130,7 +130,7 @@ BindGlobal( "SuborbitDatabasesFamily",
   NewFamily( "SuborbitDatabasesFamily", IsSuborbitDatabase ) );
 BindGlobal( "StdSuborbitDatabasesType",
   NewType( SuborbitDatabasesFamily, 
-           IsSuborbitDatabase and IsStdSuborbitDbRep ) );
+           IsStdSuborbitDbRep and IsMutable) );
 
 DeclareOperation( "SuborbitDatabase", 
                   [ IsOrbitBySuborbitSetup, IsPosInt, IsPosInt, IsPosInt ] );
@@ -148,7 +148,7 @@ DeclareOperation( "SavingFactor", [ IsSuborbitDatabase ] );
 # Objects representing orbits enumerated by suborbits:
 #######################################################
 
-DeclareCategory( "IsOrbitBySuborbit", IsComponentObjectRep );
+DeclareCategory( "IsOrbitBySuborbit", IsComponentObjectRep);
 DeclareRepresentation( "IsStdOrbitBySuborbitRep", IsOrbitBySuborbit,
   [ "db",           # a suborbit database object
     "words",        # a list of words to reach the suborbits
@@ -162,7 +162,7 @@ BindGlobal( "OrbitBySuborbitFamily",
             NewFamily( "OrbitBySuborbitFamily", IsOrbitBySuborbit ) );
 BindGlobal( "StdOrbitBySuborbitsType",
   NewType( OrbitBySuborbitFamily, 
-           IsOrbitBySuborbit and IsStdOrbitBySuborbitRep ) );
+           IsStdOrbitBySuborbitRep and IsMutable) );
 DeclareOperation( "SuborbitsDb", [IsOrbitBySuborbit] );
 DeclareOperation( "WordsToSuborbits", [IsOrbitBySuborbit] );
 # Already there generically:
@@ -220,7 +220,7 @@ DeclareGlobalFunction( "ORB_EmbedBaseChangeTopLeft" );
 # Administrate lists of orbits by suborbits:
 #############################################
 
-DeclareCategory( "IsOrbitBySuborbitList", IsComponentObjectRep );
+DeclareCategory( "IsOrbitBySuborbitList", IsComponentObjectRep);
 DeclareRepresentation( "IsStdOrbitBySuborbitListRep", IsOrbitBySuborbitList,
   [ "obsos",       # a list of orbit-by-suborbits
     "nrrandels",   # number of random elements
@@ -230,7 +230,7 @@ DeclareRepresentation( "IsStdOrbitBySuborbitListRep", IsOrbitBySuborbitList,
 BindGlobal( "StdOrbitBySuborbitListType",
   NewType( CollectionsFamily(OrbitBySuborbitFamily), 
            IsOrbitBySuborbitList and IsStdOrbitBySuborbitListRep and
-           IsSmallList and IsList ) );
+           IsSmallList and IsList and IsMutable) );
 
 # Already there generically:
 #DeclareOperation( "Memory", [IsOrbitBySuborbitList] );
