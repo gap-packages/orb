@@ -2172,8 +2172,31 @@ Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
     return tmp;
 }
 
-
-
+Obj FuncTABLE_OF_TRANS_KERNEL( Obj self, Obj k, Obj n )
+{
+    /* k is list of plain lists, such that exactly the numbers [1..n]
+     * occur once each (like for example the kernel of a
+     * transformation on [1..n]. This function returns a plain list of
+     * length n containing in position i the number of list in which i
+     * lies. */
+    Obj res;
+    Obj tmp;
+    Int i,j;
+    Int l1,l2;
+    Int nn;
+    nn = INT_INTOBJ(n);
+    res = NEW_PLIST(T_PLIST_CYC, nn);
+    l1 = LEN_PLIST(k);
+    for (i = 1;i <= l1;i++) {
+        tmp = ELM_PLIST(k,i);
+        l2 = LEN_PLIST(tmp);
+        for (j = 1;j <= l2;j++) {
+            SET_ELM_PLIST(res,INT_INTOBJ(ELM_PLIST(tmp,j)),INTOBJ_INT(i));
+        }
+    }
+    SET_LEN_PLIST(res,nn);
+    return res;
+}
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
@@ -2285,6 +2308,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "ImageAndKernelOfTransformation_C", 1, "t",
     FuncImageAndKernelOfTransformation,
     "pkg/orb/src/orb.c:FuncImageAndKernelOfTransformation" },
+
+  { "TABLE_OF_TRANS_KERNEL", 2, "k, n",
+    FuncTABLE_OF_TRANS_KERNEL,
+    "pkg/orb/src/orb.c:FuncTABLE_OF_TRANS_KERNEL" },
 
   { 0 }
 
