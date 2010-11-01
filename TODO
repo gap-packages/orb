@@ -1,5 +1,9 @@
 Next version:
 
+Note: if an AVLtree becomes immutable, it stops working!
+Maybe create second type AVLTreeTypeMutable and see to it that
+immutable AVLTrees can still do lookups.
+
 David Bremner's Hash functions? --> email
 Document Jenkins Hash function and MakeHashFunctionForPlainFlatList
          and ORB_HashFunctionForPlainFlatList

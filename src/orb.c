@@ -18,6 +18,8 @@ const char * Revision_orb_c =
  * its functionality on the C level for better performance. */
 
 Obj AVLTreeType;    /* Imported from the library to be able to check type */
+Obj AVLTreeTypeMutable;    
+                    /* Imported from the library to be able to check type */
 Obj AVLTree;        /* Constructor function imported from the library */
 Obj HTGrow;         /* Operation function imported from the library */
 
@@ -131,7 +133,7 @@ static Int AVLNewNode( Obj t )
 
 static Obj AVLNewNode_C( Obj self, Obj t )
 {
-    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+    if ( TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeTypeMutable) {
         ErrorQuit( "Usage: AVLNewNode(avltree)", 0L, 0L );
         return 0L;
     }
@@ -156,7 +158,7 @@ static inline Obj AVLFreeNode( Obj t, Int n )
 static Obj AVLFreeNode_C( Obj self, Obj t, Obj n)
 {
     if (!IS_INTOBJ(n) ||
-        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeTypeMutable) {
         ErrorQuit( "Usage: AVLFreeNode(avltree,integer)", 0L, 0L );
         return 0L;
     }
@@ -204,7 +206,9 @@ static inline Int AVLFind( Obj t, Obj d )
 
 static Obj AVLFind_C( Obj self, Obj t, Obj d )
 {
-    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+    if (TNUM_OBJ(t) != T_POSOBJ ||
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         ErrorQuit( "Usage: AVLFind(avltree, object)", 0L, 0L );
         return 0L;
     }
@@ -240,7 +244,9 @@ static inline Int AVLFindIndex( Obj t, Obj d )
 
 static Obj AVLFindIndex_C( Obj self, Obj t, Obj d )
 {
-    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+    if (TNUM_OBJ(t) != T_POSOBJ ||
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         ErrorQuit( "Usage: AVLFindIndex(avltree, object)", 0L, 0L );
         return 0L;
     }
@@ -253,7 +259,9 @@ static Obj AVLFindIndex_C( Obj self, Obj t, Obj d )
             
 static Obj AVLLookup_C( Obj self, Obj t, Obj d )
 {
-    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+    if (TNUM_OBJ(t) != T_POSOBJ ||
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         ErrorQuit( "Usage: AVLLookup(avltree, object)", 0L, 0L );
         return 0L;
     }
@@ -285,7 +293,9 @@ static inline Int AVLIndex( Obj t, Int i )
 static Obj AVLIndex_C( Obj self, Obj t, Obj i )
 {
     if (!IS_INTOBJ(i) || 
-        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        TNUM_OBJ(t) != T_POSOBJ ||
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         ErrorQuit( "Usage: AVLIndex(avltree, integer)", 0L, 0L );
         return 0L;
     }
@@ -299,7 +309,9 @@ static Obj AVLIndex_C( Obj self, Obj t, Obj i )
 static Obj AVLIndexFind_C( Obj self, Obj t, Obj i )
 {
     if (!IS_INTOBJ(i) || 
-        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        TNUM_OBJ(t) != T_POSOBJ ||
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         ErrorQuit( "Usage: AVLIndexFind(avltree, integer)", 0L, 0L );
         return 0L;
     }
@@ -313,7 +325,9 @@ static Obj AVLIndexFind_C( Obj self, Obj t, Obj i )
 static Obj AVLIndexLookup_C( Obj self, Obj t, Obj i )
 {
     if (!IS_INTOBJ(i) || 
-        TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+        TNUM_OBJ(t) != T_POSOBJ ||
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         ErrorQuit( "Usage: AVLIndexLookup(avltree, integer)", 0L, 0L );
         return 0L;
     }
@@ -476,7 +490,7 @@ Obj static AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
   Int l;
   Int i;
 
-  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeTypeMutable) {
       ErrorQuit( "Usage: AVLAdd(avltree, object, object)", 0L, 0L );
       return 0L;
   }
@@ -610,7 +624,7 @@ Obj static AVLIndexAdd_C( Obj self, Obj tree, Obj data, Obj value, Obj ind )
   Int i;
   Int offset;
 
-  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeTypeMutable) {
       ErrorQuit( "Usage: AVLAdd(avltree, object, object)", 0L, 0L );
       return 0L;
   }
@@ -741,7 +755,7 @@ static Obj AVLDelete_C( Obj self, Obj tree, Obj data)
   int ranksubslen;    /* length of list randsubs */
   Obj old;
   
-  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeTypeMutable) {
       ErrorQuit( "Usage: AVLDelete(avltree, object)", 0L, 0L );
       return Fail;
   }
@@ -914,7 +928,7 @@ Obj static AVLIndexDelete_C( Obj self, Obj tree, Obj index)
   Int ind;
   Obj x;
 
-  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeType) {
+  if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeTypeMutable) {
       ErrorQuit( "Usage: AVLIndexDelete(avltree, index)", 0L, 0L );
       return 0L;
   }
@@ -1148,7 +1162,9 @@ static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
             INTOBJ_INT(INT_INTOBJ(ElmPRec(ht,RNam_collisions))+1));
     
     /* Now check whether it is an AVLTree or not: */
-    if (TNUM_OBJ(tmp) != T_POSOBJ || TYPE_POSOBJ(tmp) != AVLTreeType) {
+    if (TNUM_OBJ(tmp) != T_POSOBJ || 
+        (TYPE_POSOBJ(tmp) != AVLTreeTypeMutable &&
+         TYPE_POSOBJ(tmp) != AVLTreeType)) {
         r = NEW_PREC(2);   /* This might trigger a garbage collection */
         AssPRec(r,RNam_cmpfunc,ElmPRec(ht,RNam_cmpfunc));
         AssPRec(r,RNam_allocsize,INTOBJ_INT(3));
@@ -1207,7 +1223,9 @@ static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
         return Fail;
 
     /* Now check whether it is an AVLTree or not: */
-    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+    if (TNUM_OBJ(t) != T_POSOBJ || 
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         if (CALL_2ARGS(ElmPRec(ht,RNam_cmpfunc),x,t) == INTOBJ_INT(0)) {
             if (LEN_PLIST(vals) >= h && ELM_PLIST(vals,h) != 0L) 
                 return ELM_PLIST(vals,h);
@@ -1248,7 +1266,9 @@ static Obj HTDelete_TreeHash_C(Obj self, Obj ht, Obj x)
         return Fail;
 
     /* Now check whether it is an AVLTree or not: */
-    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+    if (TNUM_OBJ(t) != T_POSOBJ ||
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         if (CALL_2ARGS(ElmPRec(ht,RNam_cmpfunc),x,t) == INTOBJ_INT(0)) {
             if (LEN_PLIST(vals) >= h && ELM_PLIST(vals,h) != 0L) {
                 v = ELM_PLIST(vals,h);
@@ -1294,7 +1314,9 @@ static Obj HTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
         return Fail;
 
     /* Now check whether it is an AVLTree or not: */
-    if (TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeType) {
+    if (TNUM_OBJ(t) != T_POSOBJ || 
+        (TYPE_POSOBJ(t) != AVLTreeType &&
+         TYPE_POSOBJ(t) != AVLTreeTypeMutable)) {
         if (CALL_2ARGS(ElmPRec(ht,RNam_cmpfunc),x,t) == INTOBJ_INT(0)) {
             if (LEN_PLIST(vals) >= h && ELM_PLIST(vals,h) != 0L) {
                 old = ELM_PLIST(vals,h);
@@ -2326,6 +2348,7 @@ static Int InitKernel ( StructInitInfo *module )
     InitHdlrFuncsFromTable( GVarFuncs );
 
     ImportGVarFromLibrary( "AVLTreeType", &AVLTreeType );
+    ImportGVarFromLibrary( "AVLTreeTypeMutable", &AVLTreeTypeMutable );
     ImportFuncFromLibrary( "AVLTree", &AVLTree );
     ImportFuncFromLibrary( "HTGrow", &HTGrow );
 

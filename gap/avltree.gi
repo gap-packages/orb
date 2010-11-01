@@ -102,7 +102,7 @@ AVLTree_GAP := function(arg)
   fi;
   t := [11,8,0,alloc,cmpfunc,0,fail,0,0,0,0];
   if alloc > 11 then t[alloc] := fail; fi;    # expand object
-  Objectify(AVLTreeType,t);
+  Objectify(AVLTreeTypeMutable,t);
   return t;
 end;
 if IsBound(AVLTree_C) then
@@ -1313,11 +1313,11 @@ InstallOtherMethod( Position, "for an avl tree, an object, and an index",
   end);
 
 InstallOtherMethod( Remove, "for an avl tree and an index",
-  [ IsAVLTree and IsAVLTreeFlatRep, IsPosInt ],
+  [ IsAVLTree and IsAVLTreeFlatRep and IsMutable, IsPosInt ],
   AVLIndexDelete );
 
 InstallOtherMethod( Remove, "for an avl tree",
-  [ IsAVLTree and IsAVLTreeFlatRep ],
+  [ IsAVLTree and IsAVLTreeFlatRep and IsMutable ],
   function( t )
     return AVLIndexDelete(t,t![3]);
   end );
@@ -1329,13 +1329,13 @@ InstallOtherMethod( Length, "for an avl tree",
   end );
   
 InstallOtherMethod( ADD_LIST, "for an avl tree and an object",
-  [ IsAVLTree and IsAVLTreeFlatRep, IsObject ],
+  [ IsAVLTree and IsAVLTreeFlatRep and IsMutable, IsObject ],
   function( t, x )
     AVLIndexAdd(t,x,true,t![3]+1);
   end );
 
 InstallOtherMethod( ADD_LIST, "for an avl tree, an object and a position",
-  [ IsAVLTree and IsAVLTreeFlatRep, IsObject, IsPosInt ],
+  [ IsAVLTree and IsAVLTreeFlatRep and IsMutable, IsObject, IsPosInt ],
   function( t, x, pos )
     AVLIndexAdd(t,x,true,pos);
   end );

@@ -20,7 +20,9 @@
 BindGlobal( "AVLTreeFamily", NewFamily("AVLTreeFamily") );
 DeclareCategory( "IsAVLTree", IsPositionalObjectRep );
 DeclareRepresentation( "IsAVLTreeFlatRep", IsAVLTree, [] );
-BindGlobal( "AVLTreeType", NewType(AVLTreeFamily,IsAVLTreeFlatRep and IsMutable) );
+BindGlobal( "AVLTreeType", NewType(AVLTreeFamily,IsAVLTreeFlatRep) );
+BindGlobal( "AVLTreeTypeMutable", NewType(AVLTreeFamily,
+                                          IsAVLTreeFlatRep and IsMutable) );
 
 # All of the following functions exist on the GAP level and some of
 # them on the C level for speedup. The GAP versions have "_GAP" appended
