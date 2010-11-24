@@ -2198,7 +2198,7 @@ Obj FuncTABLE_OF_TRANS_KERNEL( Obj self, Obj k, Obj n )
 {
     /* k is list of plain lists, such that exactly the numbers [1..n]
      * occur once each (like for example the kernel of a
-     * transformation on [1..n]. This function returns a plain list of
+     * transformation on [1..n]). This function returns a plain list of
      * length n containing in position i the number of list in which i
      * lies. */
     Obj res;

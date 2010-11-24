@@ -172,6 +172,43 @@ else
         return PermList(out);
       end ); 
 fi;
+
+InstallGlobalFunction( "CanonicalTransSameKernel", 
+  function( t )
+    local i,l,n,next,res,tab;
+    l := t![1];
+    n := Length(l);
+    tab := 0*[1..n];
+    res := EmptyPlist(n);
+    next := 1;
+    for i in [1..n] do
+        if tab[l[i]] <> 0 then
+            res[i] := tab[l[i]];
+        else
+            tab[l[i]] := next;
+            res[i] := next;
+            next := next + 1;
+        fi;
+    od;
+    return res;
+  end );
+
+InstallGlobalFunction( "IsInjectiveTransOnList",
+  function( t, l )
+    local i,li,n,tab;
+    li := t![1];
+    n := Length(l);
+    tab := EmptyPlist(n);
+    for i in l do
+        if IsBound(tab[li[i]]) then
+            return false;
+        else
+            tab[li[i]] := 1;
+        fi;
+    od;
+    return true;
+  end );
+
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
