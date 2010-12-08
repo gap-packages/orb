@@ -14,6 +14,8 @@
     StructuralCopy.
   - New internal function TABLE_OF_KERNEL_TRANS.
   - Immutable AVLtrees can no longer be changed.
+  - New internal function CanonicalTransSameKernel.
+  - New internal function IsInjectiveTransOnList.
 
 
 ==========================

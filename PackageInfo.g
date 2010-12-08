@@ -23,7 +23,7 @@ Version := "3.7",
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-Date := "23/07/2010",
+Date := "08/12/2010",
 
 ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-3.7",
 

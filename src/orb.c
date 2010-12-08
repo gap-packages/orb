@@ -2129,7 +2129,8 @@ Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
     Int n;
     Obj tmp;
 
-    l = ELM_PLIST(t,1);
+    if (IS_POSOBJ(t)) l = ELM_PLIST(t,1);
+    else l = t;
     PLAIN_LIST(l);
     n = LEN_PLIST(l);
     kernel = NEW_PLIST(T_PLIST,n);   /* Will hold result */
@@ -2218,6 +2219,68 @@ Obj FuncTABLE_OF_TRANS_KERNEL( Obj self, Obj k, Obj n )
     }
     SET_LEN_PLIST(res,nn);
     return res;
+}
+
+Obj FuncCANONICAL_TRANS_SAME_KERNEL( Obj self, Obj t )
+{
+    /* t is either a transformation or a plain list of integers
+     * representing the image list of the transformation.
+     * This computes the image list of a canonical transformation
+     * with the same kernel. */
+    Obj tab,l,res;
+    Int i,j,n,next;
+
+    if (IS_POSOBJ(t)) l = ELM_PLIST(t,1);
+    else l = t;
+    PLAIN_LIST(l);
+    n = LEN_PLIST(l);
+    tab = NEW_PLIST(T_PLIST_CYC,n);
+    SET_LEN_PLIST(tab,0);
+    res = NEW_PLIST(T_PLIST_CYC,n);
+    SET_LEN_PLIST(res,n);
+    /* no garbage collection from here */
+    next = 1;
+    for (i = 1;i <= n;i++) {
+        j = INT_INTOBJ(ELM_PLIST(l,i));
+        if (ELM_PLIST(tab,j) != 0) {
+            SET_ELM_PLIST(res,i,ELM_PLIST(tab,j));
+        } else {
+            SET_ELM_PLIST(tab,j,INTOBJ_INT(next));
+            SET_ELM_PLIST(res,i,INTOBJ_INT(next));
+            next++;
+        }
+    }
+    /* finished */
+    return res;
+}
+
+Obj FuncIS_INJECTIVE_TRANS_ON_LIST( Obj self, Obj t, Obj l )
+{
+    /* t is either a transformation or a plain list of integers of
+     * length n representing the image list of the transformation.
+     * l is a list containing positive integers between 1 and n.
+     * Returns true if and only if t takes different values on 
+     * all elements in l. */
+    Obj tab,tt;
+    Int i,j,n;
+
+    if (IS_POSOBJ(t)) tt = ELM_PLIST(t,1);
+    else tt = t;
+    PLAIN_LIST(tt);
+    n = LEN_PLIST(tt);
+    tab = NEW_PLIST(T_PLIST_CYC,n);
+    SET_LEN_PLIST(tab,0);
+    /* no garbage collection from here! */
+    for (i = 1;i <= LEN_LIST(l);i++) {
+        j = INT_INTOBJ(ELM_PLIST(tt,INT_INTOBJ(ELM_LIST(l,i))));
+        if (ELM_PLIST(tab,j) != 0) {
+            return False;
+        } else {
+            SET_ELM_PLIST(tab,j,INTOBJ_INT(1));
+        }
+    }
+    /* finished */
+    return True;
 }
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
@@ -2334,6 +2397,14 @@ static StructGVarFunc GVarFuncs [] = {
   { "TABLE_OF_TRANS_KERNEL", 2, "k, n",
     FuncTABLE_OF_TRANS_KERNEL,
     "pkg/orb/src/orb.c:FuncTABLE_OF_TRANS_KERNEL" },
+
+  { "CANONICAL_TRANS_SAME_KERNEL", 1, "t",
+    FuncCANONICAL_TRANS_SAME_KERNEL,
+    "pkg/orb/src/orb.c:FuncCANONICAL_TRANS_SAME_KERNEL" },
+
+  { "IS_INJECTIVE_TRANS_ON_LIST", 2, "t, l",
+    FuncIS_INJECTIVE_TRANS_ON_LIST,
+    "pkg/orb/src/orb.c:FuncIS_INJECTIVE_TRANS_ON_LIST" },
 
   { 0 }
 

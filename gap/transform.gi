@@ -18,7 +18,7 @@ if not(IsBound(ImageAndKernelOfTransformation_C)) then
   InstallGlobalFunction( ImageAndKernelOfTransformation,
     function( t )
       local buf,comps,i,image,j,kernel,l,ll,n;
-      l := t![1];
+      if IsTransformation(t) then l := t![1]; else l := t; fi;
       n := Length(l);
       buf := 0*[1..n];   # 0 if image does not occur, otherwise equal to first
                          # preimage x, the list is collected in kernel[x]
@@ -173,41 +173,55 @@ else
       end ); 
 fi;
 
-InstallGlobalFunction( "CanonicalTransSameKernel", 
-  function( t )
-    local i,l,n,next,res,tab;
-    l := t![1];
-    n := Length(l);
-    tab := 0*[1..n];
-    res := EmptyPlist(n);
-    next := 1;
-    for i in [1..n] do
-        if tab[l[i]] <> 0 then
-            res[i] := tab[l[i]];
+if IsBound(CANONICAL_TRANS_SAME_KERNEL) then
+  InstallGlobalFunction( "CanonicalTransSameKernel",
+                         CANONICAL_TRANS_SAME_KERNEL );
+else
+    InstallGlobalFunction( "CanonicalTransSameKernel", 
+      function( t )
+        local i,l,n,next,res,tab;
+        if IsTransformation(t) then
+            l := t![1];
         else
-            tab[l[i]] := next;
-            res[i] := next;
-            next := next + 1;
+            l := t;
         fi;
-    od;
-    return res;
-  end );
+        n := Length(l);
+        tab := 0*[1..n];
+        res := EmptyPlist(n);
+        next := 1;
+        for i in [1..n] do
+            if tab[l[i]] <> 0 then
+                res[i] := tab[l[i]];
+            else
+                tab[l[i]] := next;
+                res[i] := next;
+                next := next + 1;
+            fi;
+        od;
+        return res;
+      end );
+fi;
 
-InstallGlobalFunction( "IsInjectiveTransOnList",
-  function( t, l )
-    local i,li,n,tab;
-    li := t![1];
-    n := Length(l);
-    tab := EmptyPlist(n);
-    for i in l do
-        if IsBound(tab[li[i]]) then
-            return false;
-        else
-            tab[li[i]] := 1;
-        fi;
-    od;
-    return true;
-  end );
+if IsBound(IS_INJECTIVE_TRANS_ON_LIST) then
+  InstallGlobalFunction( "IsInjectiveTransOnList",
+                         IS_INJECTIVE_TRANS_ON_LIST );
+else
+    InstallGlobalFunction( "IsInjectiveTransOnList",
+      function( t, l )
+        local i,li,n,tab;
+        if IsTransformation(t) then li := t![1]; else li := t; fi;
+        n := Length(l);
+        tab := EmptyPlist(n);
+        for i in l do
+            if IsBound(tab[li[i]]) then
+                return false;
+            else
+                tab[li[i]] := 1;
+            fi;
+        od;
+        return true;
+      end );
+fi;
 
 ##
 ##  This program is free software: you can redistribute it and/or modify
