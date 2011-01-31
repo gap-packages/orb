@@ -16,6 +16,7 @@
   - Immutable AVLtrees can no longer be changed.
   - New internal function CanonicalTransSameKernel.
   - New internal function IsInjectiveTransOnList.
+  - Fixed configure script for GAP 4.5
 
 
 ==========================
