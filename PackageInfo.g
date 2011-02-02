@@ -23,7 +23,7 @@ Version := "3.7",
 
 ##  Release date of the current version in dd/mm/yyyy format.
 # 
-Date := "08/12/2010",
+Date := "02/02/2011",
 
 ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-3.7",
 
@@ -160,7 +160,7 @@ PackageDoc := rec(
 Dependencies := rec(
   GAP := ">=4.4.12",
   NeededOtherPackages := [["GAPDoc", ">= 1.2"]],
-  SuggestedOtherPackages := [["IO",">= 3.0"]],
+  SuggestedOtherPackages := [["IO",">= 3.2"]],
   ExternalConditions := []
                       
 ),
