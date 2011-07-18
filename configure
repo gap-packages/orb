@@ -22,10 +22,6 @@ if [ ! -e $GAPPATH/sysinfo.gap ]; then
 fi
 rm -f Makefile
 . $GAPPATH/sysinfo.gap
-if [ x"$GAParch_abi" = "x" ]; then
-    GAParchprot="$GAParch"
-else
-    GAParchprot=$GAParch_system\\/$GAParch_abi
-fi
+GAParchprot="$GAParch"
 echo GAPPATH=$GAPPATH >Makefile
 sed -e "s/@GAPARCH@/$GAParchprot/g" <Makefile.in >>Makefile
