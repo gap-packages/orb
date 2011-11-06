@@ -1,5 +1,7 @@
 Next version:
 
+Sort out: Attila's complaint about TraceSchreierTreeBack
+
 sort out: AsList seems to return something immutable?
           --> not good for orbits, we return mutable list
           --> copying necessary?
