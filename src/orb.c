@@ -1884,18 +1884,18 @@ Obj FuncPermLeftQuoTransformationNC(Obj self, Obj t1, Obj t2)
     Int x;
 
     /* Get the plain lists out: */
-    l1 = ELM_PLIST(t1,1);
-    PLAIN_LIST(l1);
-    l2 = ELM_PLIST(t2,1);
-    PLAIN_LIST(l2);
-    deg = LEN_PLIST(l1);
+    if (IS_POSOBJ(t1)) l1 = ELM_PLIST(t1,1);
+    else l1 = t1;
+    if (IS_POSOBJ(t2)) l2 = ELM_PLIST(t2,1);
+    else l2 = t2;
+    deg = LEN_LIST(l1);
     pl = NEW_PLIST(T_PLIST_CYC,deg);
     SET_LEN_PLIST(pl,deg);
     /* From now on no more garbage collections! */
     for (i = 1;i <= deg;i++) {
-        x = INT_INTOBJ(ELM_PLIST(l1,i));
+        x = INT_INTOBJ(ELM_LIST(l1,i));
         if (ELM_PLIST(pl,x) == NULL) {
-            SET_ELM_PLIST(pl,x,ELM_PLIST(l2,i));
+            SET_ELM_PLIST(pl,x,ELM_LIST(l2,i));
         }
     }
     for (i = 1;i <= deg;i++) {
@@ -1916,16 +1916,14 @@ Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
     Int next = 1;  /* The next candidate, possibly prevented by being in dst */
     Int k;
 
-    PLAIN_LIST(src);
-    PLAIN_LIST(dst);
-    l = LEN_PLIST(src);
-    if (l != LEN_PLIST(dst)) {
+    l = LEN_LIST(src);
+    if (l != LEN_LIST(dst)) {
         ErrorReturnVoid( "both arguments must be sets of equal length", 
                      0L, 0L, "type 'return;' or 'quit;' to exit break loop" );
         return 0L;
     }
-    d = INT_INTOBJ(ELM_PLIST(src,l));
-    dd = INT_INTOBJ(ELM_PLIST(dst,l));
+    d = INT_INTOBJ(ELM_LIST(src,l));
+    dd = INT_INTOBJ(ELM_LIST(dst,l));
     if (dd > d) d = dd;
 
     out = NEW_PLIST(T_PLIST_CYC,d);
@@ -1933,13 +1931,13 @@ Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
     /* No garbage collection from here on! */
 
     for (k = 1;k <= d;k++) {
-        if (i <= l && k == INT_INTOBJ(ELM_PLIST(src,i))) {
-            SET_ELM_PLIST(out,k,ELM_PLIST(dst,i));
+        if (i <= l && k == INT_INTOBJ(ELM_LIST(src,i))) {
+            SET_ELM_PLIST(out,k,ELM_LIST(dst,i));
             i++;
         } else {
             /* Skip things in dst: */
             while (j <= l) {
-                dd = INT_INTOBJ(ELM_PLIST(dst,j));
+                dd = INT_INTOBJ(ELM_LIST(dst,j));
                 if (next < dd) break;
                 if (next == dd) next++;
                 j++;
@@ -1965,21 +1963,19 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
     Int mytabs[DEGREELIMITONSTACK];
     Int mytabd[DEGREELIMITONSTACK];
 
-    PLAIN_LIST(src);
-    PLAIN_LIST(dst);
-    l = LEN_PLIST(src);
-    if (l != LEN_PLIST(dst)) {
+    l = LEN_LIST(src);
+    if (l != LEN_LIST(dst)) {
         ErrorReturnVoid( "both arguments must be lists of equal length", 
                      0L, 0L, "type 'return;' or 'quit;' to exit break loop" );
         return 0L;
     }
     d = 0;
     for (i = 1;i <= l;i++) {
-        x = INT_INTOBJ(ELM_PLIST(src,i));
+        x = INT_INTOBJ(ELM_LIST(src,i));
         if (x > d) d = x;
     }
     for (i = 1;i <= l;i++) {
-        x = INT_INTOBJ(ELM_PLIST(dst,i));
+        x = INT_INTOBJ(ELM_LIST(dst,i));
         if (x > d) d = x;
     }
     if (d <= DEGREELIMITONSTACK) {
@@ -1987,10 +1983,10 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
         memset(&mytabs,0,sizeof(mytabs));
         memset(&mytabd,0,sizeof(mytabd));
         for (i = 1;i <= l;i++) {
-            mytabs[INT_INTOBJ(ELM_PLIST(src,i))] = i;
+            mytabs[INT_INTOBJ(ELM_LIST(src,i))] = i;
         }
         for (i = 1;i <= l;i++) {
-            mytabd[INT_INTOBJ(ELM_PLIST(dst,i))] = i;
+            mytabd[INT_INTOBJ(ELM_LIST(dst,i))] = i;
         }
         out = NEW_PLIST(T_PLIST_CYC,d);
         SET_LEN_PLIST(out,d);
@@ -1998,7 +1994,7 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
         next = 1;
         for (i = 1;i <= d;i++) {
             if (mytabs[i]) {   /* if i is in src */
-                SET_ELM_PLIST(out,i, ELM_PLIST(dst,mytabs[i]));
+                SET_ELM_PLIST(out,i, ELM_LIST(dst,mytabs[i]));
             } else {
                 /* Skip things in dst: */
                 while (mytabd[next]) next++;
@@ -2014,14 +2010,14 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
         SET_LEN_PLIST(tabsrc,0);
         /* No garbage collection from here ... */
         for (i = 1;i <= l;i++) {
-            SET_ELM_PLIST(tabsrc,INT_INTOBJ(ELM_PLIST(src,i)),INTOBJ_INT(i));
+            SET_ELM_PLIST(tabsrc,INT_INTOBJ(ELM_LIST(src,i)),INTOBJ_INT(i));
         }
         /* ... to here! No CHANGED_BAG needed since this is a new object! */
         tabdst = NEW_PLIST(T_PLIST,d);
         SET_LEN_PLIST(tabdst,0);
         /* No garbage collection from here ... */
         for (i = 1;i <= l;i++) {
-            SET_ELM_PLIST(tabdst,INT_INTOBJ(ELM_PLIST(dst,i)),INTOBJ_INT(i));
+            SET_ELM_PLIST(tabdst,INT_INTOBJ(ELM_LIST(dst,i)),INTOBJ_INT(i));
         }
         /* ... to here! No CHANGED_BAG needed since this is a new object! */
         out = NEW_PLIST(T_PLIST_CYC,d);
@@ -2031,7 +2027,7 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
         for (i = 1;i <= d;i++) {
             if (ELM_PLIST(tabsrc,i)) {   /* if i is in src */
                 SET_ELM_PLIST(out,i,
-                    ELM_PLIST(dst,INT_INTOBJ(ELM_PLIST(tabsrc,i))));
+                    ELM_LIST(dst,INT_INTOBJ(ELM_PLIST(tabsrc,i))));
             } else {
                 /* Skip things in dst: */
                 while (ELM_PLIST(tabdst,next)) next++;
@@ -2062,8 +2058,7 @@ Obj FuncImageAndKernelOfTransformation2( Obj self, Obj t )
     Obj tmp;
 
     l = ELM_PLIST(t,1);
-    PLAIN_LIST(l);
-    n = LEN_PLIST(l);
+    n = LEN_LIST(l);
     if (n <= DEGREELIMITONSTACK) {
         buf = bufstack;
         for (i = 1;i <= n;i++) buf[i] = 0;
@@ -2075,7 +2070,7 @@ Obj FuncImageAndKernelOfTransformation2( Obj self, Obj t )
     /* No garbage collection from here... */
     comps = 0;
     for (j = 1;j <= n;j++) {
-        i = INT_INTOBJ(ELM_PLIST(l,j));
+        i = INT_INTOBJ(ELM_LIST(l,j));
         if (!buf[i]) comps++;
         buf[i]++;
     }
@@ -2098,7 +2093,7 @@ Obj FuncImageAndKernelOfTransformation2( Obj self, Obj t )
         }
     }
     for (i = 1;i <= n;i++) {
-        tmp = ELM_PLIST(kernel,buf[INT_INTOBJ(ELM_PLIST(l,i))]);
+        tmp = ELM_PLIST(kernel,buf[INT_INTOBJ(ELM_LIST(l,i))]);
         j = LEN_PLIST(tmp);
         SET_ELM_PLIST(tmp,j+1,INTOBJ_INT(i));
         SET_LEN_PLIST(tmp,j+1);
@@ -2131,8 +2126,7 @@ Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
 
     if (IS_POSOBJ(t)) l = ELM_PLIST(t,1);
     else l = t;
-    PLAIN_LIST(l);
-    n = LEN_PLIST(l);
+    n = LEN_LIST(l);
     kernel = NEW_PLIST(T_PLIST,n);   /* Will hold result */
     SET_LEN_PLIST(kernel,n);
     if (n <= DEGREELIMITONSTACK) {
@@ -2146,7 +2140,7 @@ Obj FuncImageAndKernelOfTransformation( Obj self, Obj t )
     
     comps = 0;
     for (i = 1;i <= n;i++) {
-        j = INT_INTOBJ(ELM_PLIST(l,i));
+        j = INT_INTOBJ(ELM_LIST(l,i));
         if (buf[j] == 0) {
             comps++;
             tmp = NEW_PLIST(T_PLIST,1);
@@ -2232,8 +2226,7 @@ Obj FuncCANONICAL_TRANS_SAME_KERNEL( Obj self, Obj t )
 
     if (IS_POSOBJ(t)) l = ELM_PLIST(t,1);
     else l = t;
-    PLAIN_LIST(l);
-    n = LEN_PLIST(l);
+    n = LEN_LIST(l);
     tab = NEW_PLIST(T_PLIST_CYC,n);
     SET_LEN_PLIST(tab,0);
     res = NEW_PLIST(T_PLIST_CYC,n);
@@ -2241,7 +2234,7 @@ Obj FuncCANONICAL_TRANS_SAME_KERNEL( Obj self, Obj t )
     /* no garbage collection from here */
     next = 1;
     for (i = 1;i <= n;i++) {
-        j = INT_INTOBJ(ELM_PLIST(l,i));
+        j = INT_INTOBJ(ELM_LIST(l,i));
         if (ELM_PLIST(tab,j) != 0) {
             SET_ELM_PLIST(res,i,ELM_PLIST(tab,j));
         } else {
@@ -2266,13 +2259,12 @@ Obj FuncIS_INJECTIVE_TRANS_ON_LIST( Obj self, Obj t, Obj l )
 
     if (IS_POSOBJ(t)) tt = ELM_PLIST(t,1);
     else tt = t;
-    PLAIN_LIST(tt);
-    n = LEN_PLIST(tt);
+    n = LEN_LIST(tt);
     tab = NEW_PLIST(T_PLIST_CYC,n);
     SET_LEN_PLIST(tab,0);
     /* no garbage collection from here! */
     for (i = 1;i <= LEN_LIST(l);i++) {
-        j = INT_INTOBJ(ELM_PLIST(tt,INT_INTOBJ(ELM_LIST(l,i))));
+        j = INT_INTOBJ(ELM_LIST(tt,INT_INTOBJ(ELM_LIST(l,i))));
         if (ELM_PLIST(tab,j) != 0) {
             return False;
         } else {
