@@ -613,9 +613,8 @@ option <C>schreier</C> must have been set during creation, and <A>nr</A>
 must be the number of a point in the orbit. This operation traces the
 Schreier tree and returns a word in the generators that maps the starting
 point to the point with number <A>nr</A>. Here,
-a word is a list of integers, where positive integers are numbers of 
-generators and a negative integer <M>i</M> indicates the inverse of
-the generator with number <M>-i</M>. 
+a word is a list of positive integers which are numbers of 
+generators of the orbit.
 </Description>
 </ManSection>
 
@@ -626,11 +625,10 @@ the generator with number <M>-i</M>.
 <A>orb</A> must be an orbit object with a Schreier tree, that is, the
 option <C>schreier</C> must have been set during creation, and <A>nr</A>
 must be the number of a point in the orbit. This operation traces the
-Schreier tree and returns a word in the generators that maps the 
-point with number <A>nr</A> to the starting point. As above,
-a word is here a list of integers, where positive integers are numbers of 
-generators and a negative integer <M>i</M> indicates the inverse of
-the generator with number <M>-i</M>. 
+Schreier tree and returns a word in the inverses of the generators that 
+maps the point with number <A>nr</A> to the starting point. As above,
+a word is here a list of positive integers which are numbers of 
+inverses of the generators of the orbit.
 </Description>
 </ManSection>
 
