@@ -141,7 +141,6 @@ else
     InstallGlobalFunction( MappingPermSetSet,
       function(src, dst)
         local l, d, out, i, j, next, k;
-
         l:=Length(src);
         if l <> Length(dst) then
             Error("both arguments must be lists of the same length");

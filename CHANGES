@@ -3,6 +3,19 @@
 ===========================================================================
 
 ==========================
+ Changes from 3.7 -> 3.8
+==========================
+
+  - Refix configure script for GAP >= 4.5.2
+  - Fix the documentation of TraceSchreierTreeForward and
+    TraceSchreierTreeBack
+  - Store OrbitGraph if it is computed afterwards
+  - Make MappingPermListList_C and friends not change things into
+    plain lists (keep ranges in particular)
+  - PermLeftQuoTransformationNC now also accepts plain lists of
+    integers instead of transformations
+  
+==========================
  Changes from 3.6 -> 3.7:
 ==========================
 
