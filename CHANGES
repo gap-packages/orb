@@ -14,7 +14,8 @@
     plain lists (keep ranges in particular)
   - PermLeftQuoTransformationNC now also accepts plain lists of
     integers instead of transformations
-  
+  - Some minor improvements to the documentation
+ 
 ==========================
  Changes from 3.6 -> 3.7:
 ==========================

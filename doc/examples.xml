@@ -149,7 +149,7 @@ Print("Now do\n  o := OrbitBySuborbit(setup,v,3,3,2,100);\n");]]>
 <P/>
 We are using two helper subgroups
 <M>U_1 &lt; U_2 &lt; M_{11} </M>,
-where <M>U_2\cong A_2.2</M> is the largest maximal subgroup of <M>M_{11}</M>,
+where <M>U_2\cong A_6.2</M> is the largest maximal subgroup of <M>M_{11}</M>,
 having order <M>720</M>, and <M>U_2\cong 5:4</M> is a maximal subgroup of 
 <M>U_2</M> of order <M>20</M>, 
 see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package.
@@ -178,8 +178,8 @@ we want to use projective action.
 
 The example in this section shows how to compute 35 of the 36 double coset
 representatives of the Fischer group <M>Fi_{{23}}</M>
-with respect to its the seventh maximal subgroup 
-<M>H\cong 3_+^{1+8}.2_-^{1+6}.3_+^{1+2}.2S_4</M>,
+with respect to its seventh maximal subgroup 
+<M>H\cong 3_+^{{1+8}}.2_-^{{1+6}}.3_+^{{1+2}}.2S_4</M>,
 which has order <M>3\,265\,173\,504\approx 3.2\cdot 10^9</M> and index 
 <M>[Fi_{{23}}\colon H]=1\,252\,451\,200 \approx 1.3 \cdot 10^9</M>,  
 see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package.
@@ -280,7 +280,7 @@ We are using three helper subgroups
 where <M>Co_1</M> has order 
 <M>4\,157\,776\,806\,543\,360\,000\approx 4.2\cdot 10^{18}</M>, 
 see <Cite Key="CCN85"/> or the <Package>CTblLib</Package> package,
-and where <M>U_3\cong 2_+^{1+8}.O_8(2)</M> is the fifth maximal subgroup
+and where <M>U_3\cong 2_+^{{1+8}}.O_8(2)</M> is the fifth maximal subgroup
 of <M>Co_1 </M>, having order <M>89\,181\,388\,800\approx 8.9\cdot 10^{10}</M>,
 while <M>U_2\cong [2^8]\colon S_6(2)</M> is a maximal subgroup of <M>U_3</M>
 of order <M>371\,589\,120\approx 3.7\cdot 10^{8}</M>, 
