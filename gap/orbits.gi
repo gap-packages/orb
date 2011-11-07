@@ -1599,6 +1599,7 @@ InstallMethod( OrbitGraph, "for an orbit",
             od;
             Add(g,gg);
         od;
+        o!.orbitgraph := g;
         return g;
     else
         return o!.orbitgraph;
