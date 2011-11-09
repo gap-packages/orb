@@ -127,6 +127,23 @@ else
        IsTransformation and IsTransformationRep],
       PermLeftQuoTransformationNC_C );
 fi;
+if not(IsBound(PermLeftQuoTransformationNC_C)) then
+    InstallOtherMethod( PermLeftQuoTransformationNC, "GAP version",
+      [IsList,IsList],
+    function ( t1, t2 )
+      local  pl, i, deg;
+      deg := Length(t1);
+      pl := [ 1 .. deg ];
+      for i  in [ 1 .. deg ]  do
+          pl[t1[i]] := t2[i];
+      od;
+      return PermList( pl );
+    end );
+else
+    InstallOtherMethod( PermLeftQuoTransformationNC, "C version",
+      [IsList,IsList],
+      PermLeftQuoTransformationNC_C );
+fi;
 
 # Install our C function if we are compiled:
 if IsBound( MappingPermListList_C ) then
