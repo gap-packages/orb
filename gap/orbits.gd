@@ -72,6 +72,7 @@ DeclareOperation( "DepthOfSchreierTree", [ IsOrbit ] );
 DeclareOperation( "Grades", [ IsOrbit ] );
 DeclareOperation( "OrbitGraph", [ IsOrbit ] );
 DeclareOperation( "OrbitGraphAsSets", [ IsOrbit ] );
+DeclareOperation( "UnderlyingPlist", [ IsOrbit ] );
 
 # To calculate the action on the orbit:
 DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );

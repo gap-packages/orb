@@ -227,6 +227,18 @@ If this component is bound the type of the hash table is a
 TreeHashTab.
 This option is superfluous if <C>treehashsize</C> is used.
     </Item>
+    <Mark><C>forflatplainlists</C></Mark>
+    <Item>
+If this component is set to <K>true</K> then the user guarantees that
+all the elements in the hash will be flat plain lists, that is, plain
+lists with no subobjects. For example lists of immediate integers
+will fulfill this requirement, but ranges don't. 
+In this case, a particularly good and
+efficient hash function will automatically be taken and the following
+components are ignored. Note that this cannot be automatically
+detected because it depends not only on the sample point but also
+potentially on all the other points to be stored in the hash table.
+    </Item>
     <Mark><C>hf</C> and <C>hfd</C></Mark>
     <Item>
 If these components are bound, they are used as the hash function. The

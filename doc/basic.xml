@@ -192,6 +192,19 @@ orbit enumeration (see component <C>permgens</C>), then the orbit
 enumeration can stop as soon as the orbit is found completely and the
 stabiliser is complete, which is usually much earlier than after
 all generator are applied to all points in the orbit.</Item>
+<Mark><C>forflatplainlists</C></Mark>
+<Item>
+If this component is set to <K>true</K> then the user guarantees that
+all the points in the orbit will be flat plain lists, that is, plain
+lists with no subobjects. For example lists of immediate integers
+will fulfill this requirement, but ranges don't. 
+In this case, a particularly good and
+efficient hash function will automatically be taken and the following
+components are ignored. Note that this cannot be automatically
+detected because it depends not only on the first point of the orbit but also
+on the other points in the orbit and thus on the group generators
+given.
+</Item>
 <Mark><C>hashfunc</C></Mark>
 <Item>This component always has to be given together with the
     <C>eqfunc</C> component (see also there). The value should be
@@ -497,6 +510,19 @@ for generators and negative numbers for their inverses.
 If during the orbit enumeration the option <C>lookingfor</C> was used and
 the orbit enumerator looked for something, then this operation returns the
 index in the orbit, where the something was found most recently.
+</Description>
+</ManSection>
+
+<ManSection>
+<Oper Name="UnderlyingPlist" Arg="orb"/>
+<Returns>An plain list</Returns>
+<Description>
+    This returns the current elements in the orbit represented by
+    <A>orb</A> as a plain list. This is guaranteed to be a very fast
+    operation using only constant time. However, it does give you
+    a part of the internal data structure of <A>orb</A>. 
+    Note that it is not allowed to change the resulting list in any
+    way because that would corrupt the data structures of the orbit.
 </Description>
 </ManSection>
 

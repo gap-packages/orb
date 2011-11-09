@@ -321,6 +321,9 @@ InstallGlobalFunction( Orb,
                 re.hf := o.hashfunc.func;
                 re.hfd := o.hashfunc.data;
             fi;
+            if IsBound(o.forflatplainlists) then
+                re.forflatplainlists := true;
+            fi;
             o.ht := HTCreate(x,re);
             filts := filts and IsHashOrbitRep;
         elif IsBound(o.eqfunc) and IsBound(o.hashfunc) then
@@ -335,7 +338,11 @@ InstallGlobalFunction( Orb,
             fi;
             filts := filts and IsHashOrbitRep;
         else
-            o.ht := HTCreate(x,rec( hashlen := hashlen ));
+            re := rec( hashlen := hashlen );
+            if IsBound(o.forflatplainlists) then
+                re.forflatplainlists := true;
+            fi;
+            o.ht := HTCreate(x,re);
             if o.ht = fail then    # probably we found no hash function
                 Info(InfoOrb,1,"Warning: No hash function found!");
                 filts := filts and IsSlowOrbitRep;
@@ -1569,6 +1576,12 @@ InstallMethod( AsList, "for an orb orbit",
   [IsOrbit and IsList and IsDenseList],
   function( o )
     return ShallowCopy( o!.orbit );
+  end );
+
+InstallMethod( UnderlyingPlist, "for an orb orbit",
+  [IsOrbit],
+  function( o )
+    return o!.orbit;
   end );
 
 InstallMethod( Iterator, "for an orb orbit",

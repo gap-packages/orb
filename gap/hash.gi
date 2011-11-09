@@ -194,7 +194,11 @@ InstallMethod( HTCreate, "for an object and an options record",
     ht.els[ht.len+1] := fail;   # To create proper length!
     ht.vals := [];
     ht.nr := 0;
-    if not(IsBound(ht.hf) and IsBound(ht.hfd)) then
+    if IsBound(ht.forflatplainlists) then
+        ht.hf := ORB_HashFunctionForPlainFlatList;
+        ht.hfd := ht.len;
+        ht.cangrow := true;
+    elif not(IsBound(ht.hf) and IsBound(ht.hfd)) then
         hfun := ChooseHashFunction(x,ht.len);
         if hfun = fail then
             Error("Could not find hash function for sample object");
@@ -509,7 +513,9 @@ InstallMethod( HTGrow, "for a tree hash table and an object",
     ht!.els := EmptyPlist(ht!.len+1);
     ht!.els[ht!.len+1] := fail;
     ht!.vals := [];
-    if IsBound(ht!.hfbig) and IsBound(ht!.htdbig) then
+    if IsBound(ht!.forflatplainlists) then
+        ht!.hfd := ht!.len;
+    elif IsBound(ht!.hfbig) and IsBound(ht!.htdbig) then
         ht!.hf := ORB_HashFunctionModWrapper;
         ht!.hfd := [ht!.hfbig,ht!.hfdbig,ht!.len];
     else
@@ -553,7 +559,9 @@ function(ht,x)
   ht!.vals := [];
   ht!.len := NextPrimeInt(ht!.len * 2+1);
   Info(InfoOrb,2,"Growing hash table to length ",ht!.len," !!!");
-  if IsBound(ht!.hfbig) and IsBound(ht!.htdbig) then
+  if IsBound(ht!.forflatplainlists) then
+      ht!.hfd := ht!.len;
+  elif IsBound(ht!.hfbig) and IsBound(ht!.htdbig) then
       ht!.hf := ORB_HashFunctionModWrapper;
       ht!.hfd := [ht!.hfbig,ht!.hfdbig,ht!.len];
   else
@@ -744,11 +752,16 @@ function(p,data)
    return HashKeyBag(p,255,0,2*l) mod data + 1;
 end );
 
-if JENKINS_HASH_IN_ORB <> fail then
+if CompareVersionNumbers(GAPInfo.Version,"4.5") then
     InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
       function( x, data )
-        return JENKINS_HASH_IN_ORB(x, GAPInfo.BytesPerVariable,
-                                      GAPInfo.BytesPerVariable*Length(x), data);
+        return (HashKeyBag( x, 0, 0, -1 ) mod data)+1;
+      end );
+elif JENKINS_HASH_IN_ORB <> fail then
+    InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
+      function( x, data )
+        return JENKINS_HASH_IN_ORB(x, 0,
+                                   GAPInfo.BytesPerVariable*(Length(x)+1),data);
       end );
 else
     InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
@@ -756,7 +769,9 @@ else
         local i,res;
         res := 0;
         for i in v do
-            res := (res * 101 + i) mod data;
+            if IsInt(i) then
+                res := (res * 101 + i) mod data;
+            fi;
         od;
         return res+1;
       end );
@@ -764,7 +779,8 @@ fi;
 
 InstallGlobalFunction( MakeHashFunctionForPlainFlatList,
   function( len )
-    if JENKINS_HASH_IN_ORB = fail then
+    if not(CompareVersionNumbers(GAPInfo.Version,"4.5")) and
+       JENKINS_HASH_IN_ORB = fail then
         Error("Please compile the C-part, containing the Jenkinks Hash Func");
         return fail;
     fi;

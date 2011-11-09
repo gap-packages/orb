@@ -15,6 +15,9 @@
   - PermLeftQuoTransformationNC now also accepts plain lists of
     integers instead of transformations
   - Some minor improvements to the documentation
+  - Provide option forflatplainlists for hash tables and orbits
+  - Provide UnderlyingPlist for orbit objects
+
  
 ==========================
  Changes from 3.6 -> 3.7:

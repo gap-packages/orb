@@ -2,7 +2,6 @@ Next version:
 
 OnIntegerSetsWithTransformation in C
 OnIntegerTupleWithTransformation in C
-Sort out Jenkins hash
 
 sort out: AsList seems to return something immutable?
           --> not good for orbits, we return mutable list
@@ -11,8 +10,6 @@ sort out: AsList seems to return something immutable?
 Note: if an AVLtree becomes immutable, it stops being changeable.
 
 David Bremner's Hash functions? --> email
-Document Jenkins Hash function and MakeHashFunctionForPlainFlatList
-         and ORB_HashFunctionForPlainFlatList
 MACFLOAT_INT und fr Paket in Ordnung bringen, what was this???
 Beispiel laufen lassen
 Speicher kucken
