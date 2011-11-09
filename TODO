@@ -3,10 +3,6 @@ Next version:
 OnIntegerSetsWithTransformation in C
 OnIntegerTupleWithTransformation in C
 
-sort out: AsList seems to return something immutable?
-          --> not good for orbits, we return mutable list
-          --> copying necessary?
-
 Note: if an AVLtree becomes immutable, it stops being changeable.
 
 David Bremner's Hash functions? --> email
