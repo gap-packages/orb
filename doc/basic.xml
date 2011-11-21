@@ -199,8 +199,9 @@ all the points in the orbit will be flat plain lists, that is, plain
 lists with no subobjects. For example lists of immediate integers
 will fulfill this requirement, but ranges don't. 
 In this case, a particularly good and
-efficient hash function will automatically be taken and the following
-components are ignored. Note that this cannot be automatically
+efficient hash function will automatically be taken and the
+components <C>hf</C>, <C>hfd</C>, <C>hfbig</C> and <C>hfdbig</C>
+are ignored. Note that this cannot be automatically
 detected because it depends not only on the first point of the orbit but also
 on the other points in the orbit and thus on the group generators
 given.
