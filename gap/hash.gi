@@ -755,7 +755,8 @@ end );
 if CompareVersionNumbers(GAPInfo.Version,"4.5") then
     InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
       function( x, data )
-        return (HashKeyBag( x, 0, 0, -1 ) mod data)+1;
+        return (HashKeyBag( x, 0, 0, 
+                            GAPInfo.BytesPerVariable*(Length(x)+1)) mod data)+1;
       end );
 elif JENKINS_HASH_IN_ORB <> fail then
     InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
