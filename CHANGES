@@ -3,11 +3,12 @@
 ===========================================================================
 
 ==========================
- Changes from 3.8 -> 3.9
+ Changes from 3.8 -> 4.0
 ==========================
 
   - Fix a bug in the hash function for flat plain lists which was
     triggered by equal lists with different sizes of allocated memory.
+  - Use automake and libtool and no longer gac to compile.
 
 
 ==========================
