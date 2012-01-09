@@ -731,6 +731,7 @@ with_gnu_ld
 with_sysroot
 enable_libtool_lock
 with_gaproot
+with_gaparch
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1383,6 +1384,7 @@ Optional Packages:
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
   --with-gaproot=<path>   specify root of GAP installation
+  --with-gaparch=<path>   specify GAP architecture string
 
 Some influential environment variables:
   CC          C compiler command
@@ -12051,7 +12053,7 @@ if test "${with_gaproot+set}" = set; then :
   withval=$with_gaproot; GAPROOT=$withval
 fi
 
-  DEFAULT_GAPROOTS="../.. /usr/local/lib/gap4r4 /usr/lib/gap4r4"
+  DEFAULT_GAPROOTS="../.."
 
   SYSINFO="sysinfo.gap"
   havesysinfo=0
@@ -12108,7 +12110,15 @@ $as_echo "Not found" >&6; }
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP architecture" >&5
 $as_echo_n "checking for GAP architecture... " >&6; }
-  GAPARCH=`${GREP} GAParch= ${GAPROOT}/${SYSINFO} | ${SED} 's|^GAParch=\(.*\)|\1|'`
+
+# Check whether --with-gaparch was given.
+if test "${with_gaparch+set}" = set; then :
+  withval=$with_gaparch; GAPARCH=$withval
+fi
+
+  if test "x$GAPARCH" = "xUnknown"; then
+      GAPARCH=`${GREP} GAParch= ${GAPROOT}/${SYSINFO} | ${SED} 's|^GAParch=\(.*\)|\1|'`
+  fi;
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${GAPARCH}" >&5
 $as_echo "${GAPARCH}" >&6; }
 

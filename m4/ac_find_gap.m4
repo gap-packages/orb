@@ -21,7 +21,7 @@ AC_DEFUN([AC_FIND_GAP],
   AC_ARG_WITH(gaproot, 
     [AC_HELP_STRING([--with-gaproot=<path>], [specify root of GAP installation])],
     [GAPROOT=$withval])
-  DEFAULT_GAPROOTS="../.. /usr/local/lib/gap4r4 /usr/lib/gap4r4"
+  DEFAULT_GAPROOTS="../.."
   
   SYSINFO="sysinfo.gap"
   havesysinfo=0
@@ -75,7 +75,12 @@ AC_DEFUN([AC_FIND_GAP],
   GAPARCH="Unknown"
 
   AC_MSG_CHECKING([for GAP architecture])
-  GAPARCH=`${GREP} GAParch= ${GAPROOT}/${SYSINFO} | ${SED} 's|^GAParch=\(.*\)|\1|'`
+  AC_ARG_WITH(gaparch, 
+    [AC_HELP_STRING([--with-gaparch=<path>], [specify GAP architecture string])],
+    [GAPARCH=$withval])
+  if test "x$GAPARCH" = "xUnknown"; then
+      GAPARCH=`${GREP} GAParch= ${GAPROOT}/${SYSINFO} | ${SED} 's|^GAParch=\(.*\)|\1|'`
+  fi;
   AC_MSG_RESULT([${GAPARCH}])
  
   if test "x$GAPARCH" = "xUnknown"; then
