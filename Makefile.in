@@ -275,6 +275,7 @@ lib_LTLIBRARIES = orb.la
 orb_la_SOURCES = src/orb.c
 orb_la_CPPFLAGS = $(GAP_CPPFLAGS)
 orb_la_LDFLAGS = -module -avoid-version
+WEBPOS = /scratch/neunhoef/mywebpage.pub/Computer/Software/Gap/orb
 all: all-recursive
 
 .SUFFIXES:

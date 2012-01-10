@@ -32,6 +32,8 @@ doc/manual.six: doc/basic.xml doc/hash.xml doc/orb.xml doc/search.xml \
 archive: doc
 	(cd .. ; tar czvf orb-`cat orb/VERSION`.tar.gz --exclude ".svn" --exclude bin --exclude test --exclude ".git" --exclude ".libs" --exclude lib --exclude orb.la --exclude orb_la-orb.lo --exclude .deps --exclude autom4te.cache orb)
 
+WEBPOS=/scratch/neunhoef/mywebpage.pub/Computer/Software/Gap/orb
+
 towww: archive
 	echo '<?xml version="1.0" encoding="ISO-8859-1"?>' >${WEBPOS}.version
 	echo '<mixer>' >>${WEBPOS}.version
