@@ -35,7 +35,7 @@ AC_DEFUN([AC_FIND_GAP],
   #
   AC_ARG_WITH(gaproot, 
     [AC_HELP_STRING([--with-gaproot=<path>], [specify root of GAP installation])],
-    [DEFAULT_GAPROOTS="$withval $DEFAULT_GAPROOTS"])
+    [DEFAULT_GAPROOTS="$withval"])
   
   havesysinfo=0
   # Otherwise try likely directories

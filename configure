@@ -12264,7 +12264,7 @@ $as_echo_n "checking for GAP root directory... " >&6; }
 
 # Check whether --with-gaproot was given.
 if test "${with_gaproot+set}" = set; then :
-  withval=$with_gaproot; DEFAULT_GAPROOTS="$withval $DEFAULT_GAPROOTS"
+  withval=$with_gaproot; DEFAULT_GAPROOTS="$withval"
 fi
 
 
