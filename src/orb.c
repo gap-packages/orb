@@ -14,6 +14,22 @@ const char * Revision_orb_c =
 
 #include "src/compiled.h"          /* GAP headers                */
 
+#define GAPS_SIZEOF_VOID_P SIZEOF_VOID_P
+#undef PACKAGE
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_URL
+#undef PACKAGE_VERSION
+#undef SIZEOF_VOID_P
+
+#include "orbconfig.h"             /* our own configure results */
+
+#if GAPS_SIZEOF_VOID_P != SIZEOF_VOID_P
+#error GAPs word size is different from ours, 64bit/32bit mismatch
+#endif
+
 /* This file corresponds to orb/gap/avltree.gi, it imlements some of
  * its functionality on the C level for better performance. */
 
