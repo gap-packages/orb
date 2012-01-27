@@ -31,7 +31,7 @@ doc/manual.six: doc/basic.xml doc/hash.xml doc/orb.xml doc/search.xml \
 	($(GAPROOT)/bin/gap.sh makedoc.g)
 
 archive: doc
-	(cd .. ; tar czvf orb-`cat orb/VERSION`.tar.gz --exclude ".svn" --exclude bin --exclude test --exclude ".git" --exclude ".libs" --exclude lib --exclude orb.la --exclude orb_la-orb.lo --exclude .deps --exclude autom4te.cache --exclude .gitignore --exclude config.log orb)
+	(cd .. ; tar czvf orb-`cat orb/VERSION`.tar.gz --exclude ".svn" --exclude bin --exclude test --exclude ".git" --exclude ".libs" --exclude lib --exclude orb.la --exclude orb_la-orb.lo --exclude .deps --exclude autom4te.cache --exclude .gitignore --exclude config.log --exclude stamp-h1 --exclude pkgconfig.h ..exclude libtool orb)
 
 WEBPOS=/scratch/neunhoef/mywebpage.pub/Computer/Software/Gap/orb
 
