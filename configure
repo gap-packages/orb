@@ -620,6 +620,7 @@ LIBOBJS
 GAP_CPPFLAGS
 GAPROOT
 GAPARCH
+CONFIGNAME
 CPP
 OTOOL64
 OTOOL
@@ -753,7 +754,8 @@ CFLAGS
 LDFLAGS
 LIBS
 CPPFLAGS
-CPP'
+CPP
+CONFIGNAME'
 
 
 # Initialize some variables set by options.
@@ -1396,7 +1398,7 @@ Optional Packages:
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
   --with-gaproot=<path>   specify root of GAP installation
-  --with-gaparch=<path>   specify GAP architecture string
+  --with-gaparch=<path>   override GAP architecture string
 
 Some influential environment variables:
   CC          C compiler command
@@ -1407,6 +1409,9 @@ Some influential environment variables:
   CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
               you have headers in a nonstandard directory <include dir>
   CPP         C preprocessor
+  CONFIGNAME  Set this to the CONFIGNAME of the GAP compilation against which
+              you want to compile this package. Leave this variable empty for
+              GAP versions < 4.5.
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -12233,43 +12238,47 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
   GAP_CPPFLAGS=""
 
+  #Allow the user to specify a configname:
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CONFIGNAME" >&5
+$as_echo_n "checking for CONFIGNAME... " >&6; }
+
+  if test "x$CONFIGNAME" = "x"; then
+    SYSINFO="sysinfo.gap"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: none" >&5
+$as_echo "none" >&6; }
+  else
+    SYSINFO="sysinfo.gap-$CONFIGNAME"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CONFIGNAME" >&5
+$as_echo "$CONFIGNAME" >&6; }
+  fi
+
   ######################################
   # Find the GAP root directory by
   # checking for the sysinfo.gap file
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP root directory" >&5
 $as_echo_n "checking for GAP root directory... " >&6; }
+  DEFAULT_GAPROOTS="../.."
 
   #Allow the user to specify the location of GAP
   #
 
 # Check whether --with-gaproot was given.
 if test "${with_gaproot+set}" = set; then :
-  withval=$with_gaproot; GAPROOT=$withval
+  withval=$with_gaproot; DEFAULT_GAPROOTS="$withval $DEFAULT_GAPROOTS"
 fi
 
-  DEFAULT_GAPROOTS="../.."
 
-  SYSINFO="sysinfo.gap"
   havesysinfo=0
-  if test -n "$GAPROOT"; then
-    # Make sure the path given is stored as an absolute path
+  # Otherwise try likely directories
+  for GAPROOT in ${DEFAULT_GAPROOTS}
+  do
+    # Convert the path to absolute
     GAPROOT=`cd $GAPROOT > /dev/null 2>&1 && pwd`
-
     if test -e ${GAPROOT}/${SYSINFO}; then
       havesysinfo=1
+      break
     fi
-  else
-    # Otherwise try likely directories
-    for GAPROOT in ${DEFAULT_GAPROOTS}
-    do
-      # Convert the path to absolute
-      GAPROOT=`cd $GAPROOT > /dev/null 2>&1 && pwd`
-      if test -e ${GAPROOT}/${SYSINFO}; then
-        havesysinfo=1
-        break
-      fi
-    done
-  fi
+  done
 
   if test "x$havesysinfo" = "x1"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${GAPROOT}" >&5
@@ -12279,16 +12288,16 @@ $as_echo "${GAPROOT}" >&6; }
 $as_echo "Not found" >&6; }
 
     echo ""
-    echo "**********************************************************************"
+    echo "********************************************************************"
     echo "  ERROR"
     echo ""
     echo "  Cannot find your GAP installation. Please specify the location of"
     echo "  GAP's root directory using --with-gaproot=<path>"
     echo ""
-    echo "  The GAP root directory (as far as this package is concerned) is the"
-    echo "  one containing the file sysinfo.gap and the subdirectories src/ and "
-    echo "  bin/."
-    echo "**********************************************************************"
+    echo "  The GAP root directory (as far as this package is concerned) is"
+    echo "  the one containing the file sysinfo.gap and the subdirectories "
+    echo "  src/ and bin/."
+    echo "********************************************************************"
     echo ""
 
     as_fn_error $? "Unable to find GAP root directory" "$LINENO" 5
@@ -12297,127 +12306,101 @@ $as_echo "Not found" >&6; }
   #####################################
   # Now find the architecture
 
-
-
-
-  GAPARCH="Unknown"
-
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP architecture" >&5
 $as_echo_n "checking for GAP architecture... " >&6; }
+  GAPARCH="Unknown"
+  source $GAPROOT/$SYSINFO
+  if test "x$GAParch" != "x"; then
+    GAPARCH=$GAParch
+  fi
+
 
 # Check whether --with-gaparch was given.
 if test "${with_gaparch+set}" = set; then :
   withval=$with_gaparch; GAPARCH=$withval
 fi
 
-  if test "x$GAPARCH" = "xUnknown"; then
-      GAPARCH=`${GREP} GAParch= ${GAPROOT}/${SYSINFO} | ${SED} 's|^GAParch=\(.*\)|\1|'`
-  fi;
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${GAPARCH}" >&5
 $as_echo "${GAPARCH}" >&6; }
 
-  if test "x$GAPARCH" = "xUnknown"; then
+  if test "x$GAPARCH" = "xUnknown" -o ! -d $GAPROOT/bin/$GAPARCH ; then
     echo ""
-    echo "**********************************************************************"
+    echo "********************************************************************"
     echo "  ERROR"
     echo ""
-    echo "  Found a GAP installation at $GAPROOT"
-    echo "  but could find information about GAP's architecture in the file"
-    echo "  ${GAPROOT}/${SYSINFO}"
-    echo "  This file should be present: please check your GAP installation."
-    echo "**********************************************************************"
+    echo "  Found a GAP installation at $GAPROOT but could not find"
+    echo "  information about GAP's architecture in the"
+    echo "  file ${GAPROOT}/${SYSINFO} or did not find the directory"
+    echo "  ${GAPROOT}/bin/${GAPARCH}."
+    echo "  This file and directory should be present: please check your"
+    echo "  GAP installation."
+    echo "********************************************************************"
     echo ""
 
-    as_fn_error $? "Unable to find GAParch information." "$LINENO" 5
+    as_fn_error $? "Unable to find plausible GAParch information." "$LINENO" 5
   fi
 
 
   #####################################
   # Now check for the GAP header files
 
-  #Remember the input CPPFLAGS
-  OLD_CPPFLAGS="$CPPFLAGS"
-
+  bad=0
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP include files" >&5
 $as_echo_n "checking for GAP include files... " >&6; }
-  CPPFLAGS="$OLD_CPPFLAGS -I$GAPROOT -I$GAPROOT/bin/$GAPARCH"
-
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include "src/compiled.h"
-      Obj Func(Obj Self){return (Obj)0;}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  a=1
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
-  if test "x$a" = "x1"; then
-    GAP_CPPFLAGS="-I$GAPROOT -I$GAPROOT/bin/$GAPARCH"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAPROOT/src and $GAPROOT/bin/$GAPARCH" >&5
-$as_echo "$GAPROOT/src and $GAPROOT/bin/$GAPARCH" >&6; }
+  if test -r $GAPROOT/src/compiled.h; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAPROOT/src/compiled.h" >&5
+$as_echo "$GAPROOT/src/compiled.h" >&6; }
   else
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: Not found" >&5
 $as_echo "Not found" >&6; }
+    bad=1
+  fi
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP config.h" >&5
+$as_echo_n "checking for GAP config.h... " >&6; }
+  if test -r $GAPROOT/bin/$GAPARCH/config.h; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAPROOT/bin/$GAPARCH/config.h" >&5
+$as_echo "$GAPROOT/bin/$GAPARCH/config.h" >&6; }
+  else
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: Not found" >&5
+$as_echo "Not found" >&6; }
+    bad=1
+  fi
 
+  if test "x$bad" = "x1"; then
     echo ""
-    echo "**********************************************************************"
+    echo "********************************************************************"
     echo "  ERROR"
     echo ""
-    echo "  Failed to find the GAP source header files in the src/ subdirectory"
-    echo "  of your GAP root directory. The expected location was"
-    echo "  $GAPROOT/src"
+    echo "  Failed to find the GAP source header files in src/ and"
+    echo "  GAP's config.h in the architecture dependend directory"
     echo ""
     echo "  The kernel build process expects to find the normal GAP "
-    echo "  root directory structure as it is after building GAP itself, and in "
-    echo "  particular the files <gaproot>/sysinfo.gap, <gaproot>/src/<includes>"
-    echo "  and <gaproot>/bin/<architecture>/bin/config.h. Please make sure that"
-    echo "  your GAP root directory structure conforms to this layout, or give"
-    echo "  the correct GAP root using  --with-gaproot=<path>"
-    echo "**********************************************************************"
+    echo "  root directory structure as it is after building GAP itself, and"
+    echo "  in particular the files"
+    echo "      <gaproot>/sysinfo.gap"
+    echo "      <gaproot>/src/<includes>"
+    echo "  and <gaproot>/bin/<architecture>/bin/config.h."
+    echo "  Please make sure that your GAP root directory structure"
+    echo "  conforms to this layout, or give the correct GAP root using"
+    echo "  --with-gaproot=<path>"
+    echo "********************************************************************"
     echo ""
-
     as_fn_error $? "Unable to find GAP include files in /src subdirectory" "$LINENO" 5
   fi
 
-  #Reset CPPFLAGS
-  CPPFLAGS="$OLD_CPPFLAGS"
+  ARCHPATH=$GAPROOT/bin/$GAPARCH
+  GAP_CPPFLAGS="-I$GAPROOT -I$ARCHPATH"
 
-
-  ######################################
-  # Try to find a GAP config.h
-  # either in GAPROOT/bin or in GAPINCLUDES
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP config.h location" >&5
-$as_echo_n "checking for GAP config.h location... " >&6; }
-  GAPCONFIGPATH="$GAPROOT/bin/$GAPARCH"
-  if test -r "$GAPCONFIGPATH/config.h"; then
-    GAP_CPPFLAGS="$GAP_CPPFLAGS -DCONFIG_H -I$GAPCONFIGPATH"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAPCONFIGPATH/config.h" >&5
-$as_echo "$GAPCONFIGPATH/config.h" >&6; }
-  else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found" >&5
-$as_echo "not found" >&6; }
-    echo ""
-    echo "----------------------------------------------------------------------"
-    echo "  WARNING"
-    echo ""
-    echo "  Failed to find GAP's config.h file in any expected location."
-    echo ""
-    echo "----------------------------------------------------------------------"
-    echo ""
-  fi;
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP's gmp.h location" >&5
 $as_echo_n "checking for GAP's gmp.h location... " >&6; }
-  if test -r "$GAPCONFIGPATH/extern/gmp/include/gmp.h"; then
-    GAP_CPPFLAGS="$GAP_CPPFLAGS -I$GAPCONFIGPATH/extern/gmp/include"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAPCONFIGPATH/extern/gmp/include/gmp.h" >&5
-$as_echo "$GAPCONFIGPATH/extern/gmp/include/gmp.h" >&6; }
+  if test -r "$ARCHPATH/extern/gmp/include/gmp.h"; then
+    GAP_CPPFLAGS="$GAP_CPPFLAGS -I$ARCHPATH/extern/gmp/include"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ARCHPATH/extern/gmp/include/gmp.h" >&5
+$as_echo "$ARCHPATH/extern/gmp/include/gmp.h" >&6; }
   else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found" >&5
-$as_echo "not found" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: not found, GAP was compiled without GMP" >&5
+$as_echo "not found, GAP was compiled without GMP" >&6; }
   fi;
-
 
 
 
