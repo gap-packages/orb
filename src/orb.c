@@ -14,7 +14,6 @@ const char * Revision_orb_c =
 
 #include "src/compiled.h"          /* GAP headers                */
 
-#define GAPS_SIZEOF_VOID_P SIZEOF_VOID_P
 #undef PACKAGE
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
@@ -22,11 +21,12 @@ const char * Revision_orb_c =
 #undef PACKAGE_TARNAME
 #undef PACKAGE_URL
 #undef PACKAGE_VERSION
-#undef SIZEOF_VOID_P
 
 #include "pkgconfig.h"             /* our own configure results */
 
-#if GAPS_SIZEOF_VOID_P != SIZEOF_VOID_P
+/* Note that SIZEOF_VOID_P comes from GAP's config.h whereas
+ * SIZEOF_VOID_PP comes from pkgconfig.h! */
+#if SIZEOF_VOID_PP != SIZEOF_VOID_P
 #error GAPs word size is different from ours, 64bit/32bit mismatch
 #endif
 
