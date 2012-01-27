@@ -36,9 +36,9 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(top_srcdir)/configure \
-	$(top_srcdir)/src/orbconfig.h.in TODO config.guess config.sub \
-	depcomp install-sh ltmain.sh missing
+	$(srcdir)/Makefile.in $(top_srcdir)/cnf/pkgconfig.h.in \
+	$(top_srcdir)/configure TODO cnf/config.guess cnf/config.sub \
+	cnf/depcomp cnf/install-sh cnf/ltmain.sh cnf/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_find_gap.m4 \
 	$(top_srcdir)/m4/ax_cc_maxopt.m4 \
@@ -54,7 +54,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_HEADER = $(top_builddir)/src/orbconfig.h
+CONFIG_HEADER = $(top_builddir)/src/pkgconfig.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
@@ -93,7 +93,7 @@ orb_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(orb_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/cnf/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -325,20 +325,20 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
 
-src/orbconfig.h: src/stamp-h1
+src/pkgconfig.h: src/stamp-h1
 	@if test ! -f $@; then rm -f src/stamp-h1; else :; fi
 	@if test ! -f $@; then $(MAKE) $(AM_MAKEFLAGS) src/stamp-h1; else :; fi
 
-src/stamp-h1: $(top_srcdir)/src/orbconfig.h.in $(top_builddir)/config.status
+src/stamp-h1: $(top_srcdir)/cnf/pkgconfig.h.in $(top_builddir)/config.status
 	@rm -f src/stamp-h1
-	cd $(top_builddir) && $(SHELL) ./config.status src/orbconfig.h
-$(top_srcdir)/src/orbconfig.h.in:  $(am__configure_deps) 
+	cd $(top_builddir) && $(SHELL) ./config.status src/pkgconfig.h
+$(top_srcdir)/cnf/pkgconfig.h.in:  $(am__configure_deps) 
 	($(am__cd) $(top_srcdir) && $(AUTOHEADER))
 	rm -f src/stamp-h1
 	touch $@
 
 distclean-hdr:
-	-rm -f src/orbconfig.h src/stamp-h1
+	-rm -f src/pkgconfig.h src/stamp-h1
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"

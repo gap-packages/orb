@@ -24,7 +24,7 @@ const char * Revision_orb_c =
 #undef PACKAGE_VERSION
 #undef SIZEOF_VOID_P
 
-#include "orbconfig.h"             /* our own configure results */
+#include "pkgconfig.h"             /* our own configure results */
 
 #if GAPS_SIZEOF_VOID_P != SIZEOF_VOID_P
 #error GAPs word size is different from ours, 64bit/32bit mismatch
