@@ -12340,7 +12340,7 @@ $as_echo "${GAPARCH}" >&6; }
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GAP include files" >&5
 $as_echo_n "checking for GAP include files... " >&6; }
-  CPPFLAGS="$OLD_CPPFLAGS -I$GAPROOT"
+  CPPFLAGS="$OLD_CPPFLAGS -I$GAPROOT -I$GAPROOT/bin/$GAPARCH"
 
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -12353,9 +12353,9 @@ fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
   if test "x$a" = "x1"; then
-    GAP_CPPFLAGS="-I$GAPROOT"
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAPROOT/src" >&5
-$as_echo "$GAPROOT/src" >&6; }
+    GAP_CPPFLAGS="-I$GAPROOT -I$GAPROOT/bin/$GAPARCH"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $GAPROOT/src and $GAPROOT/bin/$GAPARCH" >&5
+$as_echo "$GAPROOT/src and $GAPROOT/bin/$GAPARCH" >&6; }
   else
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: Not found" >&5
 $as_echo "Not found" >&6; }

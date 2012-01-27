@@ -106,7 +106,7 @@ AC_DEFUN([AC_FIND_GAP],
   OLD_CPPFLAGS="$CPPFLAGS"
   
   AC_MSG_CHECKING([for GAP include files])
-  CPPFLAGS="$OLD_CPPFLAGS -I$GAPROOT"
+  CPPFLAGS="$OLD_CPPFLAGS -I$GAPROOT -I$GAPROOT/bin/$GAPARCH"
   
   AC_COMPILE_IFELSE(
     [AC_LANG_SOURCE([[#include "src/compiled.h"
@@ -114,8 +114,8 @@ AC_DEFUN([AC_FIND_GAP],
     [a=1])
 
   if test "x$a" = "x1"; then
-    GAP_CPPFLAGS="-I$GAPROOT"
-    AC_MSG_RESULT([$GAPROOT/src])
+    GAP_CPPFLAGS="-I$GAPROOT -I$GAPROOT/bin/$GAPARCH"
+    AC_MSG_RESULT([$GAPROOT/src and $GAPROOT/bin/$GAPARCH])
   else
     AC_MSG_RESULT([Not found])
     
