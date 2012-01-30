@@ -15,63 +15,45 @@ and so on.
 Do this preferably (but not necessarily) inside the `pkg' subdirectory
 of your GAP 4 installation. It creates a subdirectory called `orb'.
 
-This completes the basic installation of the package.
+As of version 3.0, the orb package has a GAP kernel component which
+should be compiled. This component does not actually contain new
+functionality but will improve the performance of AVL trees and hash
+tables significantly since many core routines are implemented in the C
+language at kernel level.
 
-To compile the C code of this package to improve performance do
-(in the `pkg' directory):
+To compile the C part of the package do (in the "pkg" directory)
 
-    cd orb 
-    ./configure [path]
+    cd orb
+    ./configure
+    make
 
-where 'path' is a path to the main GAP root directory (if not given the
-default '../..' is assumed).
+If you installed the package in another "pkg" directory than the
+standard "pkg" directory in your GAP4 installation, then you have to
+do two things. Firstly during compilation you have to use the option
+"--with-gaproot=PATH" of the "configure" script where "PATH" is a path
+to the main GAP root directory (if not given the default "../.." is
+assumed).
 
-Afterwards call 'make' to compile a binary file.
+Secondly you have to 
+specify the path to the directory containing your
+"pkg"
+directory to GAP's list of directories. This can be done by starting
+GAP with the "-l" command line option followed by the name
+of the directory and a semicolon. Then your directory is prepended to
+the list of directories searched. Otherwise the package is not found by
+GAP. Of course, you can add this option to your GAP startup script.
 
-If you installed GAP on several architectures, you must execute this
-configure/make step on each of the architectures immediately after
-configuring GAP itself on this architecture.
-
-If you installed the package in another 'pkg' directory than the standard
-'pkg' directory in your GAP 4 installation, then you have to add the path
-to the directory containing your 'pkg' directory to GAP's list of directories.
-This can be done by starting GAP with the '-l' command line option
-followed by the name of the directory and a semicolon. Then your directory
-is prepended to the list of directories searched. Otherwise the package 
-is not found by GAP. Of course, you can add this option to your GAP
-startup script.
-
-----------------------------------------------------------------------------
-
-STATIC LINKING: This might be interesting for M$ Windows users, as
-dynamic loading of binary modules does not always work there.
-You can create a new statically linked 'gap' binary as follows:
-
-Go into the main GAP directory and then into 'bin/BINDIR'. Here
-BINDIR means the directory containing the 'gap' executable after
-compiling GAP. This directory also contains the GAP compiler script
-'gac'. Assuming orb in the standard location you can then say
-
-   ./gac -o gap-static -p "-DORBSTATIC" -P "-static" ../../pkg/orb/src/orb.c
-
-Note that you have to replace BINDIR by the name containing the 'gap'
-executable after compiling GAP as above. If you have installed the
-package in a different place than the standard, you have to replace
-'../..' in the above command by the path to the directory containing
-the 'pkg' directory into which you installed orb.
-
-Then copy your `gap' start script to, say, `gaps' and change the
-references to the GAP binary to `gap-static'.
-
-If you want to install more than one package with a C-part like this
-package, you can still create a statically linked GAP executable by
-combining all the compile and link options and all the .c files as
-in the ./gac command above. For the orb package, you have to add
-  -DORBSTATIC
-to the string of the -p option and the file
-  ../../pkg/orb/src/orb.c
-somewhere on the command line. As above, '../..' and 'BINDIR' have
-to be replaced if you installed in a non-standard location.
+If you installed GAP on several architectures, you must execute the
+configure/make step for each of the architectures. You can either
+do this immediately after
+configuring and compiling GAP itself on this architecture, or alternatively (when
+using version 4.5 of GAP or newer) set the environment variable
+"CONFIGNAME" to the name of the configuration you used when
+compiling GAP before running "./configure". 
+Note however that your compiler choice and flags
+(environment variables "CC" and "CFLAGS" need to be
+chosen to match the setup of the original GAP compilation. For
+example you have to specify 32-bit or 64-bit mode correctly!
 
 ----------------------------------------------------------------------------
 Recompiling the documentation is possible by the command `gap makedoc.g'
@@ -81,4 +63,4 @@ E-mail me if there are any questions, remarks, suggestions. Also, I
 would like to hear about applications of this package.
 
 
-Max Neunhoeffer, e-mail: max.neunhoeffer@math.rwth-aachen.de 
+Max Neunhoeffer, e-mail: neunhoef@mcs.st-and.ac.uk

@@ -11,17 +11,23 @@ orb_la_SOURCES = src/orb.c
 orb_la_CPPFLAGS = $(GAP_CPPFLAGS) -DCONFIG_H
 # Note that the latter is only for GAP 4.4.12
 orb_la_LDFLAGS = -module -avoid-version
+if SYS_IS_CYGWIN
+orb_la_LDFLAGS += -no-undefined -version-info 0:0:0 -Wl,$(GAPROOT)/bin/$(GAPARCH)/gap.dll
+endif
 
 all-local: orb.la install-libLTLIBRARIES
 #	@$(MAKE) $(AM_MAKEFLAGS) install-libLTLIBRARIES
 	$(mkdir_p) $(top_srcdir)/$(BINARCHDIR)
+if SYS_IS_CYGWIN
+	cp $(libdir)/orb.dll $(GAPINSTALLLIB)
+else
 	cp $(libdir)/orb.so $(GAPINSTALLLIB)
+endif
 	@echo "SUCCESS!"
 
-clean-local: uninstall-libLTLIBRARIES
-#	@$(MAKE) $(AM_MAKEFLAGS) uninstall-libLTLIBRARIES
+distclean-local:
+	rm -rf bin/*
 	(cd doc ; ./clean)
-	rm -f $(GAPINSTALLLIB)
 
 doc:	doc/manual.six
 
