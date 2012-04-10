@@ -778,6 +778,11 @@ else
       end );
 fi;
 
+InstallGlobalFunction( ORB_HashFunctionForTransformations,
+function(t,data)
+  return ORB_HashFunctionForPlainFlatList(t![1],data);
+end );
+
 InstallGlobalFunction( MakeHashFunctionForPlainFlatList,
   function( len )
     if not(CompareVersionNumbers(GAPInfo.Version,"4.5")) and
@@ -793,6 +798,12 @@ InstallMethod( ChooseHashFunction, "for permutations",
   [IsPerm, IsInt],
   function(p,hashlen)
     return rec( func := ORB_HashFunctionForPermutations, data := hashlen );
+  end );
+
+InstallMethod( ChooseHashFunction, "for transformations",
+  [IsTransformationRep, IsInt],
+  function(t,hashlen)
+    return rec( func := ORB_HashFunctionForTransformations, data := hashlen );
   end );
 
 InstallGlobalFunction( ORB_HashFunctionForIntList,
