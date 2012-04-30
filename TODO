@@ -1,8 +1,8 @@
 Next version:
 
 Multiple seeds for Orb function?
-OnIntegerSetsWithTransformation in C
-OnIntegerTupleWithTransformation in C
+  rec( seeds := [POINTS] )
+where POINTS are additional seeds to the first one.
 
 Note: if an AVLtree becomes immutable, it stops being changeable.
 
