@@ -7,6 +7,9 @@
 ==========================
 
   - Add ChooseHashFunction method for transformations.
+  - Add seeds option for Orb and additional seeds.
+  - Add script configure_like_gap.
+  - Replace "source" by "." in m4/ac_find_gap.m4 for BSD systems.
 
 
 ==========================
