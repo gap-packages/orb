@@ -1,9 +1,5 @@
 Next version:
 
-Multiple seeds for Orb function?
-  rec( seeds := [POINTS] )
-where POINTS are additional seeds to the first one.
-
 Note: if an AVLtree becomes immutable, it stops being changeable.
 
 David Bremner's Hash functions? --> email

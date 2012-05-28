@@ -398,6 +398,11 @@ orbit enumeration (see components <C>opt.permgens</C> and
     determined), no more calls to <C>schreiergenaction</C> happen. <P/>
     This component is mainly used internally when the <C>permgens</C>
     component was set and the stabiliser is calculated.</Item>
+<Mark><C>seeds</C></Mark>
+<Item>In this component you can specify a list of additional seed
+    points, which are appended to the orbit before the enumeration
+    starts.
+</Item>
 <Mark><C>stab</C></Mark>
 <Item>This component is used to tell the orbit enumerator that 
 a subgroup of the stabiliser of the starting point is already known.

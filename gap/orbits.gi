@@ -75,7 +75,7 @@ InstallValue( ORB, rec( ) );
 
 InstallGlobalFunction( Orb, 
   function( arg )
-    local comp,filts,gens,hashlen,lmp,o,op,opt,re,x;
+    local comp,filts,gens,hashlen,i,lmp,o,op,opt,re,x;
 
     # First parse the arguments:
     if Length(arg) = 3 then
@@ -283,16 +283,22 @@ InstallGlobalFunction( Orb,
     o.genstoapply := [1..Length(gens)];   # an internal trick!
     o.op := op;
     o.orbit := [x];
+    if IsBound(o.seeds) then
+        Append(o.orbit,o.seeds);
+    fi;
     o.pos := 1;
     if o.schreier or o.log <> false then
         o.depth := 0;
-        o.depthmarks := [2];  # depth 1 starts at point number 2
+        o.depthmarks := [Length(o.orbit)+1]; # depth 1 starts at first new pt
     fi;
 
     if not(IsBound(o.orbitgraph)) then
         o.orbitgraph := false;
     elif o.orbitgraph <> false then
-        o.orbitgraph := [EmptyPlist(Length(gens))];
+        o.orbitgraph := [];
+        for i in [1..Length(o.orbit)] do
+            o.orbitgraph[i] := EmptyPlist(Length(gens));
+        od;
         o.storenumbers := true;
     fi;
 
@@ -304,7 +310,9 @@ InstallGlobalFunction( Orb,
             Info(InfoOrb,1,"Warning: start point not in permuted range");
         fi;
         o.tab := 0*[1..lmp];
-        o.tab[x] := 1;
+        for i in [1..Length(o.orbit)] do
+            o.tab[o.orbit[i]] := 1;
+        od;
         filts := filts and IsPermOnIntOrbitRep;
         if o.orbsizebound = false then
             o.orbsizebound := lmp;
@@ -352,16 +360,20 @@ InstallGlobalFunction( Orb,
         fi;
         if o.ht <> fail then
             # Store the first point, if it is a hash orbit:
-            if o.storenumbers then
-                HTAdd(o.ht,x,1);
-            else
-                HTAdd(o.ht,x,true);
-            fi;
+            for i in [1..Length(o.orbit)] do
+                if o.storenumbers then
+                    HTAdd(o.ht,o.orbit[i],i);
+                else
+                    HTAdd(o.ht,o.orbit[i],true);
+                fi;
+            od;
         fi;
     fi;
     Objectify( NewType(CollectionsFamily(FamilyObj(x)),filts), o );
     if o!.gradingfunc <> false then
-        o!.grades[1] := o!.gradingfunc(o,x);
+        for i in [1..Length(orbit)] do
+            o!.grades[i] := o!.gradingfunc(o,x);
+        od;
     fi;
     return o;
 end );
