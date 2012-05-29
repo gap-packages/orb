@@ -371,7 +371,7 @@ InstallGlobalFunction( Orb,
     fi;
     Objectify( NewType(CollectionsFamily(FamilyObj(x)),filts), o );
     if o!.gradingfunc <> false then
-        for i in [1..Length(o.orbit)] do
+        for i in [1..Length(o!.orbit)] do
             o!.grades[i] := o!.gradingfunc(o,x);
         od;
     fi;
