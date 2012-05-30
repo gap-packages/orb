@@ -3,6 +3,14 @@
 ===========================================================================
 
 ==========================
+ Changes from 4.4 -> 4.5
+==========================
+
+  - Fix a hash table bug for matrices over finite fields acting on
+    vectors. This was found in the context of the genss package.
+
+
+==========================
  Changes from 4.3 -> 4.4
 ==========================
 

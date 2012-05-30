@@ -75,7 +75,7 @@ InstallValue( ORB, rec( ) );
 
 InstallGlobalFunction( Orb, 
   function( arg )
-    local comp,filts,gens,hashlen,i,lmp,o,op,opt,re,x;
+    local comp,filts,gens,hashlen,i,lmp,o,op,opt,re,x,f;
 
     # First parse the arguments:
     if Length(arg) = 3 then
@@ -332,7 +332,22 @@ InstallGlobalFunction( Orb,
             if IsBound(o.forflatplainlists) then
                 re.forflatplainlists := true;
             fi;
-            o.ht := HTCreate(x,re);
+            # Handle the special case of matrices over a finite field
+            # acting on vectors with OnRight or OnLines, because the
+            # field of the vector could be smaller than the field of the
+            # matrices:
+            if not(IsBound(re.hf)) and not(IsBound(re.forflatplainlists)) and
+               IsRowVector(x) and IsFFECollection(x) and
+               ForAll(o.gens,g->IsFFECollColl(g)) then
+                f := FieldOfMatrixList(o.gens);
+                if Size(DefaultField(x)) < Size(f) then
+                    o.ht := HTCreate(x*PrimitiveRoot(f),re);
+                else
+                    o.ht := HTCreate(x,re);
+                fi;
+            else
+                o.ht := HTCreate(x,re);
+            fi;
             filts := filts and IsHashOrbitRep;
         elif IsBound(o.eqfunc) and IsBound(o.hashfunc) then
             o.ht := HTCreate(x,rec( hf := o.hashfunc.func,
