@@ -28,7 +28,8 @@ DeclareGlobalVariable( "ORB" );
 
 # A new category of objects:
 DeclareCategory( "IsOrbit", IsComponentObjectRep and IsDenseList and
-                            IsFinite and IsSmallList );
+                            IsFinite and IsSmallList and
+                            IsNonAtomicComponentObjectRep );
 
 # Indicates, whether the orbit is already completely enumerated:
 DeclareFilter( "IsClosed", IsOrbit );

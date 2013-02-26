@@ -25,7 +25,8 @@ DeclareGlobalFunction( "ValueHT" );
 DeclareGlobalFunction( "GrowHT" );
 
 BindGlobal( "HashTabFamily", NewFamily("HashTabFamily") );
-DeclareCategory( "IsHashTab", IsComponentObjectRep);
+DeclareCategory( "IsHashTab", IsComponentObjectRep and 
+                              IsNonAtomicComponentObjectRep);
 DeclareRepresentation( "IsHashTabRep", IsHashTab, [] );
 DeclareRepresentation( "IsTreeHashTabRep", IsHashTab, [] );
 BindGlobal( "HashTabType", NewType(HashTabFamily,IsHashTabRep and IsMutable) );
