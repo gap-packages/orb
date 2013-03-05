@@ -1976,8 +1976,8 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
     Obj out;
     Obj tabdst, tabsrc;
     Int x;
-    Int mytabs[DEGREELIMITONSTACK];
-    Int mytabd[DEGREELIMITONSTACK];
+    Int mytabs[DEGREELIMITONSTACK+1];
+    Int mytabd[DEGREELIMITONSTACK+1];
 
     l = LEN_LIST(src);
     if (l != LEN_LIST(dst)) {
