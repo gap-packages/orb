@@ -39,7 +39,7 @@ ReadPackage("orb","gap/cache.gd");
 ReadPackage("orb","gap/orbits.gd");
 ReadPackage("orb","gap/search.gd");
 ReadPackage("orb","gap/bysuborbit.gd");
-if not(CompareVersionNumbers(GAPInfo.Version),"4.7") then
+if not(CompareVersionNumbers(GAPInfo.Version,"4.7")) then
     ReadPackage("orb","gap/transform.gd");
 fi;
 

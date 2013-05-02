@@ -20,7 +20,7 @@ ReadPackage("orb","gap/cache.gi");
 ReadPackage("orb","gap/orbits.gi");
 ReadPackage("orb","gap/search.gi");
 ReadPackage("orb","gap/bysuborbit.gi");
-if not(CompareVersionNumbers(GAPInfo.Version),"4.7") then
+if not(CompareVersionNumbers(GAPInfo.Version,"4.7")) then
     ReadPackage("orb","gap/transform.gi");
 fi;
 
