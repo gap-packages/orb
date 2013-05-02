@@ -13,10 +13,11 @@
 ##
 #############################################################################
 
+# Note that this file is not loaded for GAP >= 4.7 any more.
+
 DeclareGlobalFunction( "ImageAndKernelOfTransformation" );
 DeclareOperation( "PermLeftQuoTransformationNC", 
   [ IsTransformation, IsTransformation ]);
-DeclareGlobalFunction( "MappingPermSetSet" );
 DeclareGlobalFunction( "CanonicalTransSameKernel" );
 DeclareGlobalFunction( "IsInjectiveTransOnList" );
 

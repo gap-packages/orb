@@ -7,6 +7,11 @@
 ==========================
 
   - Fix a one by off bug in FuncMappingPermListList reported by Max Horn.
+  - Withdraw C versions of PermLeftQuoTransformationNC,
+    ImageAndKernelOfTransformation, CanonicalTransSameKernel and
+    IsInjectiveTransOnList
+  - No longer load the GAP versions of those for GAP >= 4.7
+  
 
 
 ==========================

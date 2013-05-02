@@ -2111,6 +2111,53 @@ InstallGlobalFunction( LoadQuotFinder, function()
   ReadPackage("orb","gap/quotfinder.gi");
 end );
 
+# MappingPermListList and MappingPermSetSet:
+
+# Install our C function if we are compiled:
+if IsBound( MappingPermListList_C ) then
+    MakeReadWriteGVar("MappingPermListList");
+    MappingPermListList := MappingPermListList_C;
+    MakeReadOnlyGVar("MappingPermListList");
+fi;
+
+if IsBound( MappingPermSetSet_C ) then
+    InstallGlobalFunction( MappingPermSetSet, MappingPermSetSet_C );
+else
+    InstallGlobalFunction( MappingPermSetSet,
+      function(src, dst)
+        local l, d, out, i, j, next, k;
+        l:=Length(src);
+        if l <> Length(dst) then
+            Error("both arguments must be lists of the same length");
+            return;
+        fi;
+        d:=Maximum(src[l], dst[l]);
+        out:=EmptyPlist(d);
+
+        i:=1;
+        j:=1;
+        next:=1;   # the next candidate, possibly prevented from being in dst
+
+        for k in [1..d] do
+          if i<=l and k=src[i] then
+            out[k]:=dst[i];
+            i:=i+1;
+          else
+            # Skip things in dst:
+            while j<=l and next>=dst[j] do
+              if next = dst[j] then next:=next+1; fi;
+              j:=j+1;
+            od;
+            out[k]:=next;
+            next:=next+1;
+          fi;
+        od;
+
+        return PermList(out);
+      end ); 
+fi;
+
+
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
