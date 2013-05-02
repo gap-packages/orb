@@ -13,7 +13,6 @@
   - No longer load the GAP versions of those for GAP >= 4.7
   - Fix hash function for transformations for GAP >= 4.7
   - Add hash function for partial perms for GAP >= 4.7
-  
 
 
 ==========================
