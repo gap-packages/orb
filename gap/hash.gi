@@ -811,11 +811,19 @@ InstallMethod( ChooseHashFunction, "for permutations",
     return rec( func := ORB_HashFunctionForPermutations, data := hashlen );
   end );
 
-InstallMethod( ChooseHashFunction, "for transformations",
-  [IsTransformationRep, IsInt],
-  function(t,hashlen)
-    return rec( func := ORB_HashFunctionForTransformations, data := hashlen );
-  end );
+if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+    InstallMethod( ChooseHashFunction, "for transformations",
+      [IsTransformation, IsInt],
+      function(t,hashlen)
+        return rec(func := ORB_HashFunctionForTransformations, data:=hashlen);
+      end );
+else
+    InstallMethod( ChooseHashFunction, "for transformations",
+      [IsTransformationRep, IsInt],
+      function(t,hashlen)
+        return rec(func := ORB_HashFunctionForTransformations, data:=hashlen);
+      end );
+fi;
 
 InstallGlobalFunction( ORB_HashFunctionForIntList,
 function(v,data)
