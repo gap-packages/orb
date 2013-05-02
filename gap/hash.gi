@@ -778,10 +778,21 @@ else
       end );
 fi;
 
-InstallGlobalFunction( ORB_HashFunctionForTransformations,
-function(t,data)
-  return ORB_HashFunctionForPlainFlatList(t![1],data);
-end );
+if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+    InstallGlobalFunction( ORB_HashFunctionForTransformations,
+     function(t,data)
+       if IsTrans2Rep(t) then 
+         return HashKeyBag(t,255,0,2*DegreeOfTransformation(t)) mod data + 1;
+       else
+         return HashKeyBag(t,255,0,4*DegreeOfTransformation(t)) mod data + 1; 
+       fi;
+      end );
+else
+    InstallGlobalFunction( ORB_HashFunctionForTransformations,
+      function(t,data)
+        return ORB_HashFunctionForPlainFlatList(t![1],data);
+      end );
+fi;
 
 InstallGlobalFunction( MakeHashFunctionForPlainFlatList,
   function( len )

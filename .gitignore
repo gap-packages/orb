@@ -54,4 +54,6 @@ orb.la
 orb_la-orb.lo
 src/pkgconfig.h
 src/stamp-h1
-
+*.DS_Store
+*.swp
+*.swo
