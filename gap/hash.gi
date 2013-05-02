@@ -897,6 +897,23 @@ InstallMethod( ChooseHashFunction,
     TryNextMethod();
   end );
 
+if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+    InstallGlobalFunction( ORB_HashFunctionForPartialPerms,
+    function(t,data)
+      if IsPPerm2Rep(t) then 
+        return HashKeyBag(t,255,2,2*DegreeOfPartialPerm(t)) mod data + 1;
+      else
+        return HashKeyBag(t,255,4,4*DegreeOfPartialPerm(t)) mod data + 1; 
+      fi;
+    end );
+
+    InstallMethod( ChooseHashFunction, "for partial perms",
+      [IsPartialPerm, IsInt],
+      function(t,hashlen)
+        return rec( func := ORB_HashFunctionForPartialPerms, data := hashlen );
+      end );
+fi;
+
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by

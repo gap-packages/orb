@@ -62,7 +62,9 @@ DeclareGlobalFunction( "ORB_HashFunctionModWrapper" );
 DeclareGlobalFunction( "ORB_HashFunctionForMatList" );
 DeclareGlobalFunction( "ORB_HashFunctionForPlainFlatList" );
 DeclareGlobalFunction( "ORB_HashFunctionForTransformations" );
+DeclareGlobalFunction( "ORB_HashFunctionForPartialPerms" );
 DeclareGlobalFunction( "MakeHashFunctionForPlainFlatList" );
+
 
 ##
 ##  This program is free software: you can redistribute it and/or modify
