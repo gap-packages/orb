@@ -778,7 +778,8 @@ else
       end );
 fi;
 
-if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+# compatibility with GAP 4.7
+if IsBound(IsTrans2Rep) then
     InstallGlobalFunction( ORB_HashFunctionForTransformations,
      function(t,data)
        if IsTrans2Rep(t) then 
@@ -811,7 +812,8 @@ InstallMethod( ChooseHashFunction, "for permutations",
     return rec( func := ORB_HashFunctionForPermutations, data := hashlen );
   end );
 
-if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+# compatibility with GAP 4.7
+if IsBound(IsTrans2Rep) then
     InstallMethod( ChooseHashFunction, "for transformations",
       [IsTransformation, IsInt],
       function(t,hashlen)
@@ -897,7 +899,8 @@ InstallMethod( ChooseHashFunction,
     TryNextMethod();
   end );
 
-if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+# compatibility with GAP 4.7
+if IsBound(IsPartialPerm) then
     InstallGlobalFunction( ORB_HashFunctionForPartialPerms,
     function(t,data)
       if IsPPerm2Rep(t) then 
