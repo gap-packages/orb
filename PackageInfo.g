@@ -25,8 +25,6 @@ Version := "4.6",
 # 
 Date := "02/05/2013",
 
-ArchiveURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-4.6",
-
 ArchiveFormats := ".tar.gz",
 
 ##  If not all of the archive formats mentioned above are provided, these 
@@ -125,10 +123,12 @@ Status := "deposited",
 # AcceptDate := "08/1999",
 #AcceptDate := "",
 
-README_URL := 
-  "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/README.orb",
-PackageInfoURL := 
-  "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/PackageInfo.g",
+BaseURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/",
+
+PackageWWWHome := Concatenation( ~.BaseURL, "orb.html" ),
+ArchiveURL     := Concatenation( ~.BaseURL, "orb/orb-", ~.Version ),
+README_URL     := Concatenation( ~.BaseURL, "orb/README.orb" ),
+PackageInfoURL := Concatenation( ~.BaseURL, "orb/PackageInfo.g" ),
 
 ##  Here you  must provide a short abstract explaining the package content 
 ##  in HTML format (used on the package overview Web page) and an URL 
@@ -144,7 +144,6 @@ AbstractHTML :=
   "The <span class=\"pkgname\">orb</span> package is about enumerating \
 orbits in various ways.",
 #
-PackageWWWHome := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb.html",
 
 PackageDoc := rec(
   BookName  := "orb",
