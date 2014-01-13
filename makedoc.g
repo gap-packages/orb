@@ -8,7 +8,9 @@ LoadPackage("GAPDoc");
 
 MakeGAPDocDoc("doc", "orb", [], "orb", "../../..");
 
+CopyHTMLStyleFiles("doc");
+
 GAPDocManualLab("orb");
 
-quit;
+QUIT;
 
