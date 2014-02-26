@@ -778,8 +778,22 @@ else
       end );
 fi;
 
-if CompareVersionNumbers(GAPInfo.Version,"4.7") then
-    InstallGlobalFunction( ORB_HashFunctionForTransformations, HASH_FUNC_FOR_TRANS);
+if IsBound(HASH_FUNC_FOR_TRANS) then
+  InstallGlobalFunction( ORB_HashFunctionForTransformations, HASH_FUNC_FOR_TRANS);
+elif CompareVersionNumbers(GAPInfo.Version,"4.7") then
+  InstallGlobalFunction( ORB_HashFunctionForTransformations, 
+  function(t, data)
+    local deg;
+      deg:=DegreeOfTransformation(t);
+      if IsTrans4Rep(t) then
+        if deg<=65536 then 
+          TrimTransformation(t, deg);
+        else
+          return HashKeyBag(t,255,0,4*deg) mod data + 1; 
+        fi;
+      fi;
+      return HashKeyBag(t,255,0,2*deg) mod data + 1; 
+  end);
 else
     InstallGlobalFunction( ORB_HashFunctionForTransformations,
       function(t,data)
@@ -804,19 +818,11 @@ InstallMethod( ChooseHashFunction, "for permutations",
     return rec( func := ORB_HashFunctionForPermutations, data := hashlen );
   end );
 
-if CompareVersionNumbers(GAPInfo.Version,"4.7") then
-    InstallMethod( ChooseHashFunction, "for transformations",
-      [IsTransformation, IsInt],
-      function(t,hashlen)
-        return rec(func := ORB_HashFunctionForTransformations, data:=hashlen);
-      end );
-else
-    InstallMethod( ChooseHashFunction, "for transformations",
-      [IsTransformationRep, IsInt],
-      function(t,hashlen)
-        return rec(func := ORB_HashFunctionForTransformations, data:=hashlen);
-      end );
-fi;
+InstallMethod( ChooseHashFunction, "for transformations",
+  [IsTransformation, IsInt],
+  function(t,hashlen)
+    return rec(func := ORB_HashFunctionForTransformations, data:=hashlen);
+  end );
 
 InstallGlobalFunction( ORB_HashFunctionForIntList,
 function(v,data)
@@ -890,14 +896,30 @@ InstallMethod( ChooseHashFunction,
     TryNextMethod();
   end );
 
-if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+if IsBound(HASH_FUNC_FOR_PPERM) then 
     InstallGlobalFunction( ORB_HashFunctionForPartialPerms, HASH_FUNC_FOR_PPERM);
-else
-    InstallMethod( ChooseHashFunction, "for partial perms",
-      [IsPartialPerm, IsInt],
-      function(t,hashlen)
-        return rec( func := ORB_HashFunctionForPartialPerms, data := hashlen );
-      end );
+elif CompareVersionNumbers(GAPInfo.Version,"4.7") then
+  InstallGlobalFunction( ORB_HashFunctionForPartialPerms, 
+  function(t, data)
+    local codeg;
+    if IsPPerm4Rep(t) then 
+      codeg:=CodegreeOfPartialPerm(t);
+      if codeg<65536 then 
+        TrimPartialPerm(t);
+      else
+        return HashKeyBag(t,255,4,4*DegreeOfPartialPerm(t)) mod data + 1;
+      fi;
+    fi;
+    return HashKeyBag(t,255,2,2*DegreeOfPartialPerm(t)) mod data + 1;
+  end);
+fi;
+
+if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+  InstallMethod( ChooseHashFunction, "for partial perms",
+    [IsPartialPerm, IsInt],
+    function(t,hashlen)
+      return rec( func := ORB_HashFunctionForPartialPerms, data := hashlen );
+    end );
 fi;
 
 ##
