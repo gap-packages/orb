@@ -779,19 +779,7 @@ else
 fi;
 
 if CompareVersionNumbers(GAPInfo.Version,"4.7") then
-    InstallGlobalFunction( ORB_HashFunctionForTransformations,
-     function(t,data)
-       local skip;
-       skip:=3*GAPInfo.BytesPerVariable;
-       # 3 pointers to Obj at the start of the transformation int rep. 
-       if IsTrans2Rep(t) then
-         return HashKeyBag(t, 255, skip, 2*DegreeOfTransformation(t)) mod
-          data + 1;
-       else
-         return HashKeyBag(t, 255, skip, 4*DegreeOfTransformation(t)) mod
-          data + 1; 
-       fi;
-      end );
+    InstallGlobalFunction( ORB_HashFunctionForTransformations, HASH_FUNC_FOR_TRANS);
 else
     InstallGlobalFunction( ORB_HashFunctionForTransformations,
       function(t,data)
@@ -903,19 +891,8 @@ InstallMethod( ChooseHashFunction,
   end );
 
 if CompareVersionNumbers(GAPInfo.Version,"4.7") then
-    InstallGlobalFunction( ORB_HashFunctionForPartialPerms,
-    function(t,data)
-      local skip;
-      skip:=2*GAPInfo.BytesPerVariable;
-      # 2 pointers to Obj at the start of the int rep of a pperm, and one UInt2
-      # or UInt4 for the codegree.
-      if IsPPerm2Rep(t) then 
-        return HashKeyBag(t,255,skip+2,2*DegreeOfPartialPerm(t)) mod data + 1;
-      else
-        return HashKeyBag(t,255,skip+4,4*DegreeOfPartialPerm(t)) mod data + 1; 
-      fi;
-    end );
-
+    InstallGlobalFunction( ORB_HashFunctionForPartialPerms, HASH_FUNC_FOR_PPERM);
+else
     InstallMethod( ChooseHashFunction, "for partial perms",
       [IsPartialPerm, IsInt],
       function(t,hashlen)
