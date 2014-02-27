@@ -119,7 +119,6 @@ PackageDoc := rec(
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "Methods to enumerate orbits",
-  Autoload  := true
 ),
 
 Dependencies := rec(
@@ -130,12 +129,6 @@ Dependencies := rec(
 ),
 
 AvailabilityTest := ReturnTrue,
-
-##  Suggest here if the package should be *automatically loaded* when GAP is 
-##  started.  This should usually be 'false'. Say 'true' only if your package 
-##  provides some improvements of the GAP library which are likely to enhance 
-##  the overall system performance for many users.
-Autoload := false,
 
 ##  *Optional*, but recommended: path relative to package root to a file which 
 ##  contains as many tests of the package functionality as sensible.
