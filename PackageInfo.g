@@ -118,7 +118,7 @@ PackageDoc := rec(
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "orb - Methods to enumerate orbits",
+  LongTitle := "Methods to enumerate orbits",
   Autoload  := true
 ),
 
