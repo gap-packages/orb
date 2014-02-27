@@ -780,7 +780,7 @@ fi;
 
 if IsBound(HASH_FUNC_FOR_TRANS) then
   InstallGlobalFunction( ORB_HashFunctionForTransformations, HASH_FUNC_FOR_TRANS);
-elif CompareVersionNumbers(GAPInfo.Version,"4.7") then
+elif IsBound(IsTrans2Rep) and IsBound(IsTrans4Rep) then 
   InstallGlobalFunction( ORB_HashFunctionForTransformations, 
   function(t, data)
     local deg;
@@ -795,10 +795,10 @@ elif CompareVersionNumbers(GAPInfo.Version,"4.7") then
       return HashKeyBag(t,255,0,2*deg) mod data + 1; 
   end);
 else
-    InstallGlobalFunction( ORB_HashFunctionForTransformations,
-      function(t,data)
-        return ORB_HashFunctionForPlainFlatList(t![1],data);
-      end );
+  InstallGlobalFunction( ORB_HashFunctionForTransformations,
+    function(t,data)
+      return ORB_HashFunctionForPlainFlatList(t![1],data);
+    end );
 fi;
 
 InstallGlobalFunction( MakeHashFunctionForPlainFlatList,
@@ -898,7 +898,7 @@ InstallMethod( ChooseHashFunction,
 
 if IsBound(HASH_FUNC_FOR_PPERM) then 
     InstallGlobalFunction( ORB_HashFunctionForPartialPerms, HASH_FUNC_FOR_PPERM);
-elif CompareVersionNumbers(GAPInfo.Version,"4.7") then
+elif IsBound(IsPPerm2Rep) and IsBound(IsPPerm4Rep) then
   InstallGlobalFunction( ORB_HashFunctionForPartialPerms, 
   function(t, data)
     local codeg;
@@ -914,7 +914,7 @@ elif CompareVersionNumbers(GAPInfo.Version,"4.7") then
   end);
 fi;
 
-if CompareVersionNumbers(GAPInfo.Version,"4.7") then
+if IsBound(IsPartialPerm) then
   InstallMethod( ChooseHashFunction, "for partial perms",
     [IsPartialPerm, IsInt],
     function(t,hashlen)
