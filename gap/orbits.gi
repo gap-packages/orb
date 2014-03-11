@@ -814,6 +814,8 @@ InstallMethod( Enumerate,
             else
                 logind[i] := 0;
             fi;
+        elif looking and found then 
+          i:=i+1; break;
         fi;
         i := i + 1;
         if rep <> false then
@@ -1006,6 +1008,8 @@ InstallMethod( Enumerate,
             else
                 logind[i] := 0;
             fi;
+        elif looking and found then 
+          i:=i+1; break; 
         fi;
         i := i + 1;
         if rep <> false then
