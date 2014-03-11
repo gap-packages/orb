@@ -629,13 +629,9 @@ InstallMethod( Enumerate,
   "for a hash orbit and a limit", 
   [IsOrbit and IsHashOrbitRep, IsCyclotomic],
   function( o, limit )
+    local orb, i, nr, looking, lookfunc, found, stopper, onlystab, storenumbers, op, gens, memorygens, ht, genstoapply, schreier, schreiergen, schreierpos, orbsizebound, permgens, grpsizebound, schreiergenaction, stabsizebound, log, logind, logpos, depth, depthmarks, grades, gradingfunc, onlygrades, onlygradesdata, orbitgraph, rep, suc, yy, pos, grade, j;
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
-    local depth,depthmarks,gens,genstoapply,grpsizebound,ht,i,j,log,logind,
-          logpos,lookfunc,looking,memorygens,nr,onlystab,op,orb,orbsizebound,
-          permgens,pos,rep,schreier,schreiergen,schreiergenaction,schreierpos,
-          stabsizebound,stopper,storenumbers,suc,yy,gradingfunc,grades,
-          onlygrades,onlygradesdata,grade,orbitgraph;
 
     # Set a few local variables for faster access:
     orb := o!.orbit;
@@ -644,7 +640,23 @@ InstallMethod( Enumerate,
 
     # We copy a few things to local variables to speed up access:
     looking := o!.looking;
-    if looking then lookfunc := o!.lookfunc; fi;
+    if looking then 
+      lookfunc := o!.lookfunc; 
+      found:=o!.found;
+      if found<>false then 
+        for j in [found+1..nr] do 
+          if lookfunc(o,orb[j]) then
+            o!.found := j;
+            return o;
+          fi;
+        od;
+      elif i=1 and lookfunc(o, orb[1]) then 
+      # Maybe we are looking for something and it is the start point:
+        o!.found:=1;
+        return o;
+      fi;
+    fi;
+    
     stopper := o!.stopper;
     onlystab := o!.onlystab;
     storenumbers := o!.storenumbers;
@@ -677,14 +689,6 @@ InstallMethod( Enumerate,
     onlygrades := o!.onlygrades;
     onlygradesdata := o!.onlygradesdata;
     orbitgraph := o!.orbitgraph;
-
-    # Maybe we are looking for something and it is the start point:
-    if i = 1 and o!.found = false and looking then
-        if lookfunc(o,orb[1]) then
-            o!.found := 1;
-            return o;
-        fi;
-    fi;
 
     rep := o!.report;
     while nr <= limit and i <= nr and i <> stopper do
@@ -749,14 +753,10 @@ InstallMethod( Enumerate,
                 fi;
                 
                 # Are we looking for something?
-                if looking then
+                if looking and not found then
                     if lookfunc(o,yy) then
-                        o!.pos := i;
+                        found:=true;
                         o!.found := nr;
-                        if o!.schreier or o!.log <> false then
-                            o!.depth := depth;
-                        fi;
-                        return o;
                     fi;
                 fi;
 
@@ -809,6 +809,8 @@ InstallMethod( Enumerate,
         if log <> false then
             if suc then
                 log[logpos-2] := -log[logpos-2];
+                if looking and found then i:=i+1; break; fi;
+                # we only look among new points
             else
                 logind[i] := 0;
             fi;
@@ -839,12 +841,12 @@ InstallMethod( Enumerate,
   "for a perm on int orbit with or without permutation stabilizer and a limit", 
   [IsOrbit and IsPermOnIntOrbitRep, IsCyclotomic],
   function( o, limit )
+    local orb, i, tab, nr, looking, lookfunc, found, stopper, onlystab, gens,
+      memorygens, genstoapply, schreier, schreiergen, schreierpos, orbsizebound,
+      permgens, grpsizebound, schreiergenaction, stabsizebound, log, logind, logpos,
+      depth, depthmarks, orbitgraph, rep, suc, yy, j;
     # We have lots of local variables because we copy stuff from the
     # record into locals to speed up the access.
-    local depth,depthmarks,gens,genstoapply,grpsizebound,i,j,log,logind,
-          logpos,lookfunc,looking,memorygens,nr,onlystab,orb,orbsizebound,
-          permgens,rep,schreier,schreiergen,schreiergenaction,schreierpos,
-          stabsizebound,stopper,suc,tab,yy,orbitgraph;
 
     orb := o!.orbit;
     i := o!.pos;  # we go on here
@@ -853,7 +855,22 @@ InstallMethod( Enumerate,
 
     # We copy a few things to local variables to speed up access:
     looking := o!.looking;
-    if looking then lookfunc := o!.lookfunc; fi;
+    if looking then 
+      lookfunc := o!.lookfunc; 
+      found:=o!.found;
+      if found<>false then 
+        for j in [found+1..nr] do 
+          if lookfunc(o,orb[j]) then
+            o!.found := j;
+            return o;
+          fi;
+        od;
+      elif i=1 and lookfunc(o, orb[1]) then 
+      # Maybe we are looking for something and it is the start point:
+        o!.found:=1;
+        return o;
+      fi;
+    fi;
     stopper := o!.stopper;
     onlystab := o!.onlystab;
     gens := o!.gens;
@@ -879,14 +896,6 @@ InstallMethod( Enumerate,
         depthmarks := o!.depthmarks;
     fi;
     orbitgraph := o!.orbitgraph;
-
-    # Maybe we are looking for something and it is the start point:
-    if i = 1 and o!.found = false and looking then
-        if lookfunc(o,o!.orbit[1]) then
-            o!.found := 1;
-            return o;
-        fi;
-    fi;
 
     rep := o!.report;
     while nr <= limit and i <= nr and i <> stopper do
@@ -935,14 +944,10 @@ InstallMethod( Enumerate,
                 fi;
                 
                 # Are we looking for something?
-                if looking then
+                if looking and not found then
                     if lookfunc(o,yy) then
-                        o!.pos := i;
+                        found:=true;
                         o!.found := nr;
-                        if o!.schreier or o!.log <> false then
-                            o!.depth := depth;
-                        fi;
-                        return o;
                     fi;
                 fi;
 
@@ -996,6 +1001,8 @@ InstallMethod( Enumerate,
         if log <> false then
             if suc then
                 log[logpos-2] := -log[logpos-2];
+                if looking and found then i:=i+1; break; fi;
+                # we only look among new points
             else
                 logind[i] := 0;
             fi;
