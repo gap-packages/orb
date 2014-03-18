@@ -376,6 +376,8 @@ InstallGlobalFunction( Orb,
         if o.ht <> fail then
             # Store the first point, if it is a hash orbit:
             for i in [1..Length(o.orbit)] do
+                o.schreiergen[i]:=fail;
+                o.schreierpos[i]:=fail;
                 if o.storenumbers then
                     HTAdd(o.ht,o.orbit[i],i);
                 else
