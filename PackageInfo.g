@@ -1,101 +1,143 @@
 #############################################################################
 ##  
-##  Demo PackageInfo.g for the GitHubPagesForGAP
+##  PackageInfo.g for the package `orb'                       
+##                                                            Juergen Mueller
+##                                                            Max Neunhoeffer
+##                                                               Felix Noeske
 ##
 
 SetPackageInfo( rec(
 
-PackageName := "GitHubPagesForGAP",
+##  This is case sensitive, use your preferred spelling.
+PackageName := "orb",
 
-Subtitle := "A GitHubPages generator for GAP packages",
-Version := "0.1",
-Date := "21/03/2014", # dd/mm/yyyy format
+Subtitle := "orb - Methods to enumerate Orbits",
 
+Version := "4.6",
+##  Please adjust also the VERSION file in the package directory when
+##  changing this.
+
+##  Release date of the current version in dd/mm/yyyy format.
+Date := "02/05/2013",
+
+##  Information about authors and maintainers.
 Persons := [
-  rec(
-    LastName      := "Horn",
+  rec( 
+    LastName      := "Mueller",
+    FirstNames    := "Juergen",
+    IsAuthor      := true,
+    IsMaintainer  := true,
+    Email         := "juergen.mueller@math.rwth-aachen.de",
+    WWWHome       := "http://www.math.rwth-aachen.de/~Juergen.Mueller",
+    PostalAddress := Concatenation( [
+                       "Juergen Mueller\n",
+                       "Lehrstuhl D fuer Mathematik, RWTH Aachen\n",
+                       "Templergraben 64\n",
+                       "52056 Aachen\n",
+                       "Germany" ] ),
+    Place         := "Aachen",
+    Institution   := "RWTH Aachen"
+  ),
+  rec( 
+    LastName      := "Neunhoeffer",
     FirstNames    := "Max",
     IsAuthor      := true,
     IsMaintainer  := true,
-    Email         := "max.horn@math.uni-giessen.de",
-    WWWHome       := "http://www.quendi.de/math",
-    PostalAddress := Concatenation(
-                       "AG Algebra\n",
-                       "Mathematisches Institut\n",
-                       "Justus-Liebig-Universit‰t Gieﬂen\n",
-                       "Arndtstraﬂe 2\n",
-                       "35392 Gieﬂen\n",
-                       "Germany" ),
-    Place         := "Gieﬂen",
-    Institution   := "Justus-Liebig-Universit‰t Gieﬂen"
+    Email         := "neunhoef@mcs.st-and.ac.uk",
+    WWWHome       := "http://www-groups.mcs.st-and.ac.uk/~neunhoef",
+    PostalAddress := Concatenation( [
+                       "School of Mathematics and Statistics\n",
+                       "Mathematical Institute\n",
+                       "North Haugh\n",
+                       "St Andrews, Fife KY16 9SS\n",
+                       "Scotland, UK" ] ),
+    Place         := "St Andrews",
+    Institution   := "University of St Andrews"
   ),
-
-  rec(
-    LastName      := "Thor",
-    FirstNames    := "A. U.",
+  rec( 
+    LastName      := "Noeske",
+    FirstNames    := "Felix",
     IsAuthor      := true,
-    IsMaintainer  := false,
-    #Email         := "author@example.com",
-  ),
-
-  rec(
-    LastName      := "Itor",
-    FirstNames    := "Jan",
-    IsAuthor      := false,
     IsMaintainer  := true,
-    #Email         := "janitor@example.com",
+    Email         := "felix.noeske@math.rwth-aachen.de",
+    WWWHome       := "http://www.math.rwth-aachen.de/~Felix.Noeske",
+    PostalAddress := Concatenation( [
+                       "Felix Noeske\n",
+                       "Lehrstuhl D fuer Mathematik, RWTH Aachen\n",
+                       "Templergraben 64\n",
+                       "52056 Aachen\n",
+                       "Germany" ] ),
+    Place         := "Aachen",
+    Institution   := "RWTH Aachen"
   ),
 ],
 
-Status := "other",
+##  Status information. Currently the following cases are recognized:
+##    "accepted"      for successfully refereed packages
+##    "deposited"     for packages for which the GAP developers agreed 
+##                    to distribute them with the core GAP system
+##    "dev"           for development versions of packages 
+##    "other"         for all other packages
+##
+# Status := "accepted",
+Status := "deposited",
 
-# The following are not strictly necessary in your own PackageInfo.g
-# (in the sense that update.g only looks at the usual fields
-# like PackageWWWHome, ArchiveURL etc.). But they are convenient
-# if you use exactly the scheme for your package website that we propose.
-GithubUser := "fingolfin",
-GithubRepository := ~.PackageName,
-GithubWWW := Concatenation("https://github.com/", ~.GithubUser, "/", ~.GithubRepository),
+##  You must provide the next two entries if and only if the status is 
+##  "accepted" because is was successfully refereed:
+# format: 'name (place)'
+# CommunicatedBy := "Mike Atkinson (St. Andrews)",
+#CommunicatedBy := "",
+# format: mm/yyyy
+# AcceptDate := "08/1999",
+#AcceptDate := "",
 
-PackageWWWHome := Concatenation("http://", ~.GithubUser, ".github.io/", ~.GithubRepository, "/"),
-README_URL     := Concatenation( ~.PackageWWWHome, "README" ),
-PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
-# The following assumes you are using the Github releases system. If not, adjust
-# it accordingly.
-ArchiveURL     := Concatenation(~.GithubWWW,
-                    "/releases/download/v", ~.Version, "/",
-                    ~.GithubRepository, "-", ~.Version),
+BaseURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/",
 
-ArchiveFormats := ".tar.gz .tar.bz2",
+PackageWWWHome := Concatenation( ~.BaseURL, "orb.html" ),
+ArchiveURL     := Concatenation( ~.BaseURL, "orb/orb-", ~.Version ),
+README_URL     := Concatenation( ~.BaseURL, "orb/README.orb" ),
+PackageInfoURL := Concatenation( ~.BaseURL, "orb/PackageInfo.g" ),
 
+ArchiveFormats := ".tar.gz",
+
+##  Here you  must provide a short abstract explaining the package content 
+##  in HTML format (used on the package overview Web page) and an URL 
+##  for a Webpage with more detailed information about the package
+##  (not more than a few lines, less is ok):
+##  Please, use '<span class="pkgname">GAP</span>' and
+##  '<span class="pkgname">MyPKG</span>' for specifing package names.
+##  
 AbstractHTML := 
-  "This is a pseudo package that contains no actual\
-  <span class=\"pkgname\">GAP</span> code. Instead, it is a template for other\
-  GAP packages that allows to quickly setup GitHub pages.",
+  "The <span class=\"pkgname\">orb</span> package is about enumerating \
+orbits in various ways.",
+#
 
 PackageDoc := rec(
-  BookName  := "GitHubPagesForGAP",
+  BookName  := "orb",
   ArchiveURLSubset := ["doc"],
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "A GitHubPages generator for GAP packages",
+  LongTitle := "Methods to enumerate orbits",
 ),
 
-# The following dependencies are fake and for testing / demo purposes
 Dependencies := rec(
-  GAP := ">=4.5.5",
-  NeededOtherPackages := [
-    ["GAPDoc", ">= 1.2"],
-    ["IO", ">= 4.1"],
-  ],
-  SuggestedOtherPackages := [["orb", ">= 4.2"]],
+  GAP := ">=4.4.12",
+  NeededOtherPackages := [["GAPDoc", ">= 1.2"]],
+  SuggestedOtherPackages := [["IO",">= 3.3"]],
   ExternalConditions := []
 ),
 
 AvailabilityTest := ReturnTrue,
 
-Keywords := ["GitHub pages", "GAP"]
+##  *Optional*, but recommended: path relative to package root to a file which 
+##  contains as many tests of the package functionality as sensible.
+#TestFile := "tst/testall.g",
+
+##  *Optional*: Here you can list some keyword related to the topic 
+##  of the package.
+Keywords := ["Orbit huge", "OrbitBySuborbit", "hash tables", 
+             "searching in groups"]
 
 ));
 

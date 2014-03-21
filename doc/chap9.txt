@@ -1,0 +1,592 @@
+  
+  [1X9 [33X[0;0YOrbit enumeration by suborbits[133X[101X
+  
+  [33X[0;0YThe  code  described  in  this  chapter  is quite complicated and one has to
+  understand  quite  a  lot of theory to use it. The reason for this is that a
+  lot  of  preparatory  data has to be found and supplied by the user in order
+  for this code to run at all. Also the situations in which it can be used are
+  quite  special.  However,  in  such  a  situation, the user is rewarded with
+  impressive performance.[133X
+  
+  [33X[0;0YThe  main  reference  for the theory is [MNW07]. We briefly recall the basic
+  setup:  Let  [22XG[122X  be  a  group acting from the right on some set [22XX[122X. Let [22Xk[122X be a
+  natural number, set [22XX_{k+1} := X[122X, and let[133X
+  
+  
+        [33X[1;6Y[24X[33X[0;0YU_1 < U_2 < \ldots < U_k < U_{{k+1}} = G[133X [124X[133X
+  
+  
+  [33X[0;0Ybe  a chain of [21Xhelper[121X subgroups. Further, for [22X1 ≤ i ≤ k[122X let [22XX_i[122X be a [22XU_i[122X set
+  and let [22Xπ_i : X_{i+1} -> X_i[122X be a homomorphism of [22XU_i[122X-sets.[133X
+  
+  [33X[0;0YThis chapter starts with a section about the main orbit enumeration function
+  and the corresponding preparation functions. It then proceeds with a section
+  on  the  used  data  structures, which will necessarily be rather technical.
+  Finally,  the  chapter  concludes  with  a  section  on  higher  level  data
+  structures like lists of orbit-by-suborbit objects and their administration.
+  Note that there are quite a few examples in Chapter [14X11[114X.[133X
+  
+  
+  [1X9.1 [33X[0;0Y[10XOrbitBySuborbits[110X[101X[1X and its resulting objects[133X[101X
+  
+  [1X9.1-1 OrbitBySuborbit[101X
+  
+  [29X[2XOrbitBySuborbit[102X( [3Xsetup[103X, [3Xp[103X, [3Xj[103X, [3Xl[103X, [3Xi[103X, [3Xpercentage[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan orbit-by-suborbit object[133X
+  
+  [33X[0;0YThis  is  the  main  function  in the whole business. All notations from the
+  beginning  of  this  Chapter [14X9[114X remain in place. The argument [3Xsetup[103X must be a
+  setup record lying in the filter [2XIsOrbitBySuborbitSetup[102X ([14X9.3-1[114X) described in
+  detail     in     Section     [14X9.3[114X    and    produced    for    example    by
+  [2XOrbitBySuborbitBootstrapForVectors[102X                 ([14X9.2-1[114X)                or
+  [2XOrbitBySuborbitBootstrapForLines[102X  ([14X9.2-2[114X) described below. In particular, it
+  contains  all  the  generators  for [22XG[122X and the helper subgroups acting on the
+  various  sets.  The argument [3Xp[103X must be the starting point of the orbit. Note
+  that  the  function  possibly  does  not take [3Xp[103X itself as starting point but
+  rather  its [22XU_k[122X-minimalisation, which is a point in the same [22XU_k[122X-orbit as [3Xp[103X.
+  This  information  is  important  for  the  resulting  stabiliser  and words
+  representing the [22XU_k[122X-suborbits.[133X
+  
+  [33X[0;0YThe  integers  [3Xj[103X,  [3Xl[103X,  and  [3Xi[103X,  for  which [22Xk+1 ge [3Xj[103X ge [3Xl[103X > [3Xi[103X ge 1[122X must hold,
+  determine  the  running  mode. [3Xj[103X indicates in which set [22XX_j[122X the point [3Xp[103X lies
+  and  thus  in  which  set  the  orbit  enumeration  takes  place, with [22Xj=k+1[122X
+  indicating  the original set [22XX[122X. The value [3Xl[103X indicates which group to use for
+  orbit  enumeration. So the result will be a [22XU_l[122X orbit, with [22X[3Xl[103X=[3Xk[103X+1[122X indicating
+  a  [22XG[122X-orbit.  Finally,  the  value  [3Xi[103X indicates which group to use for the [21Xby
+  suborbit[121X  part,  that  is,  the orbit will be enumerated [21Xby [22XU_[3Xi[103X[122X-orbits[121X. Note
+  that  nearly  all  possible combinations of these parameters actually occur,
+  because  this  function  is  also  used  in  the  [21Xon-the-fly[121X  precomputation
+  happening  behind the scenes. The most common usage of this function for the
+  user is [22X[3Xj[103X=[3Xl[103X=[3Xk[103X+1[122X and [22X[3Xi[103X=k[122X.[133X
+  
+  [33X[0;0YFinally,  the  integer [3Xpercentage[103X says, how much of the full orbit should be
+  enumerated, the value is in percent, thus [22X100[122X means the full orbit. Usually,
+  only  values  greater  than  [22X50[122X are sensible, because one can only prove the
+  size of the orbit after enumerating at least half of it.[133X
+  
+  [33X[0;0YThe  result is an [21Xorbit-by-suborbit[121X object. For such an object in particular
+  the   operations   [2XSize[102X   ([14X9.1-3[114X),   [2XSeed[102X   ([14X9.1-4[114X),   [2XSuborbitsDb[102X  ([14X9.1-5[114X),
+  [2XWordsToSuborbits[102X  ([14X9.1-6[114X),  [2XMemory[102X  ([14X9.1-7[114X),  [2XStabilizer[102X  ([14X9.1-8[114X),  and [2XSeed[102X
+  ([14X9.1-4[114X) are defined, see below.[133X
+  
+  [1X9.1-2 OrbitBySuborbitKnownSize[101X
+  
+  [29X[2XOrbitBySuborbitKnownSize[102X( [3Xsetup[103X, [3Xp[103X, [3Xj[103X, [3Xl[103X, [3Xi[103X, [3Xpercentage[103X, [3Xknownsize[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan orbit-by-suborbit object[133X
+  
+  [33X[0;0YBasically  does the same as [2XOrbitBySuborbit[102X ([14X9.1-1[114X) but does not compute the
+  stabiliser  by  evaluating Schreier words. Instead, the size of the orbit to
+  enumerate  must already be known and be given in the argument [3Xknownsize[103X. The
+  other arguments are as for the function [2XOrbitBySuborbit[102X ([14X9.1-1[114X).[133X
+  
+  [1X9.1-3 Size[101X
+  
+  [29X[2XSize[102X( [3Xorb[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns the number of points in the orbit-by-suborbit [3Xorb[103X.[133X
+  
+  [1X9.1-4 Seed[101X
+  
+  [29X[2XSeed[102X( [3Xorb[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya point in the orbit[133X
+  
+  [33X[0;0YReturns  the  starting  point  of  the  orbit-by-suborbit  [3Xorb[103X.  It  is  the
+  [22XU_i[122X-minimalisation of the starting point given to [2XOrbitBySuborbit[102X ([14X9.1-1[114X).[133X
+  
+  [1X9.1-5 SuborbitsDb[101X
+  
+  [29X[2XSuborbitsDb[102X( [3Xorb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya database of suborbits[133X
+  
+  [33X[0;0YReturns  the  data base of suborbits of the orbit-by-suborbit object [3Xorb[103X. In
+  particular,  such  a  database  object has methods for the operations [2XMemory[102X
+  ([14X9.1-7[114X),   [2XTotalLength[102X   ([14X9.1-11[114X),   and   [2XRepresentatives[102X   ([14X9.1-12[114X).   For
+  descriptions see below.[133X
+  
+  [1X9.1-6 WordsToSuborbits[101X
+  
+  [29X[2XWordsToSuborbits[102X( [3Xorb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya list of words[133X
+  
+  [33X[0;0YReturns  a list of words in the groups [22XU_*[122X reaching each of the suborbits in
+  the  orbit-by-suborbit  [3Xorb[103X.  Here  a  word  is a list of integers. Positive
+  numbers  index  generators in following numbering: The first few numbers are
+  numbers  of  generators  of  [22XU_1[122X  the  next  few  adjacent numbers index the
+  generators  of  [22XU_2[122X and so on until the generators of [22XG[122X in the end. Negative
+  numbers indicate the corresponding inverses of these generators.[133X
+  
+  [33X[0;0YNote  that  [2XOrbitBySuborbit[102X  ([14X9.1-1[114X)  takes  the  [22XU_i[122X-minimalisation  of the
+  starting  point as its starting point and the words here are all relative to
+  this new starting point.[133X
+  
+  [1X9.1-7 Memory[101X
+  
+  [29X[2XMemory[102X( [3Xob[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns the amount of memory needed by the object [3Xob[103X, which can be either an
+  orbit-by-suborbit  object,  a  suborbit database object, or an object in the
+  filter [2XIsOrbitBySuborbitSetup[102X ([14X9.3-1[114X). The amount of memory used is given in
+  bytes.  Note  that this includes all hashes, databases, and preparatory data
+  of  substantial  size.  For  orbit-by-suborbits  the  memory  needed for the
+  precomputation is not included, ask the setup object for that.[133X
+  
+  [1X9.1-8 Stabilizer[101X
+  
+  [29X[2XStabilizer[102X( [3Xorb[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya permutation group[133X
+  
+  [33X[0;0YReturns the stabiliser of the starting point of the orbit-by-suborbit in [3Xorb[103X
+  in  form  of  a  permutation  group,  using  the  given faithful permutation
+  representation in the setup record.[133X
+  
+  [33X[0;0YNote  that  [2XOrbitBySuborbit[102X  ([14X9.1-1[114X)  takes  the  [22XU_i[122X-minimalisation  of the
+  starting point as its starting point and the stabiliser returned here is the
+  one of this new starting point.[133X
+  
+  [1X9.1-9 StabWords[101X
+  
+  [29X[2XStabWords[102X( [3Xorb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya list of words[133X
+  
+  [33X[0;0YReturns  generators  for  the  stabiliser  of  the  starting  point  of  the
+  orbit-by-suborbit  in  [3Xorb[103X  in form of words as described with the operation
+  [2XWordsToSuborbits[102X  ([14X9.1-6[114X). Note again that [2XOrbitBySuborbit[102X ([14X9.1-1[114X) takes the
+  [22XU_i[122X-minimalisation  of  the  starting  point  as  its starting point and the
+  stabiliser returned here is the one of this new starting point.[133X
+  
+  [1X9.1-10 SavingFactor[101X
+  
+  [29X[2XSavingFactor[102X( [3Xorb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns   the  quotient  of  the  total  number  of  points  stored  in  the
+  orbit-by-suborbit  [3Xorb[103X and the total number of [22XU[122X-minimal points stored. Note
+  that the memory for the precomputations is not considered here![133X
+  
+  [33X[0;0YThe following operations apply to orbit-by-suborbit database objects:[133X
+  
+  [1X9.1-11 TotalLength[101X
+  
+  [29X[2XTotalLength[102X( [3Xdb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns  the  total  number  of  points  stored  in  all  suborbits  in  the
+  orbit-by-suborbit database [3Xdb[103X.[133X
+  
+  [1X9.1-12 Representatives[101X
+  
+  [29X[2XRepresentatives[102X( [3Xdb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya list of points[133X
+  
+  [33X[0;0YReturns   a   list  of  representatives  of  the  suborbits  stored  in  the
+  orbit-by-suborbit database [3Xdb[103X.[133X
+  
+  [1X9.1-13 SavingFactor[101X
+  
+  [29X[2XSavingFactor[102X( [3Xdb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns  the  quotient  of the total number of points stored in the suborbit
+  database  [3Xdb[103X  and the total number of [22XU[122X-minimal points stored. Note that the
+  memory for the precomputations is not considered here![133X
+  
+  [1X9.1-14 OrigSeed[101X
+  
+  [29X[2XOrigSeed[102X( [3Xorb[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya point[133X
+  
+  [33X[0;0YReturns the original starting point for the orbit, not yet minimalised.[133X
+  
+  
+  [1X9.2 [33X[0;0YPreparation functions for [2XOrbitBySuborbit[102X[101X[1X ([14X9.1-1[114X)[133X[101X
+  
+  [1X9.2-1 OrbitBySuborbitBootstrapForVectors[101X
+  
+  [29X[2XOrbitBySuborbitBootstrapForVectors[102X( [3Xgens[103X, [3Xpermgens[103X, [3Xsizes[103X, [3Xcodims[103X, [3Xopt[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya setup record in the filter [2XIsOrbitBySuborbitSetup[102X ([14X9.3-1[114X)[133X
+  
+  [33X[0;0YAll  notations  from  the  beginning of this Chapter [14X9[114X remain in place. This
+  function  is  for  the  action of matrices on row vectors, so all generators
+  must  be matrices. The set [22XX[122X thus is a row space usually over a finite field
+  and  the sets [22XX_i[122X are quotient spaces. The matrix generators for the various
+  groups  have  to  be  adjusted  with  a base change, such that the canonical
+  projection onto [22XX_i[122X is just to take the first few entries in a vector, which
+  means,  that  the  submodules divided out are generated by the last standard
+  basis vectors.[133X
+  
+  [33X[0;0YThe  first  argument  [3Xgens[103X  must be a list of lists of generators. The outer
+  list  must  have length [22Xk+1[122X with entry [22Xi[122X being a list of matrices generating
+  [22XU_i[122X,  given in the action on [22XX=X_{k+1}[122X. The above mentioned base change must
+  have  been done. The second argument [3Xpermgens[103X must be an analogous list with
+  generator  lists  for  the  [22XU_i[122X.  These  representations are used to compute
+  membership  and  group orders of stabilisers. In its simplest form, [3Xpermgens[103X
+  is a list of permutation representations of the same degree, giving a set of
+  generators  for each individual group [22XU_i[122X. Alternatively, if for some [22XU_i[122X, [22Xi
+  > 1[122X, it is required that the stabilizer of its action is to be calculated as
+  a  matrix  group,  generators  of  [22XU_i[122X  in some matrix representation may be
+  supplied.  However,  it  is  then  mandatory  that  for  all [22X1 < i ≤ k+1[122X the
+  generator  lists  have the following format: The [22Xi[122X-th entry of [3Xpermgens[103X is a
+  list  concatenating the generator lists of [22XU_1[122X up to [22XU_i[122X (in this order) all
+  of   whose   elements   are  in  either  some  permutation  or  some  matrix
+  representation. Note that currently, the generators of [22XU_1[122X need to be always
+  given  in a permutation representation. The argument [3Xsizes[103X must be a list of
+  length  [22Xk+1[122X  and  entry [22Xi[122X must be the group order of [22XU_i[122X (again with [22XU_{k+1}[122X
+  being [22XG[122X). Finally, the argument [3Xcodims[103X must be a list of length [22Xk[122X containing
+  integers  with  the  [22Xi[122Xth  entry  being  the codimension of the [22XU_i[122X-invariant
+  subspace [22XY_i[122X of [22XX[122X with [22XX_i = X/Y_i[122X. These codimensions must not decrease for
+  obvious  reasons, but some of them may be equal. The last argument [3Xopt[103X is an
+  options record. See below for possible entries.[133X
+  
+  [33X[0;0YThe function does all necessary steps to fill a setup record (see [14X9.3[114X) to be
+  used with [2XOrbitBySuborbit[102X ([14X9.1-1[114X). For details see the code.[133X
+  
+  [33X[0;0YCurrently,  the  following  components  in  the  options  record  [3Xopt[103X have a
+  meaning:[133X
+  
+  [8X[10Xregvecfachints[110X[108X
+        [33X[0;6YIf  bound it must be a list. In position [22Xi[122X for [22Xi>1[122X there may be a list
+        of  vectors  in  the  [22Xi[122X-th  quotient  space  [22XX_i[122X  that  can be used to
+        distinguish  the  left [22XU_{i-1}[122X cosets in [22XU_i[122X. All vectors in this list
+        are tried and the first one that actually works is used.[133X
+  
+  [8X[10Xregvecfullhints[110X[108X
+        [33X[0;6YIf  bound it must be a list. In position [22Xi[122X for [22Xi>1[122X there may be a list
+        of  vectors  in  the  full space [22XX[122X that can be used to distinguish the
+        left [22XU_{i-1}[122X cosets in [22XU_i[122X. All vectors in this list are tried and the
+        first one that actually works is used.[133X
+  
+  [8X[10Xstabchainrandom[110X[108X
+        [33X[0;6YIf bound the value is copied into the [10Xstabchainrandom[110X component of the
+        setup record.[133X
+  
+  [8X[10Xnostabchainfullgroup[110X[108X
+        [33X[0;6YIf bound it must be [9Xtrue[109X or [9Xfalse[109X. If it is unbound or set to [9Xtrue[109X, no
+        stabilizer chain is computed for the group [22XU_k+1[122X. Its default value is
+        [9Xfalse[109X.[133X
+  
+  [1X9.2-2 OrbitBySuborbitBootstrapForLines[101X
+  
+  [29X[2XOrbitBySuborbitBootstrapForLines[102X( [3Xgens[103X, [3Xpermgens[103X, [3Xsizes[103X, [3Xcodims[103X, [3Xopt[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya setup record in the filter [2XIsOrbitBySuborbitSetup[102X ([14X9.3-1[114X)[133X
+  
+  [33X[0;0YAll  notations  from  the  beginning of this Chapter [14X9[114X remain in place. This
+  does  exactly  the same as [2XOrbitBySuborbitBootstrapForVectors[102X ([14X9.2-1[114X) except
+  that  it  handles  the case of matrices acting on one-dimensional subspaces.
+  Those one-dimensional subspaces are represented by normalised vectors, where
+  a vector is normalised if its first non-vanishing entry is equal to [22X1[122X.[133X
+  
+  [1X9.2-3 OrbitBySuborbitBootstrapForSpaces[101X
+  
+  [29X[2XOrbitBySuborbitBootstrapForSpaces[102X( [3Xgens[103X, [3Xpermgens[103X, [3Xsizes[103X, [3Xcodims[103X, [3Xspcdim[103X, [3Xopt[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya setup record in the filter [2XIsOrbitBySuborbitSetup[102X ([14X9.3-1[114X)[133X
+  
+  [33X[0;0YAll  notations  from  the  beginning of this Chapter [14X9[114X remain in place. This
+  does  exactly  the same as [2XOrbitBySuborbitBootstrapForVectors[102X ([14X9.2-1[114X) except
+  that it handles the case of matrices acting on [3Xspcdim[103X-dimensional subspaces.
+  Those subspaces are represented by fully echelonised bases.[133X
+  
+  
+  [1X9.3 [33X[0;0YData structures for orbit-by-suborbits[133X[101X
+  
+  [33X[0;0YThe  description  in this section is necessarily technical. It is meant more
+  as  extended  annotations  to  the  source  code than as user documentation.
+  Usually  it  should  not  be  necessary  for  the  user  to know the details
+  presented  here.  The  function [2XOrbitBySuborbit[102X ([14X9.1-1[114X) needs an information
+  record of the following form:[133X
+  
+  [1X9.3-1 IsOrbitBySuborbitSetup[101X
+  
+  [29X[2XIsOrbitBySuborbitSetup[102X( [3Xob[103X ) [32X Category
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [33X[0;0YObjects  in  this  category  are  also in [10XIsComponentObjRep[110X. We describe the
+  components, refering to the setup at the beginning of this Chapter [14X9[114X.[133X
+  
+  [8X[10Xk[110X[108X
+        [33X[0;6YThe number of helper subgroups.[133X
+  
+  [8X[10Xsize[110X[108X
+        [33X[0;6YA  list  of  length  [22Xk+1[122X  containing  the  orders  of  the groups [22XU_i[122X,
+        including [22XU_{k+1} = G[122X.[133X
+  
+  [8X[10Xindex[110X[108X
+        [33X[0;6YA  list  of length [22Xk[122X with the index [22X[U_i:U_{i-1}][122X in position [22Xi[122X ([22XU_0 =
+        {1}[122X).[133X
+  
+  [8X[10Xels[110X[108X
+        [33X[0;6YA  list  of  length  [22Xk+1[122X  containing generators of the groups in their
+        action  on various sets. In position [22Xi[122X we store all the generators for
+        all  groups acting on [22XX_i[122X, that is for the groups [22XU_1, ..., U_i[122X (where
+        position  [22Xk+1[122X  includes  the  generators  for  [22XG[122X. In each position the
+        generators of all those groups are concatentated starting with [22XU_1[122X and
+        ending with [22XU_i[122X.[133X
+  
+  [8X[10Xelsinv[110X[108X
+        [33X[0;6YThe  inverses  of  all  the  elements in the [10Xels[110X component in the same
+        arrangement.[133X
+  
+  [8X[10Xtrans[110X[108X
+        [33X[0;6YA  list  of  length  [22Xk[122X  in which position [22Xi[122X for [22Xi>1[122X contains a list of
+        words  in the generators for a transversal of [22XU_{i-1}[122X in [22XU_i[122X (with [22XU_0
+        = 1[122X).[133X
+  
+  [8X[10Xpifunc[110X[108X
+        [33X[0;6YProjection  functions.  This  is  a  list  of length [22Xk+1[122X containing in
+        position  [22Xj[122X  a  list  of  length  [22Xj-1[122X  containing  in position [22Xi[122X a [5XGAP[105X
+        function doing the projection [22XX_j -> X_i[122X. These [5XGAP[105X functions take two
+        arguments,  namely  the  point to map and secondly the value of the [10Xpi[110X
+        component  at  positions  [10X[j][i][110X.  Usually  [10Xpifunc[110X is just the slicing
+        operator  in  [5XGAP[105X  and [10Xpi[110X contains the components to project onto as a
+        range object.[133X
+  
+  [8X[10Xpi[110X[108X
+        [33X[0;6YSee the description of the [10Xpifunc[110X component.[133X
+  
+  [8X[10Xop[110X[108X
+        [33X[0;6YA  list  of  [22Xk+1[122X  [5XGAP[105X operation functions, each taking a point [22Xp[122X and a
+        generator [22Xg[122X in the action given by the index and returning [22Xpg[122X.[133X
+  
+  [8X[10Xinfo[110X[108X
+        [33X[0;6YA  list  of  length  [22Xk[122X containing a hash table with the minimalisation
+        lookup  data.  These  hash  tables  grow  during orbit enumerations as
+        precomputations are done behind the scenes.[133X
+  
+        [33X[0;6Y[10Xinfo[1][110X  contains  precomputation  data  for [22XX_1[122X. Assume [22Xx ∈ X_1[122X to be
+        [22XU_1[122X-minimal.  For  all  [22Xz  ∈ xU_1[122X with [22Xz ≠ x[122X we store the number of an
+        element  in  the  [10Xwordcache[110X  mapping [22Xz[122X to [22Xx[122X. For [22Xz=x[122X we store a record
+        with  two  components  [10Xgens[110X and [10Xsize[110X, where [10Xgens[110X stores generators for
+        the stabiliser Stab[22X_{U_1}(x)[122X as words in the group generators and [10Xsize[110X
+        stores the size of that stabiliser.[133X
+  
+        [33X[0;6Y[10Xinfo[i][110X  for  [22Xi>1[122X contains precomputation data for [22XX_i[122X. Assume [22Xx ∈ X_i[122X
+        to  be  [22XU_i[122X-minimal.  For  all  [22XU_{i-1}[122X-minimal [22Xz ∈ xU_i ∖ xU_{i-1}[122X we
+        store  the  number  of an element in [10Xtrans[i][110X mapping [22Xz[122X into [22XxU_{i-1}[122X.
+        For  all [22XU_{i-1}[122X-minimal [22Xz ∈ xU_{i-1}[122X with [22Xz ≠ x[122X we store the negative
+        of  the  number  of  a  word in [10Xwordcache[110X that is in the generators of
+        [22XU_{i-1}[122X  and  maps [22Xz[122X to [22Xx[122X. For [22Xz=x[122X we store the stabiliser information
+        as in the case [22Xi=1[122X.[133X
+  
+        [33X[0;6YThis  information  together  with  the  information  in  the following
+        componente allows the minimalisation function to do its job.[133X
+  
+  [8X[10Xcosetrecog[110X[108X
+        [33X[0;6YA list of length [22Xk[122X beginning with the index [22X1[122X. The entry at position [22Xi[122X
+        is  bound to a function taking [22X3[122X arguments, namely [22Xi[122X itself, a word in
+        the group generators of [22XU_1, ..., U_k[122X which lies in [22XU_i[122X, and the setup
+        record.  The function computes the number [10Xj[110X of an element in [10Xtrans[i][110X,
+        such that the element of [22XU_i[122X described by the word lies in [10Xtrans[i][j]
+        U_{{i-1}}[110X.[133X
+  
+  [8X[10Xcosetinfo[110X[108X
+        [33X[0;6YA list of things that can be used by the functions in [10Xcosetrecog[110X.[133X
+  
+  [8X[10Xsuborbnr[110X[108X
+        [33X[0;6YA  list  of  length  [22Xk[122X  that  contains  in  position  [22Xi[122X  the number of
+        [22XU_i[122X-orbits in [22XX_i[122X archived in [10Xinfo[i][110X during precomputation.[133X
+  
+  [8X[10Xsumstabl[110X[108X
+        [33X[0;6YA  list  of  length [22Xk[122X that contains in position [22Xi[122X the sum of the point
+        stabiliser  sizes  of  all  [22XU_i[122X-orbits  [22XX_i[122X archived in [10Xinfo[i][110X during
+        precomputation.[133X
+  
+  [8X[10Xpermgens[110X[108X
+        [33X[0;6YA list of length [22Xk+1[122X containing in position [22Xi[122X generators for [22XU_1, ...,
+        U_i[122X in a faithful permutation representation of [22XU_i[122X. Generators fit to
+        the  generators  in  [10Xels[110X.  For  the  variant  [2XOrbitBySuborbitKnownSize[102X
+        ([14X9.1-2[114X) the [22Xk+1[122X entry can be unbound.[133X
+  
+  [8X[10Xpermgensinv[110X[108X
+        [33X[0;6YThe inverses of the generators in [10Xpermgens[110X in the same arrangement.[133X
+  
+  [8X[10Xsample[110X[108X
+        [33X[0;6YA list of length [22Xk+1[122X containing sample points in the sets [22XX_i[122X.[133X
+  
+  [8X[10Xstabchainrandom[110X[108X
+        [33X[0;6YThe  value  is  used  as the value for the [10Xrandom[110X option for [10XStabChain[110X
+        calculations  to  determine stabiliser sizes. Note that the algorithms
+        are randomized if you use this feature with a value smaller than [22X1000[122X.[133X
+  
+  [8X[10Xwordhash[110X[108X
+        [33X[0;6YA  hash to quickly recognise already used words. For every word in the
+        hash  the  position  of  that  word in the [10Xwordcache[110X list is stored as
+        value in the hash.[133X
+  
+  [8X[10Xwordcache[110X[108X
+        [33X[0;6YA list of words in the wordcache for indexing purposes.[133X
+  
+  [8X[10Xhashlen[110X[108X
+        [33X[0;6YInitial  length  of  hash  tables used for the enumeration of lists of
+        [22XU_i[122X-minimal points.[133X
+  
+  [8X[10Xstaborblenlimit[110X[108X
+        [33X[0;6YThis  contains  the  limit,  up  to  which  orbits  of stabilisers are
+        computed  using word action. After this limit, the stabiliser elements
+        are actually evaluated in the group.[133X
+  
+  [8X[10Xstabsizelimitnostore[110X[108X
+        [33X[0;6YIf  the  stabiliser  in  the  quotient  is larger than this limit, the
+        suborbit is not stored.[133X
+  
+  [8X[10Xcache[110X[108X
+        [33X[0;6YA  linked  list  cache  object  (see [2XLinkedListCache[102X ([14X5.2-1[114X)) to store
+        already  computed transversal elements. The cache nodes are referenced
+        in the [10Xtranscache[110X component and are stored in the cache [10Xcache[110X.[133X
+  
+  [8X[10Xtranscache[110X[108X
+        [33X[0;6YThis  is  a  list  of  lists of weak pointer objects. The weak pointer
+        object   at  position  [10X[i][j][110X  holds  references  to  cache  nodes  of
+        transversal elements of [22XU_i-1[122X in [22XU_i[122X in representation [22Xj[122X.[133X
+  
+  
+  [1X9.3-2 [33X[0;0YThe global record [10XORB[110X[101X[1X[133X[101X
+  
+  [33X[0;0YIn  this  section  we  describe  the  global record [10XORB[110X, which contains some
+  entries  that can tune the behaviour of the orbit-by-suborbit functions. The
+  record has the following components:[133X
+  
+  [8X[10XMINSHASHLEN[110X[108X
+        [33X[0;6YThis  positive  integer  is  the  initial  value of the hash size when
+        enumerating orbits of stored stabilisers to find all or search through
+        [22XU_{i-1}[122X-minimal vectors in an [22XU_i[122X-orbit. The default value is [22X1000[122X.[133X
+  
+  [8X[10XORBITBYSUBORBITDEPTH[110X[108X
+        [33X[0;6YThis    integer    indicates    how    many    recursive    calls   to
+        [10XOrbitBySubOrbitInner[110X  have  been  done.  The  initial  value  is  [22X0[122X to
+        indicate  that  no  such call has happened. This variable is necessary
+        since  the  minimalisation routine sometimes uses [10XOrbitBySubOrbitInner[110X
+        recursively  to  complete  some  precomputation [21Xon the fly[121X during some
+        other orbit-by-suborbit enumeration. This component is always set to [22X0[122X
+        automatically     when     calling    [2XOrbitBySuborbit[102X    ([14X9.1-1[114X)    or
+        [2XOrbitBySuborbitKnownSize[102X  ([14X9.1-2[114X)  so the user should usually not have
+        to worry about it at all.[133X
+  
+  [8X[10XPATIENCEFORSTAB[110X[108X
+        [33X[0;6YThis integer indicates how many Schreier generators for the stabiliser
+        are  tried before assuming that the stabiliser is complete. Whenever a
+        new  generator  for the stabiliser is found that increases the size of
+        the  currently known stabiliser, the count is reset to [22X0[122X that is, only
+        when  [10XORB.PATIENCEFORSTAB[110X  unsuccessful  Schreier generators have been
+        tried  no  more Schreier generators are created. The default value for
+        this  component  is  [22X1000[122X.  This  feature  is  purely  heuristical and
+        therefore this value has to be adjusted for some orbit enumerations.[133X
+  
+  [8X[10XPLEASEEXITNOW[110X[108X
+        [33X[0;6YThis value is usually set to [9Xfalse[109X. Setting it to [9Xtrue[109X in a break loop
+        tells  the  orbit-by-suborbit  routines to exit gracefully at the next
+        possible  time.  Simply  leaving  such  a break loop with [9Xquit;[109X is not
+        safe,  since  the  routines  might  be  in  the  process  of  updating
+        precomputation  data  and  the  data structures might be left corrupt.
+        Always use this component to leave an orbit enumeration prematurely.[133X
+  
+  [8X[10XREPORTSUBORBITS[110X[108X
+        [33X[0;6YThis  positive  integer  governs  how often information messages about
+        newly  found  suborbits  are printed. The default value is [22X1000[122X saying
+        that  after  every  [22X1000[122X  suborbits  a message is printed, if the info
+        level  is at its default value [22X1[122X. If the info level is increased, then
+        this  component  does  no  longer  affect  the  printing and all found
+        suborbits are reported.[133X
+  
+  [8X[10XTRIESINQUOTIENT[110X and [10XTRIESINWHOLESPACE[110X[108X
+        [33X[0;6YThe  bootstrap  routines  [2XOrbitBySuborbitBootstrapForVectors[102X  ([14X9.2-1[114X),
+        [2XOrbitBySuborbitBootstrapForLines[102X              ([14X9.2-2[114X)              and
+        [2XOrbitBySuborbitBootstrapForSpaces[102X   ([14X9.2-3[114X)   all   need   to  compute
+        transversals  of  one  helper subgroup in the next one. They use orbit
+        enumerations   in  various  spaces  to  achieve  this.  The  component
+        [10XTRIESINQUOTIENT[110X must be a non-negative integer and indicates how often
+        a  random  vector in the corresponding quotient space is tried to find
+        an  orbit  that  can  distinguish  between cosets. The other component
+        [10XTRIESINWHOLESPACE[110X  also  must  be a non-negative integer and indicates
+        how  often  a  random  vector in the whole space is tried. The default
+        values are [22X3[122X and [22X20[122X resepectively.[133X
+  
+  
+  [1X9.4 [33X[0;0YLists of orbit-by-suborbit objects[133X[101X
+  
+  [33X[0;0YThere   are   a   few   functions   that   help  to  administrate  lists  of
+  orbit-by-suborbits.[133X
+  
+  [1X9.4-1 InitOrbitBySuborbitList[101X
+  
+  [29X[2XInitOrbitBySuborbitList[102X( [3Xsetup[103X, [3Xnrrandels[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya list of orbit-by-suborbits object[133X
+  
+  [33X[0;0YCreates  an  object  that  stores a list of orbit-by-suborbits. The argument
+  [3Xsetup[103X  must  be  an  orbit-by-suborbit setup record and [3Xnrrandels[103X must be an
+  integer.  It  indicates how many random elements in [22XG[122X should be used to do a
+  probabilistic  check  for  membership  in  case an orbit-by-suborbit is only
+  partially known.[133X
+  
+  [1X9.4-2 IsVectorInOrbitBySuborbitList[101X
+  
+  [29X[2XIsVectorInOrbitBySuborbitList[102X( [3Xv[103X, [3Xobsol[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or an integer[133X
+  
+  [33X[0;0YChecks  probabilistically,  if  the  element  [3Xv[103X lies in one of the partially
+  enumerated orbit-by-suborbits in the orbit-by-suborbit list object [3Xobsol[103X. If
+  yes,  the  number  of  that  orbit-by-suborbit is returned and the answer is
+  guaranteed to be correct. If the answer is [9Xfail[109X there is a small probability
+  that  the  point  actually  lies  in one of the orbits but this could not be
+  shown.[133X
+  
+  [1X9.4-3 OrbitsFromSeedsToOrbitList[101X
+  
+  [29X[2XOrbitsFromSeedsToOrbitList[102X( [3Xobsol[103X, [3Xli[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0YTakes  the elements in the list [3Xli[103X as seeds for orbit-by-suborbits. For each
+  such   seed   it   is   first   checked  whether  it  lies  in  one  of  the
+  orbit-by-suborbits in [3Xobsol[103X, which must be an orbit-by-suborbit list object.
+  If  not  found,  51%  of the orbit-by-suborbit of the seed is enumerated and
+  added to the list [3Xobsol[103X.[133X
+  
+  [33X[0;0YThis  function  is  a  good  way  to  quickly  enumerate a greater number of
+  orbit-by-suborbits.[133X
+  
+  [1X9.4-4 VerifyDisjointness[101X
+  
+  [29X[2XVerifyDisjointness[102X( [3Xobsol[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [33X[0;0YThis  function  checks  deterministically, whether the orbit-by-suborbits in
+  the  orbit-by-suborbit list object [3Xobsol[103X are disjoint or not and returns the
+  corresponding  boolean  value.  This  is not a Monte-Carlo algorithm. If the
+  answer  is  [9Xfalse[109X,  the  function  writes  out,  which  orbits  are  in fact
+  identical.[133X
+  
+  [1X9.4-5 Memory[101X
+  
+  [29X[2XMemory[102X( [3Xobsol[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns   the   total   memory   used  for  all  orbit-by-suborbits  in  the
+  orbit-by-suborbit-list  [3Xobsol[103X.  Precomputation data is not included, ask the
+  setup object instead.[133X
+  
+  [1X9.4-6 TotalLength[101X
+  
+  [29X[2XTotalLength[102X( [3Xobsol[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns  the  total number of points stored in all orbit-by-suborbits in the
+  orbit-by-suborbit-list [3Xobsol[103X.[133X
+  
+  [1X9.4-7 Size[101X
+  
+  [29X[2XSize[102X( [3Xobsol[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns the total number of points in the orbit-by-suborbit-list [3Xobsol[103X.[133X
+  
+  [1X9.4-8 SavingFactor[101X
+  
+  [29X[2XSavingFactor[102X( [3Xobsol[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Yan integer[133X
+  
+  [33X[0;0YReturns   the  quotient  of  the  total  number  of  points  stored  in  all
+  orbit-by-suborbits  in the orbit-by-suborbit-list [3Xobsol[103X and the total number
+  of  [22XU[122X-minimal  points stored, which is the average saving factor considering
+  all   orbit-by-suborbits   together.   Note   that   the   memory   for  the
+  precomputations is not considered here![133X
+  

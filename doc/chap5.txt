@@ -1,0 +1,79 @@
+  
+  [1X5 [33X[0;0YCaching techniques[133X[101X
+  
+  
+  [1X5.1 [33X[0;0YThe idea of caching[133X[101X
+  
+  [33X[0;0YIf one wants to work with a large number of large objects which require some
+  time  to  prepare  and one does not know beforehand, how often one will need
+  each  one, it makes sense to work with some sort of cache. A cache is a data
+  structure  to  keep some of the objects already produced but not too many of
+  them to waste a lot of memory. That is, objects which have not been used for
+  some  time  can automatically be removed from the cache, whereas the objects
+  which  are used more frequently stay in the cache. This chapter describes an
+  implementation of this idea used in the orbit-by-suborbit algorithms.[133X
+  
+  
+  [1X5.2 [33X[0;0YUsing caches[133X[101X
+  
+  [33X[0;0YA cache is created using the following operation:[133X
+  
+  [1X5.2-1 LinkedListCache[101X
+  
+  [29X[2XLinkedListCache[102X( [3Xmemorylimit[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10YA new cache object[133X
+  
+  [33X[0;0YThis operation creates a new linked list cache that uses at most [3Xmemorylimit[103X
+  bytes  to  store its entries. The cache is organised as a linked list, newly
+  cached  objects  are  appended  at  the beginning of the list, when the used
+  memory grows over the limit, old objects are removed at the end of this list
+  automatically.[133X
+  
+  [33X[0;0YNew objects are entered into the hash with the following function:[133X
+  
+  [1X5.2-2 CacheObject[101X
+  
+  [29X[2XCacheObject[102X( [3Xc[103X, [3Xob[103X, [3Xmem[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10YA new node in the linked list cache[133X
+  
+  [33X[0;0YThis operation enters the object [3Xob[103X into the cache [3Xc[103X. The argument [3Xmem[103X is an
+  integer  with  the memory usage of the object [3Xob[103X. The object is prepended to
+  the  linked  list cache and enough objects at the end are removed to enforce
+  the memory usage limit.[133X
+  
+  [1X5.2-3 ClearCache[101X
+  
+  [29X[2XClearCache[102X( [3Xc[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10YNothing[133X
+  
+  [33X[0;0YCompletely clears the cache [3Xc[103X removing all nodes.[133X
+  
+  [33X[0;0YA  linked  list  cache  is  used as follows: Whenever you compute one of the
+  objects  you  store it in the cache using [2XCacheObject[102X ([14X5.2-2[114X) and retain the
+  linked  list node that is returned. The usual place to retain it would be in
+  a  weak pointer object, such that this reference does not prevent the object
+  to  be  garbage  collected.  When  you  next need this object, you check its
+  corresponding position in the weak pointer object, if the reference is still
+  there,  you just use it and tell the cache that it was used again by calling
+  [2XUseCacheObject[102X  ([14X5.2-4[114X),  otherwise  you  create it anew and store it in the
+  cache again.[133X
+  
+  [33X[0;0YAs long as the object stays in the cache it is not garbage collected and the
+  weak  pointer object will still have its reference. As soon as the object is
+  thrown  out of the cache, the only reference to its node is the weak pointer
+  object,  thus  if a garbage collection happens, it can be garbage collected.
+  Note  that before that garbage collection happens, the object might still be
+  accessible  via  the  weak  pointer  object. In this way, the available main
+  memory  in  the  workspace  is  used  very  efficiently  and  can  be  freed
+  immediately when needed.[133X
+  
+  [1X5.2-4 UseCacheObject[101X
+  
+  [29X[2XUseCacheObject[102X( [3Xc[103X, [3Xr[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10YNothing[133X
+  
+  [33X[0;0YThe  argument  [3Xc[103X  must  be a cache object and [3Xr[103X a node for such a cache. The
+  object  is  either  moved to the front of the linked list (if it is still in
+  the  cache) or it is re-cached. If necessary, objects at the end are removed
+  from the cache to enforce the memory usage limit.[133X
+  

@@ -1,0 +1,232 @@
+  
+  [1X7 [33X[0;0YSearching in groups and orbits[133X[101X
+  
+  
+  [1X7.1 [33X[0;0YSearching using orbit enumeration[133X[101X
+  
+  [33X[0;0YAs described in Subsection [14X3.1-4[114X the standard orbit enumeration routines can
+  perform  search operations during orbit enumeration. If one is looking for a
+  shortest word in the generators of a group to express a group element with a
+  certain  property,  then  this natural breadth-first search can be used, for
+  example   by   letting  the  group  act  on  its  own  elements,  either  by
+  multiplication or by conjugation.[133X
+  
+  [33X[0;0YAll technical instructions to do this are already given in Subsection [14X3.1-4[114X,
+  so  we  are  content to provide an example here. Assume you want to find the
+  shortest  way  to  express  some  [22X7[122X-cycle in the symmetric group [22XS_{10}[122X as a
+  product  of  generators  [22Xa  :=[122X[10X(1,2,3,4,5,6,7,8,9,10)[110X and [22Xb :=[122X[10X(1,2)[110X. Then you
+  could do this in the following way:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xgens := [(1,2,3,4,5,6,7,8,9,10),(1,2)];[127X[104X
+    [4X[28X[ (1,2,3,4,5,6,7,8,9,10), (1,2) ][128X[104X
+    [4X[25Xgap>[125X [27Xo := Orb(gens,(),OnRight,rec( report := 2000,[127X[104X
+    [4X[25X>[125X [27Xlookingfor := [127X[104X
+    [4X[25X>[125X [27Xfunction(o,x) return NrMovedPoints(x) = 7 and Order(x)=7; end,[127X[104X
+    [4X[25X>[125X [27Xschreier := true ));[127X[104X
+    [4X[28X<open orbit, 1 points with Schreier tree looking for sth.>[128X[104X
+    [4X[25Xgap>[125X [27XEnumerate(o);[127X[104X
+    [4X[28X<open orbit, 614 points with Schreier tree looking for sth.>[128X[104X
+    [4X[25Xgap>[125X [27Xw := TraceSchreierTreeForward(o,PositionOfFound(o));[127X[104X
+    [4X[28X[ 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 2 ][128X[104X
+    [4X[25Xgap>[125X [27XActWithWord(o!.gens,w,o!.op,o[1]);                  [127X[104X
+    [4X[28X(1,10,9,8,7,6,5)[128X[104X
+    [4X[25Xgap>[125X [27Xo[PositionOfFound(o)] = ActWithWord(o!.gens,w,o!.op,o[1]);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XEvaluateWord(o!.gens,w);[127X[104X
+    [4X[28X(1,10,9,8,7,6,5)[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YThe  result shows that [22Xa^6 ⋅ (a⋅ b)^3[122X is a [22X7[122X-cycle and that there is no word
+  in [22Xa[122X and [22Xb[122X with fewer than [22X12[122X letters expressing a [22X7[122X-cycle.[133X
+  
+  [33X[0;0YNote  that  we  can  go  on with the above orbit enumeration to find further
+  words to express [22X7[122X-cycles.[133X
+  
+  
+  [1X7.2 [33X[0;0YRandom searches in groups[133X[101X
+  
+  [33X[0;0YAnother  possibility  to  look  for  elements  in a group satisfying certain
+  properties  is to look at random elements, usually obtained by doing product
+  replacement  (see  Section  [14X6.2[114X).  Although  this  can  lead  to  very  long
+  expressions  as  words  in the generators, one can cope with this problem by
+  using  the  [10Xmaxdepth[110X  option  of  the  product  replacer objects, which just
+  reinitialises  the  product  replacement  table  after  a  certain number of
+  product  replacements has been performed. To organise all this conveniently,
+  there is the concept of [21Xrandom searcher objects[121X described here.[133X
+  
+  [1X7.2-1 RandomSearcher[101X
+  
+  [29X[2XRandomSearcher[102X( [3Xgens[103X, [3Xtestfunc[103X[, [3Xopt[103X] ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya random searcher object[133X
+  
+  [33X[0;0Y[3Xgens[103X  must  be  a  list  of  group generators, [3Xtestfunc[103X a function taking as
+  argument  one  group element and returning [9Xtrue[109X or [9Xfalse[109X. [3Xopt[103X is an optional
+  options record. For possible options see below.[133X
+  
+  [33X[0;0YAt  first,  the  random  searcher  object  is just initialised but no random
+  searching is performed. The actual search is triggered by the [2XSearch[102X ([14X7.2-2[114X)
+  operation (see below). The idea of random searcher objects is that a product
+  replacer  object is created and during a search random elements are produced
+  using  this product replacer object, and for each group element produced the
+  function [3Xtestfunc[103X is called. If this function returns [9Xtrue[109X, the search stops
+  and the group element found is returned.[133X
+  
+  [33X[0;0YThe following options can be bound in the options record [3Xopt[103X:[133X
+  
+  [8X[10Xexceptions[110X[108X
+        [33X[0;6YThis  component  can be a list to initialise the exception list in the
+        random searcher object. Group elements in this list are not considered
+        as  successful  searches.  This  list  is also used to continue search
+        operations  to  found  more  suitable  group  elements  as every group
+        element  considered  [21Xfound[121X  is added to that list before returning it.
+        Thus every element will only be found once.[133X
+  
+  [8X[10Xmaxdepth[110X[108X
+        [33X[0;6YSets  the [10Xmaxdepth[110X option of the created product replacer object. This
+        limits  the  length  of the expression as product of the generators of
+        the found group elements.[133X
+  
+  [8X[10Xaddslots[110X[108X
+        [33X[0;6YSets the [10Xaddslots[110X option of the created product replacer object.[133X
+  
+  [8X[10Xscramble[110X[108X
+        [33X[0;6YIf  this  component is bound at all, then the created product replacer
+        object is created with options [10Xscramble=100[110X and [10Xscramblefactor=10[110X (the
+        default values), otherwise the options [10Xscramble=0[110X and [10Xscramblefactor=0[110X
+        are used, leading to no scrambling at all. See [2XProductReplacer[102X ([14X6.2-1[114X)
+        for details on the product replacement algorithm.[133X
+  
+  [33X[0;0YNote  that  of  course  the generators in [3Xgens[103X may have memory. However, the
+  function [3Xtestfunc[103X is called with the group element with memory stripped off.[133X
+  
+  [1X7.2-2 Search[101X
+  
+  [29X[2XSearch[102X( [3Xrs[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya group element[133X
+  
+  [33X[0;0YRuns  the  search  with  the  random searcher object [3Xrs[103X and returns with the
+  first group element found.[133X
+  
+  
+  [1X7.3 [33X[0;0YThe dihedral trick and applications[133X[101X
+  
+  [33X[0;0YWith  the [21Xdihedral[121X trick we mean the following: Two involutions [22Xa[122X and [22Xb[122X in a
+  group  always  generate  a  dihedral  group.  Thus,  to find a pseudo-random
+  element  in  the  centraliser of an involution [22Xa[122X, we can proceed as follows:
+  Create  a  pseudo-random  element [22Xc[122X, then [22Xb := a^c[122X is another involution. If
+  then  [22Xab[122X  has  order [22X2o[122X, we can use [22X(ab)^o[122X. Otherwise, if the order of [22Xab[122X is
+  [22X2o-1[122X, then [22X(ab)^o ⋅ c^{-1}[122X centralises [22Xa[122X.[133X
+  
+  [33X[0;0YThis  trick  allows to efficiently produce elements in the centraliser of an
+  involution  and  thus,  with  high  probability,  generators  for  the  full
+  centraliser.[133X
+  
+  [33X[0;0YThere are the following functions:[133X
+  
+  [1X7.3-1 FindInvolution[101X
+  
+  [29X[2XFindInvolution[102X( [3Xpr[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan involution[133X
+  
+  [33X[0;0Y[3Xpr[103X  must  be  a  product  replacer  object  (see  Section  [14X6.2[114X). Searches an
+  involution  by  finding  a  random  element  of  even order and powering up.
+  Returns the involution.[133X
+  
+  [1X7.3-2 FindCentralisingElementOfInvolution[101X
+  
+  [29X[2XFindCentralisingElementOfInvolution[102X( [3Xpr[103X, [3Xa[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya group element[133X
+  
+  [33X[0;0Y[3Xpr[103X  must be a product replacer object (see Section [14X6.2[114X). Produces one random
+  element  and  builds  an  element the centralises the involution [3Xa[103X using the
+  dihedral trick described above.[133X
+  
+  [1X7.3-3 FindInvolutionCentralizer[101X
+  
+  [29X[2XFindInvolutionCentralizer[102X( [3Xpr[103X, [3Xa[103X, [3Xnr[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya list of [3Xnr[103X group elements[133X
+  
+  [33X[0;0Y[3Xpr[103X must be a product replacer object (see Section [14X6.2[114X) and [3Xa[103X and involution.
+  This  function  uses [2XFindCentralisingElementOfInvolution[102X ([14X7.3-2[114X) [3Xnr[103X times to
+  produce  an  element  centralising  the involution [3Xa[103X and returns the list of
+  results.[133X
+  
+  
+  [1X7.4 [33X[0;0YOrbit statistics on vector spaces[133X[101X
+  
+  [33X[0;0YThe  following  two  functions  are  tools to get a rough and quick estimate
+  about the average orbit length of a group acting on a vector space.[133X
+  
+  [1X7.4-1 OrbitStatisticOnVectorSpace[101X
+  
+  [29X[2XOrbitStatisticOnVectorSpace[102X( [3Xgens[103X, [3Xsize[103X, [3Xti[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0Y[3Xgens[103X must be a list of matrix group generators and [3Xsize[103X an integer giving an
+  upper bound for the lengths of orbits (for example given by the order of the
+  group  generated by [3Xgens[103X). [3Xti[103X is an integer specifying the number of seconds
+  to  run.  This  function  enumerates orbits of random vectors in the natural
+  space  the group is acting on (with an upper limit of length given by [3Xsize[103X).
+  The average length and some other information is printed on the screen.[133X
+  
+  [1X7.4-2 OrbitStatisticOnVectorSpaceLines[101X
+  
+  [29X[2XOrbitStatisticOnVectorSpaceLines[102X( [3Xgens[103X, [3Xsize[103X, [3Xti[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0Y[3Xgens[103X must be a list of matrix group generators and [3Xsize[103X an integer giving an
+  upper  bound  for  the lengths of orbits (for example the order of the group
+  generated  by  [3Xgens[103X).  [3Xti[103X  is an integer specifying the number of seconds to
+  run.  This function enumerates orbits of random one-dimensional subspaces in
+  the  natural  space  the  group  is acting on (with an upper limit of length
+  given  by [3Xsize[103X). The average length and some other information is printed on
+  the screen.[133X
+  
+  
+  [1X7.5 [33X[0;0YFinding generating sets of subgroups[133X[101X
+  
+  [33X[0;0YThe  following  function  can  be used to find generators of a subgroup of a
+  group [22XG[122X, expressed as a straight line program in the generators of [22XG[122X.[133X
+  
+  [1X7.5-1 FindShortGeneratorsOfSubgroup[101X
+  
+  [29X[2XFindShortGeneratorsOfSubgroup[102X( [3XG[103X, [3XU[103X[, [3Xmembopt[103X] ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record described below[133X
+  
+  [33X[0;0YThe  arguments  [3XU[103X and [3XG[103X must be [5XGAP[105X group objects with [3XU[103X being a subgroup of
+  [3XG[103X.  The  argument  [3Xmembopt[103X  can be a function taking two arguments, namely a
+  group  element  and  a group, that checks, whether the group element lies in
+  the  group or not, returning [9Xtrue[109X or [9Xfalse[109X accordingly. You can usually just
+  use  the  function  [10X\in[110X as third argument. Note that this function will only
+  ever  be  called  with [3XU[103X as its second argument so you can in fact provide a
+  function which ignores its second argument and has [3XU[103X somehow built in it.[133X
+  
+  [33X[0;0YOptionally,  the  third  argument [3Xmembopt[103X can also be an options record. The
+  component  [10Xmembershiptest[110X  has  the  same  meaning  like  the third argument
+  [3Xmembopt[103X  above.  The  component  [10Xsizetester[110X can be bound to a function which
+  estimates the size of a group generated by some elements in [3XU[103X. This estimate
+  function  can  for  example  be a function which runs a random Schreier-Sims
+  algorithm.  In  particular  it  may  underestimate  the  size with a certain
+  probability.  The method [2XFindShortGeneratorsOfSubgroup[102X will keep looking for
+  elements to generate [3XU[103X until the [10Xsizetester[110X returns the same number as for [3XU[103X
+  itself.   Note   that   to   avoid   the  possibility  that  the  [10Xsizetester[110X
+  underestimates  the  size of [3XU[103X in the first place you can bind the component
+  [10XsizeU[110X  in  the options record to the correct size of [3XU[103X or make sure that the
+  group    object    [3XU[103X    does    know   its   size   before   the   call   to
+  [2XFindShortGeneratorsOfSubgroup[102X.[133X
+  
+  [33X[0;0YThis  function  does  a breadth-first search to find elements in [3XU[103X using the
+  generators of [3XG[103X. It then uses calculates the size of the group generated and
+  proceeds  in  this way, until a generating system for [3XU[103X is found in terms of
+  the generators of [3XG[103X. Those generators are guaranteed to be shortest words in
+  the generators of [3XG[103X lying in [3XU[103X.[133X
+  
+  [33X[0;0YThe  function  returns a record with two components bound: [10Xgens[110X is a list of
+  generators  for  [3XU[103X and [10Xslp[110X is a [5XGAP[105X straight line program expressing exactly
+  those generators in the generators of [3XG[103X.[133X
+  
+  [33X[0;0YNote  that this function only performs satisfactorily when the index of [3XU[103X in
+  [3XG[103X  is  not  to huge. It also helps if the groups come in a representation in
+  which [5XGAP[105X can compute efficiently for example as permutation groups.[133X
+  

@@ -1,0 +1,10 @@
+  
+  [1X10 [33X[0;0YFinding nice quotients[133X[101X
+  
+  [33X[0;0YThis  chapter  will  be  written  when  the [5Xchop[105X is documented and released,
+  because the functions to be described here depend on that package.[133X
+  
+  [33X[0;0YFor the moment it should be enough to say that the functions to be described
+  here  are  used to find nice quotient modules for the orbit algorithms using
+  the orbit-by-suborbit techniques described in Chapter [14X9[114X.[133X
+  

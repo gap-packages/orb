@@ -1,0 +1,724 @@
+  
+  [1X11 [33X[0;0YExamples[133X[101X
+  
+  [33X[0;0YTo  actually  run an orbit enumeration by suborbits, we have to collect some
+  insight  into  the  structure  of the group under consideration and into its
+  representation  theory.  In  general, preparing the input data is more of an
+  art than a science. The mathematical details are described in [MNW07].[133X
+  
+  [33X[0;0YIn   Section   [14X11.1[114X  we  present  a  small  example  of  the  usage  of  the
+  orbit-by-suborbit machinery. We use the sporadic simple Mathieu group [22XM_{11}[122X
+  acting projectively on its irreducible module of dimension 24 over the field
+  with 3 elements.[133X
+  
+  [33X[0;0YIn   Section   [14X11.2[114X   we  present  another  example  of  the  usage  of  the
+  orbit-by-suborbit programs. In this example we determine 35 of the 36 double
+  coset  representatives  of  the  sporadic  simple Fischer group [22XFi_{23}[122X with
+  respect to its seventh maximal subgroup.[133X
+  
+  [33X[0;0YIn   Section  [14X11.3[114X  we  present  a  bigger  example  of  the  usage  of  the
+  orbit-by-suborbit  machinery.  In  this  example  the  orbit  lengths of the
+  sporadic  simple Conway group [22XCo_{1}[122X acting in in its irreducible projective
+  representation   over  the  field  with  [22X5[122X  elements  in  dimension  [22X24[122X  are
+  determined,  which  were previously unknown. These orbit lengths were needed
+  to rule out a case in [Mal06].[133X
+  
+  [33X[0;0YIn  Section  [14X11.4[114X  we present as an extended worked example how to enumerate
+  the  smallest non-trivial orbit of the sporadic simple Baby Monster group [22XB[122X.
+  We  give a log of a [5XGAP[105X session with explanations in between, being intended
+  to  illustrate  a few of the tools which are available in the [5Xorb[105X package as
+  well as in related packages. Actually, the [5Xorb[105X package has also been applied
+  to  two  much  larger  permutation actions of [22XB[122X, namely its action on its 2B
+  involutions,  having  degree [22X≈ 1.2⋅ 10^13[122X, and its action on the cosets of a
+  maximal  subgroup  isomorphic  to  [22XFi_23[122X,  having  degree  [22X≈ 1.0⋅ 10^15[122X; for
+  details see [M{\08] and [MNW07], respectively.[133X
+  
+  [33X[0;0YNote  that for all this to work you have to acquire and install the packages
+  [5XIO[105X,  [5Xcvec[105X,  and  [5Xatlasrep[105X,  and  for  Section [14X11.4[114X you additionally need the
+  packages [5Xchop[105X and [5Xgenss[105X.[133X
+  
+  
+  [1X11.1 [33X[0;0YThe Mathieu group [22XM_{11}[122X[101X[1X acting in dimension [22X24[122X[101X[1X[133X[101X
+  
+  [33X[0;0YThe  example  in  this  section  is  very  small  but  our intention is that
+  everything can still be analysed and looked at more or less by hand. We want
+  to  enumerate  orbits of the Mathieu group [22XM_{11}[122X acting projectively on its
+  irreducible  module  of dimension 24 over the field with 3 elements. All the
+  files for this example are located in the [11Xexamples/m11PF3d24[111X subdirectory of
+  the [5Xorb[105X package. Then you simply run the example in the following way:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XReadPackage("orb","examples/m11PF3d24/M11OrbitOnPF3d24.g");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27Xo := OrbitBySuborbit(setup,v,3,3,2,100);[127X[104X
+    [4X[28X...[128X[104X
+    [4X[28X#I  OrbitBySuborbit found 100% of a U3-orbit of size 7 920[128X[104X
+    [4X[28X...[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YEverything  works  instantly as it would have without the orbit-by-suborbits
+  method.  (Depending  on  whether  the  matrix and permutation generators for
+  [22XM_{11}[122X are already stored locally, some time might be needed to fetch them.)
+  The  details  of  this computation can be directly read off from the code in
+  the file [11XM11OrbitOnPF3d24.g[111X:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28XLoadPackage("orb");[128X[104X
+    [4X[28XLoadPackage("io");[128X[104X
+    [4X[28XLoadPackage("cvec");[128X[104X
+    [4X[28XLoadPackage("atlasrep");[128X[104X
+    [4X[28X[128X[104X
+    [4X[28XSetInfoLevel(InfoOrb,2);[128X[104X
+    [4X[28Xpgens := AtlasGenerators("M11",1).generators;[128X[104X
+    [4X[28X[128X[104X
+    [4X[28Xgens := AtlasGenerators("M11",14).generators;[128X[104X
+    [4X[28Xcgens := List(gens,CMat);[128X[104X
+    [4X[28Xbasech := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),[128X[104X
+    [4X[28X          "examples/m11PF3d24/m11basech.cmat"));[128X[104X
+    [4X[28Xbasechi := basech^-1;[128X[104X
+    [4X[28Xcgens := List(cgens,x->basech*x*basechi);[128X[104X
+    [4X[28X[128X[104X
+    [4X[28XReadPackage("orb","examples/m11PF3d24/m11slps.g");[128X[104X
+    [4X[28Xpgu2 := ResultOfStraightLineProgram(s2,pgens);[128X[104X
+    [4X[28Xpgu1 := ResultOfStraightLineProgram(s1,pgu2);[128X[104X
+    [4X[28Xcu2 := ResultOfStraightLineProgram(s2,cgens);[128X[104X
+    [4X[28Xcu1 := ResultOfStraightLineProgram(s1,cu2);[128X[104X
+    [4X[28X[128X[104X
+    [4X[28Xsetup := OrbitBySuborbitBootstrapForLines([128X[104X
+    [4X[28X         [cu1,cu2,cgens],[pgu1,pgu2,pgens],[20,720,7920],[5,11],rec());[128X[104X
+    [4X[28Xsetup!.stabchainrandom := 900;[128X[104X
+    [4X[28X[128X[104X
+    [4X[28Xv := ZeroMutable(cgens[1][1]);[128X[104X
+    [4X[28XRandomize(v);[128X[104X
+    [4X[28XORB_NormalizeVector(v); [128X[104X
+    [4X[28X[128X[104X
+    [4X[28XPrint("Now do\n  o := OrbitBySuborbit(setup,v,3,3,2,100);\n");[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  are using two helper subgroups [22XU_1 < U_2 < M_11[122X, where [22XU_2≅ A_6.2[122X is the
+  largest  maximal  subgroup  of  [22XM_11[122X,  having  order  [22X720[122X, and [22XU_2≅ 5:4[122X is a
+  maximal  subgroup  of [22XU_2[122X of order [22X20[122X, see [CCNPW85] or the [5XCTblLib[105X package.
+  The quotient spaces we use for the helper subgroups have dimensions [22X5[122X and [22X11[122X
+  respectively.  Straight  line  programs  to compute generators of the helper
+  subgroups in terms of the given generators of [22XM_11[122X, and an appropriate basis
+  exhibiting  the quotients, have already been computed, and are stored in the
+  files  [11Xm11slps.g[111X  and [11Xm11basech.cmat[111X, respectively. (In Section [14X11.4[114X we show
+  in  detail  how  such straight line programs and suitable bases can be found
+  using   the   tools   available   in   in  the  [5Xorb[105X  package.)  The  command
+  [11XOrbitBySuborbitBootstrapForLines[111X   invokes   the   precomputation,   and  in
+  particular says that we want to use projective action.[133X
+  
+  
+  [1X11.2 [33X[0;0YThe Fischer group [22XFi_{23}[122X[101X[1X acting in dimension [22X1494[122X[101X[1X[133X[101X
+  
+  [33X[0;0YThe  example  in this section shows how to compute 35 of the 36 double coset
+  representatives  of  the  Fischer  group [22XFi_{23}[122X with respect to its seventh
+  maximal  subgroup  [22XH≅  3_+^{1+8}.2_-^{1+6}.3_+^{1+2}.2S_4[122X,  which  has order
+  [22X3265173504≈  3.2⋅  10^9[122X  and index [22X[Fi_{23}: H]=1252451200 ≈ 1.3 ⋅ 10^9[122X, see
+  [CCNPW85] or the [5XCTblLib[105X package. All the files for this example are located
+  in  the  [11Xexamples/fi23m7[111X subdirectory of the [5Xorb[105X package. You simply run the
+  example in the following way:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XReadPackage("orb","examples/fi23m7/GOrbitByKOrbitsPrepare.g");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XReadPackage("orb","examples/fi23m7/GOrbitByKOrbitsSearch35.g");[127X[104X
+    [4X[28X...[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  will  not  go  into the details of the computation here, but they can be
+  read off directly from the code in the files in that directory. In the first
+  part,  run  by  the  file [11XGOrbitByKOrbitsPrepare.g[111X, we prepare the necessary
+  input  data,  by  using similar techniques as described at length in Section
+  [14X11.4[114X.  (Actually,  this example has been dealt with before the advent of the
+  packages  [5Xchop[105X  and  [5Xgenss[105X,  hence  we  are  using  appropriate private code
+  instead.)  We  are using two helper subgroups [22XU_1 < U_2 < H < Fi_{23}[122X, being
+  [22X3[122X-subgroups  of  [22XH[122X  of order [22X81[122X and [22X6561[122X, respectively. The 1494-dimensional
+  irreducible  representation  of  [22XFi_{23}[122X  over  the  field  with  2 elements
+  contains  a  vector  that  is  fixed  by  [22XH[122X,  such  that  the  action on its
+  [22XFi_{23}[122X-orbit is isomorphic to the action on the cosets of [22XH[122X.[133X
+  
+  [33X[0;0YThe  second  part,  in  the  file  [11XGOrbitByKOrbitsSearch35.g[111X,  is the actual
+  enumeration of [22XH[122X-orbits:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28Xsetup := OrbitBySuborbitBootstrapForVectors([128X[104X
+    [4X[28X         [cu1gens,cu2gens,cngens],[u1gensp,u2gensp,ngensp],[128X[104X
+    [4X[28X         [81,6561,3265173504],[10,30],rec());[128X[104X
+    [4X[28Xobsol := InitOrbitBySuborbitList(setup,40);[128X[104X
+    [4X[28Xl := Orb(cggens,v,OnRight,rec(schreier := true));[128X[104X
+    [4X[28XEnumerate(l,100000);[128X[104X
+    [4X[28XOrbitsFromSeedsToOrbitList(obsol,l);[128X[104X
+    [4X[28Xorigseeds := List(obsol,OrigSeed); [128X[104X
+    [4X[28Xpositions :=  List(origseeds,x->Position(l,x));[128X[104X
+    [4X[28Xwords := List(positions,x->TraceSchreierTreeForward(l,x));[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNote   that   this  computation  finds  only  35  of  the  36  double  coset
+  representatives. The last corresponds to a very short suborbit which is very
+  difficult  to  find.  Knowing  the  number  of  missing points, we guess the
+  stabiliser in [22XH[122X of a missing representative, and find the latter amongst the
+  fixed points of the stabiliser. We can then choose the one which lies in the
+  [22XG[122X-orbit we have nearly enumerated above.[133X
+  
+  [33X[0;0YThese  double  coset  representatives were needed to determine the 2-modular
+  character table of [22XFi_{23}[122X. Details of this can be found in [HNN06].[133X
+  
+  
+  [1X11.3 [33X[0;0YThe Conway group [22XCo_1[122X[101X[1X acting in dimension [22X24[122X[101X[1X[133X[101X
+  
+  [33X[0;0YThe example in this section shows how to compute all suborbit lengths of the
+  Conway  group  [22XCo_1[122X,  in  its  irreducible  projective action on a module of
+  dimension  24 over the field with 5 elements. All the files for this example
+  are  located  in the [11Xexamples/co1F5d24[111X subdirectory of the [5Xorb[105X package. Then
+  you simply run the example in the following way:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XReadPackage("orb","examples/co1F5d24/Co1OrbitOnPF5d24.g");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XReadPackage("orb","examples/co1F5d24/Co1OrbitOnPF5d24.findall.g");[127X[104X
+    [4X[28X...[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  will  not go into the details of the first part of the computation here,
+  as  they  are  very  similar to those reproduced in Section [14X11.1[114X, and can be
+  directly read off from the code in the file [11XCo1OrbitOnPF5d24.g[111X: We are using
+  three  helper  subgroups  [22XU_1  <  U_2  <  U_3  <  Co_1[122X, where [22XCo_1[122X has order
+  [22X4157776806543360000≈  4.2⋅  10^18[122X, see [CCNPW85] or the [5XCTblLib[105X package, and
+  where  [22XU_3≅  2_+^{1+8}.O_8(2)[122X  is the fifth maximal subgroup of [22XCo_1[122X, having
+  order  [22X89181388800≈  8.9⋅  10^10[122X,  while  [22XU_2≅  [2^8]:  S_6(2)[122X  is a maximal
+  subgroup  of  [22XU_3[122X  of  order [22X371589120≈ 3.7⋅ 10^8[122X, and [22XU_1≅ 2^6: L_3(2)[122X is a
+  maximal  subgroup of [22XS_6(2)[122X of order [22X10752≈ 1.1⋅ 10^4[122X. The projective action
+  comes from the irreducible 24-dimensional linear representation of the Schur
+  cover   [22X2.Co_1[122X   of   [22XCo_1[122X,  which  by  [Jan05]  is  the  smallest  faithful
+  representation  of  [22X2.Co_1[122X  over the field GF(5), and the quotient spaces we
+  use for the helper subgroups have dimensions [22X8[122X, [22X8[122X and [22X16[122X respectively.[133X
+  
+  [33X[0;0YThe details of the second part can be directly read off from the code in the
+  file [11XCo1OrbitOnPF5d24.findall.g[111X:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[28Xoo := InitOrbitBySuborbitList(setup,80);[128X[104X
+    [4X[28Xl := MakeRandomLines(v,1000);[128X[104X
+    [4X[28XOrbitsFromSeedsToOrbitList(oo,l);[128X[104X
+    [4X[28Xintervecs := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),[128X[104X
+    [4X[28X             "examples/co1F5d24/co1interestingvecs.cmat"));[128X[104X
+    [4X[28XOrbitsFromSeedsToOrbitList(oo,intervecs);[128X[104X
+    [4X[28XLength(oo!.obsos);[128X[104X
+    [4X[28XSum(oo!.obsos,Size);[128X[104X
+    [4X[28X(5^24-1)/(5-1);[128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNote that this example needs about 2GB of main memory on a 32bit machine and
+  probably  nearly  4GB  on  a  64bit machine. However, the orbit lengths were
+  previously  unknown  before  they were computed with this program. The orbit
+  lengths were needed to rule out a case in [Mal06].[133X
+  
+  
+  [1X11.4 [33X[0;0YThe Baby Monster [22XB[122X[101X[1X acting on its 2A involutions[133X[101X
+  
+  [33X[0;0YThe  example in this section shows how to enumerate the smallest non-trivial
+  orbit  of  the  Baby  Monster  group  [22XB[122X.  All the files for this example are
+  located  in  the [11Xexamples/bmF2d4370[111X subdirectory of the [5Xorb[105X package. You may
+  simply run the example in the following way:[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XReadPackage("orb","examples/bmF2d4370/BMOrbitOnF2d4370partI.g");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XReadPackage("orb","examples/bmF2d4370/BMOrbitOnF2d4370partII.g");[127X[104X
+    [4X[28X... [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YIn  the sequel we comment in detail on how the necessary input data actually
+  is prepared. We begin by loading the packages we are going to use.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("orb");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("io");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("cvec");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("atlasrep");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("chop");[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("genss");[127X[104X
+    [4X[28X...  [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YThe  one-point stabilisers associated to the smallest non-trivial orbit of [22XB[122X
+  are   its  largest  maximal  subgroups  [22XE  ≅  2.^2E_6(2).2[122X,  which  are  the
+  centralisers  of  its  2A involutions. Here [22XE[122X is a bicyclic extension of the
+  twisted  Lie  type  group [22X^2E_6(2)[122X, and has index [22X[B: E]=13571955000 ≈ 1.4 ⋅
+  10^10[122X, see [CCNPW85] or the [5XCTblLib[105X package.[133X
+  
+  [33X[0;0YWe  first  try to find a matrix representation of [22XB[122X such that the [22XB[122X-orbit we
+  look for is realised as a set of vectors in the underlying vector space. The
+  smallest  faithful  representation  of  [22XB[122X  over  the field GF(2), by [Jan05]
+  having  dimension  4370,  springs  to  mind.  Explicit  matrices in terms of
+  standard  generators  in  the sense of [Wil96] are available in [ATLAS], and
+  are  accessibe through the [5Xatlasrep[105X package. Moreover, we find generators of
+  [22XE[122X  by  applying  a  straight  line  program,  also available in the [5Xatlasrep[105X
+  package, expressing generators of [22XE[122X in terms of the generators of [22XB[122X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xgens := AtlasGenerators("B",1).generators;[127X[104X
+    [4X[28X[ <an immutable 4370x4370 matrix over GF2>, [128X[104X
+    [4X[28X  <an immutable 4370x4370 matrix over GF2> ][128X[104X
+    [4X[25Xgap>[125X [27Xbgens := List(gens,CMat);[127X[104X
+    [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] [128X[104X
+    [4X[25Xgap>[125X [27Xslpbtoe := AtlasStraightLineProgram("B",1).program;;[127X[104X
+    [4X[25Xgap>[125X [27Xegens := ResultOfStraightLineProgram(slpbtoe,bgens);[127X[104X
+    [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  look for a non-zero vector being fixed by both generators of [22XE[122X. It turns
+  out  that the latter have a common fixed space of dimension 1. Then, since [22XE[122X
+  is  a maximal subgroup, the stabiliser in [22XB[122X of the non-zero vector [22Xv[122X in that
+  fixed space coincides with [22XE[122X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xx := egens[1]-egens[1]^0;;[127X[104X
+    [4X[25Xgap>[125X [27Xnsx := NullspaceMat(x);[127X[104X
+    [4X[28X<immutable cmat 2202x4370 over GF(2,1)>[128X[104X
+    [4X[25Xgap>[125X [27Xy := nsx * (egens[2]-egens[2]^0);;[127X[104X
+    [4X[25Xgap>[125X [27Xnsy := NullspaceMat(y);[127X[104X
+    [4X[28X<immutable cmat 1x2202 over GF(2,1)>[128X[104X
+    [4X[25Xgap>[125X [27Xv := nsy[1]*nsx;[127X[104X
+    [4X[28X<immutable cvec over GF(2,1) of length 4370> [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YStoring  eight  elements  of  GF(2) into 1 byte, to store a vector of length
+  4370  needs  547  bytes plus some organisational overhead resulting in about
+  580 bytes, hence to store the full [22XB[122X-orbit of [22Xv[122X we need [22X580 ⋅ [B: E] ≈ 7.9 ⋅
+  10^12[122X  bytes.  Hence  we  try to find helper subgroups suitable to achieve a
+  saving  factor  of  [22X≈  10^4[122X,  i. e. allowing to store only one out of [22X≈ 10^4[122X
+  vectors.  To  this  end, we look for a pair [22XU_1<U_2[122X of helper subgroups such
+  that  [22X|U_2|  ≈  10^5[122X,  where we take into account that typically the overall
+  saving  factor  achieved  is  somewhat smaller than the order of the largest
+  helper subgroup.[133X
+  
+  [33X[0;0YBy [CCNPW85], and a few computations with subgroup fusions using the [5XCTblLib[105X
+  package,  the  derived  subgroup  [22XE'  ≅ 2.^2E_6(2)[122X of [22XE[122X turns out to possess
+  maximal  subgroups  [22X2  × Fi_{22}[122X and [22X2.Fi_{22}[122X, where [22XFi_{22}[122X denotes one of
+  the sporadic simple Fischer groups, and where the former constitute a unique
+  conjugacy  class  with  associated  normalizers in [22XE[122X of shape [22X2 × Fi_{22}.2[122X,
+  while the latter consist of two conjugacy classes being self-normalising and
+  interchanged by [22XE[122X.[133X
+  
+  [33X[0;0YNow  [22XFi_{22}[122X has a unique conjugacy class of maximal subgroups [22XM_{12}[122X, where
+  the  latter denotes one of the sporadic simple Mathieu groups; the subgroups
+  [22XM_{12}[122X  lift  to  a unique conjugacy class of subgroups [22XM_{12}[122X of [22X2.Fi_{22}[122X,
+  which  turn  out to constitute a conjugacy class of subgroups of [22XE[122X different
+  from  the  subgroups  [22XM_{12}[122X  being  contained  in  [22XFi_{22}[122X. Anyway, we have
+  [22X|M_{12}|=95040[122X, hence [22XU_2=M_{12}[122X seems to be a good candidate for the larger
+  helper subgroup. In particular, there is a unique conjugacy class of maximal
+  subgroups   [22XL_2(11)[122X   of   [22XM_{12}[122X,  and  since  [22X|L_2(11)|=660[122X  and  [22X[M_{12}:
+  L_2(11)]=144[122X  letting  [22XU_1=L_2(11)[122X  seems  to  be  a  good candidate for the
+  smaller helper subgroup. Recall that [22XU_1[122X and [22XU_2[122X are useful helper subgroups
+  only  if  we  are  able  to  find suitable quotient modules allowing for the
+  envisaged saving factor.[133X
+  
+  [33X[0;0YTo find [22XU_1[122X and [22XU_2[122X, we first try to find a subgroup [22XFi_{22}[122X or [22X2.Fi_{22}[122X of
+  [22XE[122X. We start a random search, aiming at finding standard generators of either
+  [22XFi_{22}[122X or [22X2.Fi_{22}[122X, and we use [10XGeneratorsWithMemory[110X in order to be able to
+  express  the generators found as words in the generators of [22XE[122X. To accelerate
+  computations  we first construct a small representation of [22XE[122X; by [Jan05] the
+  smallest  faithful  irreducible  representation  of  [22XFi_{22}[122X  over GF(2) has
+  dimension  78,  hence  we  cannot do better for [22XE[122X; note that the latter is a
+  representation of [22XoverlineE:=E/Z(E) ≅ ^2E_6(2).2[122X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XSetInfoLevel(InfoChop,2);[127X[104X
+    [4X[25Xgap>[125X [27Xm := Module(egens);[127X[104X
+    [4X[28X<module of dim. 4370 over GF(2)>[128X[104X
+    [4X[25Xgap>[125X [27Xr := Chop(m);[127X[104X
+    [4X[28X...[128X[104X
+    [4X[28Xrec( ischoprecord := true, [128X[104X
+    [4X[28X  db := [ <abs. simple module of dim. 78 over GF(2)>, [128X[104X
+    [4X[28X          <trivial module of dim. 1 over GF(2)>, [128X[104X
+    [4X[28X          <abs. simple module of dim. 1702 over GF(2)>, [128X[104X
+    [4X[28X          <abs. simple module of dim. 572 over GF(2)> ], [128X[104X
+    [4X[28X  mult := [ 5, 4, 2, 1 ], acs := [ 1, 2, 3, 1, 4, 1, 1, 2, 2, 3, 1, 2 ], [128X[104X
+    [4X[28X  module := <reducible module of dim. 4370 over GF(2)> )[128X[104X
+    [4X[25Xgap>[125X [27Xi := Position(List(r.db,Dimension),78);;[127X[104X
+    [4X[25Xgap>[125X [27Xegens78 := GeneratorsWithMemory(RepresentingMatrices(r.db[i]));[127X[104X
+    [4X[28X[ <<immutable cmat 78x78 over GF(2,1)> with mem>, [128X[104X
+    [4X[28X  <<immutable cmat 78x78 over GF(2,1)> with mem> ] [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YBy [ATLAS], standard generators [22Xa,b[122X of [22XFi_{22}[122X are given as follows: [22Xa[122X is an
+  element   of   the   2A   conjugacy   class  of  [22XFi_{22}[122X,  and  [22Xb[122X,  [22Xab[122X,  and
+  [22X(ab)^4bab(abb)^2[122X   have   order  13,  11,  and  12,  respectively;  standard
+  generators  of  [22X2.Fi_{22}[122X are lifts of standard generators of [22XFi_{22}[122X having
+  the same order fingerprint. The 2A conjugacy class of [22XFi_{22}[122X fuses into the
+  2A  conjugacy  class of [22XoverlineE[122X, where the latter is obtained as the 11-th
+  power  of  the unique conjugacy class of elements of order 22, and [22XoverlineE[122X
+  has only one conjugacy class of elements of order 13.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xo := Orb(egens78,StripMemory(egens78[1])^0,OnRight,rec(schreier := true,[127X[104X
+    [4X[25X>[125X [27X            lookingfor := function(o,x) return Order(x)=22; end));[127X[104X
+    [4X[28X<open orbit, 1 points with Schreier tree looking for sth.>[128X[104X
+    [4X[25Xgap>[125X [27XEnumerate(o);[127X[104X
+    [4X[28X<open orbit, 393 points with Schreier tree looking for sth.>[128X[104X
+    [4X[25Xgap>[125X [27Xword := TraceSchreierTreeForward(o,PositionOfFound(o));[127X[104X
+    [4X[28X[ 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 2 ][128X[104X
+    [4X[25Xgap>[125X [27Xg2a := Product(egens78{word})^11;[127X[104X
+    [4X[28X<<immutable cmat 78x78 over GF(2,1)> with mem>[128X[104X
+    [4X[25Xgap>[125X [27Xo := Orb(egens78,StripMemory(egens78[1])^0,OnRight,rec(schreier := true,[127X[104X
+    [4X[25X>[125X [27X            lookingfor := function(o,x) return Order(x)=13; end));[127X[104X
+    [4X[28X<open orbit, 1 points with Schreier tree looking for sth.>[128X[104X
+    [4X[25Xgap>[125X [27XEnumerate(o);[127X[104X
+    [4X[28X<open orbit, 144 points with Schreier tree looking for sth.>[128X[104X
+    [4X[25Xgap>[125X [27Xword := TraceSchreierTreeForward(o,PositionOfFound(o));[127X[104X
+    [4X[28X[ 1, 2, 1, 2, 1, 2, 1, 2, 2 ][128X[104X
+    [4X[25Xgap>[125X [27Xb := Product(egens78{word});[127X[104X
+    [4X[28X<<immutable cmat 78x78 over GF(2,1)> with mem> [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  search through the [22XoverlineE[122X-conjugates of [10Xg2a[110X until we find a conjugate
+  [22Xa[122X  together with [22Xb[122X fulfilling the defining conditions of standard generators
+  of  [22XFi_{22}[122X,  and  moreover  fulfilling  the  relations  of  the  associated
+  presentation of [22XFi_{22}[122X available in [ATLAS].[133X
+  
+  [33X[0;0YTo  find  conjugates,  we  use  the product replacement algorithm to produce
+  pseudo  random  elements of [22XoverlineE[122X. Assuming a genuine random search, the
+  success    probability   of   this   approach   is   as   follows:   Letting
+  [22XoverlineE':=E'/Z(E')        ≅        ^2E_6(2)[122X,        out       of       the
+  [22X|overlineE'|/|C_overlineE'}(g2a)|[122X   conjugates   of   [10Xg2a[110X   there  are  [22X|C_{
+  overlineE' }(b)|/|C_{ overlineE' }(Fi_{22})| =|C_{ overlineE' }(b)|[122X elements
+  together  with  the  fixed  element [22Xb[122X giving standard generators of [22XFi_{22}[122X.
+  Since  [22XFi_{22}[122X  has two conjugacy classes of elements of order 13, and there
+  are  three conjugacy classes of subgroups [22XFi_{22}[122X of [22XoverlineE'[122X, the success
+  probability   is   [22X6   ⋅   |C_{   overlineE'   }(g2a)|   ⋅  |C_{  overlineE'
+  }(b)|/|overlineE'| ≈ 2 ⋅ 10^-5[122X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xpr := ProductReplacer(egens78,rec(maxdepth := 150));[127X[104X
+    [4X[28X<product replacer nrgens=2 slots=12 scramble=100 maxdepth=150 steps=0 (rattle)>[128X[104X
+    [4X[25Xgap>[125X [27Xi := 0;;[127X[104X
+    [4X[25Xgap>[125X [27Xrepeat[127X[104X
+    [4X[25X>[125X [27X     i := i + 1; [127X[104X
+    [4X[25X>[125X [27X     x := Next(pr);[127X[104X
+    [4X[25X>[125X [27X     a := g2a^x;[127X[104X
+    [4X[25X>[125X [27X   until IsOne((a*b)^11) and IsOne(((a*b)^4*b*a*b*(a*b*b)^2)^12) and[127X[104X
+    [4X[25X>[125X [27X     IsOne((a*b^2)^21) and IsOne(Comm(a,b)^3) and [127X[104X
+    [4X[25X>[125X [27X     IsOne(Comm(a,b^2)^3) and IsOne(Comm(a,b^3)^3) and[127X[104X
+    [4X[25X>[125X [27X     IsOne(Comm(a,b^4)^2) and IsOne(Comm(a,b^5)^3) and[127X[104X
+    [4X[25X>[125X [27X     IsOne(Comm(a,b*a*b^2)^3) and IsOne(Comm(a,b^-1*a*b^-2)^2) and[127X[104X
+    [4X[25X>[125X [27X     IsOne(Comm(a,b*a*b^5)^2) and IsOne(Comm(a,b^2*a*b^5)^2);[127X[104X
+    [4X[25Xgap>[125X [27Xi;[127X[104X
+    [4X[28X53271 [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNote  that  the  initial state of the random number generator does influence
+  this  randomised  result:  it may very well be that you see some other value
+  for [22Xi[122X.[133X
+  
+  [33X[0;0YDue to a presentation being available we have proved that the elements found
+  generate  a  subgroup  [22XFi_{22}[122X. If we had not had a presentation at hand, we
+  might  only  have  been  able  to  find  elements  fulfilling  the  defining
+  conditions  of  standard  generators  of  [22XFi_{22}[122X,  but  still  generating a
+  subgroup  of  another  isomorphism type. In that case, for further checks we
+  can  use  the  following tools: We try to find a short orbit of vectors, and
+  using a randomized Schreier-Sims algorithm gives a lower bound for the order
+  of  the  group  seen.  However,  we can use the action on the orbit to get a
+  homomorphism  into  a  permutation  group,  allowing to prove that the group
+  generated indeed has [22XFi_{22}[122X as a quotient.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XS := StabilizerChain(Group(a,b),rec(TryShortOrbit := 30,[127X[104X
+    [4X[25X>[125X [27X                                       OrbitLengthLimit := 5000));[127X[104X
+    [4X[28X...[128X[104X
+    [4X[28X<stabchain size=64561751654400 orblen=3510 layer=1 SchreierDepth=8>[128X[104X
+    [4X[28X <stabchain size=18393661440 orblen=2816 layer=2 SchreierDepth=7>[128X[104X
+    [4X[28X  <stabchain size=6531840 orblen=1680 layer=3 SchreierDepth=7>[128X[104X
+    [4X[28X   <stabchain size=3888 orblen=243 layer=4 SchreierDepth=5>[128X[104X
+    [4X[28X    <stabchain size=16 orblen=16 layer=5 SchreierDepth=2>[128X[104X
+    [4X[25Xgap>[125X [27XSize(S)=Size(CharacterTable("Fi22"));[127X[104X
+    [4X[28Xtrue [128X[104X
+    [4X[25Xgap>[125X [27Xp := Group(ActionOnOrbit(S!.orb,[a,b]));;[127X[104X
+    [4X[25Xgap>[125X [27XDisplayCompositionSeries(p);[127X[104X
+    [4X[28XG (2 gens, size 64561751654400)[128X[104X
+    [4X[28X | Fi(22)[128X[104X
+    [4X[28X1 (0 gens, size 1) [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe now return to our original representation.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XSetInfoLevel(InfoSLP,2); [127X[104X
+    [4X[25Xgap>[125X [27Xslpetofi22 := SLPOfElms([a,b]);[127X[104X
+    [4X[28X<straight line program>[128X[104X
+    [4X[25Xgap>[125X [27XLength(LinesOfStraightLineProgram(slpetofi22));[127X[104X
+    [4X[28X278[128X[104X
+    [4X[25Xgap>[125X [27XSlotUsagePattern(slpetofi22);;[127X[104X
+    [4X[25Xgap>[125X [27Xfgens := ResultOfStraightLineProgram(slpetofi22,egens);[127X[104X
+    [4X[28X...[128X[104X
+    [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] [128X[104X
+    [4X[25Xgap>[125X [27Xa := fgens[1];;[127X[104X
+    [4X[25Xgap>[125X [27Xb := fgens[2];; [127X[104X
+    [4X[25Xgap>[125X [27XIsOne(b^13);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XIsOne((a*b)^11);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XIsOne((a*b^2)^21);[127X[104X
+    [4X[28Xtrue [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YBy  construction  the  group  generated  by [22Xa,b[122X is [22XFi_{22}[122X or [22X2 × Fi_{22}[122X or
+  [22X2.Fi_{22}[122X.  Note  that due to different seeds in the random number generator
+  it is in fact possible at this stage that you have created a different group
+  as displayed here! In our outcome, since [22Xa[122X has even order, and both [22Xb[122X and [22Xab[122X
+  have odd order, we cannot possibly have [22X2 × Fi_{22}[122X; and by the presentation
+  of [22X2.Fi_{22}[122X available in [ATLAS] the order of [22Xab^2[122X being 21 implies that we
+  cannot  possibly  have [22X2.Fi_{22}[122X either. Hence we indeed have found standard
+  generators  of  [22XFi_{22}[122X.  If  we  had  hit  one  of the cases [22X2 × Fi_{22}[122X or
+  [22X2.Fi_{22}[122X,  we could just continue the above search until we find a subgroup
+  [22XFi_{22}[122X,  or  using  the  above order fingerprint we could easily modify the
+  elements found to obtain standard generators of either [22XFi_{22}[122X or [22X2.Fi_{22}[122X.[133X
+  
+  [33X[0;0YNow,  standard  generators  of [22XU_2=M_{12}[122X in terms of standard generators of
+  [22XFi_{22}[122X,  and  generators  of [22XU_1=L_2(11)[122X in terms of standard generators of
+  [22XM_{12}[122X  are  accessible in the [5Xatlasrep[105X package. Note that if we had found a
+  subgroup  [22X2.Fi_{22}[122X  above,  since  [22XM_{12}[122X lifts to a subgroup [22X2 × M_{12}[122X of
+  [22X2.Fi_{22}[122X, it would again be easy to find standard generators of [22XM_{12}[122X from
+  the generators of [22XM_{12}[122X or [22X2 × M_{12}[122X respectively provided by the [5Xatlasrep[105X
+  package.  Anyway,  the  next task is to find good quotient modules such that
+  the  helper  subgroups  have  longish  orbits  on  vectors.  To this end, we
+  restrict to [22XM_{12}[122X and compute the radical series of the restricted module.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xslpfi22tom12 := AtlasStraightLineProgram("Fi22",14).program;;[127X[104X
+    [4X[25Xgap>[125X [27Xslpm12tol211 := AtlasStraightLineProgram("M12",5).program;;[127X[104X
+    [4X[25Xgap>[125X [27Xmgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);[127X[104X
+    [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ][128X[104X
+    [4X[25Xgap>[125X [27Xlgens := ResultOfStraightLineProgram(slpm12tol211,mgens);[127X[104X
+    [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] [128X[104X
+    [4X[25Xgap>[125X [27Xm := Module(mgens);;[127X[104X
+    [4X[25Xgap>[125X [27Xr := Chop(m);;[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27Xrad := RadicalSeries(m,r.db);[127X[104X
+    [4X[28X...[128X[104X
+    [4X[28Xrec( [128X[104X
+    [4X[28X  db := [ <abs. simple module of dim. 144 over GF(2)>, [128X[104X
+    [4X[28X          <abs. simple module of dim. 44 over GF(2)>, [128X[104X
+    [4X[28X          <simple module of dim. 32 over GF(2) splitting field degree 2>, [128X[104X
+    [4X[28X          <abs. simple module of dim. 10 over GF(2)>, [128X[104X
+    [4X[28X          <trivial module of dim. 1 over GF(2)> ],[128X[104X
+    [4X[28X  module := <reducible module of dim. 4370 over GF(2)>,[128X[104X
+    [4X[28X  basis := <immutable cmat 4370x4370 over GF(2,1)>,[128X[104X
+    [4X[28X  ibasis := <immutable cmat 4370x4370 over GF(2,1)>,[128X[104X
+    [4X[28X  cfposs := [ [ [ 1 .. 144 ], [ 145 .. 288 ], [ 289 .. 432 ], [ 433 .. 576 ],[128X[104X
+    [4X[28X...[128X[104X
+    [4X[28X  isotypes := [ [ 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3,[128X[104X
+    [4X[28X                  3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 ],[128X[104X
+    [4X[28X...[128X[104X
+    [4X[28X  isradicalrecord := true ) [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  observe  that there are faithful irreducible quotients of dimensions 10,
+  32,  44,  and  144. Since we look for a quotient module such that [22XM_{12}[122X has
+  many  regular  orbits  on  vectors,  we  ignore  the  irreducible  module of
+  dimension 10. We consider the one of dimension 32.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xi := Position(List(rad.db,Dimension),32);;[127X[104X
+    [4X[25Xgap>[125X [27Xmgens32 := RepresentingMatrices(rad.db[i]);[127X[104X
+    [4X[28X[ <immutable cmat 32x32 over GF(2,1)>, <immutable cmat 32x32 over GF(2,1)> ][128X[104X
+    [4X[25Xgap>[125X [27XOrbitStatisticOnVectorSpace(mgens32,95040,30);[127X[104X
+    [4X[28XFound length     95040, have now   24 orbits, average length: 93060 [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YThis  is  excellent  indeed.  Hence we pick a summand of dimension 32 in the
+  first  radical  layer,  and  apply  the  associated  base  change to all the
+  generators.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xbgens := List(bgens,x->rad.basis*x*rad.ibasis);;[127X[104X
+    [4X[25Xgap>[125X [27Xegens := List(egens,x->rad.basis*x*rad.ibasis);;[127X[104X
+    [4X[25Xgap>[125X [27Xfgens := List(fgens,x->rad.basis*x*rad.ibasis);;[127X[104X
+    [4X[25Xgap>[125X [27Xmgens := List(mgens,x->rad.basis*x*rad.ibasis);;[127X[104X
+    [4X[25Xgap>[125X [27Xlgens := List(lgens,x->rad.basis*x*rad.ibasis);;[127X[104X
+    [4X[25Xgap>[125X [27Xj := Position(rad.isotypes[1],i);;[127X[104X
+    [4X[25Xgap>[125X [27Xl := rad.cfposs[1][j];;[127X[104X
+    [4X[25Xgap>[125X [27XAppend(l,Difference([1..4370],l));[127X[104X
+    [4X[25Xgap>[125X [27Xbgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xegens := List(egens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xfgens := List(fgens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xmgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xlgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; [127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe consider the irreducible quotient module of [22XM_{12}[122X of dimension 32, whose
+  restriction  to  [22XL_2(11)[122X  turns  out  to  be  is semisimple. The irreducible
+  quotients of dimension 10 are too small to have too many regular orbits, but
+  the direct sum of two of them turns out to work fine.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xlgens32 := List(lgens,x->ExtractSubMatrix(x,[1..32],[1..32]));[127X[104X
+    [4X[28X[ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ][128X[104X
+    [4X[25Xgap>[125X [27Xm := Module(lgens32);;[127X[104X
+    [4X[25Xgap>[125X [27Xr := Chop(m);[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27Xsoc := SocleSeries(m,r.db);[127X[104X
+    [4X[28X...[128X[104X
+    [4X[28Xrec( issoclerecord := true,[128X[104X
+    [4X[28X  db := [ <simple module of dim. 10 over GF(2) splitting field degree 2>,[128X[104X
+    [4X[28X          <trivial module of dim. 1 over GF(2)>,[128X[104X
+    [4X[28X          <abs. simple module of dim. 10 over GF(2)> ],[128X[104X
+    [4X[28X  module := <reducible module of dim. 32 over GF(2)>,[128X[104X
+    [4X[28X  basis := <cmat 32x32 over GF(2,1)>, ibasis := <cmat 32x32 over GF(2,1)>,[128X[104X
+    [4X[28X  cfposs := [ [ [ 1 .. 10 ], [ 11 ], [ 12 ], [ 13 .. 22 ], [ 23 .. 32 ] ] ],[128X[104X
+    [4X[28X  isotypes := [ [ 1, 2, 2, 3, 3 ] ] )[128X[104X
+    [4X[25Xgap>[125X [27Xi := Position(List(soc.db,x->[Dimension(x),DegreeOfSplittingField(x)]),[127X[104X
+    [4X[25X>[125X [27X                                [10,1]);;[127X[104X
+    [4X[25Xgap>[125X [27Xj := Position(soc.isotypes[1],i);;[127X[104X
+    [4X[25Xgap>[125X [27Xl := Concatenation(soc.cfposs[1]{[j,j+1]});;[127X[104X
+    [4X[25Xgap>[125X [27Xlgens32 := List(lgens32,x->soc.basis*x*soc.ibasis);[127X[104X
+    [4X[28X[ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ][128X[104X
+    [4X[25Xgap>[125X [27Xlgens20 := List(lgens32,x->ExtractSubMatrix(x,l,l));[127X[104X
+    [4X[28X[ <cmat 20x20 over GF(2,1)>, <cmat 20x20 over GF(2,1)> ][128X[104X
+    [4X[25Xgap>[125X [27XOrbitStatisticOnVectorSpace(lgens20,660,30);[127X[104X
+    [4X[28XFound length       660, have now 4401 orbits, average length: 598 [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe apply the appropriate base change to all the generators.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xt := ORB_EmbedBaseChangeTopLeft(soc.basis,4370);[127X[104X
+    [4X[28X<cmat 4370x4370 over GF(2,1)>[128X[104X
+    [4X[25Xgap>[125X [27Xti := ORB_EmbedBaseChangeTopLeft(soc.ibasis,4370);[127X[104X
+    [4X[28X<cmat 4370x4370 over GF(2,1)>[128X[104X
+    [4X[25Xgap>[125X [27Xbgens := List(bgens,x->t*x*ti);;[127X[104X
+    [4X[25Xgap>[125X [27Xegens := List(egens,x->t*x*ti);;[127X[104X
+    [4X[25Xgap>[125X [27Xfgens := List(fgens,x->t*x*ti);;[127X[104X
+    [4X[25Xgap>[125X [27Xmgens := List(mgens,x->t*x*ti);;[127X[104X
+    [4X[25Xgap>[125X [27Xlgens := List(lgens,x->t*x*ti);; [127X[104X
+    [4X[25Xgap>[125X [27XAppend(l,Difference([1..4370],l));[127X[104X
+    [4X[25Xgap>[125X [27Xbgens := List(bgens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xegens := List(egens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xfgens := List(fgens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xmgens := List(mgens,x->ORB_PermuteBasisVectors(x,l));;[127X[104X
+    [4X[25Xgap>[125X [27Xlgens := List(lgens,x->ORB_PermuteBasisVectors(x,l));; [127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YHaving reached the ultimate choice of basis, we recreate the fixed vector [10Xv[110X.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xx := egens[1]-egens[1]^0;;[127X[104X
+    [4X[25Xgap>[125X [27Xnsx := NullspaceMat(x);;[127X[104X
+    [4X[25Xgap>[125X [27Xy := nsx * (egens[2]-egens[2]^0);;[127X[104X
+    [4X[25Xgap>[125X [27Xnsy := NullspaceMat(y);;[127X[104X
+    [4X[25Xgap>[125X [27Xv := nsy[1]*nsx;; [127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YFinally  we  need  small  faithful permutation representations of the helper
+  subgroups.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xmgens32 := List(mgens,x->ExtractSubMatrix(x,[1..32],[1..32]));[127X[104X
+    [4X[28X[ <cmat 32x32 over GF(2,1)>, <cmat 32x32 over GF(2,1)> ][128X[104X
+    [4X[25Xgap>[125X [27XS := StabilizerChain(Group(mgens32),rec(TryShortOrbit := 10));[127X[104X
+    [4X[28X...[128X[104X
+    [4X[28X<stabchain size=95040 orblen=3960 layer=1 SchreierDepth=7>[128X[104X
+    [4X[28X <stabchain size=24 orblen=24 layer=2 SchreierDepth=4>[128X[104X
+    [4X[25Xgap>[125X [27Xp := Group(ActionOnOrbit(S!.orb,mgens32));[127X[104X
+    [4X[28X<permutation group with 2 generators>[128X[104X
+    [4X[25Xgap>[125X [27Xi := SmallerDegreePermutationRepresentation(p);;[127X[104X
+    [4X[25Xgap>[125X [27Xpp := Group(List(GeneratorsOfGroup(p),x->ImageElm(i,x)));[127X[104X
+    [4X[28X<permutation group with 2 generators>[128X[104X
+    [4X[25Xgap>[125X [27Xm12 := MathieuGroup(12);;[127X[104X
+    [4X[25Xgap>[125X [27Xi := IsomorphismGroups(pp,m12);;[127X[104X
+    [4X[25Xgap>[125X [27Xmpermgens := List(GeneratorsOfGroup(pp),x->ImageElm(i,x));[127X[104X
+    [4X[28X[ (5,7)(6,11)(8,9)(10,12), (1,10,3)(2,11,12)(4,5,6)(7,9,8) ][128X[104X
+    [4X[25Xgap>[125X [27Xlpermgens := ResultOfStraightLineProgram(slpm12tol211,mpermgens);[127X[104X
+    [4X[28X[ (1,8)(2,5)(3,9)(4,7)(6,11)(10,12), (1,8,3)(2,7,12)(4,6,9)(5,11,10) ] [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YWe  could  just go on from here, however, sometimes it is useful to save all
+  the created data to disk.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xf := IO_File("data.gp","w");;[127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,"seed");; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,v);; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,"generators");; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,bgens);; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,egens);; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,fgens);; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,mgens);; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,lgens);;[127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,"permutations");; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,mpermgens);; [127X[104X
+    [4X[25Xgap>[125X [27XIO_Pickle(f,lpermgens);;[127X[104X
+    [4X[25Xgap>[125X [27XIO_Close(f);; [127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YThis can be loaded again, in particular into a new [5XGAP[105X session, as follows.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("orb");;[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27XLoadPackage("cvec");;[127X[104X
+    [4X[28X...[128X[104X
+    [4X[25Xgap>[125X [27Xf := IO_File("data.gp");[127X[104X
+    [4X[28X<file fd=4 rbufsize=65536 rpos=1 rdata=0>[128X[104X
+    [4X[25Xgap>[125X [27XIO_Unpickle(f);[127X[104X
+    [4X[28X"seed"[128X[104X
+    [4X[25Xgap>[125X [27Xv:=IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27XIO_Unpickle(f);[127X[104X
+    [4X[28X"generators"[128X[104X
+    [4X[25Xgap>[125X [27Xbgens := IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27Xegens := IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27Xfgens := IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27Xmgens := IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27Xlgens := IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27XIO_Unpickle(f);[127X[104X
+    [4X[28X"permutations"[128X[104X
+    [4X[25Xgap>[125X [27Xmpermgens := IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27Xlpermgens := IO_Unpickle(f);;[127X[104X
+    [4X[25Xgap>[125X [27XIO_Close(f);; [127X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YNow we are prepared to actually run the orbit enumeration. Note that for the
+  following  memory  estimates we assume that we are running things on a 64bit
+  machine.  On a 32bit machine the overhead is smaller. We expect that all the
+  vectors  in  the smaller quotient of dimension 20 will enumerated; needing 3
+  bytes  per  vector  for  the actual data which results in 40 bytes including
+  overhead,  this  amounts  to [22X40 ⋅ 2^20 ≈ 42[122X MB of memory space. Since [22X2^32 ≈
+  4.3  ⋅  10^9[122X is less than [22X[B: E][122X, we also expect that the larger quotient of
+  dimension  32  will  be  enumerated completely, by [22XL_2(11)[122X-orbits; needing 4
+  bytes  per  vector  for  the  actual  data  resulting  in 40 bytes including
+  overhead,    and    assuming    a    saving    factor    as   suggested   by
+  [10XOrbitStatisticOnVectorSpace[110X  yields  an estimated memory requirement of [22X40 ⋅
+  2^32  ⋅  1/598  ≈  287[122X  MB.  For  the  large  [22XB[122X-orbit,  being  enumerated by
+  [22XM_{12}[122X-orbits, we similarly get an estimated memory requirement of [22X584 ⋅ [B:
+  E] ⋅ 1/93060 ≈ 85[122X MB.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27Xsetup := OrbitBySuborbitBootstrapForVectors([127X[104X
+    [4X[25X>[125X [27X            [lgens,mgens,bgens],[lpermgens,mpermgens,[(),()]],[127X[104X
+    [4X[25X>[125X [27X            [660,95040,4154781481226426191177580544000000],[20,32],rec());[127X[104X
+    [4X[28X#I  Calculating stabilizer chain for whole group...[128X[104X
+    [4X[28X#I  Trying smaller degree permutation representation for U2...[128X[104X
+    [4X[28X#I  Trying smaller degree permutation representation for U1...[128X[104X
+    [4X[28X#I  Enumerating permutation base images of U_1...[128X[104X
+    [4X[28X#I  Looking for U1-coset-recognising U2-orbit in factor space...[128X[104X
+    [4X[28X#I  OrbitBySuborbit found 100% of a U2-orbit of size 95 040[128X[104X
+    [4X[28X#I  Found 144 suborbits (need 144)[128X[104X
+    [4X[28X<setup for an orbit-by-suborbit enumeration, k=2>[128X[104X
+    [4X[25Xgap>[125X [27Xo := OrbitBySuborbitKnownSize(setup,v,3,3,2,51,13571955000);[127X[104X
+    [4X[28X#I  OrbitBySuborbit found 100% of a U2-orbit of size 1[128X[104X
+    [4X[28X#I  OrbitBySuborbit found 100% of a U2-orbit of size 23 760[128X[104X
+    [4X[28X...[128X[104X
+    [4X[28X#I  OrbitBySuborbit found 51% of a U3-orbit of size 13 571 955 000[128X[104X
+    [4X[28X<orbit-by-suborbit size=13571955000 stabsize=306129918735099415756800 ([128X[104X
+    [4X[28X51%) saving factor=56404> [128X[104X
+  [4X[32X[104X
+  
+  [33X[0;0YIndeed the saving factor actually achieved is smaller than the best possible
+  estimate given above, but it still has the same order of magnitude.[133X
+  

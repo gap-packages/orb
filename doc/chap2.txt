@@ -1,0 +1,95 @@
+  
+  [1X2 [33X[0;0YInstallation of the [5Xorb[105X[101X[1X-Package[133X[101X
+  
+  [33X[0;0YTo  install  this package just extract the package's archive file to the GAP
+  [11Xpkg[111X directory.[133X
+  
+  [33X[0;0YBy  default  the  [5Xorb[105X  package is not automatically loaded by [5XGAP[105X when it is
+  installed.  You  must  load  the package with [10XLoadPackage("orb");[110X before its
+  functions become available.[133X
+  
+  [33X[0;0YAs  of  version 3.0, the [5Xorb[105X package has a [5XGAP[105X kernel component which should
+  be  compiled. This component does not actually contain new functionality but
+  will  improve  the  performance  of  AVL trees and hash tables significantly
+  since many core routines are implemented in the C language at kernel level.[133X
+  
+  [33X[0;0YTo compile the C part of the package do (in the [11Xpkg[111X directory)[133X
+  
+      cd orb
+      ./configure
+      make
+  
+  [33X[0;0YIf  you installed the package in another [21X[11Xpkg[111X[121X directory than the standard [21X[11Xpkg[111X[121X
+  directory  in  your  [5XGAP[105X  4  installation,  then  you have to do two things.
+  Firstly during compilation you have to use the option [10X--with-gaproot=PATH[110X of
+  the [11Xconfigure[111X script where [21XPATH[121X is a path to the main [5XGAP[105X root directory (if
+  not given the default [21X[11X../..[111X[121X is assumed).[133X
+  
+  [33X[0;0YSecondly  you  have to specify the path to the directory containing your [21X[11Xpkg[111X[121X
+  directory  to  [5XGAP[105X's  list  of directories. This can be done by starting [5XGAP[105X
+  with  the [21X[11X-l[111X[121X command line option followed by the name of the directory and a
+  semicolon.  Then  your  directory  is  prepended  to the list of directories
+  searched.  Otherwise the package is not found by [5XGAP[105X. Of course, you can add
+  this option to your [5XGAP[105X startup script.[133X
+  
+  [33X[0;0YIf  you  installed  [5XGAP[105X  on  several  architectures,  you  must  execute the
+  configure/make  step  for  each of the architectures. You can either do this
+  immediately after configuring and compiling [5XGAP[105X itself on this architecture,
+  or  alternatively  (when  using  version  4.5  of  [5XGAP[105X  or  newer)  set  the
+  environment  variable  [10XCONFIGNAME[110X  to the name of the configuration you used
+  when  compiling  [5XGAP[105X  before  running  [10X./configure[110X.  Note  however that your
+  compiler  choice  and flags (environment variables [10XCC[110X and [10XCFLAGS[110X) need to be
+  chosen  to  match the setup of the original [5XGAP[105X compilation. For example you
+  have to specify 32-bit or 64-bit mode correctly![133X
+  
+  
+  [1X2.1 [33X[0;0YStatic linking[133X[101X
+  
+  [33X[0;0YThis  feature does not work in this version of the package. We leave the old
+  documentation  here  for  the  case that the feature will be reenabled inthe
+  future.[133X
+  
+  [33X[0;0YThis might be interesting for M$ Windows users, as dynamic loading of binary
+  modules  does  not  always  work there. You can also create a new statically
+  linked [21X[11Xgap[111X[121X binary as follows:[133X
+  
+  [33X[0;0YGo  into  the main [5XGAP[105X directory and then into [11Xbin/BINDIR[111X. Here [11XBINDIR[111X means
+  the  directory  containing  the  [21X[11Xgap[111X[121X  executable  after  compiling [21X[11Xgap[111X[121X. This
+  directory  also  contains  the  [5XGAP[105X compiler script [21X[11Xgac[111X[121X. Assuming [5Xorb[105X in the
+  standard location you can then say[133X
+  
+      ./gac -o gap-static -p "-DORBSTATIC" -P "-static" ../../pkg/orb/src/orb.c
+  
+  [33X[0;0YThen  copy  your [21X[11Xgap[111X[121X start script to, say, [21X[11Xgaps[111X[121X and change the references to
+  the [5XGAP[105X binary to [21X[11Xgap-static[111X[121X.[133X
+  
+  [33X[0;0YNote  that  you  have  to  replace  [11XBINDIR[111X  by  the  name containing the [21X[11Xgap[111X[121X
+  executable  after  compiling GAP as above. If you have installed the package
+  in  a  different  place  than the standard, you have to replace [21X[11X../..[111X[121X in the
+  above command by the path to the directory containing the [21X[11Xpkg[111X[121X directory into
+  which you installed [5Xorb[105X. If you want to install more than one package with a
+  C-part  like  this  package,  you  can  still create a statically linked [5XGAP[105X
+  executable  by  combining  all  the  compile and link options and all the .c
+  files as in the ./gac command above. For the [5Xorb[105X package, you have to add[133X
+  
+      -DORBSTATIC
+  
+  [33X[0;0Yto the string of the -p option and the file[133X
+  
+    ../../pkg/orb/src/orb.c
+  
+  [33X[0;0Ysomewhere  on  the  command  line.  As  above,  [21X[11X../..[111X[121X  and [21X[11XBINDIR[111X[121X have to be
+  replaced if you installed in a non-standard location.[133X
+  
+  
+  [1X2.2 [33X[0;0YRecompiling the documentation[133X[101X
+  
+  [33X[0;0YRecompiling  the  documentation  is possible by the command [21X[11Xgap makedoc.g[111X[121X in
+  the [11Xorb[111X directory. But this should not be necessary.[133X
+  
+  [33X[0;0YPlease,  send  us an e-mail if you have any questions, remarks, suggestions,
+  etc.  concerning this package. Also, I would like to hear about applications
+  of this package.[133X
+  
+  [33X[0;0YJürgen Müller, Max Neunhöffer and Felix Noeske[133X
+  

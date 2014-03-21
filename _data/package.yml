@@ -1,43 +1,44 @@
-name: GitHubPagesForGAP
-version: 0.1
-date: 21/03/2014
-description: A GitHubPages generator for GAP packages
+name: orb
+version: 4.6
+date: 02/05/2013
+description: orb - Methods to enumerate Orbits
 
 authors:
-    - name: Max Horn
-      url: http://www.quendi.de/math
-    - name: A. U. Thor
+    - name: Juergen Mueller
+      url: http://www.math.rwth-aachen.de/~Juergen.Mueller
+    - name: Max Neunhoeffer
+      url: http://www-groups.mcs.st-and.ac.uk/~neunhoef
+    - name: Felix Noeske
+      url: http://www.math.rwth-aachen.de/~Felix.Noeske
 
 maintainers:
-    - name: Max Horn
-      url: http://www.quendi.de/math
-    - name: Jan Itor
+    - name: Juergen Mueller
+      url: http://www.math.rwth-aachen.de/~Juergen.Mueller
+    - name: Max Neunhoeffer
+      url: http://www-groups.mcs.st-and.ac.uk/~neunhoef
+    - name: Felix Noeske
+      url: http://www.math.rwth-aachen.de/~Felix.Noeske
 
-GAP: ">=4.5.5"
+GAP: ">=4.4.12"
 
 needed-pkgs:
     - name: "GAPDoc"
       version: ">= 1.2"
-    - name: "IO"
-      version: ">= 4.1"
 
 suggested-pkgs:
-    - name: "orb"
-      version: ">= 4.2"
+    - name: "IO"
+      version: ">= 3.3"
 
-www: http://fingolfin.github.io/GitHubPagesForGAP/
-readme: http://fingolfin.github.io/GitHubPagesForGAP/README
-packageinfo: http://fingolfin.github.io/GitHubPagesForGAP/PackageInfo.g
-github: https://github.com/fingolfin/GitHubPagesForGAP
+www: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb.html
+readme: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/README.orb
+packageinfo: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/fingolfin/GitHubPagesForGAP/releases/download/v0.1/GitHubPagesForGAP-0.1.tar.gz
-    - name: .tar.bz2
-      url: https://github.com/fingolfin/GitHubPagesForGAP/releases/download/v0.1/GitHubPagesForGAP-0.1.tar.bz2
+      url: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-4.6.tar.gz
 
-abstract: This is a pseudo package that contains no actual  <span class="pkgname">GAP</span> code. Instead, it is a template for other  GAP packages that allows to quickly setup GitHub pages.
+abstract: The <span class="pkgname">orb</span> package is about enumerating orbits in various ways.
 
-status: other
+status: deposited
 doc-html: doc/chap0.html
 doc-pdf: doc/manual.pdf

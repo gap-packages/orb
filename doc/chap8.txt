@@ -1,0 +1,353 @@
+  
+  [1X8 [33X[0;0YAVL trees[133X[101X
+  
+  
+  [1X8.1 [33X[0;0YThe idea of AVL trees[133X[101X
+  
+  [33X[0;0YAVL  trees  are  balanced  binary  trees called [21XAVL trees[121X in honour of their
+  inventors  G.M.  Adelson-Velskii and E.M. Landis (see [AM62]). A description
+  in English can be found in [Knu97] in Section 6.2.3 about balanced trees.[133X
+  
+  [33X[0;0YThe  general idea is to store data in a binary tree such that all entries in
+  the  left  subtree  of a node are smaller than the entry at the node and all
+  entries  in  the  right  subtree are bigger. The tree is kept [21Xbalanced[121X which
+  means that for each node the depth of the left and right subtrees differs by
+  at  most  1. In this way, finding something in the tree, adding a new entry,
+  deleting  an  entry  all  have  complexity  [22Xlog(n)[122X  where [22Xn[122X is the number of
+  entries in the tree. If one additionally stores the number of entries in the
+  left  subtree  of  each node, then finding the [22Xk[122X-th entry, removing the [22Xk[122X-th
+  entry  and inserting an entry in position [22Xk[122X also have complexity [22Xlog(n)[122X. The
+  [5Xorb[105X  contains  an  implementation  of  such tree objects providing all these
+  operations.[133X
+  
+  [33X[0;0Y[21XEntries[121X  in  AVL tree objects are key-value pairs and the sorting is done by
+  the  key. If all values as [9Xtrue[109X then no memory is needed to store the values
+  (see  the  corresponding behaviour for hash tables). The only requirement on
+  the  type  of  the keys is that two arbitrary keys must be comparable in the
+  sense  that  one  can  decide  which  of  them  is smaller. If [5XGAP[105Xs standard
+  comparison  operations  [22X<[122X  and  [22X=[122X  work  for your keys, no further action is
+  required,  if  not,  then  you  must  provide  your own three-way comparison
+  function (see below).[133X
+  
+  [33X[0;0YNote  that  the  AVL  trees  implemented  here  can be used in basically two
+  different  ways, which can sometimes be mixed: The usual way is by accessing
+  entries  by  their  key,  the  tree  is  then automatically kept sorted. The
+  alternative  way  is  by accessing entries by their index in the tree! Since
+  the  nodes  of the trees remember how many elements are stored in their left
+  subtree,  it  is  in  fact  possible to access the [22Xk[122X-th entry in the tree or
+  delete  it.  It is even possible to insert something in position [22Xk[122X. However,
+  note  that  if you do this latter operation, you are yourself responsible to
+  keep the entries in the tree sorted. You can ignore this responsibility, but
+  then  you  can no longer access the entries in the tree by their key and the
+  corresponding functions might fail or even run into errors.[133X
+  
+  [33X[0;0YThis  usage  can  be  useful,  since  in  this  way  AVL  trees  provide  an
+  implementation  of a list data structure where the operation list access (by
+  index), adding an element (in an arbitrary position) and deleting an element
+  (by  its  index) all have complexity [22Xlog(n)[122X where [22Xn[122X is the number of entries
+  in the list.[133X
+  
+  
+  [1X8.2 [33X[0;0YUsing AVL trees[133X[101X
+  
+  [33X[0;0YAn AVL tree is created using the following function:[133X
+  
+  [1X8.2-1 AVLTree[101X
+  
+  [29X[2XAVLTree[102X( [[3Xopt[103X] ) [32X function
+  [6XReturns:[106X  [33X[0;10YA new AVL tree object[133X
+  
+  [33X[0;0YThis function creates a new AVL tree object. The optional argument [3Xopt[103X is an
+  options record, in which you can bind the following components:[133X
+  
+  [33X[0;0Y[10Xcmpfunc[110X  is a three-way comparison function taking two arguments [3Xa[103X and [3Xb[103X and
+  returning  [22X-1[122X  if [22X[3Xa[103X < [3Xb[103X[122X, [22X+1[122X if [22X[3Xa[103X > [3Xb[103X[122X and [22X0[122X if [22X[3Xa[103X = [3Xb[103X[122X. If no function is given
+  then the generic function [2XAVLCmp[102X ([14X8.2-2[114X) is taken. This three-way comparison
+  function  is  stored  with  the tree and is used for all comparisons in tree
+  operations.  [10Xallocsize[110X  is  the  number of nodes which are allocated for the
+  tree  initially. It can be useful to specify this if you know that your tree
+  will  eventually  contain  a lot of entries, since then the tree object does
+  not have to grow that many times.[133X
+  
+  [33X[0;0YFor  every  AVL  tree a three-way comparison function is needed, usually you
+  can get away with using the following default one:[133X
+  
+  [1X8.2-2 AVLCmp[101X
+  
+  [29X[2XAVLCmp[102X( [3Xa[103X, [3Xb[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Y-1, 0 or 1[133X
+  
+  [33X[0;0YThis function calls the [9X<[109X operation and the [9X=[109X operation to provide a generic
+  three-way comparison function to be used in AVL tree operations. See [2XAVLTree[102X
+  ([14X8.2-1[114X)  for a description of the return value. This function is implemented
+  in the kernel and should be particularly fast.[133X
+  
+  [33X[0;0YThe following functions are used to access entries by key:[133X
+  
+  [1X8.2-3 AVLAdd[101X
+  
+  [29X[2XAVLAdd[102X( [3Xt[103X, [3Xkey[103X, [3Xval[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfail[109X[133X
+  
+  [33X[0;0YThe  first  argument [3Xt[103X must be an AVL tree. This function stores the key [3Xkey[103X
+  with  value  [3Xvalue[103X  in  the  tree  assuming  that  the keys in it are sorted
+  according  to  the  three-way  comparison  function stored with the tree. If
+  [3Xvalue[103X  is  [9Xtrue[109X then no additional memory is needed. It is an error if there
+  is already a key equal to [3Xkey[103X in the tree, in this case the function returns
+  [9Xfail[109X. Otherwise it returns [9Xtrue[109X.[133X
+  
+  [1X8.2-4 AVLLookup[101X
+  
+  [29X[2XAVLLookup[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan value or [9Xfail[109X[133X
+  
+  [33X[0;0YThe first argument [3Xt[103X must be an AVL tree. This function looks up the key [3Xkey[103X
+  in  the  tree and returns the value which is associated to it. If the key is
+  not  in the tree, the value [9Xfail[109X is returned. This function assumes that the
+  keys  in  the tree are sorted according to the three-way comparison function
+  stored with the tree.[133X
+  
+  [1X8.2-5 AVLDelete[101X
+  
+  [29X[2XAVLDelete[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan value or [9Xfail[109X[133X
+  
+  [33X[0;0YThe first argument [3Xt[103X must be an AVL tree. This function looks up the key [3Xkey[103X
+  in  the tree, deletes it and returns the value which was associated with it.
+  If  [3Xkey[103X  is  not  contained in the tree then [9Xfail[109X is returned. This function
+  assumes  that  the  keys  in  the tree are sorted according to the three-way
+  comparison function stored with the tree.[133X
+  
+  [1X8.2-6 AVLFindIndex[101X
+  
+  [29X[2XAVLFindIndex[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
+  
+  [33X[0;0YThe first argument [3Xt[103X must be an AVL tree. This function looks up the key [3Xkey[103X
+  in  the  tree  and  returns the index, under which it is stored in the tree.
+  This  index  is  one-based, that is, it takes values from 1 to the number of
+  entries  in  the  tree.  If  [3Xkey[103X  is  not contained in the tree then [9Xfail[109X is
+  returned.  This  function  assumes  that  the  keys  in  the tree are sorted
+  according to the three-way comparison function stored with the tree.[133X
+  
+  [33X[0;0YThe following functions are used to access entries in trees by their index:[133X
+  
+  [1X8.2-7 AVLIndex[101X
+  
+  [29X[2XAVLIndex[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya key or [9Xfail[109X[133X
+  
+  [33X[0;0YThe  first  argument [3Xt[103X must be an AVL tree. This function returns the key at
+  index  [3Xindex[103X  in the tree, so [3Xindex[103X must be an integer in the range 1 to the
+  number of elements in the tree. If the value is out of these bounds, [9Xfail[109X is
+  returned.  Note  that to use this function it is not necessary that the keys
+  in the tree are sorted according to the three-way comparison function stored
+  with the tree.[133X
+  
+  [1X8.2-8 AVLIndexLookup[101X
+  
+  [29X[2XAVLIndexLookup[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya value or [9Xfail[109X[133X
+  
+  [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree. This function returns the value
+  associated  to  the  key  at  index  [3Xindex[103X  in the tree, so [3Xindex[103X must be an
+  integer  in  the range 1 to the number of elements in the tree. If the value
+  is  out of these bounds, [9Xfail[109X is returned. Note that to use this function it
+  is  not  necessary  that  the  keys  in the tree are sorted according to the
+  three-way comparison function stored with the tree.[133X
+  
+  [1X8.2-9 AVLIndexAdd[101X
+  
+  [29X[2XAVLIndexAdd[102X( [3Xt[103X, [3Xkey[103X, [3Xvalue[103X, [3Xindex[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya key or [9Xfail[109X[133X
+  
+  [33X[0;0YThe  first argument [3Xt[103X must be an AVL tree. This function inserts the key [3Xkey[103X
+  at  index [3Xindex[103X in the tree and associates the value [3Xvalue[103X with it. If [3Xvalue[103X
+  is  [9Xtrue[109X  then  no additional memory is needed to store the value. The index
+  [3Xindex[103X  must  be  an  integer  in the range 1 to [22Xn+1[122X where [22Xn[122X is the number of
+  entries  in the tree. The new key is inserted before the key which currently
+  is  stored  at  index [3Xindex[103X, so calling with [3Xindex[103X equal to [22Xn+1[122X puts the new
+  key  at the end. If [3Xindex[103X is not in the corrent range, this function returns
+  [9Xfail[109X and the tree remains unchanged.[133X
+  
+  [33X[0;0Y[12XCaution:[112X  With  this function it is possible to put a key into the tree at a
+  position  such  that  the keys in the tree are no longer sorted according to
+  the  three-way comparison function stored with the tree! If you do this, the
+  functions   [2XAVLAdd[102X   ([14X8.2-3[114X),   [2XAVLLookup[102X  ([14X8.2-4[114X),  [2XAVLDelete[102X  ([14X8.2-5[114X)  and
+  [2XAVLFindIndex[102X ([14X8.2-6[114X) will no longer work since they assume that the keys are
+  sorted![133X
+  
+  [1X8.2-10 AVLIndexDelete[101X
+  
+  [29X[2XAVLIndexDelete[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya key or [9Xfail[109X[133X
+  
+  [33X[0;0YThe  first  argument [3Xt[103X must be an AVL tree. This function deletes the key at
+  index [3Xindex[103X in the tree and returns the value which was associated with it.[133X
+  
+  [33X[0;0YThe following functions allow low level access to the AVL tree object:[133X
+  
+  [1X8.2-11 AVLFind[101X
+  
+  [29X[2XAVLFind[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
+  
+  [33X[0;0YThe  first argument [3Xt[103X must be an AVL tree. This function locates the key [3Xkey[103X
+  in  the tree and returns the position in the positional object, at which the
+  node  which  contains  the  key  is  stored.  This  position  will always be
+  divisible  by 4. Use the functions [2XAVLData[102X ([14X8.2-13[114X) and [2XAVLValue[102X ([14X8.2-14[114X) to
+  access the key and value of the node respectively. The function returns [9Xfail[109X
+  if  the key is not found in the tree. This function assumes that the keys in
+  the  tree  are  sorted according to the three-way comparison function stored
+  with the tree.[133X
+  
+  [1X8.2-12 AVLIndexFind[101X
+  
+  [29X[2XAVLIndexFind[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
+  
+  [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree. This function locates the index
+  [3Xindex[103X  in  the  tree  and  returns the position in the positional object, at
+  which the node which hash this index is stored. This position will always be
+  divisible  by 4. Use the functions [2XAVLData[102X ([14X8.2-13[114X) and [2XAVLValue[102X ([14X8.2-14[114X) to
+  access the key and value of the node respectively. The function returns [9Xfail[109X
+  if  the key is not found in the tree. This function does not assume that the
+  keys  in  the tree are sorted according to the three-way comparison function
+  stored with the tree.[133X
+  
+  [1X8.2-13 AVLData[101X
+  
+  [29X[2XAVLData[102X( [3Xt[103X, [3Xpos[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan key[133X
+  
+  [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree and the second a position in the
+  positional  object  corresponding to a node as returned by [2XAVLFind[102X ([14X8.2-11[114X).
+  The function returns the key associated with this node.[133X
+  
+  [1X8.2-14 AVLValue[101X
+  
+  [29X[2XAVLValue[102X( [3Xt[103X, [3Xpos[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya value[133X
+  
+  [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree and the second a position in the
+  positional  object  corresponding to a node as returned by [2XAVLFind[102X ([14X8.2-11[114X).
+  The function returns the value associated with this node.[133X
+  
+  [33X[0;0YThe  following convenience methods for standard list methods are implemented
+  for AVL tree objects:[133X
+  
+  [1X8.2-15 Display[101X
+  
+  [29X[2XDisplay[102X( [3Xt[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0YThis function displays the tree in a user-friendly way. Do not try this with
+  trees containing many nodes![133X
+  
+  [1X8.2-16 ELM_LIST[101X
+  
+  [29X[2XELM_LIST[102X( [3Xt[103X, [3Xindex[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10YA key or [9Xfail[109X[133X
+  
+  [33X[0;0YThis  method  allows  for  easy access to the key at index [3Xindex[103X in the tree
+  using  the  square  bracket  notation  [10X[3Xt[103X[10X[[3Xindex[103X[10X][110X. It does exactly the same as
+  [2XAVLIndex[102X ([14X8.2-7[114X). This is to make AVL trees behave more like lists.[133X
+  
+  [1X8.2-17 Position[101X
+  
+  [29X[2XPosition[102X( [3Xt[103X, [3Xkey[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
+  
+  [33X[0;0YThis  method  allows  to  use  the [10XPosition[110X operation to locate the index at
+  which  the  key  [3Xkey[103X  is  stored  in  the  tree. It does exactly the same as
+  [2XAVLFindIndex[102X ([14X8.2-6[114X). This is to make AVL trees behave more like lists.[133X
+  
+  [1X8.2-18 Add[101X
+  
+  [29X[2XAdd[102X( [3Xt[103X, [3Xkey[103X[, [3Xindex[103X] ) [32X method
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0YThis  method  allows  to use the [10XAdd[110X operation to add a key (with associated
+  value  [9Xtrue[109X)  to  the  tree  at  index  [3Xindex[103X.  It  does exactly the same as
+  [2XAVLIndexAdd[102X  ([14X8.2-9[114X), so the same warning about sortedness as there applies!
+  If  [3Xindex[103X is omitted, the key is added at the end. This is to make AVL trees
+  behave more like lists.[133X
+  
+  [1X8.2-19 Remove[101X
+  
+  [29X[2XRemove[102X( [3Xt[103X, [3Xindex[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya key[133X
+  
+  [33X[0;0YThis method allows to use the [10XRemove[110X operation to remove a key from the tree
+  at  index  [3Xindex[103X.  If  [3Xindex[103X is omitted, the last key in the tree is remove.
+  This  method  returns the deleted key or [9Xfail[109X if the tree was empty. This is
+  to make AVL trees behave more like lists.[133X
+  
+  [1X8.2-20 Length[101X
+  
+  [29X[2XLength[102X( [3Xt[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya key[133X
+  
+  [33X[0;0YThis  method  returns the number of entries stored in the tree [3Xt[103X. This is to
+  make AVL trees behave more like lists.[133X
+  
+  [1X8.2-21 \in[101X
+  
+  [29X[2X\in[102X( [3Xkey[103X, [3Xt[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
+  
+  [33X[0;0YThis  method  tests  whether or not the key [3Xkey[103X is stored in the AVL tree [3Xt[103X.
+  This is to make AVL trees behave more like lists.[133X
+  
+  
+  [1X8.3 [33X[0;0YThe internal data structures[133X[101X
+  
+  [33X[0;0YAn  AVL  tree is a positional object in which the first 7 positions are used
+  for administrative data (see table below) and then from position 8 on follow
+  the  nodes of the tree. Each node uses 4 positions such that all nodes begin
+  at  positions  divisible  by  4.  The system allocates the positional object
+  larger than actually needed such that not every new node leads to the object
+  being  copied.  Nodes  which  become  free are collected in a free list. The
+  following table contains the information what is stored in each of the first
+  7 entries:[133X
+  
+        1 │ last actually used position, is always congruent 3 mod 4          
+        2 │ position of first node in free list                               
+        3 │ number of currently used nodes in the tree                        
+        4 │ position of largest allocated position is always congruent 3 mod 4
+        5 │ three-way comparison function                                     
+        6 │ position of the top node                                          
+        7 │ a plain list holding the values stored under the keys             
+  
+  [33X[0;0YThe four positions used for a node contain the following information, recall
+  that each node starts at a position divisible by 4:[133X
+  
+        0 mod 4 │ reference to the key                                           
+        1 mod 4 │ position of left node or 0 if empty, balance factor (see below)
+        2 mod 4 │ position of right node or 0 if empty                           
+        3 mod 4 │ index: number of nodes in left subtree plus one                
+  
+  [33X[0;0YSince  all  positions  of  nodes  are  divisible  by 4, we can use the least
+  significant  two  bits  of the left node reference for the so called balance
+  factor.  Balance factor 0 (both bits 0) indicates that the depth of the left
+  subtree  is  equal to the depth of the right subtree. Balance factor 1 (bits
+  01)  indicates  that  the depth of the right subtree is one greater than the
+  depth of the left subtree. Balance factor 2 (or -1 in [Knu97], here bits 10)
+  indicates  that  the depth of the left subtree is one greater than the depth
+  of the right subtree.[133X
+  
+  [33X[0;0YFor  freed nodes the position of the next free node in the free list is held
+  in the 0 mod 4 position and 0 means the end of the free list.[133X
+  
+  [33X[0;0YPosition 7 in the positional object can contain the value [9Xfail[109X, in this case
+  all  stored  values are [9Xtrue[109X. This is a measure to limit the memory usage in
+  the  case  that  the only relevant information in the tree is the key and no
+  values  are  stored  there.  This  is  in particular interesting if the tree
+  structure is just used as a list implementation.[133X
+  
+  [33X[0;0YNote  that  all functions dealing with AVL trees are both implemented on the
+  [5XGAP[105X  level and on the kernel level. Both implementations do exactly the same
+  thing,  the  kernel  version  is  only  much faster and tuned for efficiency
+  whereas  the [5XGAP[105X version documents the functionality better and is used as a
+  fallback if the C-part of the [5Xorb[105X is not compiled.[133X
+  

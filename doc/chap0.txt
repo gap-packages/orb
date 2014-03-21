@@ -1,1 +1,225 @@
-Placeholder
+  
+  
+                               [1XGAP 4 Package [5Xorb[105X[101X
+  
+  
+                      [1Xorb --- Methods to enumerate Orbits[101X
+  
+  
+                                  Version 4.6
+  
+  
+                                    May 2013
+  
+  
+                                 Jürgen Müller
+  
+                                 Max Neunhöffer
+  
+                                  Felix Noeske
+  
+  
+  
+  Jürgen Müller
+      Email:    [7Xmailto:juergen.mueller@math.rwth-aachen.de[107X
+      Homepage: [7Xhttp://www.math.rwth-aachen.de/~Juergen.Mueller[107X
+      Address:  [33X[0;14YLehrstuhl  D  für  Mathematik,  RWTH Aachen, Templergraben 64,
+                52062 Aachen, Germany[133X
+  
+  
+  Max Neunhöffer
+      Email:    [7Xmailto:neunhoef@mcs.st-and.ac.uk[107X
+      Homepage: [7Xhttp://www-groups.mcs.st-and.ac.uk/~neunhoef[107X
+      Address:  [33X[0;14YSchool  of  Mathematics  and Statistics Mathematical Institute
+                University of St Andrews North Haugh St Andrews, Fife KY16 9SS
+                Scotland, UK[133X
+  
+  
+  Felix Noeske
+      Email:    [7Xmailto:felix.noeske@math.rwth-aachen.de[107X
+      Homepage: [7Xhttp://www.math.rwth-aachen.de/~Felix.Noeske[107X
+      Address:  [33X[0;14YLehrstuhl  D  für  Mathematik,  RWTH Aachen, Templergraben 64,
+                52062 Aachen, Germany[133X
+  
+  
+  
+  -------------------------------------------------------
+  [1XCopyright[101X
+  [33X[0;0Y© 2005-2013 by Jürgen Müller, Max Neunhöffer and Felix Noeske[133X
+  
+  [33X[0;0YThis  program  is  free  software:  you can redistribute it and/or modify it
+  under  the  terms of the GNU General Public License as published by the Free
+  Software  Foundation,  either  version 3 of the License, or (at your option)
+  any  later  version. This program is distributed in the hope that it will be
+  useful,  but  WITHOUT  ANY  WARRANTY;  without  even the implied warranty of
+  MERCHANTABILITY  or  FITNESS  FOR  A PARTICULAR PURPOSE. See the GNU General
+  Public  License for more details. You should have received a copy of the GNU
+  General   Public   License   along   with   this   program.   If   not,  see
+  [7Xhttp://www.gnu.org/licenses/[107X.[133X
+  
+  
+  -------------------------------------------------------
+  
+  
+  [1XContents (orb)[101X
+  
+  1 [33X[0;0YIntroduction[133X
+    1.1 [33X[0;0YMotivation for this package[133X
+    1.2 [33X[0;0YOverview over this manual[133X
+  2 [33X[0;0YInstallation of the [5Xorb[105X-Package[133X
+    2.1 [33X[0;0YStatic linking[133X
+    2.2 [33X[0;0YRecompiling the documentation[133X
+  3 [33X[0;0YBasic orbit enumeration[133X
+    3.1 [33X[0;0YEnumerating orbits[133X
+      3.1-1 Orb
+      3.1-2 Enumerate
+      3.1-3 IsClosed
+      3.1-4 [33X[0;0YOptions for orbits[133X
+      3.1-5 [33X[0;0YOutput components of orbits[133X
+      3.1-6 StabWords
+      3.1-7 PositionOfFound
+      3.1-8 UnderlyingPlist
+      3.1-9 DepthOfSchreierTree
+      3.1-10 IsGradedOrbit
+      3.1-11 Grades
+      3.1-12 OrbitGraph
+      3.1-13 OrbitGraphAsSets
+      3.1-14 ActionOnOrbit
+      3.1-15 OrbActionHomomorphism
+      3.1-16 TraceSchreierTreeForward
+      3.1-17 TraceSchreierTreeBack
+      3.1-18 ActWithWord
+      3.1-19 EvaluateWord
+      3.1-20 AddGeneratorsToOrbit
+      3.1-21 MakeSchreierTreeShallow
+      3.1-22 FindSuborbits
+      3.1-23 OrbitIntersectionMatrix
+      3.1-24 ORB_EstimateOrbitSize
+  4 [33X[0;0YHashing techniques[133X
+    4.1 [33X[0;0YThe idea of hashing[133X
+    4.2 [33X[0;0YHash functions[133X
+      4.2-1 ChooseHashFunction
+      4.2-2 ChooseHashFunction
+      4.2-3 ChooseHashFunction
+      4.2-4 ChooseHashFunction
+      4.2-5 ChooseHashFunction
+      4.2-6 ChooseHashFunction
+      4.2-7 ChooseHashFunction
+      4.2-8 ChooseHashFunction
+      4.2-9 ChooseHashFunction
+      4.2-10 ChooseHashFunction
+      4.2-11 ChooseHashFunction
+    4.3 [33X[0;0YUsing hash tables[133X
+      4.3-1 HTCreate
+      4.3-2 HTAdd
+      4.3-3 HTValue
+      4.3-4 HTUpdate
+      4.3-5 HTDelete
+      4.3-6 HTGrow
+    4.4 [33X[0;0YUsing hash tables (legacy code)[133X
+      4.4-1 NewHT
+      4.4-2 AddHT
+      4.4-3 ValueHT
+      4.4-4 InitHT
+      4.4-5 GrowHT
+    4.5 [33X[0;0YThe data structures for hash tables[133X
+      4.5-1 [33X[0;0YMemory requirements[133X
+      4.5-2 [33X[0;0YHandling of collisions[133X
+      4.5-3 [33X[0;0YEfficiency[133X
+  5 [33X[0;0YCaching techniques[133X
+    5.1 [33X[0;0YThe idea of caching[133X
+    5.2 [33X[0;0YUsing caches[133X
+      5.2-1 LinkedListCache
+      5.2-2 CacheObject
+      5.2-3 ClearCache
+      5.2-4 UseCacheObject
+  6 [33X[0;0YRandom elements[133X
+    6.1 [33X[0;0YRandomizing mutable objects[133X
+      6.1-1 Randomize
+      6.1-2 MakeRandomVectors
+      6.1-3 MakeRandomLines
+    6.2 [33X[0;0YProduct replacement[133X
+      6.2-1 ProductReplacer
+      6.2-2 Next
+      6.2-3 Reset
+      6.2-4 AddGeneratorToProductReplacer
+  7 [33X[0;0YSearching in groups and orbits[133X
+    7.1 [33X[0;0YSearching using orbit enumeration[133X
+    7.2 [33X[0;0YRandom searches in groups[133X
+      7.2-1 RandomSearcher
+      7.2-2 Search
+    7.3 [33X[0;0YThe dihedral trick and applications[133X
+      7.3-1 FindInvolution
+      7.3-2 FindCentralisingElementOfInvolution
+      7.3-3 FindInvolutionCentralizer
+    7.4 [33X[0;0YOrbit statistics on vector spaces[133X
+      7.4-1 OrbitStatisticOnVectorSpace
+      7.4-2 OrbitStatisticOnVectorSpaceLines
+    7.5 [33X[0;0YFinding generating sets of subgroups[133X
+      7.5-1 FindShortGeneratorsOfSubgroup
+  8 [33X[0;0YAVL trees[133X
+    8.1 [33X[0;0YThe idea of AVL trees[133X
+    8.2 [33X[0;0YUsing AVL trees[133X
+      8.2-1 AVLTree
+      8.2-2 AVLCmp
+      8.2-3 AVLAdd
+      8.2-4 AVLLookup
+      8.2-5 AVLDelete
+      8.2-6 AVLFindIndex
+      8.2-7 AVLIndex
+      8.2-8 AVLIndexLookup
+      8.2-9 AVLIndexAdd
+      8.2-10 AVLIndexDelete
+      8.2-11 AVLFind
+      8.2-12 AVLIndexFind
+      8.2-13 AVLData
+      8.2-14 AVLValue
+      8.2-15 Display
+      8.2-16 ELM_LIST
+      8.2-17 Position
+      8.2-18 Add
+      8.2-19 Remove
+      8.2-20 Length
+      8.2-21 \in
+    8.3 [33X[0;0YThe internal data structures[133X
+  9 [33X[0;0YOrbit enumeration by suborbits[133X
+    9.1 [33X[0;0Y[10XOrbitBySuborbits[110X and its resulting objects[133X
+      9.1-1 OrbitBySuborbit
+      9.1-2 OrbitBySuborbitKnownSize
+      9.1-3 Size
+      9.1-4 Seed
+      9.1-5 SuborbitsDb
+      9.1-6 WordsToSuborbits
+      9.1-7 Memory
+      9.1-8 Stabilizer
+      9.1-9 StabWords
+      9.1-10 SavingFactor
+      9.1-11 TotalLength
+      9.1-12 Representatives
+      9.1-13 SavingFactor
+      9.1-14 OrigSeed
+    9.2 [33X[0;0YPreparation functions for [2XOrbitBySuborbit[102X ([14X9.1-1[114X)[133X
+      9.2-1 OrbitBySuborbitBootstrapForVectors
+      9.2-2 OrbitBySuborbitBootstrapForLines
+      9.2-3 OrbitBySuborbitBootstrapForSpaces
+    9.3 [33X[0;0YData structures for orbit-by-suborbits[133X
+      9.3-1 IsOrbitBySuborbitSetup
+      9.3-2 [33X[0;0YThe global record [10XORB[110X[133X
+    9.4 [33X[0;0YLists of orbit-by-suborbit objects[133X
+      9.4-1 InitOrbitBySuborbitList
+      9.4-2 IsVectorInOrbitBySuborbitList
+      9.4-3 OrbitsFromSeedsToOrbitList
+      9.4-4 VerifyDisjointness
+      9.4-5 Memory
+      9.4-6 TotalLength
+      9.4-7 Size
+      9.4-8 SavingFactor
+  10 [33X[0;0YFinding nice quotients[133X
+  11 [33X[0;0YExamples[133X
+    11.1 [33X[0;0YThe Mathieu group [22XM_{11}[122X acting in dimension [22X24[122X[133X
+    11.2 [33X[0;0YThe Fischer group [22XFi_{23}[122X acting in dimension [22X1494[122X[133X
+    11.3 [33X[0;0YThe Conway group [22XCo_1[122X acting in dimension [22X24[122X[133X
+    11.4 [33X[0;0YThe Baby Monster [22XB[122X acting on its 2A involutions[133X
+  
+  
+  [32X

@@ -1,0 +1,523 @@
+  
+  [1X4 [33X[0;0YHashing techniques[133X[101X
+  
+  
+  [1X4.1 [33X[0;0YThe idea of hashing[133X[101X
+  
+  [33X[0;0YIf  one wants to store a certain set of similar objects and wants to quickly
+  access  a  given  one (or come back with the result that it is unknown), the
+  first  idea  would  be  to  store them in a list, possibly sorted for faster
+  access.  This  however  still  would need [22Xlog(n)[122X comparisons to find a given
+  element or to decide that it is not yet stored.[133X
+  
+  [33X[0;0YTherefore  one  uses a much bigger array and uses a function on the space of
+  possible  objects with integer values to decide, where in the array to store
+  a  certain  object. If this so called hash function distributes the actually
+  stored  objects  well  enough over the array, the access time is constant in
+  average.  Of  course,  a hash function will usually not be injective, so one
+  needs  a  strategy  what to do in case of a so-called [21Xcollision[121X, that is, if
+  more than one object with the same hash value has to be stored. This package
+  provides  two  ways  to  deal  with collisions, one is implemented in the so
+  called  [21XHashTabs[121X  and  another  in  the [21XTreeHashTabs[121X. The former simply uses
+  other  parts  of  the array to store the data involved in the collisions and
+  the  latter  uses an AVL tree (see Chapter [14X8[114X) to store all data objects with
+  the  same  hash value. Both are used basically in the same way but sometimes
+  behave a bit differently.[133X
+  
+  [33X[0;0YThe  basic  functions  to  work with hash tables are [2XHTCreate[102X ([14X4.3-1[114X), [2XHTAdd[102X
+  ([14X4.3-2[114X),  [2XHTValue[102X  ([14X4.3-3[114X),  [2XHTDelete[102X ([14X4.3-5[114X) and [2XHTUpdate[102X ([14X4.3-4[114X). They are
+  described in Section [14X4.3[114X.[133X
+  
+  [33X[0;0YThe  legacy  functions from older versions of this package to work with hash
+  tables  are  [2XNewHT[102X  ([14X4.4-1[114X),  [2XAddHT[102X  ([14X4.4-2[114X),  and [2XValueHT[102X ([14X4.4-3[114X). They are
+  described  in  Section  [14X4.4[114X.  In  the  next  section,  we first describe the
+  infrastructure for hash functions.[133X
+  
+  
+  [1X4.2 [33X[0;0YHash functions[133X[101X
+  
+  [33X[0;0YIn  the  [5Xorb[105X  package  hash  functions  are chosen automatically by giving a
+  sample  object together with the length of the hash table. This is done with
+  the following operation:[133X
+  
+  [1X4.2-1 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThe first argument [3Xob[103X must be a sample object, that is, an object like those
+  we  want to store in the hash table later on. The argument [3Xlen[103X is an integer
+  that  gives  the  length  of  the hash table. Note that this might be called
+  later  on  automatically,  when  a  hash  table  is  increased  in size. The
+  operation  returns a record with two components. The component [10Xfunc[110X is a [5XGAP[105X
+  function  taking  two  arguments,  see below. The component [10Xdata[110X is some [5XGAP[105X
+  object.  Later  on, the hash function will be called with two arguments, the
+  first  is  the object for which it should call the hash value and the second
+  argument must be the data stored in the [10Xdata[110X component.[133X
+  
+  [33X[0;0YThe  hash  function  has  to return values between [22X1[122X and the hash length [3Xlen[103X
+  inclusively.[133X
+  
+  [33X[0;0YThis setup is chosen such that the hash functions can be global objects that
+  are  not  created  during  the execution of [2XChooseHashFunction[102X but still can
+  change their behaviour depending on the data.[133X
+  
+  [33X[0;0YIn the following we just document, for which types of objects there are hash
+  functions that can be found using [2XChooseHashFunction[102X.[133X
+  
+  [1X4.2-2 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis  method is for compressed vectors over the field [10XGF(2)[110X of two elements.
+  Note  that  there  is no hash function for non-compressed vectors over [10XGF(2)[110X
+  because those objects cannot efficiently be recognised from their type.[133X
+  
+  [33X[0;0YNote  that  you can only use the resulting hash functions for vectors of the
+  same length.[133X
+  
+  [1X4.2-3 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis  method  is  for  compressed vectors over a finite field with up to [22X256[122X
+  elements.  Note  that  there  is  no  hash  function for non-compressed such
+  vectors  because  those  objects cannot efficiently be recognised from their
+  type.[133X
+  
+  [33X[0;0YNote  that  you can only use the resulting hash functions for vectors of the
+  same length.[133X
+  
+  [1X4.2-4 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis method is for compressed matrices over the field [10XGF(2)[110X of two elements.
+  Note  that  there is no hash function for non-compressed matrices over [10XGF(2)[110X
+  because those objects cannot efficiently be recognised from their type.[133X
+  
+  [33X[0;0YNote  that you can only use the resulting hash functions for matrices of the
+  same size.[133X
+  
+  [1X4.2-5 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis  method  is  for compressed matrices over a finite field with up to [22X256[122X
+  elements.  Note  that  there  is  no  hash  function for non-compressed such
+  vectors  because  those  objects cannot efficiently be recognised from their
+  type.[133X
+  
+  [33X[0;0YNote  that you can only use the resulting hash functions for matrices of the
+  same size.[133X
+  
+  [1X4.2-6 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis method is for integers.[133X
+  
+  [1X4.2-7 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis method is for permutations.[133X
+  
+  [1X4.2-8 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis method is for lists of integers.[133X
+  
+  [1X4.2-9 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis method is for kernel Pc words.[133X
+  
+  [1X4.2-10 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis method is for lists of integers.[133X
+  
+  [1X4.2-11 ChooseHashFunction[101X
+  
+  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [6XReturns:[106X  [33X[0;10Ya record[133X
+  
+  [33X[0;0YThis method is for lists of matrices.[133X
+  
+  
+  [1X4.3 [33X[0;0YUsing hash tables[133X[101X
+  
+  [1X4.3-1 HTCreate[101X
+  
+  [29X[2XHTCreate[102X( [3Xsample[103X[, [3Xopt[103X] ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
+  
+  [33X[0;0YA new hash table for objects like [3Xsample[103X is created. The second argument [3Xopt[103X
+  is an optional options record, which will supplied in most cases, if only to
+  specify  the  length  and  type  of the hash table to be used. The following
+  components in this record can be bound:[133X
+  
+  [8X[10Xtreehashsize[110X[108X
+        [33X[0;6YIf  this  component  is  bound  the  type  of  the  hash  table  is  a
+        TreeHashTab. The value must be a positive integer and will be the size
+        of  the  hash table. Note that for this type of hash table the keys to
+        be  stored  in  the  hash  must  be  comparable  using  [22X<[122X. A three-way
+        comparison  function  can be supplied using the component [10Xcmpfunc[110X (see
+        below).[133X
+  
+  [8X[10Xtreehashtab[110X[108X
+        [33X[0;6YIf  this  component  is  bound  the  type  of  the  hash  table  is  a
+        TreeHashTab. This option is superfluous if [10Xtreehashsize[110X is used.[133X
+  
+  [8X[10Xforflatplainlists[110X[108X
+        [33X[0;6YIf this component is set to [9Xtrue[109X then the user guarantees that all the
+        elements  in  the  hash will be flat plain lists, that is, plain lists
+        with  no  subobjects.  For  example  lists  of immediate integers will
+        fulfill   this   requirement,  but  ranges  don't.  In  this  case,  a
+        particularly  good  and  efficient hash function will automatically be
+        taken  and the components [10Xhashfunc[110X, [10Xhfbig[110X and [10Xhfdbig[110X are ignored. Note
+        that this cannot be automatically detected because it depends not only
+        on the sample point but also potentially on all the other points to be
+        stored in the hash table.[133X
+  
+  [8X[10Xhf[110X and [10Xhfd[110X[108X
+        [33X[0;6YIf these components are bound, they are used as the hash function. The
+        value  of  [10Xhf[110X must be a function taking two arguments, the first being
+        the  object  for  which  the  hash  function shall be computed and the
+        second  being  the value of [10Xhfd[110X. The returned value must be an integer
+        in  the  range  from  [22X1[122X  to the length of the hash. If either of these
+        components  is not bound, an automatic choice for the hash function is
+        done  using  [2XChooseHashFunction[102X ([14X4.2-1[114X) and the supplied sample object
+        [3Xsample[103X.[133X
+  
+        [33X[0;6YNote  that if you specify these two components and are using a HashTab
+        table  then this table cannot grow unless you also bind the components
+        [10Xhfbig[110X, [10Xhfdbig[110X and [10Xcangrow[110X.[133X
+  
+  [8X[10Xcmpfunc[110X[108X
+        [33X[0;6YThis  component can be bound to a three-way comparison function taking
+        two  arguments  [3Xa[103X  and  [3Xb[103X (which will be keys for the TreeHashTab) and
+        returns [22X-1[122X if [22X[3Xa[103X<[3Xb[103X[122X, [22X0[122X if [22X[3Xa[103X = [3Xb[103X[122X and [22X1[122X if [22X[3Xa[103X > [3Xb[103X[122X. If this component is not
+        bound  the  function  [2XAVLCmp[102X  ([14X8.2-2[114X) is taken, which simply calls the
+        generic operations [10X<[110X and [10X=[110X to do the job.[133X
+  
+  [8X[10Xhashlen[110X[108X
+        [33X[0;6YIf  this  component  is bound the type of the hash table is a standard
+        HashTab   table.  That  is,  collisions  are  dealt  with  by  storing
+        additional  entries  in  other  slots.  This is the traditional way to
+        implement a hash table. Note that currently deleting entries in such a
+        hash  table is not implemented, since it could only be done by leaving
+        a  [21Xdeleted[121X  mark which could pollute that hash table. Use TreeHashTabs
+        instead  if  you  need  deletion. The value bound to [10Xhashlen[110X must be a
+        positive integer and will be the initial length of the hash table.[133X
+  
+        [33X[0;6YNote  that  it  is  a  good  idea to choose a prime number as the hash
+        length  due  to  the  algorithm  for  collision  handling  which works
+        particularly   well   in  that  case.  The  hash  function  is  chosen
+        automatically.[133X
+  
+  [8X[10Xhashtab[110X[108X
+        [33X[0;6YIf  this  component  is bound the type of the hash table is a standard
+        HashTab table. This component is superfluous if [10Xhashlen[110X is bound.[133X
+  
+  [8X[10Xeqf[110X[108X
+        [33X[0;6YFor  HashTab  tables  the  function taking two arguments bound to this
+        component is used to compare keys in the hash table. If this component
+        is not bound the usual [10X=[110X operation is taken.[133X
+  
+  [8X[10Xhfbig[110X and [10Xhfdbig[110X and [10Xcangrow[110X[108X
+        [33X[0;6YIf you have used the components [10Xhf[110X and [10Xhfd[110X then your hash table cannot
+        automatically grow when it fills up. This is because the length of the
+        table  is  built  into  the hash function. If you still want your hash
+        table  to  be  able  to  grow automatically, then bind a hash function
+        returning  arbitrary integers to [10Xhfbig[110X, the corresponding data for the
+        second  argument  to  [10Xhfdbig[110X  and  bind [10Xcangrow[110X to [9Xtrue[109X. Then the hash
+        table  will  automatically grow and take this new hash function modulo
+        the new length of the hash table as hash function.[133X
+  
+  [1X4.3-2 HTAdd[101X
+  
+  [29X[2XHTAdd[102X( [3Xht[103X, [3Xkey[103X, [3Xvalue[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Ya hash value[133X
+  
+  [33X[0;0YStores  the  object  [3Xkey[103X  into  the  hash  table [3Xht[103X and stores the value [3Xval[103X
+  together with [3Xob[103X. The result is [9Xfail[109X if an error occurred, which can be that
+  an  object equal to [3Xkey[103X is already stored in the hash table or that the hash
+  table  is  already full. The latter can only happen, if the hash table is no
+  TreeHashTab and cannot grow automatically.[133X
+  
+  [33X[0;0YIf  no  error  occurs,  the result is an integer indicating the place in the
+  hash  table  where the object is stored. Note that once the hash table grows
+  automatically this number is no longer the same![133X
+  
+  [33X[0;0YIf  the  value  [3Xval[103X  is [9Xtrue[109X for all objects in the hash, no extra memory is
+  used for the values. All other values are stored in the hash. The value [9Xfail[109X
+  cannot be stored as it indicates that the object is not found in the hash.[133X
+  
+  [33X[0;0YSee  Section  [14X4.5[114X  for  details  on the data structures and especially about
+  memory requirements.[133X
+  
+  [1X4.3-3 HTValue[101X
+  
+  [29X[2XHTValue[102X( [3Xht[103X, [3Xkey[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or [9Xtrue[109X or a value[133X
+  
+  [33X[0;0YLooks  up  the  object [3Xkey[103X in the hash table [3Xht[103X. If the object is not found,
+  [9Xfail[109X  is  returned. Otherwise, the value stored with the object is returned.
+  Note that if this value was [9Xtrue[109X no extra memory is used for this.[133X
+  
+  [1X4.3-4 HTUpdate[101X
+  
+  [29X[2XHTUpdate[102X( [3Xht[103X, [3Xkey[103X, [3Xvalue[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or [9Xtrue[109X or a value[133X
+  
+  [33X[0;0YThe  object  [3Xkey[103X must already be stored in the hash table [3Xht[103X, otherwise this
+  operation returns [9Xfail[109X. The value stored with [3Xkey[103X in the hash is replaced by
+  [3Xvalue[103X and the previously stored value is returned.[133X
+  
+  [1X4.3-5 HTDelete[101X
+  
+  [29X[2XHTDelete[102X( [3Xht[103X, [3Xkey[103X ) [32X operation
+  [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or [9Xtrue[109X or a value[133X
+  
+  [33X[0;0YThe  object  [3Xkey[103X  along with its stored value is removed from the hash table
+  [3Xht[103X. Note that this currently only works for TreeHashTabs and not for HashTab
+  tables.  It  is  an  error if [3Xkey[103X is not found in the hash table and [9Xfail[109X is
+  returned in this case.[133X
+  
+  [1X4.3-6 HTGrow[101X
+  
+  [29X[2XHTGrow[102X( [3Xht[103X, [3Xob[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0YThis  is a more or less internal operation. It is called when the space in a
+  hash  table  becomes  scarce.  The  first  argument  [3Xht[103X must be a hash table
+  object, the second a sample point. The function increases the hash size by a
+  factor  of 2. This makes it necessary to choose a new hash function. Usually
+  this is done with the usual [10XChooseHashFunction[110X method. However, one can bind
+  the  two  components  [10Xhfbig[110X  and  [10Xhfdbig[110X  in  the options record of [2XHTCreate[102X
+  ([14X4.3-1[114X) to a function and a record respectively and bind [10Xcangrow[110X to [9Xtrue[109X. In
+  that  case,  upon growing the hash, a new hash function is created by taking
+  the function [10Xhfbig[110X together with [10Xhfdbig[110X as second data argument and reducing
+  the  resulting integer modulo the hash length. In this way one can specify a
+  hash  function  suitable  for  all hash sizes by simply producing big enough
+  hash values.[133X
+  
+  
+  [1X4.4 [33X[0;0YUsing hash tables (legacy code)[133X[101X
+  
+  [33X[0;0YNote that the functions described in this section are obsolete since version
+  3.0  of  [5Xorb[105X  and  are  only kept for backward compatibility. Please use the
+  functions in Section [14X4.3[114X in new code.[133X
+  
+  [33X[0;0YThe following functions are needed to use hash tables. For details about the
+  data structures see Section [14X4.5[114X.[133X
+  
+  [1X4.4-1 NewHT[101X
+  
+  [29X[2XNewHT[102X( [3Xsample[103X, [3Xlen[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
+  
+  [33X[0;0YA new hash table for objects like [3Xsample[103X of length [3Xlen[103X is created. Note that
+  it  is  a  good  idea to choose a prime number as the hash length due to the
+  algorithm for collision handling which works particularly well in that case.
+  The  hash function is chosen automatically. The resulting object can be used
+  with  the  functions  [2XAddHT[102X  ([14X4.4-2[114X) and [2XValueHT[102X ([14X4.4-3[114X). It will start with
+  length [3Xlen[103X but will grow as necessary.[133X
+  
+  [1X4.4-2 AddHT[101X
+  
+  [29X[2XAddHT[102X( [3Xht[103X, [3Xob[103X, [3Xval[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Yan integer or fail[133X
+  
+  [33X[0;0YStores  the  object  [3Xob[103X  into  the  hash  table  [3Xht[103X and stores the value [3Xval[103X
+  together with [3Xob[103X. The result is [9Xfail[109X if an error occurred, which can only be
+  that the hash table is already full. This can only happen, if the hash table
+  cannot grow automatically.[133X
+  
+  [33X[0;0YIf  no  error  occurs,  the result is an integer indicating the place in the
+  hash  table  where the object is stored. Note that once the hash table grows
+  automatically this number is no longer the same![133X
+  
+  [33X[0;0YIf  the  value  [3Xval[103X  is [9Xtrue[109X for all objects in the hash, no extra memory is
+  used for the values. All other values are stored in the hash. The value [9Xfail[109X
+  cannot be stored as it indicates that the object is not found in the hash.[133X
+  
+  [33X[0;0YSee  Section  [14X4.5[114X  for  details  on the data structures and especially about
+  memory requirements.[133X
+  
+  [1X4.4-3 ValueHT[101X
+  
+  [29X[2XValueHT[102X( [3Xht[103X, [3Xob[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ythe stored value, [9Xtrue[109X, or [9Xfail[109X[133X
+  
+  [33X[0;0YLooks  up  the  object  [3Xob[103X in the hash table [3Xht[103X. If the object is not found,
+  [9Xfail[109X  is  returned. Otherwise, the value stored with the object is returned.
+  Note that if this value was [9Xtrue[109X no extra memory is used for this.[133X
+  
+  [33X[0;0YThe  following  function is only documented for the sake of completeness and
+  for emergency situations, where [2XNewHT[102X ([14X4.4-1[114X) tries to be too intelligent.[133X
+  
+  [1X4.4-4 InitHT[101X
+  
+  [29X[2XInitHT[102X( [3Xlen[103X, [3Xhfun[103X, [3Xeqfun[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
+  
+  [33X[0;0YThis  is usually only an internal function. It is called from [2XNewHT[102X ([14X4.4-1[114X).
+  The  argument [3Xlen[103X is the length of the hash table, [3Xhfun[103X is the hash function
+  record  as  returned by [2XChooseHashFunction[102X ([14X4.2-1[114X) and [3Xeqfun[103X is a comparison
+  function taking two arguments and returning [9Xtrue[109X or [9Xfalse[109X.[133X
+  
+  [33X[0;0YNote  that  automatic  growing  is  switched on for the new hash table which
+  means  that  if  the  hash  table grows, a new hash function is chosen using
+  [2XChooseHashFunction[102X  ([14X4.2-1[114X).  If  you do not want this, change the component
+  [10Xcangrow[110X to [9Xfalse[109X after creating the hash table.[133X
+  
+  [1X4.4-5 GrowHT[101X
+  
+  [29X[2XGrowHT[102X( [3Xht[103X, [3Xob[103X ) [32X function
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0YThis  is  a more or less internal function. It is called when the space in a
+  hash  table  becomes  scarce.  The  first  argument  [3Xht[103X must be a hash table
+  object, the second a sample point. The function increases the hash size by a
+  factor  of  2  for  hash  tables  and 20 for tree hash tables. This makes it
+  necessary to choose a new hash function. Usually this is done with the usual
+  [10XChooseHashFunction[110X  method. However, one can assign the two components [10Xhfbig[110X
+  and  [10Xhfdbig[110X  to  a  function  and  a record respectively. In that case, upon
+  growing  the  hash,  a  new  hash function is created by taking the function
+  [10Xhfbig[110X  together  with  [10Xhfdbig[110X  as  second  data  argument  and  reducing the
+  resulting integer modulo the hash length. In this way one can specify a hash
+  function  suitable  for  all  hash sizes by simply producing big enough hash
+  values.[133X
+  
+  
+  [1X4.5 [33X[0;0YThe data structures for hash tables[133X[101X
+  
+  [33X[0;0YA legacy hash table object is just a record with the following components:[133X
+  
+  [8X[10Xels[110X[108X
+        [33X[0;6YA  [5XGAP[105X  list  storing  the  elements. Its length can be as long as the
+        component  [10Xlen[110X indicates but will only grow as necessary when elements
+        are stored in the hash.[133X
+  
+  [8X[10Xvals[110X[108X
+        [33X[0;6YA  [5XGAP[105X  list  storing  the  corresponding  values.  If a value is [9Xtrue[109X
+        nothing is stored here to save memory.[133X
+  
+  [8X[10Xlen[110X[108X
+        [33X[0;6YLength of the hash table.[133X
+  
+  [8X[10Xnr[110X[108X
+        [33X[0;6YNumber of elements stored in the hash table.[133X
+  
+  [8X[10Xhf[110X[108X
+        [33X[0;6YThe  hash function (value of the [10Xfunc[110X component in the record returned
+        by [2XChooseHashFunction[102X ([14X4.2-1[114X)).[133X
+  
+  [8X[10Xhfd[110X[108X
+        [33X[0;6YThe  data  for  the second argument of the hash function (value of the
+        [10Xdata[110X component in the record returned by [2XChooseHashFunction[102X ([14X4.2-1[114X)).[133X
+  
+  [8X[10Xeqf[110X[108X
+        [33X[0;6YA  comparison  function  taking  two  arguments and returning [9Xtrue[109X for
+        equality or [9Xfalse[109X otherwise.[133X
+  
+  [8X[10Xcollisions[110X[108X
+        [33X[0;6YNumber of collisions (see below).[133X
+  
+  [8X[10Xaccesses[110X[108X
+        [33X[0;6YNumber of lookup or store accesses to the hash.[133X
+  
+  [8X[10Xcangrow[110X[108X
+        [33X[0;6YA  boolean value indicating whether the hash can grow automatically or
+        not.[133X
+  
+  [8X[10Xishash[110X[108X
+        [33X[0;6YIs [9Xtrue[109X to indicate that this is a hash table record.[133X
+  
+  [8X[10Xhfbig[110X and [10Xhfdbig[110X[108X
+        [33X[0;6YUsed  for hash tables which need to be able to grow but where the user
+        supplied  the  hash  function.  See  Section [2XHTCreate[102X ([14X4.3-1[114X) for more
+        details.[133X
+  
+  [33X[0;0YA  new  style HashTab objects are component objects with the same components
+  except  that there is no component [10Xishash[110X since these objects are recognised
+  by their type.[133X
+  
+  [33X[0;0YA  TreeHashTab is very similar. It is a positional object with basically the
+  same  components,  except  that  [10Xeqf[110X is replaced by the three-way comparison
+  function  [10Xcmpfunc[110X.  Since  TreeHashTabs  do  not grow, the components [10Xhfbig[110X,
+  [10Xhfdbig[110X and [10Xcangrow[110X are never bound. Each slot in the [10Xels[110X component is either
+  unbound  (empty), or bound to the only key stored in the hash which has this
+  hash  value  or, if there is more than one key for that hash value, the slot
+  is bound to an AVL tree containing all such keys (and values).[133X
+  
+  
+  [1X4.5-1 [33X[0;0YMemory requirements[133X[101X
+  
+  [33X[0;0YDue to the data structure defined above the hash table will need one machine
+  word  ([22X4[122X bytes on 32bit machines and [22X8[122X bytes on 64bit machines) per possible
+  entry  in  the  hash  if all values corresponding to objects in the hash are
+  [9Xtrue[109X and two machine words otherwise. This means that the memory requirement
+  for  the hash itself is proportional to the hash table length and not to the
+  number of objects actually stored in the hash![133X
+  
+  [33X[0;0YIn addition one of course needs the memory to store the objects themselves.[133X
+  
+  [33X[0;0YFor  TreeHashTabs there are additional memory requirements. As soon as there
+  are  more than one key hashing to the same value, the memory for an AVL tree
+  object  is  needed  in  addition. An AVL tree objects needs about 10 machine
+  words  for  the  tree object and then another 4 machine words for each entry
+  stored  in the tree. Note that for many collisions this can be significantly
+  more than for HashTab tables. However, the advantage of TreeHashTabs is that
+  even  for a bad hash function the performance is never worse than [22Xlog(n)[122X for
+  each  operation where [22Xn[122X is the number of keys in the hash with the same hash
+  value.[133X
+  
+  
+  [1X4.5-2 [33X[0;0YHandling of collisions[133X[101X
+  
+  [33X[0;0YThis section is only relevant for HashTab objects.[133X
+  
+  [33X[0;0YIf  two  or more objects have the same hash value, the following is done: If
+  the hash value is coprime to the hash length, the hash value is taken as [21Xthe
+  increment[121X,  otherwise  [22X1[122X  is taken. The code to find the proper place for an
+  object just repeatedly adds the increment to the current position modulo the
+  hash length. Due to the choice of the increment this will eventually try all
+  places  in  the  hash  table.  Every  such  increment  step  is counted as a
+  collision  in  the  [10Xcollisions[110X  component  in the hash table. This algorithm
+  explains why it is sensible to choose a prime number as the length of a hash
+  table.[133X
+  
+  
+  [1X4.5-3 [33X[0;0YEfficiency[133X[101X
+  
+  [33X[0;0YHashing is efficient as long as there are not too many collisions. It is not
+  a  problem if the number of collisions (counted in the [10Xcollisions[110X component)
+  is smaller than the number of accesses (counted in the [10Xaccesses[110X component).[133X
+  
+  [33X[0;0YA  high  number  of collisions can be caused by a bad hash function, because
+  the  hash  table  is  too small (do not fill a hash table to more than about
+  80%),  or because the objects to store are just not well enough distributed.
+  Hash  tables  will grow automatically if too many collisions are detected or
+  if they are filled to 80%.[133X
+  
+  [33X[0;0YThe  advantage  of  TreeHashTabs  is  that  even for a bad hash function the
+  performance  is  never  worse  than [22Xlog(n)[122X for each operation where [22Xn[122X is the
+  number  of  keys  in the hash with the same hash value. However, they need a
+  bit more memory.[133X
+  
