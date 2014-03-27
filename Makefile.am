@@ -35,22 +35,3 @@ doc/manual.six: doc/basic.xml doc/hash.xml doc/orb.xml doc/search.xml \
 		doc/bysuborbit.xml doc/install.xml doc/quotfinder.xml \
 		doc/examples.xml doc/intro.xml doc/random.xml VERSION
 	($(GAPROOT)/bin/gap.sh makedoc.g)
-
-archive: doc
-	(cd .. ; tar czvf orb-`cat orb/VERSION`.tar.gz --exclude ".svn" --exclude bin --exclude test --exclude ".git" --exclude ".libs" --exclude lib --exclude orb.la --exclude orb_la-orb.lo --exclude .deps --exclude autom4te.cache --exclude .gitignore --exclude config.log --exclude stamp-h1 --exclude pkgconfig.h --exclude libtool --exclude config.status orb)
-
-WEBPOS=/scratch/neunhoef/mywebpage.pub/Computer/Software/Gap/orb
-
-towww: archive
-	echo '<?xml version="1.0" encoding="ISO-8859-1"?>' >${WEBPOS}.version
-	echo '<mixer>' >>${WEBPOS}.version
-	cat VERSION >>${WEBPOS}.version
-	echo '</mixer>' >>${WEBPOS}.version
-	cp PackageInfo.g ${WEBPOS}
-	cp README ${WEBPOS}/README.orb
-	cp doc/manual.pdf ${WEBPOS}/orb.pdf
-	cp ../orb-`cat VERSION`.tar.gz ${WEBPOS}
-	@echo
-	@echo Now please adjust the archive link in 
-	@echo "    " ${WEBPOS}.mixer !
-
