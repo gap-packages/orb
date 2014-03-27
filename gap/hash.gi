@@ -752,7 +752,7 @@ function(p,data)
    return HashKeyBag(p,255,0,2*l) mod data + 1;
 end );
 
-if CompareVersionNumbers(GAPInfo.Version,"4.5") then
+if IsBound(HashKeyBag) then
     InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
       function( x, data )
         return (HashKeyBag( x, 0, 0, 
@@ -803,8 +803,7 @@ fi;
 
 InstallGlobalFunction( MakeHashFunctionForPlainFlatList,
   function( len )
-    if not(CompareVersionNumbers(GAPInfo.Version,"4.5")) and
-       JENKINS_HASH_IN_ORB = fail then
+    if not IsBound(HashKeyBag) and JENKINS_HASH_IN_ORB = fail then
         Error("Please compile the C-part, containing the Jenkinks Hash Func");
         return fail;
     fi;
