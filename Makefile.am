@@ -32,5 +32,5 @@ doc:	doc/manual.six
 
 doc/manual.six: doc/basic.xml doc/hash.xml doc/orb.xml doc/search.xml \
 		doc/bysuborbit.xml doc/install.xml doc/quotfinder.xml \
-		doc/examples.xml doc/intro.xml doc/random.xml VERSION
-	($(GAPROOT)/bin/gap.sh makedoc.g)
+		doc/examples.xml doc/intro.xml doc/random.xml PackageInfo.g
+	($(GAPROOT)/bin/gap.sh -A makedoc.g)
