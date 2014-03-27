@@ -8,17 +8,10 @@
 
 SetPackageInfo( rec(
 
-##  This is case sensitive, use your preferred spelling.
 PackageName := "orb",
-
-Subtitle := "orb - Methods to enumerate Orbits",
-
+Subtitle := "Methods to enumerate Orbits",
 Version := "4.6",
-##  Please adjust also the VERSION file in the package directory when
-##  changing this.
-
-##  Release date of the current version in dd/mm/yyyy format.
-Date := "02/05/2013",
+Date := "02/05/2013", # dd/mm/yyyy format
 
 ##  Information about authors and maintainers.
 Persons := [
