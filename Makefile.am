@@ -1,7 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = 
-
 BINARCHDIR = bin/$(GAPARCH)
 GAPINSTALLLIB = $(abs_top_srcdir)/$(BINARCHDIR)/orb.so
 
