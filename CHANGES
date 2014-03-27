@@ -3,6 +3,14 @@
 ===========================================================================
 
 ==========================
+ Changes from 4.6 -> 4.7
+==========================
+
+  - Update and tweak the package build system
+  - Move package repository and website to GitHub
+
+
+==========================
  Changes from 4.5 -> 4.6
 ==========================
 
