@@ -9,8 +9,6 @@ AM_INIT_AUTOMAKE([foreign])
 AM_MAINTAINER_MODE
 LT_INIT([disable-static dlopen win32-dll])
 
-AC_PREFIX_DEFAULT([${PWD}])
-
 AC_PROG_CC
 
 ## Find out what the best compiler flags are

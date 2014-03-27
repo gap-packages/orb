@@ -15,13 +15,12 @@ if SYS_IS_CYGWIN
 orb_la_LDFLAGS += -no-undefined -version-info 0:0:0 -Wl,$(GAPROOT)/bin/$(GAPARCH)/gap.dll
 endif
 
-all-local: orb.la install-libLTLIBRARIES
-#	@$(MAKE) $(AM_MAKEFLAGS) install-libLTLIBRARIES
+all-local: orb.la
 	$(mkdir_p) $(top_srcdir)/$(BINARCHDIR)
 if SYS_IS_CYGWIN
-	cp $(libdir)/orb.dll $(GAPINSTALLLIB)
+	cp .libs/orb.dll $(GAPINSTALLLIB)
 else
-	cp $(libdir)/orb.so $(GAPINSTALLLIB)
+	cp .libs/orb.so $(GAPINSTALLLIB)
 endif
 	@echo "SUCCESS!"
 
