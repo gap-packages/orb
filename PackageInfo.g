@@ -91,14 +91,13 @@ Status := "deposited",
 # AcceptDate := "08/1999",
 #AcceptDate := "",
 
-BaseURL := "http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/",
-
-PackageWWWHome := Concatenation( ~.BaseURL, "orb.html" ),
-ArchiveURL     := Concatenation( ~.BaseURL, "orb/orb-", ~.Version ),
-README_URL     := Concatenation( ~.BaseURL, "orb/README.orb" ),
-PackageInfoURL := Concatenation( ~.BaseURL, "orb/PackageInfo.g" ),
-
-ArchiveFormats := ".tar.gz",
+PackageWWWHome := "http://neunhoef.github.io/orb/",
+README_URL     := Concatenation(~.PackageWWWHome, "README"),
+PackageInfoURL := Concatenation(~.PackageWWWHome, "PackageInfo.g"),
+ArchiveURL     := Concatenation("https://github.com/neunhoef/orb/",
+                                "releases/download/v", ~.Version,
+                                "/orb-", ~.Version),
+ArchiveFormats := ".tar.gz .tar.bz2",
 
 ##  Here you  must provide a short abstract explaining the package content 
 ##  in HTML format (used on the package overview Web page) and an URL 
