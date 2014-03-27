@@ -7,9 +7,6 @@
 **  
 */
 
-const char * Revision_orb_c =
-   "$Id: orb.c,v$";
-
 #include <stdlib.h>
 
 #include "src/compiled.h"          /* GAP headers                */
@@ -2191,14 +2188,12 @@ static StructInitInfo module = {
 #ifndef ORBSTATIC
 StructInitInfo * Init__Dynamic ( void )
 {
-  module.revision_c = Revision_orb_c;
   return &module;
 }
 #endif
 
 StructInitInfo * Init__orb ( void )
 {
-  module.revision_c = Revision_orb_c;
   return &module;
 }
 
