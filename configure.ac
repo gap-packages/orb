@@ -1,6 +1,6 @@
 AC_PREREQ(2.68)
 LT_PREREQ([2.4.2])
-AC_INIT([orb], 4.1, neunhoef@mcs.st-and.ac.uk)
+AC_INIT([orb], m4_esyscmd([tr -d '\n' < VERSION]), [https://github.com/neunhoef/orb/issues], [orb], [http://neunhoef.github.io/cvec/])
 AC_CONFIG_SRCDIR([src/orb.c])
 AC_CONFIG_HEADER([src/pkgconfig.h:cnf/pkgconfig.h.in])
 AC_CONFIG_MACRO_DIR([m4])
