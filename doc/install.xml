@@ -67,6 +67,7 @@ chosen to match the setup of the original &GAP; compilation. For
 example you have to specify 32-bit or 64-bit mode correctly!<P/>
 
 
+<!--
 <Section>
 <Heading>Static linking</Heading>
 
@@ -117,6 +118,7 @@ somewhere on the command line. As above, <Q><F>../..</F></Q> and
 <Q><F>BINDIR</F></Q> have to be replaced if you installed in a
 non-standard location.
 </Section>
+-->
 
 <Section>
 <Heading>Recompiling the documentation</Heading>
@@ -126,13 +128,6 @@ makedoc.g</F></Q>
 in the <F>orb</F> directory. But this should not be necessary.
 
 </Section>
-
-
-Please, send us an e-mail if you have any questions, remarks,
-suggestions, etc. concerning this package. Also, I would like to hear
-about applications of this package.<P/>
-
-Jürgen Müller, Max Neunhöffer and Felix Noeske<P/>
 
 <!-- ############################################################ -->
 
