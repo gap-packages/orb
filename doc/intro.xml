@@ -70,6 +70,13 @@ packages as of the time of this writing.
 Finally, Chapter <Ref Chap="examples"/>
 shows an instructive examples for the more sophisticated 
 usage of this package.
+</Section>
+
+<Section Label="feedback">
+<Heading>Feedback</Heading>
+
+For bug reports, feature requests and suggestions, please use our
+<URL Text="issue tracker">https://github.com/neunhoef/orb/issues</URL>.
 
 </Section>
 
