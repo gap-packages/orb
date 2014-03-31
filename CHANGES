@@ -6,8 +6,15 @@
  Changes from 4.6 -> 4.7
 ==========================
 
-  - Update and tweak the package build system
-  - Move package repository and website to GitHub
+  - Use hash functions for transformations and partial permutations
+    provided by newer GAP versions instead of our own. This way,
+    if the internal representation for these objects changes
+    (as has recently happened), we stay compatible (see issue #3).
+  - Fix bug were orb logs were not properly updated if the enumeration
+    stopped early (see issues #4 and #5).
+  - Fix bug caused by orbits with seeds (see issue #5).
+  - Update and tweak the package build system.
+  - Move package repository and website to GitHub.
 
 
 ==========================
