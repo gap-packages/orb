@@ -2,32 +2,32 @@
   
   [1XReferences[101X
   
-  [[20XAM62[120X]  [16XAdelson-Velskii,  G.  and  M.,  L. E.[116X, [17XAn algorithm for the organization of information[117X, [18XProceedings of the USSR
-  Academy of Sciences[118X, [19X146[119X (1962), 263--266, ((Russian)).
+  [[20XAM62[120X] [16XAdelson-Velskii, G. and M., L. E.[116X, [17XAn algorithm for the organization of information[117X, [18XProceedings of the USSR Academy of
+  Sciences[118X, [19X146[119X (1962), 263--266, ((Russian)).
   
-  [[20XCCNPW85[120X]  [16XConway,  J. H., Curtis, R. T., Norton, S. P., Parker, R. A. and Wilson, R. A.[116X, [17XAtlas of finite groups[117X, Oxford
+  [[20XCCNPW85[120X]  [16XConway,  J.  H.,  Curtis,  R.  T.,  Norton,  S. P., Parker, R. A. and Wilson, R. A.[116X, [17XAtlas of finite groups[117X, Oxford
   University Press (1985).
   
-  [[20XHNN06[120X]  [16XHiss, G., Neunh{\"o}ffer, M. and Noeske, F.[116X, [17XThe 2-modular characters of the Fischer group Fisb 23[117X, [18XJ. Algebra[118X,
-  [19X300[119X, 2 (2006), 555--570.
+  [[20XHNN06[120X] [16XHiss, G., Neunh{\"o}ffer, M. and Noeske, F.[116X, [17XThe 2-modular characters of the Fischer group Fisb 23[117X, [18XJ. Algebra[118X, [19X300[119X, 2
+  (2006), 555--570.
   
-  [[20XJan05[120X]  [16XJansen,  C.[116X,  [17XThe  minimal degrees of faithful representations of the sporadic simple groups and their covering
-  groups[117X, [18XLMS J. Comput. Math.[118X, [19X8[119X (2005), 122--144.
+  [[20XJan05[120X]  [16XJansen,  C.[116X, [17XThe minimal degrees of faithful representations of the sporadic simple groups and their covering groups[117X,
+  [18XLMS J. Comput. Math.[118X, [19X8[119X (2005), 122--144.
   
   [[20XKnu97[120X] [16XKnuth, D.[116X, [17XThe Art of Computer Programming: Sorting and Searching[117X, Addison-Wesley, Third edition, [19X3[119X (1997).
   
-  [[20XMal06[120X] [16XMalle, G.[116X, [17XFast-einfache Gruppen mit langen Bahnen in absolut irreduzibler Operation[117X, [18XJ. Algebra[118X, [19X300[119X, 2 (2006),
+  [[20XMal06[120X]  [16XMalle,  G.[116X,  [17XFast-einfache  Gruppen  mit  langen Bahnen in absolut irreduzibler Operation[117X, [18XJ. Algebra[118X, [19X300[119X, 2 (2006),
   655--672.
   
-  [[20XM{\08[120X]  [16XM{\"u}ller,  J.[116X,  [17XOn  the  action  of  the sporadic simple Baby Monster group on its conjugacy class 2B[117X, [18XLMS J.
-  Comput. Math.[118X, [19X11[119X (2008), 15--27.
+  [[20XM{\08[120X]  [16XM{\"u}ller,  J.[116X,  [17XOn  the  action of the sporadic simple Baby Monster group on its conjugacy class 2B[117X, [18XLMS J. Comput.
+  Math.[118X, [19X11[119X (2008), 15--27.
   
-  [[20XMNW07[120X] [16XM{\"u}ller, J., Neunh{\"o}ffer, M. and Wilson, R. A.[116X, [17XEnumerating big orbits and an application: B acting on the
+  [[20XMNW07[120X]  [16XM{\"u}ller,  J.,  Neunh{\"o}ffer,  M.  and  Wilson, R. A.[116X, [17XEnumerating big orbits and an application: B acting on the
   cosets of Fi_23[117X, [18XJ. Algebra[118X, [19X314[119X, 1 (2007), 75--96.
   
   [[20XWil96[120X] [16XWilson, R. A.[116X, [17XStandard generators for sporadic simple groups[117X, [18XJournal of Algebra[118X, [19X184[119X (1996), 505--515.
   
-  [[20XATLAS[120X]         [16XWilson,         R.         A.[116X,        [17XATLAS        of        Finite        Group        Representations[117X,
+  [[20XATLAS[120X]          [16XWilson,         R.         A.[116X,         [17XATLAS         of         Finite         Group         Representations[117X,
   \href{http://brauer.maths.qmul.ac.uk/Atlas}{http://brauer.maths.qmul.ac.uk/Atlas}.
   
   

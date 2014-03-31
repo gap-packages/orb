@@ -1,7 +1,7 @@
 name: orb
-version: 4.6
-date: 02/05/2013
-description: orb - Methods to enumerate Orbits
+version: 4.7
+date: 31/04/2014
+description: Methods to enumerate Orbits
 
 authors:
     - name: Juergen Mueller
@@ -14,8 +14,6 @@ authors:
 maintainers:
     - name: Juergen Mueller
       url: http://www.math.rwth-aachen.de/~Juergen.Mueller
-    - name: Max Neunhoeffer
-      url: http://www-groups.mcs.st-and.ac.uk/~neunhoef
     - name: Felix Noeske
       url: http://www.math.rwth-aachen.de/~Felix.Noeske
 
@@ -29,13 +27,15 @@ suggested-pkgs:
     - name: "IO"
       version: ">= 3.3"
 
-www: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb.html
-readme: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/README.orb
-packageinfo: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/PackageInfo.g
+www: http://neunhoef.github.io/orb/
+readme: http://neunhoef.github.io/orb/README
+packageinfo: http://neunhoef.github.io/orb/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: http://www-groups.mcs.st-and.ac.uk/~neunhoef/Computer/Software/Gap/orb/orb-4.6.tar.gz
+      url: https://github.com/neunhoef/orb/releases/download/v4.7/orb-4.7.tar.gz
+    - name: .tar.bz2
+      url: https://github.com/neunhoef/orb/releases/download/v4.7/orb-4.7.tar.bz2
 
 abstract: The <span class="pkgname">orb</span> package is about enumerating orbits in various ways.
 
