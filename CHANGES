@@ -1,11 +1,8 @@
-===========================================================================
- This file describes changes in the orb package beginning from version 1.2:
-===========================================================================
+================================================
+ This file describes changes in the orb package
+================================================
 
-==========================
- Changes from 4.6 -> 4.7
-==========================
-
+4.7 (2014-03-31)
   - Use hash functions for transformations and partial permutations
     provided by newer GAP versions instead of our own. This way,
     if the internal representation for these objects changes
@@ -16,11 +13,7 @@
   - Update and tweak the package build system.
   - Move package repository and website to GitHub.
 
-
-==========================
- Changes from 4.5 -> 4.6
-==========================
-
+4.6 (2013-05-02)
   - Fix a one by off bug in FuncMappingPermListList reported by Max Horn.
   - Withdraw C versions of PermLeftQuoTransformationNC,
     ImageAndKernelOfTransformation, CanonicalTransSameKernel and
@@ -29,62 +22,35 @@
   - Fix hash function for transformations for GAP >= 4.7
   - Add hash function for partial perms for GAP >= 4.7
 
-
-==========================
- Changes from 4.4 -> 4.5
-==========================
-
+4.5 (2012-05-30)
   - Fix a hash table bug for matrices over finite fields acting on
     vectors. This was found in the context of the genss package.
 
-
-==========================
- Changes from 4.3 -> 4.4
-==========================
-
+4.4 (2012-05-29)
   - Fix a nasty bug in Orb function.
 
-
-==========================
- Changes from 4.2 -> 4.3
-==========================
-
+4.3 (2012-05-28)
   - Add ChooseHashFunction method for transformations.
   - Add seeds option for Orb and additional seeds.
   - Add script configure_like_gap.
   - Replace "source" by "." in m4/ac_find_gap.m4 for BSD systems.
 
-
-==========================
- Changes from 4.1 -> 4.2
-==========================
-
+4.2 (2012-01-30)
   - Make it compile on Windows
   - Transfer some minor details in the build setup from lessons
     learned from the io package.
 
-
-==========================
- Changes from 4.0 -> 4.1
-==========================
-
+4.1 (2012-01-26)
   - Change compilation setup slightly: allow for CONFIGNAME and
     cleanup.
 
-
-==========================
- Changes from 3.8 -> 4.0
-==========================
-
+4.0 (2012-01-10)
   - Fix a bug in the hash function for flat plain lists which was
     triggered by equal lists with different sizes of allocated memory.
   - Use automake and libtool and no longer gac to compile.
 
-
-==========================
- Changes from 3.7 -> 3.8
-==========================
-
+3.8for4.5 (2011-11-09)
+3.8 (2011-11-09)
   - Refix configure script for GAP >= 4.5.2
   - Fix the documentation of TraceSchreierTreeForward and
     TraceSchreierTreeBack
@@ -97,11 +63,7 @@
   - Provide option forflatplainlists for hash tables and orbits
   - Provide UnderlyingPlist for orbit objects
 
- 
-==========================
- Changes from 3.6 -> 3.7:
-==========================
-
+3.7 (2011-02-02)
   - Fix calling convention for ORB_EstimateOrbitSize
   - Fix the bug that orb!.gens could be immutable.
   - Improve OrbitBySuborbit to use random elements to find stabiliser els
@@ -114,18 +76,10 @@
   - New internal function IsInjectiveTransOnList.
   - Fixed configure script for GAP 4.5
 
-
-==========================
- Changes from 3.5 -> 3.6:
-==========================
-
+3.6 (2010-07-23)
   - Fixed a bug in the AVL tree GAP code (C version was fine)
 
-
-==========================
- Changes from 3.4 -> 3.5:
-==========================
-
+3.5 (2010-07-19)
   - Weak orbits of semigroups and monoids in Orb
   - grading for an orbit
   - Jenkins Hash Function (as yet undocumented)
@@ -144,33 +98,17 @@
   - Make ProfileGlobalFunctions(true) work for C functions
   - Slightly change OrbitStatisticOn* with respect to orbit length limit
 
-
-==========================
- Changes from 3.3 -> 3.4:
-==========================
-
+3.4 (2009-11-05)
   - Fixed a bug in the gap4r4 compatibility file in SlotUsagePattern.
   - Switch off accus in initialisation phase because there is no point.
 
-
-==========================
- Changes from 3.2 -> 3.3:
-==========================
-
+3.3 (2009-09-07)
   - Fixed a bug in ProductReplacer
 
-
-==========================
- Changes from 3.1 -> 3.2:
-==========================
-
+3.2 (2009-08-31)
   - Fixed incompatibility with fr package, FLOATs again!
 
-
-==========================
- Changes from 3.0 -> 3.1:
-==========================
-
+3.1 (2009-08-26)
   - Fixed bug in HTAdd (calling AddHT).
   - Major reorganisation of product replacers (accelerator, multiple accus)
   - AddGeneratorToProductReplacer new
@@ -178,11 +116,7 @@
   - allow automatic growing of tree hash tables
   - change fallback for ChooseHashFunction to return 1 function
 
-
-==========================
- Changes from 2.0 -> 3.0:
-==========================
-
+3.0 (2009-07-22)
   - Fixed some bugs for hash functions for compressed vectors/matrices.
   - Fixed a bug in the depth and depthmarks of orbits
   - Improved MakeSchreierTreeShallow for great depths
@@ -197,11 +131,7 @@
   - Various fixes and improvements of orbit-by-suborbit stuff.
   - New HISTORY file for release history.
 
-
-==========================
- Changes from 1.5 -> 2.0:
-==========================
-
+2.0 (2008-06-22)
   - Variant of "rattle" for random elements in normal closure.
   - Fixed 64bit issue for hash functions for compressed vectors.
   - Make compatible to GAP 4.4 again
@@ -215,11 +145,7 @@
   - Use new "cheap" option of SmallerDegreePermutationRepresentation
   - Release revision 211 as version 2.0
 
-
-==========================
- Changes from 1.4 -> 1.5:
-==========================
-
+1.5 (2007-10-31)
   - Fixed documentation of ActionOnOrbit.
   - New FindSuborbits methods and OrbitIntersectionMatrix to compute
     condensed permutation modules in smaller cases.
@@ -236,25 +162,25 @@
   - Release revision 149 as version 1.5, which is intended to be
     a preliminary version without proper documentation.
 
-
-==========================
- Changes from 1.3 -> 1.4:
-==========================
-
+1.4 (2007-02-26)
   - Picklers for orbits, caches, orbits-by-suborbits and other stuff.
   - Action on subspaces for orbits-by-suborbits.
   - Fixed bug in \in method for permutations on integer orbits.
   - Picklers for product replacer objects and random searcher objects.
   - Release revision 129 as version 1.4
 
-
-==========================
- Changes from 1.2 -> 1.3:
-==========================
-
+1.3 (2006-10-13)
   - random sources are now in the library, thus, orb will only work
     with GAP >= 4.4.8 and GAP.dev from now on
   - Moved realrandom.* to the IO package.
   - OrbitBySuborbitKnownSize
   - lots of small changes, forgot to take notes
 
+1.2 (2006-07-27)
+  - ?
+
+1.1 (2006-06-12)
+  - ?
+
+1.0 (?)
+  - Initial release
