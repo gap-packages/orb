@@ -2,6 +2,11 @@
  This file describes changes in the orb package
 ================================================
 
+4.7.1 (2014-04-04)
+  - Previous release had an invalid release date in
+    PackageInfo.g (2014-04-31 instead of 2014-03-31).
+  - Merge HISTORY and CHANGES files.
+
 4.7 (2014-03-31)
   - Use hash functions for transformations and partial permutations
     provided by newer GAP versions instead of our own. This way,
