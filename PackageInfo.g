@@ -1,9 +1,6 @@
 #############################################################################
 ##  
 ##  PackageInfo.g for the package `orb'                       
-##                                                            Juergen Mueller
-##                                                            Max Neunhoeffer
-##                                                               Felix Noeske
 ##
 
 SetPackageInfo( rec(
@@ -32,20 +29,18 @@ Persons := [
     Institution   := "RWTH Aachen"
   ),
   rec( 
-    LastName      := "Neunhoeffer",
+    LastName      := "Neunhöffer",
     FirstNames    := "Max",
     IsAuthor      := true,
     IsMaintainer  := false,
-    Email         := "neunhoef@mcs.st-and.ac.uk",
+    Email         := "max@9hoeffer.de",
     WWWHome       := "http://www-groups.mcs.st-and.ac.uk/~neunhoef",
     PostalAddress := Concatenation( [
-                       "School of Mathematics and Statistics\n",
-                       "Mathematical Institute\n",
-                       "North Haugh\n",
-                       "St Andrews, Fife KY16 9SS\n",
-                       "Scotland, UK" ] ),
-    Place         := "St Andrews",
-    Institution   := "University of St Andrews"
+                       "Gustav-Freytag-Straße 40\n",
+                       "50354 Hürth\n",
+                       "Germany" ] ),
+    #Place         := "St Andrews",
+    #Institution   := "University of St Andrews"
   ),
   rec( 
     LastName      := "Noeske",
