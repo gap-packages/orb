@@ -89,7 +89,7 @@ InstallMethod( Memory, "for an orbit-by-suborbit setup object",
     m := 0;
     for i in [1..k] do
         p := SHALLOW_SIZE(setup!.sample[i]) + 3 * GAPInfo.BytesPerVariable;
-        m := m + p * setup!.info[i].nr + 2 * SHALLOW_SIZE(setup!.info[i].els);
+        m := m + p * setup!.info[i]!.nr + 2 * SHALLOW_SIZE(setup!.info[i]!.els);
     od;
     return m;
   end );

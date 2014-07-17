@@ -1,6 +1,7 @@
 This file describes changes in the orb package.
 
 X.Y (YYYY-MM-DD)
+  - Fix error in Memory() method for orbit-by-suborbit setup objects.
   - ...
 
 4.7.1 (2014-04-04)
