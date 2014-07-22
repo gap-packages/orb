@@ -1128,7 +1128,7 @@ static inline void initRNams(void)
     }
 }
 
-static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
+extern Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
 {
     Obj els;
     Obj vals;
@@ -1206,7 +1206,7 @@ static Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
         return Fail;
 }
 
-static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
+extern Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
 {
     Obj els;
     Obj vals;
