@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate Orbits",
-Version := "4.7.1",
-Date := "04/04/2014", # dd/mm/yyyy format
+Version := "4.7.2",
+Date := "24/09/2014", # dd/mm/yyyy format
 
 ##  Information about authors and maintainers.
 Persons := [
@@ -96,10 +96,10 @@ Status := "deposited",
 # AcceptDate := "08/1999",
 #AcceptDate := "",
 
-PackageWWWHome := "http://neunhoef.github.io/orb/",
+PackageWWWHome := "http://gap-system.github.io/orb/",
 README_URL     := Concatenation(~.PackageWWWHome, "README"),
 PackageInfoURL := Concatenation(~.PackageWWWHome, "PackageInfo.g"),
-ArchiveURL     := Concatenation("https://github.com/neunhoef/orb/",
+ArchiveURL     := Concatenation("https://github.com/gap-system/orb/",
                                 "releases/download/v", ~.Version,
                                 "/orb-", ~.Version),
 ArchiveFormats := ".tar.gz .tar.bz2",
