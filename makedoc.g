@@ -4,13 +4,18 @@
 ##  Call this with GAP.
 ##
 
-SetPackagePath("orb", ".");
-PrintTo("VERSION", PackageInfo("orb")[1].Version);
+PACKAGE := "orb";
+SetPackagePath(PACKAGE, ".");
+PrintTo("VERSION", PackageInfo(PACKAGE)[1].Version);
 
 LoadPackage("GAPDoc");
 
-MakeGAPDocDoc("doc", "orb", [], "orb");
-CopyHTMLStyleFiles("doc");
-GAPDocManualLab("orb");
+if fail <> LoadPackage("AutoDoc", ">= 2014.03.27") then
+    AutoDoc(PACKAGE : scaffold := rec( MainPage := false ));
+else
+    MakeGAPDocDoc("doc", PACKAGE, [], PACKAGE, "MathJax");
+    CopyHTMLStyleFiles("doc");
+    GAPDocManualLab(PACKAGE);
+fi;
 
 QUIT;
