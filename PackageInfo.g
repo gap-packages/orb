@@ -129,7 +129,7 @@ Keywords := ["Orbit huge", "OrbitBySuborbit", "hash tables",
 AutoDoc := rec(
     TitlePage := rec(
         Copyright := Concatenation(
-                    "&copyright; 2005-2013 by Jürgen Müller, Max Neunhöffer and Felix Noeske<P/>\n",
+                    "&copyright; 2005-2014 by Jürgen Müller, Max Neunhöffer and Felix Noeske<P/>\n",
                     "\n",
                     "This program is free software: you can redistribute it and/or modify\n",
                     "it under the terms of the GNU General Public License as published by\n",
