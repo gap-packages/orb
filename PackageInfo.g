@@ -58,6 +58,23 @@ Persons := [
     Place         := "Aachen",
     Institution   := "RWTH Aachen"
   ),
+  rec(
+    LastName      := "Horn",
+    FirstNames    := "Max",
+    IsAuthor      := false,
+    IsMaintainer  := true,
+    Email         := "max.horn@math.uni-giessen.de",
+    WWWHome       := "http://www.quendi.de/math",
+    PostalAddress := Concatenation(
+                       "AG Algebra\n",
+                       "Mathematisches Institut\n",
+                       "Justus-Liebig-Universität Gießen\n",
+                       "Arndtstraße 2\n",
+                       "35392 Gießen\n",
+                       "Germany" ),
+    Place         := "Gießen",
+    Institution   := "Justus-Liebig-Universität Gießen"
+  ),
 ],
 
 ##  Status information. Currently the following cases are recognized:
