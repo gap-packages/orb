@@ -1,51 +1,70 @@
   
   
-                               [1XGAP 4 Package [5Xorb[105X[101X
+                                     [1X orb [101X
   
   
-                      [1Xorb --- Methods to enumerate Orbits[101X
+                         [1X Methods to enumerate Orbits [101X
   
   
-                                 Version 4.7.1
+                                     4.7.2
   
   
-                                   March 2014
+                                   24/09/2014
   
   
-                                 Jürgen Müller
+                                Juergen Mueller
   
                                  Max Neunhöffer
   
                                   Felix Noeske
   
+                                    Max Horn
   
   
-  Jürgen Müller
+  
+  Juergen Mueller
       Email:    [7Xmailto:juergen.mueller@math.rwth-aachen.de[107X
       Homepage: [7Xhttp://www.math.rwth-aachen.de/~Juergen.Mueller[107X
-      Address:  [33X[0;14YLehrstuhl  D  für  Mathematik,  RWTH Aachen, Templergraben 64,
-                52062 Aachen, Germany[133X
+      Address:  [33X[0;14YJuergen Mueller[133X
+                [33X[0;14YLehrstuhl D fuer Mathematik, RWTH Aachen[133X
+                [33X[0;14YTemplergraben 64[133X
+                [33X[0;14Y52056 Aachen[133X
+                [33X[0;14YGermany[133X
   
   
   Max Neunhöffer
-      Email:    [7Xmailto:neunhoef@mcs.st-and.ac.uk[107X
+      Email:    [7Xmailto:max@9hoeffer.de[107X
       Homepage: [7Xhttp://www-groups.mcs.st-and.ac.uk/~neunhoef[107X
-      Address:  [33X[0;14YSchool  of  Mathematics  and Statistics Mathematical Institute
-                University of St Andrews North Haugh St Andrews, Fife KY16 9SS
-                Scotland, UK[133X
+      Address:  [33X[0;14YGustav-Freytag-Straße 40[133X
+                [33X[0;14Y50354 Hürth[133X
+                [33X[0;14YGermany[133X
   
   
   Felix Noeske
       Email:    [7Xmailto:felix.noeske@math.rwth-aachen.de[107X
       Homepage: [7Xhttp://www.math.rwth-aachen.de/~Felix.Noeske[107X
-      Address:  [33X[0;14YLehrstuhl  D  für  Mathematik,  RWTH Aachen, Templergraben 64,
-                52062 Aachen, Germany[133X
+      Address:  [33X[0;14YFelix Noeske[133X
+                [33X[0;14YLehrstuhl D fuer Mathematik, RWTH Aachen[133X
+                [33X[0;14YTemplergraben 64[133X
+                [33X[0;14Y52056 Aachen[133X
+                [33X[0;14YGermany[133X
+  
+  
+  Max Horn
+      Email:    [7Xmailto:max.horn@math.uni-giessen.de[107X
+      Homepage: [7Xhttp://www.quendi.de/math[107X
+      Address:  [33X[0;14YAG Algebra[133X
+                [33X[0;14YMathematisches Institut[133X
+                [33X[0;14YJustus-Liebig-Universität Gießen[133X
+                [33X[0;14YArndtstraße 2[133X
+                [33X[0;14Y35392 Gießen[133X
+                [33X[0;14YGermany[133X
   
   
   
   -------------------------------------------------------
   [1XCopyright[101X
-  [33X[0;0Y© 2005-2013 by Jürgen Müller, Max Neunhöffer and Felix Noeske[133X
+  [33X[0;0Y© 2005-2014 by Jürgen Müller, Max Neunhöffer and Felix Noeske[133X
   
   [33X[0;0YThis  program  is  free  software:  you can redistribute it and/or modify it
   under  the  terms of the GNU General Public License as published by the Free

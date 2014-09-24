@@ -1,17 +1,14 @@
 #############################################################################
 ##  
 ##  PackageInfo.g for the package `orb'                       
-##                                                            Juergen Mueller
-##                                                            Max Neunhoeffer
-##                                                               Felix Noeske
 ##
 
 SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate Orbits",
-Version := "4.7.1",
-Date := "04/04/2014", # dd/mm/yyyy format
+Version := "4.7.2",
+Date := "24/09/2014", # dd/mm/yyyy format
 
 ##  Information about authors and maintainers.
 Persons := [
@@ -32,20 +29,18 @@ Persons := [
     Institution   := "RWTH Aachen"
   ),
   rec( 
-    LastName      := "Neunhoeffer",
+    LastName      := "Neunhöffer",
     FirstNames    := "Max",
     IsAuthor      := true,
     IsMaintainer  := false,
-    Email         := "neunhoef@mcs.st-and.ac.uk",
+    Email         := "max@9hoeffer.de",
     WWWHome       := "http://www-groups.mcs.st-and.ac.uk/~neunhoef",
     PostalAddress := Concatenation( [
-                       "School of Mathematics and Statistics\n",
-                       "Mathematical Institute\n",
-                       "North Haugh\n",
-                       "St Andrews, Fife KY16 9SS\n",
-                       "Scotland, UK" ] ),
-    Place         := "St Andrews",
-    Institution   := "University of St Andrews"
+                       "Gustav-Freytag-Straße 40\n",
+                       "50354 Hürth\n",
+                       "Germany" ] ),
+    #Place         := "St Andrews",
+    #Institution   := "University of St Andrews"
   ),
   rec( 
     LastName      := "Noeske",
@@ -62,6 +57,23 @@ Persons := [
                        "Germany" ] ),
     Place         := "Aachen",
     Institution   := "RWTH Aachen"
+  ),
+  rec(
+    LastName      := "Horn",
+    FirstNames    := "Max",
+    IsAuthor      := false,
+    IsMaintainer  := true,
+    Email         := "max.horn@math.uni-giessen.de",
+    WWWHome       := "http://www.quendi.de/math",
+    PostalAddress := Concatenation(
+                       "AG Algebra\n",
+                       "Mathematisches Institut\n",
+                       "Justus-Liebig-Universität Gießen\n",
+                       "Arndtstraße 2\n",
+                       "35392 Gießen\n",
+                       "Germany" ),
+    Place         := "Gießen",
+    Institution   := "Justus-Liebig-Universität Gießen"
   ),
 ],
 
@@ -84,10 +96,10 @@ Status := "deposited",
 # AcceptDate := "08/1999",
 #AcceptDate := "",
 
-PackageWWWHome := "http://neunhoef.github.io/orb/",
+PackageWWWHome := "http://gap-system.github.io/orb/",
 README_URL     := Concatenation(~.PackageWWWHome, "README"),
 PackageInfoURL := Concatenation(~.PackageWWWHome, "PackageInfo.g"),
-ArchiveURL     := Concatenation("https://github.com/neunhoef/orb/",
+ArchiveURL     := Concatenation("https://github.com/gap-system/orb/",
                                 "releases/download/v", ~.Version,
                                 "/orb-", ~.Version),
 ArchiveFormats := ".tar.gz .tar.bz2",
@@ -129,7 +141,29 @@ AvailabilityTest := ReturnTrue,
 ##  *Optional*: Here you can list some keyword related to the topic 
 ##  of the package.
 Keywords := ["Orbit huge", "OrbitBySuborbit", "hash tables", 
-             "searching in groups"]
+             "searching in groups"],
+
+AutoDoc := rec(
+    TitlePage := rec(
+        Copyright := Concatenation(
+                    "&copyright; 2005-2014 by Jürgen Müller, Max Neunhöffer and Felix Noeske<P/>\n",
+                    "\n",
+                    "This program is free software: you can redistribute it and/or modify\n",
+                    "it under the terms of the GNU General Public License as published by\n",
+                    "the Free Software Foundation, either version 3 of the License, or\n",
+                    "(at your option) any later version.\n",
+                    "\n",
+                    "This program is distributed in the hope that it will be useful,\n",
+                    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n",
+                    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n",
+                    "GNU General Public License for more details.\n",
+                    "\n",
+                    "You should have received a copy of the GNU General Public License\n",
+                    "along with this program.  If not, see\n",
+                    "<URL><Link>http://www.gnu.org/licenses/</Link></URL>.\n"
+                ),
+    )
+),
 
 ));
 
