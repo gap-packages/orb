@@ -661,6 +661,7 @@ InstallMethod( Enumerate,
       fi;
     fi;
     
+    found := false;
     stopper := o!.stopper;
     onlystab := o!.onlystab;
     storenumbers := o!.storenumbers;
@@ -877,6 +878,7 @@ InstallMethod( Enumerate,
         return o;
       fi;
     fi;
+    found := false;
     stopper := o!.stopper;
     onlystab := o!.onlystab;
     gens := o!.gens;
