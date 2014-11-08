@@ -1,7 +1,12 @@
 This file describes changes in the orb package.
 
-X.Y (YYYY-MM-DD)
-  - ...
+4.7.3 (2014-11-08)
+  - Tweak the build system to avoid potential issues when the source
+    code gets repackages by third parties (e.g. by the GAP team, when
+    creating their big package archives)
+  - Fix a missing variable initialization, which could cause Enumerate
+    (and hence anything using it, such as FindShortGeneratorsOfSubgroup)
+    to run into an error.
 
 4.7.2 (2014-09-24)
   - Fix error in Memory() method for orbit-by-suborbit setup objects.
