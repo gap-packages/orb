@@ -1,6 +1,6 @@
 name: orb
-version: 4.7.2
-date: 24/09/2014
+version: 4.7.3
+date: 08/11/2014
 description: Methods to enumerate Orbits
 
 authors:
@@ -37,9 +37,9 @@ packageinfo: http://gap-system.github.io/orb/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-system/orb/releases/download/v4.7.2/orb-4.7.2.tar.gz
+      url: https://github.com/gap-system/orb/releases/download/v4.7.3/orb-4.7.3.tar.gz
     - name: .tar.bz2
-      url: https://github.com/gap-system/orb/releases/download/v4.7.2/orb-4.7.2.tar.bz2
+      url: https://github.com/gap-system/orb/releases/download/v4.7.3/orb-4.7.3.tar.bz2
 
 abstract: The <span class="pkgname">orb</span> package is about enumerating orbits in various ways.
 
