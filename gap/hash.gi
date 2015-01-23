@@ -172,7 +172,7 @@ InstallMethod( HTCreate, "for an object",
 InstallMethod( HTCreate, "for an object and an options record",
   [ IsObject, IsRecord ],
   function( x, opt )
-    local ht,ty,hfun;
+    local ht,ty,hfun,cangrow;
     ht := ShallowCopy(opt);
     if IsBound(ht.hashlen) then
         ty := HashTabType;
@@ -190,6 +190,21 @@ InstallMethod( HTCreate, "for an object and an options record",
         ty := TreeHashTabType;
         ht.len := 100003;
     fi;
+
+    # Prevent the table from growing too large.
+    cangrow := true;
+    if GAPInfo.BytesPerVariable = 4 then
+        if ht.len > 2^28-2 then
+            ht.len := 2^28-57; # largest prime below 2^28
+            cangrow := false;
+        fi;
+    else
+        if ht.len > 2^60-2 then
+            ht.len := 2^60-93; # largest prime below 2^60
+            cangrow := false;
+        fi;
+    fi;
+
     ht.els := EmptyPlist(ht.len+1);
     ht.els[ht.len+1] := fail;   # To create proper length!
     ht.vals := [];
@@ -197,7 +212,7 @@ InstallMethod( HTCreate, "for an object and an options record",
     if IsBound(ht.forflatplainlists) then
         ht.hf := ORB_HashFunctionForPlainFlatList;
         ht.hfd := ht.len;
-        ht.cangrow := true;
+        ht.cangrow := cangrow;
     elif not(IsBound(ht.hf) and IsBound(ht.hfd)) then
         hfun := ChooseHashFunction(x,ht.len);
         if hfun = fail then
@@ -206,9 +221,9 @@ InstallMethod( HTCreate, "for an object and an options record",
         fi;
         ht.hf := hfun.func;
         ht.hfd := hfun.data;
-        ht.cangrow := true;
+        ht.cangrow := cangrow;
     else
-        ht.cangrow := IsBound(ht.hfbig) and IsBound(ht.hfdbig);
+        ht.cangrow := cangrow and IsBound(ht.hfbig) and IsBound(ht.hfdbig);
     fi;
     ht.collisions := 0;
     ht.accesses := 0;
