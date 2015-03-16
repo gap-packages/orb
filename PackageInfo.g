@@ -7,7 +7,7 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate Orbits",
-Version := "4.7.3",
+Version := "4.7.3dev",
 Date := "08/11/2014", # dd/mm/yyyy format
 
 ##  Information about authors and maintainers.
@@ -126,7 +126,7 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">=4.4.12",
+  GAP := ">=4.6",
   NeededOtherPackages := [["GAPDoc", ">= 1.2"]],
   SuggestedOtherPackages := [["IO",">= 3.3"]],
   ExternalConditions := []

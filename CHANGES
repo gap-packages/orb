@@ -5,6 +5,7 @@ This file describes changes in the orb package.
     which no ChooseHashFunction method is available. Previously, it would
     fall back to a "trivial" hash function, which lead to worst-case
     performance.
+  - Require GAP >= 4.6
 
 4.7.3 (2014-11-08)
   - Tweak the build system to avoid potential issues when the source
