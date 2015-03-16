@@ -1,5 +1,11 @@
 This file describes changes in the orb package.
 
+4.x.y (YYYY-MM-DD)
+  - Show an error when the user tries to compute orbits of objects for
+    which no ChooseHashFunction method is available. Previously, it would
+    fall back to a "trivial" hash function, which lead to worst-case
+    performance.
+
 4.7.3 (2014-11-08)
   - Tweak the build system to avoid potential issues when the source
     code gets repackages by third parties (e.g. by the GAP team, when

@@ -635,13 +635,10 @@ function(v,data)
   return HASHKEY_BAG(v,101,3*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
-InstallGlobalFunction( ORB_HashFunctionReturn1,
-  function(v,data) return 1; end );
-
 InstallMethod( ChooseHashFunction, "failure method if all fails",
   [IsObject,IsInt],
   function(p,hashlen)
-    return rec( func := ORB_HashFunctionReturn1, data := fail );
+    Error("Could not guess a suitable hash function");
   end );
 
 # Now the choosing methods for compressed vectors:
