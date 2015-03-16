@@ -6,6 +6,7 @@ This file describes changes in the orb package.
     fall back to a "trivial" hash function, which lead to worst-case
     performance.
   - Require GAP >= 4.6
+  - Remove Jenkins hash in favor of the Murmur hash built into GAP
 
 4.7.3 (2014-11-08)
   - Tweak the build system to avoid potential issues when the source
