@@ -27,11 +27,6 @@ if (not IsBound(ORBC)) and
   LoadDynamicModule(Filename(DirectoriesPackagePrograms("orb"), "orb.so"));
 fi;
 
-# Compatibility things for GAP 4.4:
-if not(IsBound(RowLength)) then
-    ReadPackage("orb","gap/gap4r4.g");
-fi;
-
 ReadPackage("orb","gap/homwdata.gd");
 ReadPackage("orb","gap/avltree.gd");
 ReadPackage("orb","gap/hash.gd");
