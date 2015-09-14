@@ -718,8 +718,12 @@ inverses of the generators of the orbit.
 
 <ManSection>
 <Oper Name="MakeSchreierTreeShallow" Arg="orb [, d]"/>
-<Returns> The orbit object <A>orb</A> </Returns>
+<Returns>nothing</Returns>
 <Description>
+The argument <A>orb</A> must be a closed orbit object with a log and a
+Schreier tree, that is, the options <C>log</C> and <C>schreier</C>
+must have been set to true during creation.
+<P/>
     Uses <Ref Oper="AddGeneratorsToOrbit"/> to add more generators
     to the orbit in order to make the Schreier tree shallower.
     If <A>d</A> it is given, generators are added until the depth is

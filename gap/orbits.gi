@@ -1516,7 +1516,7 @@ InstallMethod( MakeSchreierTreeShallow, "for a closed orbit with log",
     fi;
   end );
             
-InstallMethod( MakeSchreierTreeShallow, "for a closed orbit",
+InstallMethod( MakeSchreierTreeShallow, "for a closed orbit with log",
   [ IsOrbit and IsClosed and IsOrbitWithLog ],
   function( o )
     MakeSchreierTreeShallow(o, LogInt(Length(o),2) );
