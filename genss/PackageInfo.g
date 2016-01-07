@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate Orbits",
-Version := "4.7.4",
-Date := "07/01/2016", # dd/mm/yyyy format
+Version := "4.7.3",
+Date := "08/11/2014", # dd/mm/yyyy format
 
 ##  Information about authors and maintainers.
 Persons := [
@@ -96,10 +96,10 @@ Status := "deposited",
 # AcceptDate := "08/1999",
 #AcceptDate := "",
 
-PackageWWWHome := "http://gap-packages.github.io/orb/",
+PackageWWWHome := "http://gap-system.github.io/orb/",
 README_URL     := Concatenation(~.PackageWWWHome, "README"),
 PackageInfoURL := Concatenation(~.PackageWWWHome, "PackageInfo.g"),
-ArchiveURL     := Concatenation("https://github.com/gap-packages/orb/",
+ArchiveURL     := Concatenation("https://github.com/gap-system/orb/",
                                 "releases/download/v", ~.Version,
                                 "/orb-", ~.Version),
 ArchiveFormats := ".tar.gz .tar.bz2",
@@ -126,7 +126,7 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">=4.6",
+  GAP := ">=4.4.12",
   NeededOtherPackages := [["GAPDoc", ">= 1.2"]],
   SuggestedOtherPackages := [["IO",">= 3.3"]],
   ExternalConditions := []
@@ -136,7 +136,7 @@ AvailabilityTest := ReturnTrue,
 
 ##  *Optional*, but recommended: path relative to package root to a file which 
 ##  contains as many tests of the package functionality as sensible.
-TestFile := "tst/testall.g",
+#TestFile := "tst/testall.g",
 
 ##  *Optional*: Here you can list some keyword related to the topic 
 ##  of the package.

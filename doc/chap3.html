@@ -482,7 +482,9 @@ true
 <h5>3.1-21 MakeSchreierTreeShallow</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeSchreierTreeShallow</code>( <var class="Arg">orb</var>[, <var class="Arg">d</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
-<p>Returns: The orbit object <var class="Arg">orb</var></p>
+<p>Returns: nothing</p>
+
+<p>The argument <var class="Arg">orb</var> must be a closed orbit object with a log and a Schreier tree, that is, the options <code class="code">log</code> and <code class="code">schreier</code> must have been set to true during creation.</p>
 
 <p>Uses <code class="func">AddGeneratorsToOrbit</code> (<a href="chap3.html#X7D100BE4820039C1"><span class="RefLink">3.1-20</span></a>) to add more generators to the orbit in order to make the Schreier tree shallower. If <var class="Arg">d</var> it is given, generators are added until the depth is less than or equal to <var class="Arg">d</var> or until three more generators did not reduce the depth any more. If <var class="Arg">d</var> is not given, then the logarithm to base 2 of the orbit length is taken as a default value.</p>
 

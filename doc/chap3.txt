@@ -645,7 +645,11 @@
   [1X3.1-21 MakeSchreierTreeShallow[101X
   
   [29X[2XMakeSchreierTreeShallow[102X( [3Xorb[103X[, [3Xd[103X] ) [32X operation
-  [6XReturns:[106X  [33X[0;10YThe orbit object [3Xorb[103X[133X
+  [6XReturns:[106X  [33X[0;10Ynothing[133X
+  
+  [33X[0;0YThe  argument  [3Xorb[103X  must  be a closed orbit object with a log and a Schreier
+  tree,  that  is,  the  options  [10Xlog[110X  and [10Xschreier[110X must have been set to true
+  during creation.[133X
   
   [33X[0;0YUses  [2XAddGeneratorsToOrbit[102X  ([14X3.1-20[114X)  to add more generators to the orbit in
   order  to make the Schreier tree shallower. If [3Xd[103X it is given, generators are

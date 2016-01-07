@@ -1,6 +1,6 @@
 name: orb
-version: 4.7.4
-date: 07/01/2016
+version: 4.7.3
+date: 08/11/2014
 description: Methods to enumerate Orbits
 
 authors:
@@ -19,7 +19,7 @@ maintainers:
     - name: Max Horn
       url: http://www.quendi.de/math
 
-GAP: ">=4.6"
+GAP: ">=4.4.12"
 
 needed-pkgs:
     - name: "GAPDoc"
@@ -29,17 +29,17 @@ needed-pkgs:
 suggested-pkgs:
     - name: "IO"
       version: ">= 3.3"
-      url: "http://gap-packages.github.io/io/"
+      url: "http://gap-system.github.io/io/"
 
-www: http://gap-packages.github.io/orb/
-readme: http://gap-packages.github.io/orb/README
-packageinfo: http://gap-packages.github.io/orb/PackageInfo.g
+www: http://gap-system.github.io/orb/
+readme: http://gap-system.github.io/orb/README
+packageinfo: http://gap-system.github.io/orb/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-packages/orb/releases/download/v4.7.4/orb-4.7.4.tar.gz
+      url: https://github.com/gap-system/orb/releases/download/v4.7.3/orb-4.7.3.tar.gz
     - name: .tar.bz2
-      url: https://github.com/gap-packages/orb/releases/download/v4.7.4/orb-4.7.4.tar.bz2
+      url: https://github.com/gap-system/orb/releases/download/v4.7.3/orb-4.7.3.tar.bz2
 
 abstract: The <span class="pkgname">orb</span> package is about enumerating orbits in various ways.
 
