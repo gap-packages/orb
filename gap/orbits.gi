@@ -1044,7 +1044,7 @@ InstallMethod( Enumerate, "for an orbit object", [IsOrbit],
     return Enumerate(o,infinity);
   end );
     
-InstallMethod( AddGeneratorsToOrbit, "for an orbit and a generator",
+InstallMethod( AddGeneratorsToOrbit, "for an orbit and a list of generators",
   [ IsOrbit, IsList ],
   function( o, gens )
     local lmp,oldnrgens;
@@ -1069,7 +1069,7 @@ InstallMethod( AddGeneratorsToOrbit, "for an orbit and a generator",
     return o;
   end );
 
-InstallMethod( AddGeneratorsToOrbit, "for an orbit and a generator",
+InstallMethod( AddGeneratorsToOrbit, "for an orbit, a list of generators, and a list of permutations",
   [ IsOrbit, IsList, IsList ],
   function( o, gens, permgens )
     local lmp,oldnrgens;
