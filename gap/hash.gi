@@ -142,6 +142,10 @@ InstallGlobalFunction( GrowHT, function(ht,x)
       ht.hfd := [ht.hfbig,ht.hfdbig,ht.len];
   else
       ht.hf := ChooseHashFunction(x,ht.len);
+      if ht.hf = fail then
+          Error("Could not find hash function for sample object");
+          return fail;
+      fi;
       ht.hfd := ht.hf.data;
       ht.hf := ht.hf.func;
   fi;
@@ -535,6 +539,10 @@ InstallMethod( HTGrow, "for a tree hash table and an object",
         ht!.hfd := [ht!.hfbig,ht!.hfdbig,ht!.len];
     else
         ht!.hf := ChooseHashFunction(x,ht!.len);
+        if ht!.hf = fail then
+            Error("Could not find hash function for sample object");
+            return fail;
+        fi;
         ht!.hfd := ht!.hf.data;
         ht!.hf := ht!.hf.func;
     fi;
@@ -623,10 +631,10 @@ function(v,data)
   return HashKeyBag(v,101,3*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
-InstallMethod( ChooseHashFunction, "failure method if all fails",
+InstallMethod( ChooseHashFunction, "failure method",
   [IsObject,IsInt],
   function(p,hashlen)
-    Error("Could not guess a suitable hash function");
+    return fail;
   end );
 
 # Now the choosing methods for compressed vectors:
