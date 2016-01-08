@@ -899,6 +899,13 @@ if IsBound(IsPartialPerm) then
     end );
 fi;
 
+InstallMethod(ChooseHashFunction, "for a blist and pos int",
+[IsBlistRep, IsPosInt],
+  function(x, hashlen)
+  return rec(func := HASH_FUNC_FOR_BLIST,
+             data := hashlen);
+end);
+
 ##
 ##  This program is free software: you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
