@@ -1484,6 +1484,20 @@ Obj FuncMappingPermListList(Obj self, Obj src, Obj dst)
     return FuncPermList(self,out);
 }
 
+Obj HASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap) {
+
+  size_t res  = 0;
+  UInt   nr  = NUMBER_BLOCKS_BLIST(blist);
+  UInt*  ptr  = BLOCKS_BLIST(blist);
+  UInt   data = INT_INTOBJ(data_gap);
+
+  while (nr > 0) {
+    res = (res * 23) + *(ptr++);
+    nr--;
+  }
+  return INTOBJ_INT((res % data) + 1);
+}
+
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
 /******************************************************************************
@@ -1570,6 +1584,10 @@ static StructGVarFunc GVarFuncs [] = {
   { "MappingPermListList_C", 2, "src, dst",
     FuncMappingPermListList,
     "pkg/orb/src/orb.c:FuncMappingPermListList" },
+  
+  { "HASH_FUNC_FOR_BLIST", 2, "blist, data",
+    HASH_FUNC_FOR_BLIST,
+    "pkg/orb/src/orb.c:HASH_FUNC_FOR_BLIST" },
 
   { 0 }
 
