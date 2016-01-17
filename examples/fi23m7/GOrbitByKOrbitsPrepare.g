@@ -13,7 +13,7 @@
 #
 
 # The random seed:
-RestoreStateRandom(
+Reset(GlobalRandomSource,
 [ 45, [ 66318732, 86395905, 22233618, 21989103, 237245480, 264566285, 
       240037038, 264902875, 9274660, 180361945, 94688010, 24032135, 
       106293216, 27264613, 126456102, 243761907, 80312412, 2522186, 59575208, 
@@ -52,7 +52,7 @@ l := CalcChain(sygens,sychain,[]);
 lllll := l;
 u2gens := l[8];
 u1gens := l[4];
-sr := StateRandom();
+sr := State(GlobalRandomSource);
 SetInfoLevel(InfoMeatAxe,1);
 re := ChopDirectSum(u2gens,sychain.r.r.r.r.r);
 ChopDirectSumAfterBurner(re);
