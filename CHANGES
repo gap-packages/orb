@@ -1,8 +1,10 @@
 This file describes changes in the orb package.
 
-X.Y (YYYY-MM-DD)
+4.7.5 (2016-01-20)
   - Add a hash function for blists
-  - Technical change: orbit objects are not collections anymore
+  - Technical change: orbit objects are not collections anymore (fixes issue #10,
+    where sometimes \in returned wrong results for orbits)
+  - Improve test suite
 
 4.7.4 (2016-01-07)
   - Show an error when the user tries to compute orbits of objects for
