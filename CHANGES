@@ -1,5 +1,8 @@
 This file describes changes in the orb package.
 
+X.Y (YYYY-MM-DD)
+  - Add a hash function for blists
+
 4.7.4 (2016-01-07)
   - Show an error when the user tries to compute orbits of objects for
     which no ChooseHashFunction method is available. Previously, it would
