@@ -10,7 +10,6 @@
 
 #
 gap> START_TEST("Orb package: hash.tst");
-gap> LoadPackage("orb", false);;
 
 # test HASH_FUNC_FOR_BLIST and its distribution
 gap> bl := BlistList([1 .. 10000], []);;
@@ -50,4 +49,4 @@ gap> ht;
 <tree hash table len=100003 used=33 colls=1 accs=33>
 
 #
-gap> STOP_TEST("Semigroups package: testinstall.tst", 10000);
+gap> STOP_TEST("Orb package: hash.tst", 0);
