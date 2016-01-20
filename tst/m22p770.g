@@ -1,3 +1,4 @@
+LoadPackage("atlasrep");
 LoadPackage("orb");
 Print("M22 acting on 770 points...\n");
 Print("Use 500MB initial workspace, should show one garbage ",

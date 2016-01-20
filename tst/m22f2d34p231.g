@@ -1,3 +1,4 @@
+LoadPackage("atlasrep");
 LoadPackage("orb");
 Print("M22 acting on F_2^{34}, now an orbit of length 231...\n");
 Print("Use 500MB initial workspace, should show one garbage ",
