@@ -5,6 +5,7 @@
 LoadPackage("orb");
 d := DirectoriesPackageLibrary("orb", "tst");
 
+Test(Filename(d, "bugfix.tst"));
 Test(Filename(d, "hash.tst"));
 
 Read(Filename(d, "avltest.g"));

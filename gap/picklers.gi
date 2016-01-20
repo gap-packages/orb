@@ -28,7 +28,7 @@ IO_Unpicklers.ORBI := function(f)
   local o,x;
   o := rec();
   x := IO_Unpickle(f); if x = IO_Error then return IO_Error; fi;
-  Objectify( NewType( CollectionsFamily(FamilyObj(x)), IsOrbit ), o );
+  Objectify( NewType( OrbitFamily, IsOrbit ), o );
   return IO_GenericObjectUnpickler(f, o, [],    # no attributes
       [ IsPermOnIntOrbitRep, IsHashOrbitRep, IsSlowOrbitRep,
         IsOrbitWithLog, IsClosed ] );

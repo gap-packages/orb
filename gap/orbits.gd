@@ -30,6 +30,8 @@ DeclareGlobalVariable( "ORB" );
 DeclareCategory( "IsOrbit", IsComponentObjectRep and IsDenseList and
                             IsFinite and IsSmallList );
 
+BindGlobal("OrbitFamily", NewFamily("OrbitFamily", IsOrbit));
+
 # Indicates, whether the orbit is already completely enumerated:
 DeclareFilter( "IsClosed", IsOrbit );
 
