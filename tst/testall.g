@@ -2,11 +2,10 @@
 # This file runs package tests. It is also referenced in the package
 # metadata in PackageInfo.g.
 #
+LoadPackage("atlasrep");
 LoadPackage("orb");
 d := DirectoriesPackageLibrary("orb", "tst");
 
-Test(Filename(d, "bugfix.tst"));
-Test(Filename(d, "hash.tst"));
+TestDirectory(d[1], rec(exitGAP := true));
 
-Read(Filename(d, "avltest.g"));
-Read(Filename(d, "m22p770.g"));
+FORCE_QUIT_GAP(1);
