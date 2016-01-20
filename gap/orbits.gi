@@ -397,7 +397,7 @@ InstallGlobalFunction( Orb,
     return o;
 end );
 
-InstallMethod( ViewObj, "for an orbit", [IsOrbit and IsList and IsFinite],
+InstallMethod( ViewObj, "for an orbit", [IsOrbit],
   function( o )
     Print("<");
     if IsClosed(o) then Print("closed "); else Print("open "); fi;
@@ -415,32 +415,32 @@ InstallMethod( ViewObj, "for an orbit", [IsOrbit and IsList and IsFinite],
   end );
 
 InstallMethod( ELM_LIST, "for an orbit object, and a positive integer", 
-  [IsOrbit and IsDenseList, IsPosInt],
+  [IsOrbit, IsPosInt],
   function( orb, pos )
     return orb!.orbit[pos];
   end );
 
 InstallMethod( ELMS_LIST, "for an orbit object, and a list of integers",
-  [IsOrbit and IsDenseList, IsList],
+  [IsOrbit, IsList],
   function( orb, poss )
     return orb!.orbit{poss};
   end );
 
 InstallMethod( Length, "for an orbit object",
-  [IsOrbit and IsDenseList],
+  [IsOrbit],
   function( orb )
     return Length(orb!.orbit);
   end );
 
 InstallMethod( Position, "for an orbit object, an object, and an integer",
-  [IsOrbit and IsDenseList, IsObject, IsInt],
+  [IsOrbit, IsObject, IsInt],
   function( orb, ob, pos )
     return Position( orb!.orbit, ob, pos );
   end );
 
 InstallMethod( Position, 
   "for an orbit object storing numbers, an object, and an integer",
-  [IsOrbit and IsHashOrbitRep and IsDenseList, IsObject, IsInt],
+  [IsOrbit and IsHashOrbitRep, IsObject, IsInt],
   function( orb, ob, pos )
     local p;
     p := HTValue(orb!.ht,ob);
@@ -459,7 +459,7 @@ InstallMethod( Position,
 
 InstallMethod( Position, 
   "for an orbit object perm on ints, an object, and an integer",
-  [IsOrbit and IsDenseList and IsPermOnIntOrbitRep, IsPosInt, IsInt],
+  [IsOrbit and IsPermOnIntOrbitRep, IsPosInt, IsInt],
   function( orb, ob, pos )
     local p;
     if IsBound(orb!.tab[ob]) then
@@ -483,7 +483,7 @@ InstallMethod( PositionCanonical,
 
 InstallMethod( \in, 
   "for an object and an orbit object",
-  [IsObject, IsOrbit and IsHashOrbitRep and IsDenseList],
+  [IsObject, IsOrbit and IsHashOrbitRep],
   function( ob, orb )
     local p;
     p := HTValue( orb!.ht, ob );
@@ -496,7 +496,7 @@ InstallMethod( \in,
 
 InstallMethod( \in,
   "for an object and an orbit object perms on int",
-  [IsPosInt, IsOrbit and IsDenseList and IsPermOnIntOrbitRep],
+  [IsPosInt, IsOrbit and IsPermOnIntOrbitRep],
   function( ob, orb )
     local p;
     if IsBound(orb!.tab[ob]) and orb!.tab[ob] <> 0 then
@@ -1605,19 +1605,19 @@ InstallMethod( Grades, "for an orbit",
   end );
 
 InstallMethod( ConstantTimeAccessList, "for an orb orbit",
-  [IsOrbit and IsList and IsDenseList],
+  [IsOrbit],
   function( o )
     return ShallowCopy( o!.orbit );
   end );
 
 InstallMethod( Enumerator, "for an orb orbit",
-  [IsOrbit and IsList and IsDenseList],
+  [IsOrbit],
   function( o )
     return ShallowCopy( o!.orbit );
   end );
 
 InstallMethod( AsList, "for an orb orbit",
-  [IsOrbit and IsList and IsDenseList],
+  [IsOrbit],
   function( o )
     return ShallowCopy( o!.orbit );
   end );
@@ -1629,7 +1629,7 @@ InstallMethod( UnderlyingPlist, "for an orb orbit",
   end );
 
 InstallMethod( Iterator, "for an orb orbit",
-  [IsOrbit and IsList and IsDenseList],
+  [IsOrbit],
   function( o )
     return IteratorList( Immutable( o!.orbit ) );
   end );
