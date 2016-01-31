@@ -2128,15 +2128,6 @@ InstallGlobalFunction( LoadQuotFinder, function()
   ReadPackage("orb","gap/quotfinder.gi");
 end );
 
-# MappingPermListList and MappingPermSetSet:
-
-# Install our C function if we are compiled:
-if IsBound( MappingPermListList_C ) then
-    MakeReadWriteGVar("MappingPermListList");
-    MappingPermListList := MappingPermListList_C;
-    MakeReadOnlyGVar("MappingPermListList");
-fi;
-
 if IsBound( MappingPermSetSet_C ) then
     InstallGlobalFunction( MappingPermSetSet, MappingPermSetSet_C );
 else

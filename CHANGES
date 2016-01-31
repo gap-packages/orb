@@ -1,5 +1,8 @@
 This file describes changes in the orb package.
 
+X.Y (2016-XX-YY)
+  - Move MappingPermListList C implementation from orb to the GAP kernel
+
 4.7.5 (2016-01-20)
   - Add a hash function for blists
   - Technical change: orbit objects are not collections anymore (fixes issue #10,
