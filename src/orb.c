@@ -1490,10 +1490,6 @@ static StructGVarFunc GVarFuncs [] = {
     FuncMappingPermSetSet,
     "pkg/orb/src/orb.c:FuncMappingPermSetSet_C" },
 
-  { "MappingPermListList_C", 2, "src, dst",
-    FuncMappingPermListList,
-    "pkg/orb/src/orb.c:FuncMappingPermListList" },
-  
   { "HASH_FUNC_FOR_BLIST", 2, "blist, data",
     HASH_FUNC_FOR_BLIST,
     "pkg/orb/src/orb.c:HASH_FUNC_FOR_BLIST" },
