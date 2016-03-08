@@ -6,10 +6,10 @@
                          [1X Methods to enumerate Orbits [101X
   
   
-                                     4.7.5
+                                     4.7.6
   
   
-                                   20/01/2016
+                                   08/03/2016
   
   
                                 Juergen Mueller
