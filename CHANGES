@@ -1,7 +1,9 @@
 This file describes changes in the orb package.
 
-X.Y (2016-XX-YY)
+4.7.6 (2016-03-08)
   - Move MappingPermListList C implementation from orb to the GAP kernel
+  - Fix regression which prevent orb from being used without compilation
+  - Some changes to the C code for compatibility with HPC-GAP (resp. ward)
 
 4.7.5 (2016-01-20)
   - Add a hash function for blists
