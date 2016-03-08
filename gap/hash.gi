@@ -899,6 +899,23 @@ if IsBound(IsPartialPerm) then
     end );
 fi;
 
+if not IsBound(HASH_FUNC_FOR_BLIST) then 
+  BindGlobal("HASH_FUNC_FOR_BLIST", 
+  function(blist, data)
+    local h, x;
+
+    h := 0;
+    for x in blist do
+      if x then
+        h := h * 2 + 1;
+      else
+        h := h * 2;
+      fi;
+    od;
+    return h mod data + 1;
+  end);
+fi;
+
 InstallMethod(ChooseHashFunction, "for a blist and pos int",
 [IsBlistRep, IsPosInt],
   function(x, hashlen)
