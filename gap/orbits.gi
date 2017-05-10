@@ -102,7 +102,7 @@ InstallGlobalFunction( Orb,
     # We make a copy, the first two must be accessible very fast,
     # so we assign them first:
     o := rec( stabcomplete := false, stabsize := 1 );
-    for comp in RecFields(opt) do
+    for comp in RecNames(opt) do
         o.(comp) := opt.(comp);
     od;
 
