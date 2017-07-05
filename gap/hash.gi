@@ -478,6 +478,14 @@ InstallMethod( HTValue, "for a hash table and an object",
       ht!.collisions := ht!.collisions + 1;
       h := h+g;
       if h>ht!.len then h := h - ht!.len; fi;
+      if not(IsBound(ht!.alert)) and
+         QuoInt(ht!.collisions,ht!.accesses) > 100 then
+         # We have a problem!
+        Info(InfoOrb,1,"HTValue Alarm: Collision warning: Collisions: ",
+                       ht!.collisions," Accesses: ",ht!.accesses,"!");
+        ht!.alert := true;
+      fi;
+      ##
     od;
     return fail;
 end );
