@@ -1222,9 +1222,9 @@ function(gens,permgens,sizes,codims,opt)
       setup.permbase[i] := ORB_BaseStabilizerChain(
                               ORB_StabilizerChainKnownSize(g,sizes[i]));
   od;
-  setup.stabchainrandom := 1000;
+   setup.stabchainrandom := 1000;
 
-  setup.els := [];
+   setup.els := [];
   setup.els[k+1] := Concatenation(gens);
   setup.elsinv := [];
   setup.elsinv[k+1] := List(setup.els[k+1],x->x^-1);
@@ -1232,12 +1232,12 @@ function(gens,permgens,sizes,codims,opt)
   setup.cosetrecog := [];
   setup.hashlen := [NextPrimeInt(3*sizes[1])];
   Append(setup.hashlen,List([2..k+1],i->NextPrimeInt(
-              Minimum(3*(sizes[i]/sizes[i-1]),1000000))));
+                Minimum(3*(sizes[i]/sizes[i-1]),1000000))));
   setup.sample := [];
   setup.sample[k+1] := sample;
   dim := Length(sample);
-  setup.staborblenlimit := dim;
   codims[k+1] := dim;   # for the sake of completeness!
+  setup.staborblenlimit := dim;
   for j in [1..k] do
       setup.els[j] := List(Concatenation(gens{[1..j]}),
                            x->ExtractSubMatrix(x,[1..codims[j]],
@@ -1256,8 +1256,8 @@ function(gens,permgens,sizes,codims,opt)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [HTCreate(setup.sample[1],
-                          rec( hashlen := NextPrimeInt((q^codims[1]) * 3)))];
+  setup.info := [HTCreate(setup.sample[1], rec( hashlen :=
+                          NextPrimeInt((q^codims[1]) * 3)))];
   for j in [2..k+1] do
       setup.pi[j] := [];
       setup.pifunc[j] := [];
@@ -1266,10 +1266,8 @@ function(gens,permgens,sizes,codims,opt)
           setup.pifunc[j][i] := \{\};
       od;
       if j < k+1 then
-          setup.info[j] :=
-             HTCreate(setup.sample[j],
-                      rec( hashlen := 
-                           NextPrimeInt(QuoInt((q^codims[j])*3,sizes[j-1]))) );
+          setup.info[j] := HTCreate(setup.sample[j], rec( hashlen :=
+                   NextPrimeInt(QuoInt((q^codims[j])*3,sizes[j-1]))) );
       fi;
   od;
   setup.suborbnr := 0*[1..k];
@@ -1513,9 +1511,8 @@ function(gens,permgens,sizes,codims,opt)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [HTCreate(setup.sample[1],
-                          rec( hashlen := 
-                               NextPrimeInt((q^codims[1]-1)/(q-1) * 3) ))];
+  setup.info := [HTCreate(setup.sample[1], rec( hashlen :=
+                          NextPrimeInt((q^codims[1]-1)/(q-1) * 3) ))];
   for j in [2..k+1] do
       setup.pi[j] := [];
       setup.pifunc[j] := [];
@@ -1524,7 +1521,7 @@ function(gens,permgens,sizes,codims,opt)
           setup.pifunc[j][i] := \{\};
       od;
       if j < k+1 then
-          setup.info[j] := HTCreate(setup.sample[j], rec( hashlen := 
+          setup.info[j] := HTCreate(setup.sample[j], rec( hashlen :=
                    NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])) ));
       fi;
   od;
@@ -1778,7 +1775,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   # Note that for k=1 we set codims[2] := dim
   setup.pi := [];
   setup.pifunc := [];
-  setup.info := [HTCreate(setup.sample[1], rec( hashlen := 
+  setup.info := [HTCreate(setup.sample[1], rec( hashlen :=
                           NextPrimeInt((q^codims[1]-1)/(q-1) * 3) ))];
   for j in [2..k+1] do
       setup.pi[j] := [];
@@ -1788,7 +1785,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
           setup.pifunc[j][i] := ORB_ProjDownForSpaces;
       od;
       if j < k+1 then
-          setup.info[j] := HTCreate( setup.sample[j], rec( hashlen :=
+          setup.info[j] := HTCreate(setup.sample[j], rec( hashlen :=
                    NextPrimeInt(QuoInt((q^codims[j]-1)/(q-1)*3,sizes[j-1])) ));
       fi;
   od;
@@ -1797,7 +1794,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   setup.regvecs := [];
   setup.op := List([1..k+1],i->OnSubspacesByCanonicalBasis);
   setup.wordcache := [];
-  setup.wordhash := HTCreate([1,2,3],rec(hashlen := 1000));
+  setup.wordhash := HTCreate([1,2,3],rec( hashlen := 1000 ));
 
   Objectify( NewType(OrbitBySuborbitSetupFamily,
                      IsStdOrbitBySuborbitSetupRep and IsMutable),
