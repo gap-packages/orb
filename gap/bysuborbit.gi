@@ -755,7 +755,7 @@ function(setup,p,j,l,i,percentage,knownsize)
   if not(j >= l and l > i and i >= 1) then
       Error("Need j >= l > i >= 1");
       ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
-      return;
+      return fail;
   fi;
 
   assumestabcomplete := false;  # set this to true in a break loop to
@@ -777,7 +777,7 @@ function(setup,p,j,l,i,percentage,knownsize)
       Error("Warning: The identity does not preserve the starting point!\n",
             "Did you normalize your vector?");
       ORB.ORBITBYSUBORBITDEPTH := ORB.ORBITBYSUBORBITDEPTH - 1;
-      return;
+      return fail;
   fi;
 
   # First we U_i-minimalize p:
@@ -1151,7 +1151,7 @@ function(gens,permgens,sizes,codims,opt)
   if Length(gens) <> k+1 or Length(permgens) <> k+1 or Length(codims) <> k then
       Error("Need generators for ",k+1," groups and ",k," codimensions.");
       ORB.RANDOMSTABGENERATION := merk;
-      return;
+      return fail;
   fi;
   nrgens := List(gens,Length);
   nrgenssum := 0*nrgens;
@@ -1354,7 +1354,7 @@ function(gens,permgens,sizes,codims,opt)
         if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
             ORB.RANDOMSTABGENERATION := merk;
-            return;
+            return fail;
         fi;
       fi;
 
@@ -1406,7 +1406,7 @@ function(gens,permgens,sizes,codims,opt)
   if Length(gens) <> k+1 or Length(permgens) <> k+1 or Length(codims) <> k then
       Error("Need generators for ",k+1," groups and ",k," codimensions.");
       ORB.RANDOMSTABGENERATION := merk;
-      return;
+      return fail;
   fi;
   nrgens := List(gens,Length);
   nrgenssum := 0*nrgens;
@@ -1611,7 +1611,7 @@ function(gens,permgens,sizes,codims,opt)
         if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
             ORB.RANDOMSTABGENERATION := merk;
-            return;
+            return fail;
         fi;
       fi;
 
@@ -1669,7 +1669,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   if Length(gens) <> k+1 or Length(permgens) <> k+1 or Length(codims) <> k then
       Error("Need generators for ",k+1," groups and ",k," codimensions.");
       ORB.RANDOMSTABGENERATION := merk;
-      return;
+      return fail;
   fi;
   nrgens := List(gens,Length);
   nrgenssum := 0*nrgens;
@@ -1877,7 +1877,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
         if Length(Representatives(o!.db)) < sizes[j]/sizes[j-1] then
             Info(InfoOrb,1,"Bad luck, did not find nice orbit, giving up.");
             ORB.RANDOMSTABGENERATION := merk;
-            return;
+            return fail;
         fi;
       fi;
 

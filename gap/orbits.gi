@@ -95,8 +95,7 @@ InstallGlobalFunction( Orb,
         gens := arg[1]; x := arg[2]; op := arg[3]; hashlen := arg[4];
         opt := arg[5];
     else
-        Print("Usage: Orb( gens, point, action [,options] )\n");
-        return;
+        ErrorNoReturn("Usage: Orb( gens, point, action [,options] )");
     fi;
 
     # We make a copy, the first two must be accessible very fast,
@@ -1076,7 +1075,7 @@ InstallMethod( AddGeneratorsToOrbit, "for an orbit, a list of generators, and a 
     oldnrgens := Length(o!.gens);
     if not(Length(gens) = Length(permgens)) then
         Error("Need two lists of identical length as 2nd and 3rd argument.");
-        return;
+        return fail;
     fi;
     Append(o!.gens,gens);
     ResetFilterObj(o,IsClosed);

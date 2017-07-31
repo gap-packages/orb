@@ -24,8 +24,7 @@ InstallGlobalFunction( MakeRandomVectors,
     local i,l,number,randomsource,sample;
     
     if Length(arg) <= 1 or Length(arg) > 3 then
-        Print("Usage: MakeRandomVectors( sample, number [,randomsource] )\n");
-        return;
+        ErrorNoReturn("Usage: MakeRandomVectors( sample, number [,randomsource] )");
     fi;
     sample := arg[1];
     number := arg[2];
@@ -49,8 +48,7 @@ InstallGlobalFunction( MakeRandomLines,
     local i,l,number,pos,randomsource,sample;
     
     if Length(arg) <= 1 or Length(arg) > 3 then
-        Print("Usage: MakeRandomLines( sample, number [,randomsource] )\n");
-        return;
+        ErrorNoReturn("Usage: MakeRandomLines( sample, number [,randomsource] )");
     fi;
     sample := arg[1];
     number := arg[2];
