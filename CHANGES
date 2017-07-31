@@ -1,5 +1,8 @@
 This file describes changes in the orb package.
 
+X.Y.Z (2017-07-DD)
+  - Fix hash tables with initial size <= 5 not growing correctly.
+
 4.7.6 (2016-03-08)
   - Move MappingPermListList C implementation from orb to the GAP kernel
   - Fix regression which prevent orb from being used without compilation

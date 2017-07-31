@@ -48,5 +48,17 @@ gap> for x in Combinations([1 .. 5]) do
 gap> ht;
 <tree hash table len=100003 used=33 colls=1 accs=33>
 
+# check for bugfix: if a very tiny table was created, then it
+# could become 100% full (which for larger tables is prevented);
+# when that happened, HTValue could run into an infinite loop.
+gap> ht:=HTCreate(1,rec(hashlen:=3));;
+gap> for i in [1,2,3] do
+> HTAdd(ht,i,2^i); od;
+gap> ht;
+<hash table obj len=3 used=3 colls=0 accs=3 (can grow)>
+gap> ht!.els;
+[ 3, 1, 2, fail ]
+gap> HTValue(ht,4);
+
 #
 gap> STOP_TEST("Orb package: hash.tst", 0);

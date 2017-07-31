@@ -180,7 +180,9 @@ InstallMethod( HTCreate, "for an object and an options record",
     ht := ShallowCopy(opt);
     if IsBound(ht.hashlen) then
         ty := HashTabType;
-        ht.len := ht.hashlen;
+        ## JM: initial hash length should not be too small,
+        ## so that the 80% rule in HTAdd is useful
+        ht.len := Maximum(19,ht.hashlen);
     elif IsBound(ht.treehashsize) then
         ty := TreeHashTabType;
         ht.len := ht.treehashsize;
