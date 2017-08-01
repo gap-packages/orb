@@ -1239,7 +1239,7 @@ BindGlobal( "AVLTest", function(tree)
     else
       rdepth := [0,0];
     fi;
-    if AbsInt(rdepth[1]-ldepth[1] > 1) or 
+    if AbsInt(rdepth[1]-ldepth[1]) > 1 or 
        AVLBalFactor(tree,p) <> rdepth[1]-ldepth[1] or
        AVLRank(tree,p) <> ldepth[2] + 1 then
       error := p;
