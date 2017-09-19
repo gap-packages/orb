@@ -55,10 +55,9 @@ gap> ht:=HTCreate(1,rec(hashlen:=3));;
 gap> for i in [1,2,3] do
 > HTAdd(ht,i,2^i); od;
 gap> ht;
-<hash table obj len=3 used=3 colls=0 accs=3 (can grow)>
-gap> ht!.els;
-[ 3, 1, 2, fail ]
-gap> HTValue(ht,4);
+<hash table obj len=19 used=3 colls=0 accs=3 (can grow)>
+gap> List([1..4], i -> HTValue(ht,i));
+[ 2, 4, 8, fail ]
 
 #
 gap> STOP_TEST("Orb package: hash.tst", 0);
