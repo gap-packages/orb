@@ -594,7 +594,7 @@ function(ht,x)
   Info(InfoOrb,2,"Growing hash table to length ",ht!.len," !!!");
   if IsBound(ht!.forflatplainlists) then
       ht!.hfd := ht!.len;
-  elif IsBound(ht!.hfbig) and IsBound(ht!.htdbig) then
+  elif IsBound(ht!.hfbig) and IsBound(ht!.hfdbig) then
       ht!.hf := ORB_HashFunctionModWrapper;
       ht!.hfd := [ht!.hfbig,ht!.hfdbig,ht!.len];
   else
@@ -843,7 +843,7 @@ InstallMethod( ChooseHashFunction, "for N bits Pc word rep",
 
 InstallGlobalFunction( ORB_HashFunctionModWrapper,
   function(p,data)
-    return data[1](p,data[2]) mod data[3];
+    return data[1](p,data[2]) mod data[3] + 1;
   end );
 
 InstallGlobalFunction( ORB_HashFunctionForMatList,
