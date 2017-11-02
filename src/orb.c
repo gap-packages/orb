@@ -1534,7 +1534,16 @@ static Int InitLibrary ( StructInitInfo *module )
     /* init filters and functions */
     InitGVarFuncsFromTable(GVarFuncs);
 
-    tmp = NEW_PREC(0);
+    tmp = NEW_PREC(1);
+
+    // In GAP 4.9, the memory layout of T_PERM objects changed, and so the
+    // method for hashing permutations also had to be changed. The following is
+    // used to define the "skip" argument of HASHKEY_BAG, i.e. where in the
+    // bag, containing the permutation, the list of images starts.
+    Obj p = NEW_PERM2(0);
+    AssPRec(tmp, RNamName("PERM_HASH_SKIP"),
+            INTOBJ_INT((UInt) ADDR_PERM2(p) - (UInt) ADDR_OBJ(p)));
+    CHANGED_BAG(tmp);
     gvar = GVarName("ORBC"); AssGVar( gvar, tmp ); MakeReadOnlyGVar(gvar);
 
     /* return success                                                      */
