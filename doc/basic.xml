@@ -90,10 +90,10 @@ The following operation actually starts the orbit enumeration:
 </Description>
 </ManSection>
 
-To see whether an orbit is closed you can use the following filter:
+To see whether an orbit is closed you can use the following operation:
 
 <ManSection>
-<Filt Name="IsClosed" Arg="orb" />
+<Oper Name="IsClosed" Arg="orb" />
 <Returns> <K>true</K> or <K>false</K> </Returns>
 <Description>
     The result indicates, whether the orbit <A>orb</A> is already

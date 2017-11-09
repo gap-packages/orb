@@ -641,7 +641,7 @@ InstallGlobalFunction( ORB_StabOrbitComplete,
                            schreier := true, grpsizebound := stab.size)),
                    setup!.staborblenlimit);
     o!.bysuborbitstabgens := stabgens;   # trick to return this
-    if not(IsClosed(o)) then
+    if not(IsClosedOrbit(o)) then
         Info(InfoOrb,3,"Long stabiliser orbit found, multiplying out gens...");
         stabgens := ORB_PrepareStabgens(stab,setup,i,true);
         o!.gens := stabgens.gens;

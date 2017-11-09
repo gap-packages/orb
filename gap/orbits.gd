@@ -33,7 +33,11 @@ DeclareCategory( "IsOrbit", IsComponentObjectRep and IsDenseList and
 BindGlobal("OrbitFamily", NewFamily("OrbitFamily", IsOrbit));
 
 # Indicates, whether the orbit is already completely enumerated:
-DeclareFilter( "IsClosed", IsOrbit );
+DeclareFilter( "IsClosedOrbit", IsOrbit );
+# for backwards compatibility and convenience, declare an operation
+# IsClosed which just returns IsClosedOrbit. This way, other packages
+# can also use the term "IsClosed" for their purposes.
+DeclareOperation( "IsClosed", [ IsOrbit ] );
 
 # We have different representations, because we handle the case of perms
 # on numbers differently and have a slow version for nasty cases:
@@ -77,10 +81,10 @@ DeclareOperation( "OrbitGraphAsSets", [ IsOrbit ] );
 DeclareOperation( "UnderlyingPlist", [ IsOrbit ] );
 
 # To calculate the action on the orbit:
-DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosed, IsList] );
+DeclareOperation( "ActionOnOrbit", [IsOrbit and IsClosedOrbit, IsList] );
 DeclareGlobalFunction( "ORB_ActionOnOrbitIntermediateHash" );
 DeclareGlobalFunction( "ORB_ActionHomMapper" );
-DeclareOperation( "OrbActionHomomorphism", [IsGroup, IsOrbit and IsClosed] );
+DeclareOperation( "OrbActionHomomorphism", [IsGroup, IsOrbit and IsClosedOrbit] );
 
 # A helper function for base image computations:
 DeclareGlobalFunction( "ORB_SiftBaseImage" );

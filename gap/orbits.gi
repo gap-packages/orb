@@ -396,10 +396,12 @@ InstallGlobalFunction( Orb,
     return o;
 end );
 
+InstallMethod( IsClosed, "for an orbit", [IsOrbit], IsClosedOrbit );
+
 InstallMethod( ViewObj, "for an orbit", [IsOrbit],
   function( o )
     Print("<");
-    if IsClosed(o) then Print("closed "); else Print("open "); fi;
+    if IsClosedOrbit(o) then Print("closed "); else Print("open "); fi;
     if IsPermOnIntOrbitRep(o) then Print("Int-"); fi;
     Print("orbit, ", Length(o!.orbit), " points");
     if o!.schreier then Print(" with Schreier tree"); fi;
@@ -771,7 +773,7 @@ InstallMethod( Enumerate,
                     if (permgens = false or o!.stabcomplete) and
                        log = false then
                         o!.pos := i;
-                        SetFilterObj(o,IsClosed);
+                        SetFilterObj(o,IsClosedOrbit);
                         if o!.schreier or o!.log <> false then
                             o!.depth := depth;
                         fi;
@@ -835,7 +837,7 @@ InstallMethod( Enumerate,
     if (orbsizebound <> false and nr >= orbsizebound and log = false) or
        i > nr then
         # Only if not logging!
-        SetFilterObj(o,IsClosed); 
+        SetFilterObj(o,IsClosedOrbit);
         if log <> false then 
             o!.orbind := [1..nr];
         fi;
@@ -968,7 +970,7 @@ InstallMethod( Enumerate,
                         if o!.schreier or o!.log <> false then
                             o!.depth := depth;
                         fi;
-                        SetFilterObj(o,IsClosed);
+                        SetFilterObj(o,IsClosedOrbit);
                         return o;
                     fi;
                 fi;
@@ -1030,7 +1032,7 @@ InstallMethod( Enumerate,
     if (orbsizebound <> false and nr >= orbsizebound and log = false) or
        i > nr then
         # Only if not logging!
-        SetFilterObj(o,IsClosed); 
+        SetFilterObj(o,IsClosedOrbit);
         if log <> false then 
             o!.orbind := [1..nr];
         fi;
@@ -1055,7 +1057,7 @@ InstallMethod( AddGeneratorsToOrbit, "for an orbit and a list of generators",
             Append(o!.tab,ListWithIdenticalEntries(lmp-Length(o!.tab),0));
         fi;
     fi;
-    ResetFilterObj(o,IsClosed);
+    ResetFilterObj(o,IsClosedOrbit);
     o!.stopper := o!.pos;
     o!.pos := 1;
     o!.genstoapply := [oldnrgens+1..Length(o!.gens)];
@@ -1078,7 +1080,7 @@ InstallMethod( AddGeneratorsToOrbit, "for an orbit, a list of generators, and a 
         return fail;
     fi;
     Append(o!.gens,gens);
-    ResetFilterObj(o,IsClosed);
+    ResetFilterObj(o,IsClosedOrbit);
     Append(o!.permgens,permgens);
     Append(o!.permgensi,List(permgens,x->x^-1));
     if IsPermOnIntOrbitRep(o) then
@@ -1101,7 +1103,7 @@ InstallMethod( AddGeneratorsToOrbit, "for an orbit, a list of generators, and a 
 
 InstallMethod( AddGeneratorsToOrbit, 
   "for a closed hash orbit with log and a list of generators",
-  [ IsOrbit and IsHashOrbitRep and IsOrbitWithLog and IsClosed, IsList ],
+  [ IsOrbit and IsHashOrbitRep and IsOrbitWithLog and IsClosedOrbit, IsList ],
   function( o, newgens )
     # We basically reimplement the breadth-first orbit enumeration
     # without looking for something and generating Schreier generators:
@@ -1299,7 +1301,7 @@ end );
 
 InstallMethod( AddGeneratorsToOrbit, 
   "for a closed int orbit with log and a list of generators",
-  [ IsOrbit and IsPermOnIntOrbitRep and IsOrbitWithLog and IsClosed, IsList ],
+  [ IsOrbit and IsPermOnIntOrbitRep and IsOrbitWithLog and IsClosedOrbit, IsList ],
   function( o, newgens )
     # We basically reimplement the breadth-first orbit enumeration
     # without looking for something and generating Schreier generators:
@@ -1479,7 +1481,7 @@ InstallMethod( AddGeneratorsToOrbit,
 end );
 
 InstallMethod( MakeSchreierTreeShallow, "for a closed orbit with log",
-  [ IsOrbit and IsClosed and IsOrbitWithLog, IsPosInt ],
+  [ IsOrbit and IsClosedOrbit and IsOrbitWithLog, IsPosInt ],
   function( o, l )
     local i,w,x,tries,nr;
     if not(o!.schreier) then
@@ -1516,7 +1518,7 @@ InstallMethod( MakeSchreierTreeShallow, "for a closed orbit with log",
   end );
             
 InstallMethod( MakeSchreierTreeShallow, "for a closed orbit with log",
-  [ IsOrbit and IsClosed and IsOrbitWithLog ],
+  [ IsOrbit and IsClosedOrbit and IsOrbitWithLog ],
   function( o )
     MakeSchreierTreeShallow(o, LogInt(Length(o),2) );
   end );
@@ -1676,7 +1678,7 @@ InstallOtherMethod( StabilizerOfExternalSet,
 
 InstallMethod( ActionOnOrbit,
   "for a closed orbit on integers and a list of elements",
-  [ IsOrbit and IsPermOnIntOrbitRep and IsClosed, IsList ],
+  [ IsOrbit and IsPermOnIntOrbitRep and IsClosedOrbit, IsList ],
   function( o, gens )
     local res,i;
     res := [];
@@ -1694,7 +1696,7 @@ InstallMethod( ActionOnOrbit,
     
 InstallMethod( ActionOnOrbit, 
   "for a closed orbit with numbers and a list of elements",
-  [ IsOrbit and IsHashOrbitRep and IsClosed, IsList ],
+  [ IsOrbit and IsHashOrbitRep and IsClosedOrbit, IsList ],
   function( o, gens )
     local res,i;
     if not(o!.storenumbers) then
@@ -1747,7 +1749,7 @@ InstallGlobalFunction( "ORB_ActionHomMapper",
   end );
 
 InstallMethod( OrbActionHomomorphism, "for a closed orbit",
-  [IsGroup, IsOrbit and IsClosed],
+  [IsGroup, IsOrbit and IsClosedOrbit],
   function(g,orb)
     local data,h,hom,newgens;
     if IsHashOrbitRep(orb) and not(orb!.storenumbers) then
@@ -1846,7 +1848,7 @@ InstallMethod( FindSuborbits, "for an orbit, subgroup gens, and limit",
     local fusetrupps,gensi,h,i,j,l,len,min,nr,nrtrupps,res,succ,
           tried,truppnr,truppst,v,wo,x;
 
-    if not(IsClosed(o)) then
+    if not(IsClosedOrbit(o)) then
         Error("Orbit must be closed");
         return fail;
     fi;

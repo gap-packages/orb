@@ -20,7 +20,7 @@ InstallMethod( IO_Pickle, "for an orbit object",
   function(f,o)
     return IO_GenericObjectPickler( f, "ORBI",[o[1]], o, [],   # no attributes
       [ IsPermOnIntOrbitRep, IsHashOrbitRep, IsSlowOrbitRep,
-        IsOrbitWithLog, IsClosed ], NamesOfComponents(o) );
+        IsOrbitWithLog, IsClosedOrbit ], NamesOfComponents(o) );
   end );
 
 
@@ -31,7 +31,7 @@ IO_Unpicklers.ORBI := function(f)
   Objectify( NewType( OrbitFamily, IsOrbit ), o );
   return IO_GenericObjectUnpickler(f, o, [],    # no attributes
       [ IsPermOnIntOrbitRep, IsHashOrbitRep, IsSlowOrbitRep,
-        IsOrbitWithLog, IsClosed ] );
+        IsOrbitWithLog, IsClosedOrbit ] );
 end;
 
 InstallMethod( IO_Pickle, "for a cache",
