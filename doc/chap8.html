@@ -48,7 +48,7 @@
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8.html#X795EC9D67E34DAB0">8.2-18 Add</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8.html#X7E98B11B79BA9167">8.2-19 Remove</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8.html#X780769238600AFD1">8.2-20 Length</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8.html#X87BDB89B7AAFE8AD">8.2-21 \in</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap8.html#X87BDB89B7AAFE8AD"><code>8.2-21 \in</code></a></span>
 </div></div>
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap8.html#X87323803809E0EF5">8.3 <span class="Heading">The internal data structures</span></a>
 </span>
@@ -61,7 +61,7 @@
 
 <h4>8.1 <span class="Heading">The idea of AVL trees</span></h4>
 
-<p>AVL trees are balanced binary trees called "AVL trees" in honour of their inventors G.M. Adelson-Velskii and E.M. Landis (see <a href="chapBib.html#biBAVL">[AM62]</a>). A description in English can be found in <a href="chapBib.html#biBACP3">[Knu97]</a> in Section 6.2.3 about balanced trees.</p>
+<p>AVL trees are balanced binary trees called "AVL trees" in honour of their inventors G.M. Adelson-Velskii and E.M. Landis (see <a href="chapBib.html#biBAVL">[AVM62]</a>). A description in English can be found in <a href="chapBib.html#biBACP3">[Knu97]</a> in Section 6.2.3 about balanced trees.</p>
 
 <p>The general idea is to store data in a binary tree such that all entries in the left subtree of a node are smaller than the entry at the node and all entries in the right subtree are bigger. The tree is kept "balanced" which means that for each node the depth of the left and right subtrees differs by at most 1. In this way, finding something in the tree, adding a new entry, deleting an entry all have complexity <span class="SimpleMath">log(n)</span> where <span class="SimpleMath">n</span> is the number of entries in the tree. If one additionally stores the number of entries in the left subtree of each node, then finding the <span class="SimpleMath">k</span>-th entry, removing the <span class="SimpleMath">k</span>-th entry and inserting an entry in position <span class="SimpleMath">k</span> also have complexity <span class="SimpleMath">log(n)</span>. The <strong class="pkg">orb</strong> contains an implementation of such tree objects providing all these operations.</p>
 
@@ -273,7 +273,7 @@
 
 <p><a id="X87BDB89B7AAFE8AD" name="X87BDB89B7AAFE8AD"></a></p>
 
-<h5>8.2-21 \in</h5>
+<h5><code>8.2-21 \in</code></h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; \in</code>( <var class="Arg">key</var>, <var class="Arg">t</var> )</td><td class="tdright">( method )</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>

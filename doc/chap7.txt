@@ -74,7 +74,7 @@
   
   [33X[0;0YThe following options can be bound in the options record [3Xopt[103X:[133X
   
-  [8X[10Xexceptions[110X[108X
+  [8X[10Xexceptions[110X[8X[108X
         [33X[0;6YThis  component  can be a list to initialise the exception list in the
         random searcher object. Group elements in this list are not considered
         as  successful  searches.  This  list  is also used to continue search
@@ -82,15 +82,15 @@
         element  considered  [21Xfound[121X  is added to that list before returning it.
         Thus every element will only be found once.[133X
   
-  [8X[10Xmaxdepth[110X[108X
+  [8X[10Xmaxdepth[110X[8X[108X
         [33X[0;6YSets  the [10Xmaxdepth[110X option of the created product replacer object. This
         limits  the  length  of the expression as product of the generators of
         the found group elements.[133X
   
-  [8X[10Xaddslots[110X[108X
+  [8X[10Xaddslots[110X[8X[108X
         [33X[0;6YSets the [10Xaddslots[110X option of the created product replacer object.[133X
   
-  [8X[10Xscramble[110X[108X
+  [8X[10Xscramble[110X[8X[108X
         [33X[0;6YIf  this  component is bound at all, then the created product replacer
         object is created with options [10Xscramble=100[110X and [10Xscramblefactor=10[110X (the
         default values), otherwise the options [10Xscramble=0[110X and [10Xscramblefactor=0[110X

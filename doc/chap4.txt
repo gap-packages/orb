@@ -170,7 +170,7 @@
   specify  the  length  and  type  of the hash table to be used. The following
   components in this record can be bound:[133X
   
-  [8X[10Xtreehashsize[110X[108X
+  [8X[10Xtreehashsize[110X[8X[108X
         [33X[0;6YIf  this  component  is  bound  the  type  of  the  hash  table  is  a
         TreeHashTab. The value must be a positive integer and will be the size
         of  the  hash table. Note that for this type of hash table the keys to
@@ -178,11 +178,11 @@
         comparison  function  can be supplied using the component [10Xcmpfunc[110X (see
         below).[133X
   
-  [8X[10Xtreehashtab[110X[108X
+  [8X[10Xtreehashtab[110X[8X[108X
         [33X[0;6YIf  this  component  is  bound  the  type  of  the  hash  table  is  a
         TreeHashTab. This option is superfluous if [10Xtreehashsize[110X is used.[133X
   
-  [8X[10Xforflatplainlists[110X[108X
+  [8X[10Xforflatplainlists[110X[8X[108X
         [33X[0;6YIf this component is set to [9Xtrue[109X then the user guarantees that all the
         elements  in  the  hash will be flat plain lists, that is, plain lists
         with  no  subobjects.  For  example  lists  of immediate integers will
@@ -193,7 +193,7 @@
         on the sample point but also potentially on all the other points to be
         stored in the hash table.[133X
   
-  [8X[10Xhf[110X and [10Xhfd[110X[108X
+  [8X[10Xhf[110X[8X and [10Xhfd[110X[8X[108X
         [33X[0;6YIf these components are bound, they are used as the hash function. The
         value  of  [10Xhf[110X must be a function taking two arguments, the first being
         the  object  for  which  the  hash  function shall be computed and the
@@ -207,14 +207,14 @@
         table  then this table cannot grow unless you also bind the components
         [10Xhfbig[110X, [10Xhfdbig[110X and [10Xcangrow[110X.[133X
   
-  [8X[10Xcmpfunc[110X[108X
+  [8X[10Xcmpfunc[110X[8X[108X
         [33X[0;6YThis  component can be bound to a three-way comparison function taking
         two  arguments  [3Xa[103X  and  [3Xb[103X (which will be keys for the TreeHashTab) and
         returns [22X-1[122X if [22X[3Xa[103X<[3Xb[103X[122X, [22X0[122X if [22X[3Xa[103X = [3Xb[103X[122X and [22X1[122X if [22X[3Xa[103X > [3Xb[103X[122X. If this component is not
         bound  the  function  [2XAVLCmp[102X  ([14X8.2-2[114X) is taken, which simply calls the
         generic operations [10X<[110X and [10X=[110X to do the job.[133X
   
-  [8X[10Xhashlen[110X[108X
+  [8X[10Xhashlen[110X[8X[108X
         [33X[0;6YIf  this  component  is bound the type of the hash table is a standard
         HashTab   table.  That  is,  collisions  are  dealt  with  by  storing
         additional  entries  in  other  slots.  This is the traditional way to
@@ -229,16 +229,16 @@
         particularly   well   in  that  case.  The  hash  function  is  chosen
         automatically.[133X
   
-  [8X[10Xhashtab[110X[108X
+  [8X[10Xhashtab[110X[8X[108X
         [33X[0;6YIf  this  component  is bound the type of the hash table is a standard
         HashTab table. This component is superfluous if [10Xhashlen[110X is bound.[133X
   
-  [8X[10Xeqf[110X[108X
+  [8X[10Xeqf[110X[8X[108X
         [33X[0;6YFor  HashTab  tables  the  function taking two arguments bound to this
         component is used to compare keys in the hash table. If this component
         is not bound the usual [10X=[110X operation is taken.[133X
   
-  [8X[10Xhfbig[110X and [10Xhfdbig[110X and [10Xcangrow[110X[108X
+  [8X[10Xhfbig[110X[8X and [10Xhfdbig[110X[8X and [10Xcangrow[110X[8X[108X
         [33X[0;6YIf you have used the components [10Xhf[110X and [10Xhfd[110X then your hash table cannot
         automatically grow when it fills up. This is because the length of the
         table  is  built  into  the hash function. If you still want your hash
@@ -409,47 +409,47 @@
   
   [33X[0;0YA legacy hash table object is just a record with the following components:[133X
   
-  [8X[10Xels[110X[108X
+  [8X[10Xels[110X[8X[108X
         [33X[0;6YA  [5XGAP[105X  list  storing  the  elements. Its length can be as long as the
         component  [10Xlen[110X indicates but will only grow as necessary when elements
         are stored in the hash.[133X
   
-  [8X[10Xvals[110X[108X
+  [8X[10Xvals[110X[8X[108X
         [33X[0;6YA  [5XGAP[105X  list  storing  the  corresponding  values.  If a value is [9Xtrue[109X
         nothing is stored here to save memory.[133X
   
-  [8X[10Xlen[110X[108X
+  [8X[10Xlen[110X[8X[108X
         [33X[0;6YLength of the hash table.[133X
   
-  [8X[10Xnr[110X[108X
+  [8X[10Xnr[110X[8X[108X
         [33X[0;6YNumber of elements stored in the hash table.[133X
   
-  [8X[10Xhf[110X[108X
+  [8X[10Xhf[110X[8X[108X
         [33X[0;6YThe  hash function (value of the [10Xfunc[110X component in the record returned
         by [2XChooseHashFunction[102X ([14X4.2-1[114X)).[133X
   
-  [8X[10Xhfd[110X[108X
+  [8X[10Xhfd[110X[8X[108X
         [33X[0;6YThe  data  for  the second argument of the hash function (value of the
         [10Xdata[110X component in the record returned by [2XChooseHashFunction[102X ([14X4.2-1[114X)).[133X
   
-  [8X[10Xeqf[110X[108X
+  [8X[10Xeqf[110X[8X[108X
         [33X[0;6YA  comparison  function  taking  two  arguments and returning [9Xtrue[109X for
         equality or [9Xfalse[109X otherwise.[133X
   
-  [8X[10Xcollisions[110X[108X
+  [8X[10Xcollisions[110X[8X[108X
         [33X[0;6YNumber of collisions (see below).[133X
   
-  [8X[10Xaccesses[110X[108X
+  [8X[10Xaccesses[110X[8X[108X
         [33X[0;6YNumber of lookup or store accesses to the hash.[133X
   
-  [8X[10Xcangrow[110X[108X
+  [8X[10Xcangrow[110X[8X[108X
         [33X[0;6YA  boolean value indicating whether the hash can grow automatically or
         not.[133X
   
-  [8X[10Xishash[110X[108X
+  [8X[10Xishash[110X[8X[108X
         [33X[0;6YIs [9Xtrue[109X to indicate that this is a hash table record.[133X
   
-  [8X[10Xhfbig[110X and [10Xhfdbig[110X[108X
+  [8X[10Xhfbig[110X[8X and [10Xhfdbig[110X[8X[108X
         [33X[0;6YUsed  for hash tables which need to be able to grow but where the user
         supplied  the  hash  function.  See  Section [2XHTCreate[102X ([14X4.3-1[114X) for more
         details.[133X

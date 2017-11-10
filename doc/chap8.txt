@@ -5,7 +5,7 @@
   [1X8.1 [33X[0;0YThe idea of AVL trees[133X[101X
   
   [33X[0;0YAVL  trees  are  balanced  binary  trees called [21XAVL trees[121X in honour of their
-  inventors  G.M.  Adelson-Velskii and E.M. Landis (see [AM62]). A description
+  inventors  G.M. Adelson-Velskii and E.M. Landis (see [AVM62]). A description
   in English can be found in [Knu97] in Section 6.2.3 about balanced trees.[133X
   
   [33X[0;0YThe  general idea is to store data in a binary tree such that all entries in
@@ -311,21 +311,21 @@
   following table contains the information what is stored in each of the first
   7 entries:[133X
   
-        1 │ last actually used position, is always congruent 3 mod 4          
-        2 │ position of first node in free list                               
-        3 │ number of currently used nodes in the tree                        
-        4 │ position of largest allocated position is always congruent 3 mod 4
-        5 │ three-way comparison function                                     
-        6 │ position of the top node                                          
-        7 │ a plain list holding the values stored under the keys             
+        1 │ last actually used position, is always congruent 3 mod 4             
+        2 │ position of first node in free list                                  
+        3 │ number of currently used nodes in the tree                           
+        4 │ position of largest allocated position is always congruent 3 mod 4   
+        5 │ three-way comparison function                                        
+        6 │ position of the top node                                             
+        7 │ a plain list holding the values stored under the keys                
   
   [33X[0;0YThe four positions used for a node contain the following information, recall
   that each node starts at a position divisible by 4:[133X
   
-        0 mod 4 │ reference to the key                                           
-        1 mod 4 │ position of left node or 0 if empty, balance factor (see below)
-        2 mod 4 │ position of right node or 0 if empty                           
-        3 mod 4 │ index: number of nodes in left subtree plus one                
+        0 mod 4 │ reference to the key                                              
+        1 mod 4 │ position of left node or 0 if empty, balance factor (see below)   
+        2 mod 4 │ position of right node or 0 if empty                              
+        3 mod 4 │ index: number of nodes in left subtree plus one                   
   
   [33X[0;0YSince  all  positions  of  nodes  are  divisible  by 4, we can use the least
   significant  two  bits  of the left node reference for the so called balance

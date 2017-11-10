@@ -50,5 +50,5 @@
   [1X1.3 [33X[0;0YFeedback[133X[101X
   
   [33X[0;0YFor  bug  reports,  feature  requests  and suggestions, please use our issue
-  tracker ([7Xhttps://github.com/neunhoef/orb/issues[107X).[133X
+  tracker ([7Xhttps://github.com/gap-packages/orb/issues[107X).[133X
   

@@ -68,11 +68,11 @@
   calling the [2XEnumerate[102X operation. If the argument [3Xlimit[103X is omitted, the whole
   orbit is enumerated, unless other options lead to prior termination.[133X
   
-  [33X[0;0YTo see whether an orbit is closed you can use the following filter:[133X
+  [33X[0;0YTo see whether an orbit is closed you can use the following operation:[133X
   
   [1X3.1-3 IsClosed[101X
   
-  [29X[2XIsClosed[102X( [3Xorb[103X ) [32X filter
+  [29X[2XIsClosed[102X( [3Xorb[103X ) [32X operation
   [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
   
   [33X[0;0YThe result indicates, whether the orbit [3Xorb[103X is already complete or not.[133X
@@ -130,7 +130,7 @@
   components are themselves optional. For every component we also describe the
   possible values in the following list:[133X
   
-  [8X[10Xeqfunc[110X[108X
+  [8X[10Xeqfunc[110X[8X[108X
         [33X[0;6YThis  component  always  has  to  be given together with the component
         [10Xhashfunc[110X.  If  both are given, they are used to set up a hash table to
         store  the  points in the orbit. You have to use this if the automatic
@@ -142,10 +142,10 @@
         [10Xhfdbig[110X  as  well.  See  the  description  of  [2XGrowHT[102X  ([14X4.4-5[114X)  for  an
         explanation how to use this feature.[133X
   
-  [8X[10Xgenstoapply[110X[108X
+  [8X[10Xgenstoapply[110X[8X[108X
         [33X[0;6YThis is only used internally and is intentionally not documented.[133X
   
-  [8X[10Xgradingfunc[110X[108X
+  [8X[10Xgradingfunc[110X[8X[108X
         [33X[0;6YIf  this  component is bound it must be bound to a function taking two
         arguments,  the  first is the orbit object, the second is a new point.
         This function is called for every new point and is supposed to compute
@@ -157,7 +157,7 @@
         enumeration  of an orbit can be limited to points with certain grades,
         see below.[133X
   
-  [8X[10Xgrpsizebound[110X[108X
+  [8X[10Xgrpsizebound[110X[8X[108X
         [33X[0;6YPossible  values  for this component are positive integers. By setting
         this value one can help the orbit enumeration to complete earlier. The
         given number must be an upper bound for the order of the group. If the
@@ -167,7 +167,7 @@
         is  complete,  which  is usually much earlier than after all generator
         are applied to all points in the orbit.[133X
   
-  [8X[10Xforflatplainlists[110X[108X
+  [8X[10Xforflatplainlists[110X[8X[108X
         [33X[0;6YIf this component is set to [9Xtrue[109X then the user guarantees that all the
         points  in  the  orbit  will be flat plain lists, that is, plain lists
         with  no  subobjects.  For  example  lists  of immediate integers will
@@ -178,7 +178,7 @@
         on  the  first  point of the orbit but also on the other points in the
         orbit and thus on the group generators given.[133X
   
-  [8X[10Xhashfunc[110X[108X
+  [8X[10Xhashfunc[110X[8X[108X
         [33X[0;6YThis  component  always  has  to  be  given  together  with the [10Xeqfunc[110X
         component  (see  also  there).  The  value  should  be  a  record with
         components  [10Xfunc[110X  and  [10Xdata[110X.  The  former is used as the hash function
@@ -190,7 +190,7 @@
         [10Xhtdbig[110X  components  together  with  [10Xhashlen[110X  for the initial size. See
         [2XHTCreate[102X ([14X4.3-1[114X) for details.[133X
   
-  [8X[10Xhashlen[110X[108X
+  [8X[10Xhashlen[110X[8X[108X
         [33X[0;6YPossible  values  are positive integers. This component determines the
         initial  size  of the hash used for the orbit enumeration. The default
         value is [22X10000[122X. If the hash table turns out not to be large enough, it
@@ -198,13 +198,13 @@
         Although  this  process is quite fast it still improves performance to
         give a sensible hash size in advance.[133X
   
-  [8X[10Xhfbig[110X and [10Xhfdbig[110X[108X
+  [8X[10Xhfbig[110X[8X and [10Xhfdbig[110X[8X[108X
         [33X[0;6YThese  components  can  only  be  used  in  connection with [10Xeqfunc[110X and
         [10Xhashfunc[110X  and are otherwise ignored. There values are simply passed on
         to  the  hash  table created. The idea is to still be able to grow the
         hash table if need be. See Section [14X4.5[114X for more details.[133X
   
-  [8X[10Xtreehashsize[110X[108X
+  [8X[10Xtreehashsize[110X[8X[108X
         [33X[0;6YThis  component  indicates  that instead of a normal hash table a tree
         hash  table  (TreeHashTab) should be used (see Section [14X4.1[114X). If bound,
         it  must be set to the length of the tree hash table. You should still
@@ -215,12 +215,12 @@
         by  [10X<[110X  and not only by [10X=[110X. You can supply your own three-way comparison
         function (see [2XHTCreate[102X ([14X4.3-1[114X)) by using the [10Xcmpfunc[110X component.[133X
   
-  [8X[10Xcmpfunc[110X[108X
+  [8X[10Xcmpfunc[110X[8X[108X
         [33X[0;6YIf  the  previous  component  [10Xtreehashsize[110X is bound, you can specify a
         three-way comparison function for the hash keys in this component. See
         [2XHTCreate[102X ([14X4.3-1[114X) and [2XAVLCmp[102X ([14X8.2-2[114X) for details.[133X
   
-  [8X[10Xlog[110X[108X
+  [8X[10Xlog[110X[8X[108X
         [33X[0;6YIf  this component is set to [9Xtrue[109X then a log of the enumeration of the
         orbit  is  written  into  the components [10Xlog[110X, [10Xlogind[110X and [10Xlogpos[110X. Every
         time  a  new  point is found in the orbit enumeration, two numbers are
@@ -241,7 +241,7 @@
   
         [33X[0;6YA log needs roughly 3 machine words per point in the orbit as memory.[133X
   
-  [8X[10Xlookingfor[110X[108X
+  [8X[10Xlookingfor[110X[8X[108X
         [33X[0;6YThis  component is used to search for something in the orbit. The idea
         is  that  the orbit enumeration is stopped when some condition is met.
         This  condition  can  be specified with a great flexibility. The first
@@ -260,11 +260,11 @@
         to the number of the found point in the orbit. Access this information
         using [10XPositionOfFound(orb)[110X.[133X
   
-  [8X[10Xmatgens[110X[108X
+  [8X[10Xmatgens[110X[8X[108X
         [33X[0;6YThis is not yet implemented. It will allow for stabiliser computations
         in matrix groups.[133X
   
-  [8X[10Xonlygrades[110X[108X
+  [8X[10Xonlygrades[110X[8X[108X
         [33X[0;6YThis  option  is to limit the orbit enumeration to points with certain
         grades (see option [10Xgradingfunc[110X). The primary way to do this is to bind
         [10Xonlygrades[110X  to a function taking two arguments. The first is the grade
@@ -281,24 +281,24 @@
         or not the point is stored. One does not have to assign [10Xonlygradesdata[110X
         in this case.[133X
   
-  [8X[10Xonlygradesdata[110X[108X
+  [8X[10Xonlygradesdata[110X[8X[108X
         [33X[0;6YAs  described  above  this  component  holds  the  data for the second
         argument of the [10Xonlygrades[110X test function. See option [10Xonlygrades[110X above.[133X
   
-  [8X[10Xonlystab[110X[108X
+  [8X[10Xonlystab[110X[8X[108X
         [33X[0;6YIf  this  boolean flag is set to [9Xtrue[109X then the orbit enumeration stops
         once  the stabiliser is completely determined. Note that this can only
         be   known,   if   a  bound  for  the  group  size  is  given  in  the
         [10Xopt.grpsizebound[110X  option  and  when  more  than  half  of the orbit is
         already found, or when [10Xopt.stabsizebound[110X is given.[133X
   
-  [8X[10Xorbsizebound[110X[108X
+  [8X[10Xorbsizebound[110X[8X[108X
         [33X[0;6YPossible  values  for  this component are positive integers. The given
         number must be an upper bound for the orbit length. Giving this number
         helps  the  orbit enumeration to stop earlier, when the orbit is found
         completely.[133X
   
-  [8X[10Xorbitgraph[110X[108X
+  [8X[10Xorbitgraph[110X[8X[108X
         [33X[0;6YIf  this component is [9Xtrue[109X then the so called orbit graph is computed.
         The  vertices  of  this  graph  are  the  points  of the orbit and the
         (directed) edges are given by the generators acting. So if a generator
@@ -307,7 +307,7 @@
         ([14X3.1-12[114X)  and [2XOrbitGraphAsSets[102X ([14X3.1-13[114X) operations. The data format in
         which the graph is returned is described there.[133X
   
-  [8X[10Xpermbase[110X[108X
+  [8X[10Xpermbase[110X[8X[108X
         [33X[0;6YThis  component  is  used  to tell the orbit enumerator that a certain
         list  of  points  is a base of the permutation representation given in
         the  [10Xopt.permgens[110X  component.  This  information  is  often  available
@@ -315,7 +315,7 @@
         generators,  especially for the common case that they are trivial. The
         value is just a list of integers.[133X
   
-  [8X[10Xpermgens[110X[108X
+  [8X[10Xpermgens[110X[8X[108X
         [33X[0;6YIf  this  component  is set, it must be set to a list of permutations,
         that  represent  the  same  group as the generators used to define the
         orbit.  This  permutation representation is then used to calculate the
@@ -332,14 +332,14 @@
         complete  information  about  the  stabiliser  can be derived from the
         orbit object.[133X
   
-  [8X[10Xreport[110X[108X
+  [8X[10Xreport[110X[8X[108X
         [33X[0;6YPossible  values  are  non-negative  integers.  This  value asks for a
         status   report   whenever  the  orbit  enumeration  has  applied  all
         generators  to  [10Xopt.report[110X points. A value of [22X0[122X, which is the default,
         switches  off  this report. In each report, the total number of points
         already found are given.[133X
   
-  [8X[10Xschreier[110X[108X
+  [8X[10Xschreier[110X[8X[108X
         [33X[0;6YThis  boolean flag decides, whether a Schreier tree is stored together
         with  the  orbit.  A  Schreier  tree just stores for each point, which
         generator  was  applied  to  which other point in the orbit to get it.
@@ -350,7 +350,7 @@
         stabiliser  is  computed  during  orbit  enumeration  (see  components
         [10Xopt.permgens[110X and [10Xopt.matgens[110X).[133X
   
-  [8X[10Xschreiergenaction[110X[108X
+  [8X[10Xschreiergenaction[110X[8X[108X
         [33X[0;6YThe  value  of this component must be a function with 4 arguments: the
         orbit  object,  an  index  [3Xi[103X,  an  integer  [3Xj[103X, and an index [3Xpos[103X. It is
         called,  whenever  during the orbit enumeration generator number [3Xj[103X was
@@ -368,17 +368,17 @@
         [33X[0;6YThis  component  is mainly used internally when the [10Xpermgens[110X component
         was set and the stabiliser is calculated.[133X
   
-  [8X[10Xseeds[110X[108X
+  [8X[10Xseeds[110X[8X[108X
         [33X[0;6YIn  this  component  you can specify a list of additional seed points,
         which are appended to the orbit before the enumeration starts.[133X
   
-  [8X[10Xstab[110X[108X
+  [8X[10Xstab[110X[8X[108X
         [33X[0;6YThis component is used to tell the orbit enumerator that a subgroup of
         the  stabiliser  of  the  starting  point  is  already  known. Store a
         subgroup  of  the  group generated by the permutations in [10Xopt.permgens[110X
         stabilising the starting point into this component.[133X
   
-  [8X[10Xstabchainrandom[110X[108X
+  [8X[10Xstabchainrandom[110X[8X[108X
         [33X[0;6YThis  value  can  be  a  positive  integer  between  [22X1[122X  and  [22X1000[122X.  If
         [10Xopt.permgens[110X  is  given,  an  integer  value is used to set the [10Xrandom[110X
         option  when calculating a stabiliser chain to compute the size of the
@@ -390,14 +390,14 @@
         however,  that such computations can only err in one direction, namely
         underestimating the size of the group.[133X
   
-  [8X[10Xstabsizebound[110X[108X
+  [8X[10Xstabsizebound[110X[8X[108X
         [33X[0;6YPossible  values  for  this component are positive integers. The given
         number  must  be an upper bound for the size of the stabiliser. Giving
         this  number  helps  the  orbit enumeration to stop earlier, when also
         [10Xopt.orbsizebound[110X or [10Xopt.grpsizebound[110X are given or when [10Xopt.onlystab[110X is
         set.[133X
   
-  [8X[10Xstorenumbers[110X[108X
+  [8X[10Xstorenumbers[110X[8X[108X
         [33X[0;6YThis  boolean  flag  decides,  whether  the positions of points in the
         orbit  are  stored in the hash. The memory requirement for this is one
         machine word ([22X4[122X or [22X8[122X bytes depending on the architecture) per point in
@@ -419,23 +419,23 @@
   [21X[10X.~[110X[121X  dot exclamation mark notation and you should avoid using these if at all
   possible.[133X
   
-  [8X[10Xdepth[110X and [10Xdepthmarks[110X[108X
+  [8X[10Xdepth[110X[8X and [10Xdepthmarks[110X[8X[108X
         [33X[0;6YIf  the  orbit has either a Schreier tree or a log, then the component
         [10Xdepth[110X  holds  its  depth,  that  is  the  maximal  number of generator
         applications needed to reach any point in the orbit. The corresponding
         component  [10Xdepthmarks[110X is a list of indices, at position [22Xi[122X it holds the
         index of the first point in the orbit in depth [22Xi[122X in the Schreier tree.[133X
   
-  [8X[10Xgens[110X[108X
+  [8X[10Xgens[110X[8X[108X
         [33X[0;6YThe list of group generators.[133X
   
-  [8X[10Xht[110X[108X
+  [8X[10Xht[110X[8X[108X
         [33X[0;6YIf the orbit uses a hash table it is stored in this component.[133X
   
-  [8X[10Xop[110X[108X
+  [8X[10Xop[110X[8X[108X
         [33X[0;6YThe operation function.[133X
   
-  [8X[10Xorbind[110X[108X
+  [8X[10Xorbind[110X[8X[108X
         [33X[0;6YIf  generators  have  been  added to the orbit later then the order in
         which the points are actually stored in the orbit might not correspond
         to  a  breadth  first search. To cover this case, the component [10Xorbind[110X
@@ -443,7 +443,7 @@
         breadth-first  search  using the new generating set is actually stored
         in the orbit.[133X
   
-  [8X[10Xschreiergen[110X and [10Xschreierpos[110X[108X
+  [8X[10Xschreiergen[110X[8X and [10Xschreierpos[110X[8X[108X
         [33X[0;6YIf  a  Schreier  tree of the orbit was kept then both these components
         are lists containing integers. If point number [22Xi[122X was found by applying
         generator number [22Xj[122X to point number [22Xp[122X then position [22Xi[122X of [10Xschreiergen[110X is
@@ -451,7 +451,7 @@
         [2XTraceSchreierTreeForward[102X  ([14X3.1-16[114X)  and [2XTraceSchreierTreeBack[102X ([14X3.1-17[114X)
         to compute words in the generators using these two components.[133X
   
-  [8X[10Xtab[110X[108X
+  [8X[10Xtab[110X[8X[108X
         [33X[0;6YFor  an  orbit  in  which  permutations  act on positive integers this
         component is bound to a list containing in position [22Xi[122X the index in the
         orbit, where the number [22Xi[122X is stored.[133X

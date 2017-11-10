@@ -111,13 +111,13 @@
 
 <p><var class="Arg">orb</var> must be an orbit object created by <code class="func">Orb</code> (<a href="chap3.html#X86A89A0881CE04F6"><span class="RefLink">3.1-1</span></a>). The optional argument <var class="Arg">limit</var> must be a positive integer meaning that the orbit enumeration should stop if <var class="Arg">limit</var> points have been found, regardless whether the orbit is complete or not. Note that the orbit enumeration can be continued by again calling the <code class="func">Enumerate</code> operation. If the argument <var class="Arg">limit</var> is omitted, the whole orbit is enumerated, unless other options lead to prior termination.</p>
 
-<p>To see whether an orbit is closed you can use the following filter:</p>
+<p>To see whether an orbit is closed you can use the following operation:</p>
 
 <p><a id="X81D5A4A97AA9D4B0" name="X81D5A4A97AA9D4B0"></a></p>
 
 <h5>3.1-3 IsClosed</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsClosed</code>( <var class="Arg">orb</var> )</td><td class="tdright">( filter )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsClosed</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
 <p>The result indicates, whether the orbit <var class="Arg">orb</var> is already complete or not.</p>

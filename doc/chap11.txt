@@ -31,7 +31,7 @@
   to  two  much  larger  permutation actions of [22XB[122X, namely its action on its 2B
   involutions,  having  degree [22X≈ 1.2⋅ 10^13[122X, and its action on the cosets of a
   maximal  subgroup  isomorphic  to  [22XFi_23[122X,  having  degree  [22X≈ 1.0⋅ 10^15[122X; for
-  details see [M{\08] and [MNW07], respectively.[133X
+  details see [M\t08] and [MNW07], respectively.[133X
   
   [33X[0;0YNote  that for all this to work you have to acquire and install the packages
   [5XIO[105X,  [5Xcvec[105X,  and  [5Xatlasrep[105X,  and  for  Section [14X11.4[114X you additionally need the
@@ -97,7 +97,7 @@
   
   [33X[0;0YWe  are using two helper subgroups [22XU_1 < U_2 < M_11[122X, where [22XU_2≅ A_6.2[122X is the
   largest  maximal  subgroup  of  [22XM_11[122X,  having  order  [22X720[122X, and [22XU_2≅ 5:4[122X is a
-  maximal  subgroup  of [22XU_2[122X of order [22X20[122X, see [CCNPW85] or the [5XCTblLib[105X package.
+  maximal  subgroup  of  [22XU_2[122X of order [22X20[122X, see [CCN+85] or the [5XCTblLib[105X package.
   The quotient spaces we use for the helper subgroups have dimensions [22X5[122X and [22X11[122X
   respectively.  Straight  line  programs  to compute generators of the helper
   subgroups in terms of the given generators of [22XM_11[122X, and an appropriate basis
@@ -115,7 +115,7 @@
   representatives  of  the  Fischer  group [22XFi_{23}[122X with respect to its seventh
   maximal  subgroup  [22XH≅  3_+^{1+8}.2_-^{1+6}.3_+^{1+2}.2S_4[122X,  which  has order
   [22X3265173504≈  3.2⋅  10^9[122X  and index [22X[Fi_{23}: H]=1252451200 ≈ 1.3 ⋅ 10^9[122X, see
-  [CCNPW85] or the [5XCTblLib[105X package. All the files for this example are located
+  [CCN+85]  or the [5XCTblLib[105X package. All the files for this example are located
   in  the  [11Xexamples/fi23m7[111X subdirectory of the [5Xorb[105X package. You simply run the
   example in the following way:[133X
   
@@ -184,7 +184,7 @@
   as  they  are  very  similar to those reproduced in Section [14X11.1[114X, and can be
   directly read off from the code in the file [11XCo1OrbitOnPF5d24.g[111X: We are using
   three  helper  subgroups  [22XU_1  <  U_2  <  U_3  <  Co_1[122X, where [22XCo_1[122X has order
-  [22X4157776806543360000≈  4.2⋅  10^18[122X, see [CCNPW85] or the [5XCTblLib[105X package, and
+  [22X4157776806543360000≈  4.2⋅  10^18[122X,  see [CCN+85] or the [5XCTblLib[105X package, and
   where  [22XU_3≅  2_+^{1+8}.O_8(2)[122X  is the fifth maximal subgroup of [22XCo_1[122X, having
   order  [22X89181388800≈  8.9⋅  10^10[122X,  while  [22XU_2≅  [2^8]:  S_6(2)[122X  is a maximal
   subgroup  of  [22XU_3[122X  of  order [22X371589120≈ 3.7⋅ 10^8[122X, and [22XU_1≅ 2^6: L_3(2)[122X is a
@@ -251,16 +251,16 @@
   are   its  largest  maximal  subgroups  [22XE  ≅  2.^2E_6(2).2[122X,  which  are  the
   centralisers  of  its  2A involutions. Here [22XE[122X is a bicyclic extension of the
   twisted  Lie  type  group [22X^2E_6(2)[122X, and has index [22X[B: E]=13571955000 ≈ 1.4 ⋅
-  10^10[122X, see [CCNPW85] or the [5XCTblLib[105X package.[133X
+  10^10[122X, see [CCN+85] or the [5XCTblLib[105X package.[133X
   
   [33X[0;0YWe  first  try to find a matrix representation of [22XB[122X such that the [22XB[122X-orbit we
   look for is realised as a set of vectors in the underlying vector space. The
   smallest  faithful  representation  of  [22XB[122X  over  the field GF(2), by [Jan05]
   having  dimension  4370,  springs  to  mind.  Explicit  matrices in terms of
-  standard  generators  in  the sense of [Wil96] are available in [ATLAS], and
-  are  accessibe through the [5Xatlasrep[105X package. Moreover, we find generators of
-  [22XE[122X  by  applying  a  straight  line  program,  also available in the [5Xatlasrep[105X
-  package, expressing generators of [22XE[122X in terms of the generators of [22XB[122X.[133X
+  standard  generators in the sense of [Wil96] are available in [Wil], and are
+  accessibe through the [5Xatlasrep[105X package. Moreover, we find generators of [22XE[122X by
+  applying  a  straight  line program, also available in the [5Xatlasrep[105X package,
+  expressing generators of [22XE[122X in terms of the generators of [22XB[122X.[133X
   
   [4X[32X  Example  [32X[104X
     [4X[25Xgap>[125X [27Xgens := AtlasGenerators("B",1).generators;[127X[104X
@@ -299,7 +299,7 @@
   saving  factor  achieved  is  somewhat smaller than the order of the largest
   helper subgroup.[133X
   
-  [33X[0;0YBy [CCNPW85], and a few computations with subgroup fusions using the [5XCTblLib[105X
+  [33X[0;0YBy  [CCN+85], and a few computations with subgroup fusions using the [5XCTblLib[105X
   package,  the  derived  subgroup  [22XE'  ≅ 2.^2E_6(2)[122X of [22XE[122X turns out to possess
   maximal  subgroups  [22X2  × Fi_{22}[122X and [22X2.Fi_{22}[122X, where [22XFi_{22}[122X denotes one of
   the sporadic simple Fischer groups, and where the former constitute a unique
@@ -348,7 +348,7 @@
     [4X[28X  <<immutable cmat 78x78 over GF(2,1)> with mem> ] [128X[104X
   [4X[32X[104X
   
-  [33X[0;0YBy [ATLAS], standard generators [22Xa,b[122X of [22XFi_{22}[122X are given as follows: [22Xa[122X is an
+  [33X[0;0YBy  [Wil],  standard generators [22Xa,b[122X of [22XFi_{22}[122X are given as follows: [22Xa[122X is an
   element   of   the   2A   conjugacy   class  of  [22XFi_{22}[122X,  and  [22Xb[122X,  [22Xab[122X,  and
   [22X(ab)^4bab(abb)^2[122X   have   order  13,  11,  and  12,  respectively;  standard
   generators  of  [22X2.Fi_{22}[122X are lifts of standard generators of [22XFi_{22}[122X having
@@ -381,7 +381,7 @@
   [33X[0;0YWe  search through the [22XoverlineE[122X-conjugates of [10Xg2a[110X until we find a conjugate
   [22Xa[122X  together with [22Xb[122X fulfilling the defining conditions of standard generators
   of  [22XFi_{22}[122X,  and  moreover  fulfilling  the  relations  of  the  associated
-  presentation of [22XFi_{22}[122X available in [ATLAS].[133X
+  presentation of [22XFi_{22}[122X available in [Wil].[133X
   
   [33X[0;0YTo  find  conjugates,  we  use  the product replacement algorithm to produce
   pseudo  random  elements of [22XoverlineE[122X. Assuming a genuine random search, the
@@ -473,7 +473,7 @@
   it is in fact possible at this stage that you have created a different group
   as displayed here! In our outcome, since [22Xa[122X has even order, and both [22Xb[122X and [22Xab[122X
   have odd order, we cannot possibly have [22X2 × Fi_{22}[122X; and by the presentation
-  of [22X2.Fi_{22}[122X available in [ATLAS] the order of [22Xab^2[122X being 21 implies that we
+  of  [22X2.Fi_{22}[122X  available in [Wil] the order of [22Xab^2[122X being 21 implies that we
   cannot  possibly  have [22X2.Fi_{22}[122X either. Hence we indeed have found standard
   generators  of  [22XFi_{22}[122X.  If  we  had  hit  one  of the cases [22X2 × Fi_{22}[122X or
   [22X2.Fi_{22}[122X,  we could just continue the above search until we find a subgroup
