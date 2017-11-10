@@ -1,7 +1,13 @@
 This file describes changes in the orb package.
 
-X.Y.Z (2017-07-DD)
-  - Fix hash tables with initial size <= 5 not growing correctly.
+4.8.0 (2017-11-10)
+  - Renamed the IsClosed filter to IsClosedOrbit, and added a new operation
+    IsClosed which simply returns the value of the IsClosedOrbit filter.
+    This allows other packages do also use the name IsClosed.
+  - Fix hash tables with initial size <= 5 not growing correctly
+  - Fix ORB_HashFunctionModWrapper
+  - Fix bug in HTGrow causing it to never call ORB_HashFunctionModWrapper
+  - Ensure compatibility with GAP 4.9
 
 4.7.6 (2016-03-08)
   - Move MappingPermListList C implementation from orb to the GAP kernel
