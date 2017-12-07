@@ -1555,21 +1555,13 @@ static Int InitLibrary ( StructInitInfo *module )
 */
 static StructInitInfo module = {
 #ifdef ORBSTATIC
- /* type        = */ MODULE_STATIC,
+    .type = MODULE_STATIC,
 #else
- /* type        = */ MODULE_DYNAMIC,
+    .type = MODULE_DYNAMIC,
 #endif
- /* name        = */ "orb",
- /* revision_c  = */ 0,
- /* revision_h  = */ 0,
- /* version     = */ 0,
- /* crc         = */ 0,
- /* initKernel  = */ InitKernel,
- /* initLibrary = */ InitLibrary,
- /* checkInit   = */ 0,
- /* preSave     = */ 0,
- /* postSave    = */ 0,
- /* postRestore = */ 0
+    .name = "orb",
+    .initKernel = InitKernel,
+    .initLibrary = InitLibrary,
 };
 
 #ifndef ORBSTATIC
