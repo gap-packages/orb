@@ -623,21 +623,30 @@ end );
 
 InstallGlobalFunction( ORB_HashFunctionForShortGF2Vectors,
 function(v,data)
-  return NumberFFVector(v,2) mod data[1] + 1;
+  local x;
+  x := NumberFFVector(v,2);
+  if x = fail then return fail; fi;
+  return x mod data[1] + 1;
 end );
 
 InstallGlobalFunction( ORB_HashFunctionForShort8BitVectors,
 function(v,data)
-  return NumberFFVector(v,data[2]) mod data[1] + 1;
+  local x;
+  x := NumberFFVector(v,data[2]);
+  if x = fail then return fail; fi;
+  return x mod data[1] + 1;
 end );
 
 InstallGlobalFunction( ORB_HashFunctionForGF2Vectors,
 function(v,data)
+  if not IsGF2VectorRep(v) then return 0; fi;
   return HashKeyBag(v,101,2*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
 InstallGlobalFunction( ORB_HashFunctionFor8BitVectors,
 function(v,data)
+  if not Is8BitVectorRep(v) then return 0; fi;
+  # TODO: check q
   return HashKeyBag(v,101,3*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
@@ -724,6 +733,7 @@ InstallMethod( ChooseHashFunction, "for compressed 8bit matrices",
 
 InstallGlobalFunction( ORB_HashFunctionForIntegers,
 function(x,data)
+  if not IsInt(x) then return 0; fi;
   return x mod data[1] + 1;
 end );
 
@@ -734,6 +744,7 @@ InstallMethod( ChooseHashFunction, "for integers", [IsInt,IsInt],
     
 InstallGlobalFunction( ORB_HashFunctionForMemory,
 function(x,data)
+  if not IsObjWithMemory(x) then return fail; fi;
   return data[1](x!.el,data[2]);
 end );
 
@@ -748,6 +759,7 @@ InstallMethod( ChooseHashFunction, "for memory objects",
 InstallGlobalFunction( ORB_HashFunctionForPermutations,
 function(p,data)
   local l;
+  if not IsPerm(p) then return fail; fi;
   l:=LARGEST_MOVED_POINT_PERM(p);
   if IsPerm4Rep(p) then
     # is it a proper 4byte perm?
@@ -776,6 +788,7 @@ elif IsBound(IsTrans2Rep) and IsBound(IsTrans4Rep) then
   InstallGlobalFunction( ORB_HashFunctionForTransformations, 
   function(t, data)
     local deg;
+      if not IsTransformation(x) then return fail; fi;
       deg:=DegreeOfTransformation(t);
       if IsTrans4Rep(t) then
         if deg<=65536 then 
@@ -789,6 +802,7 @@ elif IsBound(IsTrans2Rep) and IsBound(IsTrans4Rep) then
 else
   InstallGlobalFunction( ORB_HashFunctionForTransformations,
     function(t,data)
+      if not IsTransformation(x) then return fail; fi;
       return ORB_HashFunctionForPlainFlatList(t![1],data);
     end );
 fi;
@@ -816,6 +830,7 @@ function(v,data)
   local i,res;
   res := 0;
   for i in v do
+      if not IsInt(i) then return fail; fi;
       res := (res * data[1] + i) mod data[2];
   od;
   return res+1;
@@ -889,6 +904,7 @@ elif IsBound(IsPPerm2Rep) and IsBound(IsPPerm4Rep) then
   InstallGlobalFunction( ORB_HashFunctionForPartialPerms, 
   function(t, data)
     local codeg;
+    if not IsPartialPerm(x) then return fail; fi;
     if IsPPerm4Rep(t) then 
       codeg:=CodegreeOfPartialPerm(t);
       if codeg<65536 then 
@@ -913,7 +929,7 @@ if not IsBound(HASH_FUNC_FOR_BLIST) then
   BindGlobal("HASH_FUNC_FOR_BLIST", 
   function(blist, data)
     local h, x;
-
+    if not IsBlistRep(x) then return fail; fi;
     h := 0;
     for x in blist do
       if x then
