@@ -1231,7 +1231,14 @@ extern Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
     /* Compute hash value: */
     hfd = ElmPRec(ht,RNam_hfd);
     t = ElmPRec(ht,RNam_hf);
-    h = INT_INTOBJ(CALL_2ARGS(t,x,hfd));
+    t = CALL_2ARGS(t,x,hfd);
+    if (!IS_INTOBJ(t))
+        return Fail;
+    h = INT_INTOBJ(t);
+
+    /* has failed to compute -> object cannot be contained */
+    if (h == 0)
+        return Fail;
 
     /* Lookup slot: */
     els = ElmPRec(ht,RNam_els);
