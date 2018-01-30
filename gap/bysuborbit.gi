@@ -88,8 +88,8 @@ InstallMethod( Memory, "for an orbit-by-suborbit setup object",
     k := setup!.k;
     m := 0;
     for i in [1..k] do
-        p := SHALLOW_SIZE(setup!.sample[i]) + 3 * GAPInfo.BytesPerVariable;
-        m := m + p * setup!.info[i]!.nr + 2 * SHALLOW_SIZE(setup!.info[i]!.els);
+        p := SIZE_OBJ(setup!.sample[i]) + 3 * GAPInfo.BytesPerVariable;
+        m := m + p * setup!.info[i]!.nr + 2 * SIZE_OBJ(setup!.info[i]!.els);
     od;
     return m;
   end );
@@ -408,10 +408,10 @@ InstallMethod( Memory, "for a std suborbit database",
   function( db )
     local m,p;
     # The lists:
-    m := 2 * SHALLOW_SIZE(db!.reps) + 2 * SHALLOW_SIZE(db!.mins!.els);
+    m := 2 * SIZE_OBJ(db!.reps) + 2 * SIZE_OBJ(db!.mins!.els);
     #  (db!.reps and db!.lengths   and    els and vals in db!.mins)
     # Now the points (this assumes vectors!):
-    p := SHALLOW_SIZE(db!.setup!.sample[db!.setup!.k+1])
+    p := SIZE_OBJ(db!.setup!.sample[db!.setup!.k+1])
          + 3 * GAPInfo.BytesPerVariable;   # for the bag
     m := m + db!.mins!.nr * p;  # the reps are also in mins!
     return m;
@@ -587,7 +587,7 @@ InstallGlobalFunction( ORB_GetTransversalElement,
     # Now we have to calculate it:
     el := ORB_ApplyWord(setup!.els[j][1]^0,setup!.trans[i][t],
                         setup!.els[j],setup!.elsinv[j],OnRight);
-    mem := Length(el)*SHALLOW_SIZE(el[1]);
+    mem := Length(el)*SIZE_OBJ(el[1]);
     cn := CacheObject(setup!.cache,el,mem);
     SetElmWPObj(setup!.transcache[j][i],t,cn);
     return el;
@@ -616,7 +616,7 @@ InstallGlobalFunction( ORB_PrepareStabgens,
                 od;
                 Add(r.gens,gen);
                 Add(r.words,w);
-                mem := Length(gen)*SHALLOW_SIZE(gen[1]);
+                mem := Length(gen)*SIZE_OBJ(gen[1]);
                 # we ignore the memory for the word and the record!
                 SetElmWPObj(stab.cache[j],t,CacheObject(setup!.cache,
                                                rec(gen := gen, w := w),mem));

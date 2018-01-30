@@ -889,7 +889,7 @@ InstallGlobalFunction( ORB_FindStabilizerMC,
           x,y,z;
     mem := Memory(pt);
     if mem = fail then
-        mem := SHALLOW_SIZE(pt);
+        mem := SIZE_OBJ(pt);
         if mem = 0 then mem := GAPInfo.BytesPerVariable; fi;
     fi;
     orbpart := QuoInt(memory,mem);
@@ -958,7 +958,7 @@ InstallGlobalFunction( ORB_FindNeedleMappers,
     if not IsBound(opt.orblen) then
         mem := Memory(pt);
         if mem = fail then
-            mem := SHALLOW_SIZE(pt);
+            mem := SIZE_OBJ(pt);
             if mem = 0 then 
                 mem := GAPInfo.BytesPerVariable;
             fi;
