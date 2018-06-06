@@ -1561,24 +1561,13 @@ static Int InitLibrary ( StructInitInfo *module )
 *F  InitInfopl()  . . . . . . . . . . . . . . . . . table of init functions
 */
 static StructInitInfo module = {
-#ifdef ORBSTATIC
-    .type = MODULE_STATIC,
-#else
     .type = MODULE_DYNAMIC,
-#endif
     .name = "orb",
     .initKernel = InitKernel,
     .initLibrary = InitLibrary,
 };
 
-#ifndef ORBSTATIC
 StructInitInfo * Init__Dynamic ( void )
-{
-  return &module;
-}
-#endif
-
-StructInitInfo * Init__orb ( void )
 {
   return &module;
 }
