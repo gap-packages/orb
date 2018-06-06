@@ -23,8 +23,6 @@ AX_CC_MAXOPT
 
 AC_FIND_GAP
 
-AC_CHECK_SIZEOF([void **])
-
 AC_CYGWIN
 AM_CONDITIONAL([SYS_IS_CYGWIN], [test "$CYGWIN" = "yes"])
 if test "$CYGWIN" = "yes"; then
