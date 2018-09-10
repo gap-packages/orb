@@ -131,8 +131,8 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">=4.6",
-  NeededOtherPackages := [["GAPDoc", ">= 1.2"]],
+  GAP := ">=4.9",
+  NeededOtherPackages := [],
   SuggestedOtherPackages := [["IO",">= 3.3"]],
   ExternalConditions := []
 ),
