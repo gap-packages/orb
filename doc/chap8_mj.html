@@ -84,7 +84,7 @@
 
 <h5>8.2-1 AVLTree</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLTree</code>( [<var class="Arg">opt</var>] )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLTree</code>( [<var class="Arg">opt</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A new AVL tree object</p>
 
 <p>This function creates a new AVL tree object. The optional argument <var class="Arg">opt</var> is an options record, in which you can bind the following components:</p>
@@ -97,7 +97,7 @@
 
 <h5>8.2-2 AVLCmp</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLCmp</code>( <var class="Arg">a</var>, <var class="Arg">b</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLCmp</code>( <var class="Arg">a</var>, <var class="Arg">b</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: -1, 0 or 1</p>
 
 <p>This function calls the <code class="keyw">&lt;</code> operation and the <code class="keyw">=</code> operation to provide a generic three-way comparison function to be used in AVL tree operations. See <code class="func">AVLTree</code> (<a href="chap8_mj.html#X791E346F84F0430C"><span class="RefLink">8.2-1</span></a>) for a description of the return value. This function is implemented in the kernel and should be particularly fast.</p>
@@ -108,7 +108,7 @@
 
 <h5>8.2-3 AVLAdd</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLAdd</code>( <var class="Arg">t</var>, <var class="Arg">key</var>, <var class="Arg">val</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLAdd</code>( <var class="Arg">t</var>, <var class="Arg">key</var>, <var class="Arg">val</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function stores the key <var class="Arg">key</var> with value <var class="Arg">value</var> in the tree assuming that the keys in it are sorted according to the three-way comparison function stored with the tree. If <var class="Arg">value</var> is <code class="keyw">true</code> then no additional memory is needed. It is an error if there is already a key equal to <var class="Arg">key</var> in the tree, in this case the function returns <code class="keyw">fail</code>. Otherwise it returns <code class="keyw">true</code>.</p>
@@ -117,7 +117,7 @@
 
 <h5>8.2-4 AVLLookup</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLLookup</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLLookup</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an value or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function looks up the key <var class="Arg">key</var> in the tree and returns the value which is associated to it. If the key is not in the tree, the value <code class="keyw">fail</code> is returned. This function assumes that the keys in the tree are sorted according to the three-way comparison function stored with the tree.</p>
@@ -126,7 +126,7 @@
 
 <h5>8.2-5 AVLDelete</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLDelete</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLDelete</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an value or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function looks up the key <var class="Arg">key</var> in the tree, deletes it and returns the value which was associated with it. If <var class="Arg">key</var> is not contained in the tree then <code class="keyw">fail</code> is returned. This function assumes that the keys in the tree are sorted according to the three-way comparison function stored with the tree.</p>
@@ -135,7 +135,7 @@
 
 <h5>8.2-6 AVLFindIndex</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLFindIndex</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLFindIndex</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an integer or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function looks up the key <var class="Arg">key</var> in the tree and returns the index, under which it is stored in the tree. This index is one-based, that is, it takes values from 1 to the number of entries in the tree. If <var class="Arg">key</var> is not contained in the tree then <code class="keyw">fail</code> is returned. This function assumes that the keys in the tree are sorted according to the three-way comparison function stored with the tree.</p>
@@ -146,7 +146,7 @@
 
 <h5>8.2-7 AVLIndex</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndex</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndex</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a key or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function returns the key at index <var class="Arg">index</var> in the tree, so <var class="Arg">index</var> must be an integer in the range 1 to the number of elements in the tree. If the value is out of these bounds, <code class="keyw">fail</code> is returned. Note that to use this function it is not necessary that the keys in the tree are sorted according to the three-way comparison function stored with the tree.</p>
@@ -155,7 +155,7 @@
 
 <h5>8.2-8 AVLIndexLookup</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexLookup</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexLookup</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a value or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function returns the value associated to the key at index <var class="Arg">index</var> in the tree, so <var class="Arg">index</var> must be an integer in the range 1 to the number of elements in the tree. If the value is out of these bounds, <code class="keyw">fail</code> is returned. Note that to use this function it is not necessary that the keys in the tree are sorted according to the three-way comparison function stored with the tree.</p>
@@ -164,7 +164,7 @@
 
 <h5>8.2-9 AVLIndexAdd</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexAdd</code>( <var class="Arg">t</var>, <var class="Arg">key</var>, <var class="Arg">value</var>, <var class="Arg">index</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexAdd</code>( <var class="Arg">t</var>, <var class="Arg">key</var>, <var class="Arg">value</var>, <var class="Arg">index</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a key or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function inserts the key <var class="Arg">key</var> at index <var class="Arg">index</var> in the tree and associates the value <var class="Arg">value</var> with it. If <var class="Arg">value</var> is <code class="keyw">true</code> then no additional memory is needed to store the value. The index <var class="Arg">index</var> must be an integer in the range 1 to <span class="SimpleMath">\(n+1\)</span> where <span class="SimpleMath">\(n\)</span> is the number of entries in the tree. The new key is inserted before the key which currently is stored at index <var class="Arg">index</var>, so calling with <var class="Arg">index</var> equal to <span class="SimpleMath">\(n+1\)</span> puts the new key at the end. If <var class="Arg">index</var> is not in the corrent range, this function returns <code class="keyw">fail</code> and the tree remains unchanged.</p>
@@ -175,7 +175,7 @@
 
 <h5>8.2-10 AVLIndexDelete</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexDelete</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexDelete</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a key or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function deletes the key at index <var class="Arg">index</var> in the tree and returns the value which was associated with it.</p>
@@ -186,7 +186,7 @@
 
 <h5>8.2-11 AVLFind</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLFind</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLFind</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an integer or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function locates the key <var class="Arg">key</var> in the tree and returns the position in the positional object, at which the node which contains the key is stored. This position will always be divisible by 4. Use the functions <code class="func">AVLData</code> (<a href="chap8_mj.html#X78B2EEB4804987F2"><span class="RefLink">8.2-13</span></a>) and <code class="func">AVLValue</code> (<a href="chap8_mj.html#X78DE1F2C80B0D55C"><span class="RefLink">8.2-14</span></a>) to access the key and value of the node respectively. The function returns <code class="keyw">fail</code> if the key is not found in the tree. This function assumes that the keys in the tree are sorted according to the three-way comparison function stored with the tree.</p>
@@ -195,7 +195,7 @@
 
 <h5>8.2-12 AVLIndexFind</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexFind</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLIndexFind</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an integer or <code class="keyw">fail</code></p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree. This function locates the index <var class="Arg">index</var> in the tree and returns the position in the positional object, at which the node which hash this index is stored. This position will always be divisible by 4. Use the functions <code class="func">AVLData</code> (<a href="chap8_mj.html#X78B2EEB4804987F2"><span class="RefLink">8.2-13</span></a>) and <code class="func">AVLValue</code> (<a href="chap8_mj.html#X78DE1F2C80B0D55C"><span class="RefLink">8.2-14</span></a>) to access the key and value of the node respectively. The function returns <code class="keyw">fail</code> if the key is not found in the tree. This function does not assume that the keys in the tree are sorted according to the three-way comparison function stored with the tree.</p>
@@ -204,7 +204,7 @@
 
 <h5>8.2-13 AVLData</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLData</code>( <var class="Arg">t</var>, <var class="Arg">pos</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLData</code>( <var class="Arg">t</var>, <var class="Arg">pos</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an key</p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree and the second a position in the positional object corresponding to a node as returned by <code class="func">AVLFind</code> (<a href="chap8_mj.html#X7EF737C286E94F23"><span class="RefLink">8.2-11</span></a>). The function returns the key associated with this node.</p>
@@ -213,7 +213,7 @@
 
 <h5>8.2-14 AVLValue</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLValue</code>( <var class="Arg">t</var>, <var class="Arg">pos</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AVLValue</code>( <var class="Arg">t</var>, <var class="Arg">pos</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a value</p>
 
 <p>The first argument <var class="Arg">t</var> must be an AVL tree and the second a position in the positional object corresponding to a node as returned by <code class="func">AVLFind</code> (<a href="chap8_mj.html#X7EF737C286E94F23"><span class="RefLink">8.2-11</span></a>). The function returns the value associated with this node.</p>
@@ -224,7 +224,7 @@
 
 <h5>8.2-15 Display</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Display</code>( <var class="Arg">t</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Display</code>( <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p>This function displays the tree in a user-friendly way. Do not try this with trees containing many nodes!</p>
@@ -233,7 +233,7 @@
 
 <h5>8.2-16 ELM_LIST</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ELM_LIST</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ELM_LIST</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: A key or <code class="keyw">fail</code></p>
 
 <p>This method allows for easy access to the key at index <var class="Arg">index</var> in the tree using the square bracket notation <code class="code"><var class="Arg">t</var>[<var class="Arg">index</var>]</code>. It does exactly the same as <code class="func">AVLIndex</code> (<a href="chap8_mj.html#X810E5CDF7ED14BF8"><span class="RefLink">8.2-7</span></a>). This is to make AVL trees behave more like lists.</p>
@@ -242,7 +242,7 @@
 
 <h5>8.2-17 Position</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Position</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Position</code>( <var class="Arg">t</var>, <var class="Arg">key</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: an integer or <code class="keyw">fail</code></p>
 
 <p>This method allows to use the <code class="code">Position</code> operation to locate the index at which the key <var class="Arg">key</var> is stored in the tree. It does exactly the same as <code class="func">AVLFindIndex</code> (<a href="chap8_mj.html#X7D1B85DA814DA26C"><span class="RefLink">8.2-6</span></a>). This is to make AVL trees behave more like lists.</p>
@@ -251,7 +251,7 @@
 
 <h5>8.2-18 Add</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Add</code>( <var class="Arg">t</var>, <var class="Arg">key</var>[, <var class="Arg">index</var>] )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Add</code>( <var class="Arg">t</var>, <var class="Arg">key</var>[, <var class="Arg">index</var>] )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p>This method allows to use the <code class="code">Add</code> operation to add a key (with associated value <code class="keyw">true</code>) to the tree at index <var class="Arg">index</var>. It does exactly the same as <code class="func">AVLIndexAdd</code> (<a href="chap8_mj.html#X817B8377799DE5E1"><span class="RefLink">8.2-9</span></a>), so the same warning about sortedness as there applies! If <var class="Arg">index</var> is omitted, the key is added at the end. This is to make AVL trees behave more like lists.</p>
@@ -260,7 +260,7 @@
 
 <h5>8.2-19 Remove</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Remove</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Remove</code>( <var class="Arg">t</var>, <var class="Arg">index</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: a key</p>
 
 <p>This method allows to use the <code class="code">Remove</code> operation to remove a key from the tree at index <var class="Arg">index</var>. If <var class="Arg">index</var> is omitted, the last key in the tree is remove. This method returns the deleted key or <code class="keyw">fail</code> if the tree was empty. This is to make AVL trees behave more like lists.</p>
@@ -269,7 +269,7 @@
 
 <h5>8.2-20 Length</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Length</code>( <var class="Arg">t</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Length</code>( <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: a key</p>
 
 <p>This method returns the number of entries stored in the tree <var class="Arg">t</var>. This is to make AVL trees behave more like lists.</p>
@@ -278,7 +278,7 @@
 
 <h5><code>8.2-21 \in</code></h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; \in</code>( <var class="Arg">key</var>, <var class="Arg">t</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; \in</code>( <var class="Arg">key</var>, <var class="Arg">t</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
 <p>This method tests whether or not the key <var class="Arg">key</var> is stored in the AVL tree <var class="Arg">t</var>. This is to make AVL trees behave more like lists.</p>

@@ -20,7 +20,7 @@
   
   [1X5.2-1 LinkedListCache[101X
   
-  [29X[2XLinkedListCache[102X( [3Xmemorylimit[103X ) [32X operation
+  [33X[1;0Y[29X[2XLinkedListCache[102X( [3Xmemorylimit[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA new cache object[133X
   
   [33X[0;0YThis operation creates a new linked list cache that uses at most [3Xmemorylimit[103X
@@ -33,7 +33,7 @@
   
   [1X5.2-2 CacheObject[101X
   
-  [29X[2XCacheObject[102X( [3Xc[103X, [3Xob[103X, [3Xmem[103X ) [32X operation
+  [33X[1;0Y[29X[2XCacheObject[102X( [3Xc[103X, [3Xob[103X, [3Xmem[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA new node in the linked list cache[133X
   
   [33X[0;0YThis operation enters the object [3Xob[103X into the cache [3Xc[103X. The argument [3Xmem[103X is an
@@ -43,7 +43,7 @@
   
   [1X5.2-3 ClearCache[101X
   
-  [29X[2XClearCache[102X( [3Xc[103X ) [32X operation
+  [33X[1;0Y[29X[2XClearCache[102X( [3Xc[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YNothing[133X
   
   [33X[0;0YCompletely clears the cache [3Xc[103X removing all nodes.[133X
@@ -69,7 +69,7 @@
   
   [1X5.2-4 UseCacheObject[101X
   
-  [29X[2XUseCacheObject[102X( [3Xc[103X, [3Xr[103X ) [32X operation
+  [33X[1;0Y[29X[2XUseCacheObject[102X( [3Xc[103X, [3Xr[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YNothing[133X
   
   [33X[0;0YThe  argument  [3Xc[103X  must  be a cache object and [3Xr[103X a node for such a cache. The

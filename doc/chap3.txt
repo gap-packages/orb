@@ -29,7 +29,7 @@
   
   [1X3.1-1 Orb[101X
   
-  [29X[2XOrb[102X( [3Xgens[103X, [3Xpoint[103X, [3Xop[103X[, [3Xopt[103X] ) [32X function
+  [33X[1;0Y[29X[2XOrb[102X( [3Xgens[103X, [3Xpoint[103X, [3Xop[103X[, [3Xopt[103X] ) [32X function[133X
   [6XReturns:[106X  [33X[0;10YAn orbit object[133X
   
   [33X[0;0YThe  argument  [3Xgens[103X  is  either a [5XGAP[105X group, semigroup or monoid object or a
@@ -58,7 +58,7 @@
   
   [1X3.1-2 Enumerate[101X
   
-  [29X[2XEnumerate[102X( [3Xorb[103X[, [3Xlimit[103X] ) [32X operation
+  [33X[1;0Y[29X[2XEnumerate[102X( [3Xorb[103X[, [3Xlimit[103X] ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YThe orbit object [3Xorb[103X[133X
   
   [33X[0;0Y[3Xorb[103X  must  be  an orbit object created by [2XOrb[102X ([14X3.1-1[114X). The optional argument
@@ -72,7 +72,7 @@
   
   [1X3.1-3 IsClosed[101X
   
-  [29X[2XIsClosed[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XIsClosed[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
   
   [33X[0;0YThe result indicates, whether the orbit [3Xorb[103X is already complete or not.[133X
@@ -461,7 +461,7 @@
   
   [1X3.1-6 StabWords[101X
   
-  [29X[2XStabWords[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XStabWords[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA list of words[133X
   
   [33X[0;0YIf  the  stabiliser  was  computed  during  the orbit enumeration, then this
@@ -471,7 +471,7 @@
   
   [1X3.1-7 PositionOfFound[101X
   
-  [29X[2XPositionOfFound[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XPositionOfFound[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YAn integer[133X
   
   [33X[0;0YIf during the orbit enumeration the option [10Xlookingfor[110X was used and the orbit
@@ -480,7 +480,7 @@
   
   [1X3.1-8 UnderlyingPlist[101X
   
-  [29X[2XUnderlyingPlist[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XUnderlyingPlist[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YAn plain list[133X
   
   [33X[0;0YThis returns the current elements in the orbit represented by [3Xorb[103X as a plain
@@ -491,7 +491,7 @@
   
   [1X3.1-9 DepthOfSchreierTree[101X
   
-  [29X[2XDepthOfSchreierTree[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XDepthOfSchreierTree[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YAn integer[133X
   
   [33X[0;0YIf  a  Schreier tree or a log was stored during orbit enumeration, then this
@@ -499,7 +499,7 @@
   
   [1X3.1-10 IsGradedOrbit[101X
   
-  [29X[2XIsGradedOrbit[102X( [3Xorb[103X ) [32X filter
+  [33X[1;0Y[29X[2XIsGradedOrbit[102X( [3Xorb[103X ) [32X filter[133X
   [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
   
   [33X[0;0YIf the option [10Xgradingfunc[110X has been used when creating the orbit object, then
@@ -509,7 +509,7 @@
   
   [1X3.1-11 Grades[101X
   
-  [29X[2XGrades[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XGrades[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya list of grades[133X
   
   [33X[0;0YIf the option [10Xgradingfunc[110X has been used when creating the orbit object, then
@@ -521,7 +521,7 @@
   
   [1X3.1-12 OrbitGraph[101X
   
-  [29X[2XOrbitGraph[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XOrbitGraph[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya list of lists[133X
   
   [33X[0;0YThe  vertices  of  the  orbit  graph  are  the  points  of the orbit and the
@@ -541,7 +541,7 @@
   
   [1X3.1-13 OrbitGraphAsSets[101X
   
-  [29X[2XOrbitGraphAsSets[102X( [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XOrbitGraphAsSets[102X( [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya list of sets[133X
   
   [33X[0;0YThis  operation  returns the same graph as [2XOrbitGraph[102X ([14X3.1-12[114X) in a slightly
@@ -555,7 +555,7 @@
   
   [1X3.1-14 ActionOnOrbit[101X
   
-  [29X[2XActionOnOrbit[102X( [3Xorb[103X, [3Xgrpels[103X ) [32X operation
+  [33X[1;0Y[29X[2XActionOnOrbit[102X( [3Xorb[103X, [3Xgrpels[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA permutation or [9Xfail[109X[133X
   
   [33X[0;0Y[3Xorb[103X  must  be  an orbit object and [3Xgrpels[103X a list of group elements acting on
@@ -568,7 +568,7 @@
   
   [1X3.1-15 OrbActionHomomorphism[101X
   
-  [29X[2XOrbActionHomomorphism[102X( [3Xg[103X, [3Xorb[103X ) [32X operation
+  [33X[1;0Y[29X[2XOrbActionHomomorphism[102X( [3Xg[103X, [3Xorb[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YAn action homomorphism[133X
   
   [33X[0;0YThe  argument  [3Xg[103X  must  be  a  group and [3Xorb[103X an orbit on which [3Xg[103X acts in the
@@ -577,7 +577,7 @@
   
   [1X3.1-16 TraceSchreierTreeForward[101X
   
-  [29X[2XTraceSchreierTreeForward[102X( [3Xorb[103X, [3Xnr[103X ) [32X operation
+  [33X[1;0Y[29X[2XTraceSchreierTreeForward[102X( [3Xorb[103X, [3Xnr[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA word in the generators[133X
   
   [33X[0;0Y[3Xorb[103X  must  be  an  orbit  object  with  a Schreier tree, that is, the option
@@ -589,7 +589,7 @@
   
   [1X3.1-17 TraceSchreierTreeBack[101X
   
-  [29X[2XTraceSchreierTreeBack[102X( [3Xorb[103X, [3Xnr[103X ) [32X operation
+  [33X[1;0Y[29X[2XTraceSchreierTreeBack[102X( [3Xorb[103X, [3Xnr[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA word in the generators[133X
   
   [33X[0;0Y[3Xorb[103X  must  be  an  orbit  object  with  a Schreier tree, that is, the option
@@ -601,7 +601,7 @@
   
   [1X3.1-18 ActWithWord[101X
   
-  [29X[2XActWithWord[102X( [3Xgens[103X, [3Xw[103X, [3Xop[103X, [3Xp[103X ) [32X operation
+  [33X[1;0Y[29X[2XActWithWord[102X( [3Xgens[103X, [3Xw[103X, [3Xop[103X, [3Xp[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA point[133X
   
   [33X[0;0Y[3Xgens[103X  must be a list of group generators, [3Xw[103X a list of positive integers less
@@ -611,7 +611,7 @@
   
   [1X3.1-19 EvaluateWord[101X
   
-  [29X[2XEvaluateWord[102X( [3Xgens[103X, [3Xw[103X ) [32X operation
+  [33X[1;0Y[29X[2XEvaluateWord[102X( [3Xgens[103X, [3Xw[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA group element[133X
   
   [33X[0;0Y[3Xgens[103X  must be a list of group generators, [3Xw[103X a list of positive integers less
@@ -620,7 +620,7 @@
   
   [1X3.1-20 AddGeneratorsToOrbit[101X
   
-  [29X[2XAddGeneratorsToOrbit[102X( [3Xorb[103X, [3Xl[103X[, [3Xp[103X] ) [32X operation
+  [33X[1;0Y[29X[2XAddGeneratorsToOrbit[102X( [3Xorb[103X, [3Xl[103X[, [3Xp[103X] ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YThe orbit object [3Xorb[103X[133X
   
   [33X[0;0Y[3Xorb[103X  must  be  an  orbit object, [3Xl[103X a list of new generators and, if given, [3Xp[103X
@@ -644,7 +644,7 @@
   
   [1X3.1-21 MakeSchreierTreeShallow[101X
   
-  [29X[2XMakeSchreierTreeShallow[102X( [3Xorb[103X[, [3Xd[103X] ) [32X operation
+  [33X[1;0Y[29X[2XMakeSchreierTreeShallow[102X( [3Xorb[103X[, [3Xd[103X] ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ynothing[133X
   
   [33X[0;0YThe  argument  [3Xorb[103X  must  be a closed orbit object with a log and a Schreier
@@ -659,7 +659,7 @@
   
   [1X3.1-22 FindSuborbits[101X
   
-  [29X[2XFindSuborbits[102X( [3Xorb[103X, [3Xsubgens[103X[, [3Xnrsuborbits[103X] ) [32X operation
+  [33X[1;0Y[29X[2XFindSuborbits[102X( [3Xorb[103X, [3Xsubgens[103X[, [3Xnrsuborbits[103X] ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YA record[133X
   
   [33X[0;0YThe  argument  [3Xorb[103X  must  be  a  closed orbit object with a Schreier vector,
@@ -689,7 +689,7 @@
   
   [1X3.1-23 OrbitIntersectionMatrix[101X
   
-  [29X[2XOrbitIntersectionMatrix[102X( [3Xr[103X, [3Xg[103X ) [32X operation
+  [33X[1;0Y[29X[2XOrbitIntersectionMatrix[102X( [3Xr[103X, [3Xg[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10YAn integer matrix[133X
   
   [33X[0;0YThe  argument  [3Xr[103X  must  be  a  suborbit  record as returned by the operation
@@ -701,7 +701,7 @@
   
   [1X3.1-24 ORB_EstimateOrbitSize[101X
   
-  [29X[2XORB_EstimateOrbitSize[102X( [3Xgens[103X, [3Xpt[103X, [3Xop[103X, [3XL[103X, [3Xlimit[103X, [3Xtimeout[103X ) [32X function
+  [33X[1;0Y[29X[2XORB_EstimateOrbitSize[102X( [3Xgens[103X, [3Xpt[103X, [3Xop[103X, [3XL[103X, [3Xlimit[103X, [3Xtimeout[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or a record[133X
   
   [33X[0;0YThe  argument [3Xgens[103X is a list of group generators for a group [22XG[122X, the argument

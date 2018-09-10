@@ -94,7 +94,7 @@ true
 
 <h5>7.2-1 RandomSearcher</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; RandomSearcher</code>( <var class="Arg">gens</var>, <var class="Arg">testfunc</var>[, <var class="Arg">opt</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; RandomSearcher</code>( <var class="Arg">gens</var>, <var class="Arg">testfunc</var>[, <var class="Arg">opt</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a random searcher object</p>
 
 <p><var class="Arg">gens</var> must be a list of group generators, <var class="Arg">testfunc</var> a function taking as argument one group element and returning <code class="keyw">true</code> or <code class="keyw">false</code>. <var class="Arg">opt</var> is an optional options record. For possible options see below.</p>
@@ -128,7 +128,7 @@ true
 
 <h5>7.2-2 Search</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Search</code>( <var class="Arg">rs</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Search</code>( <var class="Arg">rs</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a group element</p>
 
 <p>Runs the search with the random searcher object <var class="Arg">rs</var> and returns with the first group element found.</p>
@@ -147,7 +147,7 @@ true
 
 <h5>7.3-1 FindInvolution</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindInvolution</code>( <var class="Arg">pr</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindInvolution</code>( <var class="Arg">pr</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an involution</p>
 
 <p><var class="Arg">pr</var> must be a product replacer object (see Section <a href="chap6.html#X7B46C06479401BED"><span class="RefLink">6.2</span></a>). Searches an involution by finding a random element of even order and powering up. Returns the involution.</p>
@@ -156,7 +156,7 @@ true
 
 <h5>7.3-2 FindCentralisingElementOfInvolution</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindCentralisingElementOfInvolution</code>( <var class="Arg">pr</var>, <var class="Arg">a</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindCentralisingElementOfInvolution</code>( <var class="Arg">pr</var>, <var class="Arg">a</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a group element</p>
 
 <p><var class="Arg">pr</var> must be a product replacer object (see Section <a href="chap6.html#X7B46C06479401BED"><span class="RefLink">6.2</span></a>). Produces one random element and builds an element the centralises the involution <var class="Arg">a</var> using the dihedral trick described above.</p>
@@ -165,7 +165,7 @@ true
 
 <h5>7.3-3 FindInvolutionCentralizer</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindInvolutionCentralizer</code>( <var class="Arg">pr</var>, <var class="Arg">a</var>, <var class="Arg">nr</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindInvolutionCentralizer</code>( <var class="Arg">pr</var>, <var class="Arg">a</var>, <var class="Arg">nr</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a list of <var class="Arg">nr</var> group elements</p>
 
 <p><var class="Arg">pr</var> must be a product replacer object (see Section <a href="chap6.html#X7B46C06479401BED"><span class="RefLink">6.2</span></a>) and <var class="Arg">a</var> and involution. This function uses <code class="func">FindCentralisingElementOfInvolution</code> (<a href="chap7.html#X7FBBCD5C82211934"><span class="RefLink">7.3-2</span></a>) <var class="Arg">nr</var> times to produce an element centralising the involution <var class="Arg">a</var> and returns the list of results.</p>
@@ -180,7 +180,7 @@ true
 
 <h5>7.4-1 OrbitStatisticOnVectorSpace</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitStatisticOnVectorSpace</code>( <var class="Arg">gens</var>, <var class="Arg">size</var>, <var class="Arg">ti</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitStatisticOnVectorSpace</code>( <var class="Arg">gens</var>, <var class="Arg">size</var>, <var class="Arg">ti</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p><var class="Arg">gens</var> must be a list of matrix group generators and <var class="Arg">size</var> an integer giving an upper bound for the lengths of orbits (for example given by the order of the group generated by <var class="Arg">gens</var>). <var class="Arg">ti</var> is an integer specifying the number of seconds to run. This function enumerates orbits of random vectors in the natural space the group is acting on (with an upper limit of length given by <var class="Arg">size</var>). The average length and some other information is printed on the screen.</p>
@@ -189,7 +189,7 @@ true
 
 <h5>7.4-2 OrbitStatisticOnVectorSpaceLines</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitStatisticOnVectorSpaceLines</code>( <var class="Arg">gens</var>, <var class="Arg">size</var>, <var class="Arg">ti</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitStatisticOnVectorSpaceLines</code>( <var class="Arg">gens</var>, <var class="Arg">size</var>, <var class="Arg">ti</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p><var class="Arg">gens</var> must be a list of matrix group generators and <var class="Arg">size</var> an integer giving an upper bound for the lengths of orbits (for example the order of the group generated by <var class="Arg">gens</var>). <var class="Arg">ti</var> is an integer specifying the number of seconds to run. This function enumerates orbits of random one-dimensional subspaces in the natural space the group is acting on (with an upper limit of length given by <var class="Arg">size</var>). The average length and some other information is printed on the screen.</p>
@@ -204,7 +204,7 @@ true
 
 <h5>7.5-1 FindShortGeneratorsOfSubgroup</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindShortGeneratorsOfSubgroup</code>( <var class="Arg">G</var>, <var class="Arg">U</var>[, <var class="Arg">membopt</var>] )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindShortGeneratorsOfSubgroup</code>( <var class="Arg">G</var>, <var class="Arg">U</var>[, <var class="Arg">membopt</var>] )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: a record described below</p>
 
 <p>The arguments <var class="Arg">U</var> and <var class="Arg">G</var> must be <strong class="pkg">GAP</strong> group objects with <var class="Arg">U</var> being a subgroup of <var class="Arg">G</var>. The argument <var class="Arg">membopt</var> can be a function taking two arguments, namely a group element and a group, that checks, whether the group element lies in the group or not, returning <code class="keyw">true</code> or <code class="keyw">false</code> accordingly. You can usually just use the function <code class="code">\in</code> as third argument. Note that this function will only ever be called with <var class="Arg">U</var> as its second argument so you can in fact provide a function which ignores its second argument and has <var class="Arg">U</var> somehow built in it.</p>

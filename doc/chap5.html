@@ -53,7 +53,7 @@
 
 <h5>5.2-1 LinkedListCache</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LinkedListCache</code>( <var class="Arg">memorylimit</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LinkedListCache</code>( <var class="Arg">memorylimit</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A new cache object</p>
 
 <p>This operation creates a new linked list cache that uses at most <var class="Arg">memorylimit</var> bytes to store its entries. The cache is organised as a linked list, newly cached objects are appended at the beginning of the list, when the used memory grows over the limit, old objects are removed at the end of this list automatically.</p>
@@ -64,7 +64,7 @@
 
 <h5>5.2-2 CacheObject</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; CacheObject</code>( <var class="Arg">c</var>, <var class="Arg">ob</var>, <var class="Arg">mem</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; CacheObject</code>( <var class="Arg">c</var>, <var class="Arg">ob</var>, <var class="Arg">mem</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A new node in the linked list cache</p>
 
 <p>This operation enters the object <var class="Arg">ob</var> into the cache <var class="Arg">c</var>. The argument <var class="Arg">mem</var> is an integer with the memory usage of the object <var class="Arg">ob</var>. The object is prepended to the linked list cache and enough objects at the end are removed to enforce the memory usage limit.</p>
@@ -73,7 +73,7 @@
 
 <h5>5.2-3 ClearCache</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ClearCache</code>( <var class="Arg">c</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ClearCache</code>( <var class="Arg">c</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: Nothing</p>
 
 <p>Completely clears the cache <var class="Arg">c</var> removing all nodes.</p>
@@ -86,7 +86,7 @@
 
 <h5>5.2-4 UseCacheObject</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; UseCacheObject</code>( <var class="Arg">c</var>, <var class="Arg">r</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; UseCacheObject</code>( <var class="Arg">c</var>, <var class="Arg">r</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: Nothing</p>
 
 <p>The argument <var class="Arg">c</var> must be a cache object and <var class="Arg">r</var> a node for such a cache. The object is either moved to the front of the linked list (if it is still in the cache) or it is re-cached. If necessary, objects at the end are removed from the cache to enforce the memory usage limit.</p>

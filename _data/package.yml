@@ -1,8 +1,8 @@
 name: orb
-version: 4.8.0
-date: 2017-11-10
+version: 4.8.1
+date: 2018-09-10
 description: |
-    Methods to enumerate Orbits
+    Methods to enumerate orbits
 
 authors:
     - name: Juergen Mueller
@@ -20,12 +20,7 @@ maintainers:
     - name: Max Horn
       url: http://www.quendi.de/math
 
-GAP: ">=4.6"
-
-needed-pkgs:
-    - name: "GAPDoc"
-      version: ">= 1.2"
-      url: "http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc"
+GAP: ">=4.9"
 
 suggested-pkgs:
     - name: "IO"
@@ -33,14 +28,12 @@ suggested-pkgs:
       url: "https://gap-packages.github.io/io"
 
 www: https://gap-packages.github.io/orb
-readme: README
+readme: README.md
 packageinfo: https://gap-packages.github.io/orb/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-packages/orb/releases/download/v4.8.0/orb-4.8.0.tar.gz
-    - name: .tar.bz2
-      url: https://github.com/gap-packages/orb/releases/download/v4.8.0/orb-4.8.0.tar.bz2
+      url: https://github.com/gap-packages/orb/releases/download/v4.8.1/orb-4.8.1.tar.gz
 
 abstract: |
     The <span class="pkgname">orb</span> package is about enumerating orbits in various ways.

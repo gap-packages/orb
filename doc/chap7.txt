@@ -57,7 +57,7 @@
   
   [1X7.2-1 RandomSearcher[101X
   
-  [29X[2XRandomSearcher[102X( [3Xgens[103X, [3Xtestfunc[103X[, [3Xopt[103X] ) [32X operation
+  [33X[1;0Y[29X[2XRandomSearcher[102X( [3Xgens[103X, [3Xtestfunc[103X[, [3Xopt[103X] ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya random searcher object[133X
   
   [33X[0;0Y[3Xgens[103X  must  be  a  list  of  group generators, [3Xtestfunc[103X a function taking as
@@ -102,7 +102,7 @@
   
   [1X7.2-2 Search[101X
   
-  [29X[2XSearch[102X( [3Xrs[103X ) [32X operation
+  [33X[1;0Y[29X[2XSearch[102X( [3Xrs[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya group element[133X
   
   [33X[0;0YRuns  the  search  with  the  random searcher object [3Xrs[103X and returns with the
@@ -126,7 +126,7 @@
   
   [1X7.3-1 FindInvolution[101X
   
-  [29X[2XFindInvolution[102X( [3Xpr[103X ) [32X function
+  [33X[1;0Y[29X[2XFindInvolution[102X( [3Xpr[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan involution[133X
   
   [33X[0;0Y[3Xpr[103X  must  be  a  product  replacer  object  (see  Section  [14X6.2[114X). Searches an
@@ -135,7 +135,7 @@
   
   [1X7.3-2 FindCentralisingElementOfInvolution[101X
   
-  [29X[2XFindCentralisingElementOfInvolution[102X( [3Xpr[103X, [3Xa[103X ) [32X function
+  [33X[1;0Y[29X[2XFindCentralisingElementOfInvolution[102X( [3Xpr[103X, [3Xa[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya group element[133X
   
   [33X[0;0Y[3Xpr[103X  must be a product replacer object (see Section [14X6.2[114X). Produces one random
@@ -144,7 +144,7 @@
   
   [1X7.3-3 FindInvolutionCentralizer[101X
   
-  [29X[2XFindInvolutionCentralizer[102X( [3Xpr[103X, [3Xa[103X, [3Xnr[103X ) [32X function
+  [33X[1;0Y[29X[2XFindInvolutionCentralizer[102X( [3Xpr[103X, [3Xa[103X, [3Xnr[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya list of [3Xnr[103X group elements[133X
   
   [33X[0;0Y[3Xpr[103X must be a product replacer object (see Section [14X6.2[114X) and [3Xa[103X and involution.
@@ -160,7 +160,7 @@
   
   [1X7.4-1 OrbitStatisticOnVectorSpace[101X
   
-  [29X[2XOrbitStatisticOnVectorSpace[102X( [3Xgens[103X, [3Xsize[103X, [3Xti[103X ) [32X function
+  [33X[1;0Y[29X[2XOrbitStatisticOnVectorSpace[102X( [3Xgens[103X, [3Xsize[103X, [3Xti[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ynothing[133X
   
   [33X[0;0Y[3Xgens[103X must be a list of matrix group generators and [3Xsize[103X an integer giving an
@@ -172,7 +172,7 @@
   
   [1X7.4-2 OrbitStatisticOnVectorSpaceLines[101X
   
-  [29X[2XOrbitStatisticOnVectorSpaceLines[102X( [3Xgens[103X, [3Xsize[103X, [3Xti[103X ) [32X function
+  [33X[1;0Y[29X[2XOrbitStatisticOnVectorSpaceLines[102X( [3Xgens[103X, [3Xsize[103X, [3Xti[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ynothing[133X
   
   [33X[0;0Y[3Xgens[103X must be a list of matrix group generators and [3Xsize[103X an integer giving an
@@ -191,7 +191,7 @@
   
   [1X7.5-1 FindShortGeneratorsOfSubgroup[101X
   
-  [29X[2XFindShortGeneratorsOfSubgroup[102X( [3XG[103X, [3XU[103X[, [3Xmembopt[103X] ) [32X method
+  [33X[1;0Y[29X[2XFindShortGeneratorsOfSubgroup[102X( [3XG[103X, [3XU[103X[, [3Xmembopt[103X] ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record described below[133X
   
   [33X[0;0YThe  arguments  [3XU[103X and [3XG[103X must be [5XGAP[105X group objects with [3XU[103X being a subgroup of

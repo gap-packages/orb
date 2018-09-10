@@ -54,7 +54,7 @@
   
   [1X8.2-1 AVLTree[101X
   
-  [29X[2XAVLTree[102X( [[3Xopt[103X] ) [32X function
+  [33X[1;0Y[29X[2XAVLTree[102X( [[3Xopt[103X] ) [32X function[133X
   [6XReturns:[106X  [33X[0;10YA new AVL tree object[133X
   
   [33X[0;0YThis function creates a new AVL tree object. The optional argument [3Xopt[103X is an
@@ -74,7 +74,7 @@
   
   [1X8.2-2 AVLCmp[101X
   
-  [29X[2XAVLCmp[102X( [3Xa[103X, [3Xb[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLCmp[102X( [3Xa[103X, [3Xb[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Y-1, 0 or 1[133X
   
   [33X[0;0YThis function calls the [9X<[109X operation and the [9X=[109X operation to provide a generic
@@ -86,7 +86,7 @@
   
   [1X8.2-3 AVLAdd[101X
   
-  [29X[2XAVLAdd[102X( [3Xt[103X, [3Xkey[103X, [3Xval[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLAdd[102X( [3Xt[103X, [3Xkey[103X, [3Xval[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfail[109X[133X
   
   [33X[0;0YThe  first  argument [3Xt[103X must be an AVL tree. This function stores the key [3Xkey[103X
@@ -98,7 +98,7 @@
   
   [1X8.2-4 AVLLookup[101X
   
-  [29X[2XAVLLookup[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLLookup[102X( [3Xt[103X, [3Xkey[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan value or [9Xfail[109X[133X
   
   [33X[0;0YThe first argument [3Xt[103X must be an AVL tree. This function looks up the key [3Xkey[103X
@@ -109,7 +109,7 @@
   
   [1X8.2-5 AVLDelete[101X
   
-  [29X[2XAVLDelete[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLDelete[102X( [3Xt[103X, [3Xkey[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan value or [9Xfail[109X[133X
   
   [33X[0;0YThe first argument [3Xt[103X must be an AVL tree. This function looks up the key [3Xkey[103X
@@ -120,7 +120,7 @@
   
   [1X8.2-6 AVLFindIndex[101X
   
-  [29X[2XAVLFindIndex[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLFindIndex[102X( [3Xt[103X, [3Xkey[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
   
   [33X[0;0YThe first argument [3Xt[103X must be an AVL tree. This function looks up the key [3Xkey[103X
@@ -134,7 +134,7 @@
   
   [1X8.2-7 AVLIndex[101X
   
-  [29X[2XAVLIndex[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLIndex[102X( [3Xt[103X, [3Xindex[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya key or [9Xfail[109X[133X
   
   [33X[0;0YThe  first  argument [3Xt[103X must be an AVL tree. This function returns the key at
@@ -146,7 +146,7 @@
   
   [1X8.2-8 AVLIndexLookup[101X
   
-  [29X[2XAVLIndexLookup[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLIndexLookup[102X( [3Xt[103X, [3Xindex[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya value or [9Xfail[109X[133X
   
   [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree. This function returns the value
@@ -158,7 +158,7 @@
   
   [1X8.2-9 AVLIndexAdd[101X
   
-  [29X[2XAVLIndexAdd[102X( [3Xt[103X, [3Xkey[103X, [3Xvalue[103X, [3Xindex[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLIndexAdd[102X( [3Xt[103X, [3Xkey[103X, [3Xvalue[103X, [3Xindex[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya key or [9Xfail[109X[133X
   
   [33X[0;0YThe  first argument [3Xt[103X must be an AVL tree. This function inserts the key [3Xkey[103X
@@ -179,7 +179,7 @@
   
   [1X8.2-10 AVLIndexDelete[101X
   
-  [29X[2XAVLIndexDelete[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLIndexDelete[102X( [3Xt[103X, [3Xindex[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya key or [9Xfail[109X[133X
   
   [33X[0;0YThe  first  argument [3Xt[103X must be an AVL tree. This function deletes the key at
@@ -189,7 +189,7 @@
   
   [1X8.2-11 AVLFind[101X
   
-  [29X[2XAVLFind[102X( [3Xt[103X, [3Xkey[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLFind[102X( [3Xt[103X, [3Xkey[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
   
   [33X[0;0YThe  first argument [3Xt[103X must be an AVL tree. This function locates the key [3Xkey[103X
@@ -203,7 +203,7 @@
   
   [1X8.2-12 AVLIndexFind[101X
   
-  [29X[2XAVLIndexFind[102X( [3Xt[103X, [3Xindex[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLIndexFind[102X( [3Xt[103X, [3Xindex[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
   
   [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree. This function locates the index
@@ -217,7 +217,7 @@
   
   [1X8.2-13 AVLData[101X
   
-  [29X[2XAVLData[102X( [3Xt[103X, [3Xpos[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLData[102X( [3Xt[103X, [3Xpos[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan key[133X
   
   [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree and the second a position in the
@@ -226,7 +226,7 @@
   
   [1X8.2-14 AVLValue[101X
   
-  [29X[2XAVLValue[102X( [3Xt[103X, [3Xpos[103X ) [32X function
+  [33X[1;0Y[29X[2XAVLValue[102X( [3Xt[103X, [3Xpos[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya value[133X
   
   [33X[0;0YThe  first  argument  [3Xt[103X must be an AVL tree and the second a position in the
@@ -238,7 +238,7 @@
   
   [1X8.2-15 Display[101X
   
-  [29X[2XDisplay[102X( [3Xt[103X ) [32X method
+  [33X[1;0Y[29X[2XDisplay[102X( [3Xt[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ynothing[133X
   
   [33X[0;0YThis function displays the tree in a user-friendly way. Do not try this with
@@ -246,7 +246,7 @@
   
   [1X8.2-16 ELM_LIST[101X
   
-  [29X[2XELM_LIST[102X( [3Xt[103X, [3Xindex[103X ) [32X method
+  [33X[1;0Y[29X[2XELM_LIST[102X( [3Xt[103X, [3Xindex[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10YA key or [9Xfail[109X[133X
   
   [33X[0;0YThis  method  allows  for  easy access to the key at index [3Xindex[103X in the tree
@@ -255,7 +255,7 @@
   
   [1X8.2-17 Position[101X
   
-  [29X[2XPosition[102X( [3Xt[103X, [3Xkey[103X ) [32X method
+  [33X[1;0Y[29X[2XPosition[102X( [3Xt[103X, [3Xkey[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Yan integer or [9Xfail[109X[133X
   
   [33X[0;0YThis  method  allows  to  use  the [10XPosition[110X operation to locate the index at
@@ -264,7 +264,7 @@
   
   [1X8.2-18 Add[101X
   
-  [29X[2XAdd[102X( [3Xt[103X, [3Xkey[103X[, [3Xindex[103X] ) [32X method
+  [33X[1;0Y[29X[2XAdd[102X( [3Xt[103X, [3Xkey[103X[, [3Xindex[103X] ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ynothing[133X
   
   [33X[0;0YThis  method  allows  to use the [10XAdd[110X operation to add a key (with associated
@@ -275,7 +275,7 @@
   
   [1X8.2-19 Remove[101X
   
-  [29X[2XRemove[102X( [3Xt[103X, [3Xindex[103X ) [32X method
+  [33X[1;0Y[29X[2XRemove[102X( [3Xt[103X, [3Xindex[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya key[133X
   
   [33X[0;0YThis method allows to use the [10XRemove[110X operation to remove a key from the tree
@@ -285,7 +285,7 @@
   
   [1X8.2-20 Length[101X
   
-  [29X[2XLength[102X( [3Xt[103X ) [32X method
+  [33X[1;0Y[29X[2XLength[102X( [3Xt[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya key[133X
   
   [33X[0;0YThis  method  returns the number of entries stored in the tree [3Xt[103X. This is to
@@ -293,7 +293,7 @@
   
   [1X8.2-21 \in[101X
   
-  [29X[2X\in[102X( [3Xkey[103X, [3Xt[103X ) [32X method
+  [33X[1;0Y[29X[2X\in[102X( [3Xkey[103X, [3Xt[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
   
   [33X[0;0YThis  method  tests  whether or not the key [3Xkey[103X is stored in the AVL tree [3Xt[103X.

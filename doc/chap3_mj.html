@@ -90,7 +90,7 @@
 
 <h5>3.1-1 Orb</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Orb</code>( <var class="Arg">gens</var>, <var class="Arg">point</var>, <var class="Arg">op</var>[, <var class="Arg">opt</var>] )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Orb</code>( <var class="Arg">gens</var>, <var class="Arg">point</var>, <var class="Arg">op</var>[, <var class="Arg">opt</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: An orbit object</p>
 
 <p>The argument <var class="Arg">gens</var> is either a <strong class="pkg">GAP</strong> group, semigroup or monoid object or a list of generators of the magma acting, <var class="Arg">point</var> is a point in the orbit to be enumerated, <var class="Arg">op</var> is a <strong class="pkg">GAP</strong> function describing the action of the generators on points in the usual way, that is, <code class="code"><var class="Arg">op</var>(p,g)</code> returns the result of the action of the element <code class="code">g</code> on the point <code class="code">p</code>.</p>
@@ -109,7 +109,7 @@
 
 <h5>3.1-2 Enumerate</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Enumerate</code>( <var class="Arg">orb</var>[, <var class="Arg">limit</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Enumerate</code>( <var class="Arg">orb</var>[, <var class="Arg">limit</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: The orbit object <var class="Arg">orb</var></p>
 
 <p><var class="Arg">orb</var> must be an orbit object created by <code class="func">Orb</code> (<a href="chap3_mj.html#X86A89A0881CE04F6"><span class="RefLink">3.1-1</span></a>). The optional argument <var class="Arg">limit</var> must be a positive integer meaning that the orbit enumeration should stop if <var class="Arg">limit</var> points have been found, regardless whether the orbit is complete or not. Note that the orbit enumeration can be continued by again calling the <code class="func">Enumerate</code> operation. If the argument <var class="Arg">limit</var> is omitted, the whole orbit is enumerated, unless other options lead to prior termination.</p>
@@ -120,7 +120,7 @@
 
 <h5>3.1-3 IsClosed</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsClosed</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsClosed</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
 <p>The result indicates, whether the orbit <var class="Arg">orb</var> is already complete or not.</p>
@@ -341,7 +341,7 @@ true
 
 <h5>3.1-6 StabWords</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; StabWords</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; StabWords</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A list of words</p>
 
 <p>If the stabiliser was computed during the orbit enumeration, then this function returns the stabiliser generators found as words in the generators. A word is a sequence of integers, where positive integers stand for generators and negative numbers for their inverses.</p>
@@ -350,7 +350,7 @@ true
 
 <h5>3.1-7 PositionOfFound</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; PositionOfFound</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; PositionOfFound</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: An integer</p>
 
 <p>If during the orbit enumeration the option <code class="code">lookingfor</code> was used and the orbit enumerator looked for something, then this operation returns the index in the orbit, where the something was found most recently.</p>
@@ -359,7 +359,7 @@ true
 
 <h5>3.1-8 UnderlyingPlist</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; UnderlyingPlist</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; UnderlyingPlist</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: An plain list</p>
 
 <p>This returns the current elements in the orbit represented by <var class="Arg">orb</var> as a plain list. This is guaranteed to be a very fast operation using only constant time. However, it does give you a part of the internal data structure of <var class="Arg">orb</var>. Note that it is not allowed to change the resulting list in any way because that would corrupt the data structures of the orbit.</p>
@@ -368,7 +368,7 @@ true
 
 <h5>3.1-9 DepthOfSchreierTree</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; DepthOfSchreierTree</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; DepthOfSchreierTree</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: An integer</p>
 
 <p>If a Schreier tree or a log was stored during orbit enumeration, then this operation returns the depth of the Schreier tree.</p>
@@ -377,7 +377,7 @@ true
 
 <h5>3.1-10 IsGradedOrbit</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsGradedOrbit</code>( <var class="Arg">orb</var> )</td><td class="tdright">( filter )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsGradedOrbit</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;filter&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
 <p>If the option <code class="code">gradingfunc</code> has been used when creating the orbit object, then a "grade" is computed for every point in the orbit. In this case the orbit object lies in this filter. The list of grades can then be queried using the <code class="func">Grades</code> (<a href="chap3_mj.html#X7BBE86D97DF2304B"><span class="RefLink">3.1-11</span></a>) operation below.</p>
@@ -386,7 +386,7 @@ true
 
 <h5>3.1-11 Grades</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Grades</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Grades</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a list of grades</p>
 
 <p>If the option <code class="code">gradingfunc</code> has been used when creating the orbit object, then a "grade" is computed for every point in the orbit. This operation retrieves the list of grades from the orbit object <var class="Arg">orb</var>. Note that this is in general a mutable list which must not be changed. It needs to be mutable if the orbit enumeration goes on and this operation does not copy it for efficiency reasons.</p>
@@ -395,7 +395,7 @@ true
 
 <h5>3.1-12 OrbitGraph</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitGraph</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitGraph</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a list of lists</p>
 
 <p>The vertices of the orbit graph are the points of the orbit and the (directed) edges are given by the generators acting. So if a generator <span class="SimpleMath">\(g\)</span> maps point <span class="SimpleMath">\(a\)</span> to <span class="SimpleMath">\(b\)</span> then there is a directed edge from the vertex <span class="SimpleMath">\(a\)</span> to the vertex <span class="SimpleMath">\(b\)</span>. This operation returns the orbit graph can in the following format: The result is a list of equal length as the orbit. Each entry (corresponding to a point in the orbit) contains a list of orbit point numbers, one for each generator used for the orbit enumeration. That is, position <span class="SimpleMath">\([i][j]\)</span> in the list contains the number in the orbit of the image of orbit point number <span class="SimpleMath">\(i\)</span> under the generator with number <span class="SimpleMath">\(j\)</span>.</p>
@@ -406,7 +406,7 @@ true
 
 <h5>3.1-13 OrbitGraphAsSets</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitGraphAsSets</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitGraphAsSets</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a list of sets</p>
 
 <p>This operation returns the same graph as <code class="func">OrbitGraph</code> (<a href="chap3_mj.html#X8389D8AB794EF721"><span class="RefLink">3.1-12</span></a>) in a slightly different format. The neighbours of a point are reported as a set of numbers rather than as a tuple. That is, position <span class="SimpleMath">\([i]\)</span> of the resulting lists is the set of numbers of the (directed) neighbours of point number <span class="SimpleMath">\(i\)</span>.</p>
@@ -417,7 +417,7 @@ true
 
 <h5>3.1-14 ActionOnOrbit</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ActionOnOrbit</code>( <var class="Arg">orb</var>, <var class="Arg">grpels</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ActionOnOrbit</code>( <var class="Arg">orb</var>, <var class="Arg">grpels</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A permutation or <code class="keyw">fail</code></p>
 
 <p><var class="Arg">orb</var> must be an orbit object and <var class="Arg">grpels</var> a list of group elements acting on the orbit. This operation calculates the action of <var class="Arg">grpels</var> on <var class="Arg">orb</var> as <strong class="pkg">GAP</strong> permutations, where the numbering of the points is in the same order as the points have been found in the orbit. Note that this operation is particularly fast if the orbit is an orbit of a permutation group acting on positive integers or if you used the option <code class="code">storenumbers</code> described in Subsection <a href="chap3_mj.html#X81BF5A087B9E1353"><span class="RefLink">3.1-4</span></a>.</p>
@@ -426,7 +426,7 @@ true
 
 <h5>3.1-15 OrbActionHomomorphism</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbActionHomomorphism</code>( <var class="Arg">g</var>, <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbActionHomomorphism</code>( <var class="Arg">g</var>, <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: An action homomorphism</p>
 
 <p>The argument <var class="Arg">g</var> must be a group and <var class="Arg">orb</var> an orbit on which <var class="Arg">g</var> acts in the action of the orbit object. This operation returns a homomorphism into a permutation group acquired by taking the action of <var class="Arg">g</var> on the orbit.</p>
@@ -435,7 +435,7 @@ true
 
 <h5>3.1-16 TraceSchreierTreeForward</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TraceSchreierTreeForward</code>( <var class="Arg">orb</var>, <var class="Arg">nr</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TraceSchreierTreeForward</code>( <var class="Arg">orb</var>, <var class="Arg">nr</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A word in the generators</p>
 
 <p><var class="Arg">orb</var> must be an orbit object with a Schreier tree, that is, the option <code class="code">schreier</code> must have been set during creation, and <var class="Arg">nr</var> must be the number of a point in the orbit. This operation traces the Schreier tree and returns a word in the generators that maps the starting point to the point with number <var class="Arg">nr</var>. Here, a word is a list of positive integers which are numbers of generators of the orbit.</p>
@@ -444,7 +444,7 @@ true
 
 <h5>3.1-17 TraceSchreierTreeBack</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TraceSchreierTreeBack</code>( <var class="Arg">orb</var>, <var class="Arg">nr</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TraceSchreierTreeBack</code>( <var class="Arg">orb</var>, <var class="Arg">nr</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A word in the generators</p>
 
 <p><var class="Arg">orb</var> must be an orbit object with a Schreier tree, that is, the option <code class="code">schreier</code> must have been set during creation, and <var class="Arg">nr</var> must be the number of a point in the orbit. This operation traces the Schreier tree and returns a word in the inverses of the generators that maps the point with number <var class="Arg">nr</var> to the starting point. As above, a word is here a list of positive integers which are numbers of inverses of the generators of the orbit.</p>
@@ -453,7 +453,7 @@ true
 
 <h5>3.1-18 ActWithWord</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ActWithWord</code>( <var class="Arg">gens</var>, <var class="Arg">w</var>, <var class="Arg">op</var>, <var class="Arg">p</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ActWithWord</code>( <var class="Arg">gens</var>, <var class="Arg">w</var>, <var class="Arg">op</var>, <var class="Arg">p</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A point</p>
 
 <p><var class="Arg">gens</var> must be a list of group generators, <var class="Arg">w</var> a list of positive integers less than or equal to the length of <var class="Arg">gens</var>, <var class="Arg">op</var> an action function and <var class="Arg">p</var> a point. This operation computes the action of the word <var class="Arg">w</var> in the generators <var class="Arg">gens</var> on the point <var class="Arg">p</var> and returns the result.</p>
@@ -462,7 +462,7 @@ true
 
 <h5>3.1-19 EvaluateWord</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; EvaluateWord</code>( <var class="Arg">gens</var>, <var class="Arg">w</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; EvaluateWord</code>( <var class="Arg">gens</var>, <var class="Arg">w</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A group element</p>
 
 <p><var class="Arg">gens</var> must be a list of group generators, <var class="Arg">w</var> a list of positive integers less than or equal to the length of <var class="Arg">gens</var>. This operation evaluates the word <var class="Arg">w</var> in the generators <var class="Arg">gens</var> and returns the result.</p>
@@ -471,7 +471,7 @@ true
 
 <h5>3.1-20 AddGeneratorsToOrbit</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AddGeneratorsToOrbit</code>( <var class="Arg">orb</var>, <var class="Arg">l</var>[, <var class="Arg">p</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AddGeneratorsToOrbit</code>( <var class="Arg">orb</var>, <var class="Arg">l</var>[, <var class="Arg">p</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: The orbit object <var class="Arg">orb</var></p>
 
 <p><var class="Arg">orb</var> must be an orbit object, <var class="Arg">l</var> a list of new generators and, if given, <var class="Arg">p</var> must be a list of permutations of equal length. <var class="Arg">p</var> must be given if and only if the component <code class="code">permgens</code> was specified upon creation of the orbit object. The new generators are appended to the old list of generators. The orbit object is changed such that it then shows the outcome of a breadth-first orbit enumeration with the <em>new</em> list of generators. Note that the order of the points already enumerated will <em>not</em> be changed. However, the Schreier tree changes, the component <code class="code">orbind</code> is changed to indicate the order in which the points were found in the breadth-first search with the new generators and the components <code class="code">depth</code> and <code class="code">depthmarks</code> are changed.</p>
@@ -484,7 +484,7 @@ true
 
 <h5>3.1-21 MakeSchreierTreeShallow</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeSchreierTreeShallow</code>( <var class="Arg">orb</var>[, <var class="Arg">d</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeSchreierTreeShallow</code>( <var class="Arg">orb</var>[, <var class="Arg">d</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p>The argument <var class="Arg">orb</var> must be a closed orbit object with a log and a Schreier tree, that is, the options <code class="code">log</code> and <code class="code">schreier</code> must have been set to true during creation.</p>
@@ -495,7 +495,7 @@ true
 
 <h5>3.1-22 FindSuborbits</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindSuborbits</code>( <var class="Arg">orb</var>, <var class="Arg">subgens</var>[, <var class="Arg">nrsuborbits</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; FindSuborbits</code>( <var class="Arg">orb</var>, <var class="Arg">subgens</var>[, <var class="Arg">nrsuborbits</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: A record</p>
 
 <p>The argument <var class="Arg">orb</var> must be a closed orbit object with a Schreier vector, <var class="Arg">subgens</var> a list of generators for a subgroup of the originally acting group. If given, <var class="Arg">nrsuborbits</var> must be a lower limit for the number of suborbits.</p>
@@ -508,7 +508,7 @@ true
 
 <h5>3.1-23 OrbitIntersectionMatrix</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitIntersectionMatrix</code>( <var class="Arg">r</var>, <var class="Arg">g</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitIntersectionMatrix</code>( <var class="Arg">r</var>, <var class="Arg">g</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: An integer matrix</p>
 
 <p>The argument <var class="Arg">r</var> must be a suborbit record as returned by the operation <code class="func">FindSuborbits</code> (<a href="chap3_mj.html#X8566B13379E697F6"><span class="RefLink">3.1-22</span></a>) above, describing the suborbit structure of an orbit with respect to a subgroup. <var class="Arg">g</var> must be an element of the acting group. If <span class="SimpleMath">\(k\)</span> is the number of suborbits and the suborbits are <span class="SimpleMath">\(O_1, \ldots, O_k\)</span>, then the matrix returned by this operation has the integer <span class="SimpleMath">\(|O_i \cdot \textit{g} \cap O_j|\)</span> in its <span class="SimpleMath">\((i,j)\)</span>-entry.</p>
@@ -517,7 +517,7 @@ true
 
 <h5>3.1-24 ORB_EstimateOrbitSize</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ORB_EstimateOrbitSize</code>( <var class="Arg">gens</var>, <var class="Arg">pt</var>, <var class="Arg">op</var>, <var class="Arg">L</var>, <var class="Arg">limit</var>, <var class="Arg">timeout</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ORB_EstimateOrbitSize</code>( <var class="Arg">gens</var>, <var class="Arg">pt</var>, <var class="Arg">op</var>, <var class="Arg">L</var>, <var class="Arg">limit</var>, <var class="Arg">timeout</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">fail</code> or a record</p>
 
 <p>The argument <var class="Arg">gens</var> is a list of group generators for a group <span class="SimpleMath">\(G\)</span>, the argument <var class="Arg">pt</var> a point and <var class="Arg">op</var> and action function for a group action of <span class="SimpleMath">\(G\)</span> acting on points like <var class="Arg">pt</var>. This function starts to act with random elements of <span class="SimpleMath">\(G\)</span> on <var class="Arg">pt</var> producing random elements of the orbit <span class="SimpleMath">\(\textit{pt}*G\)</span> and uses the birthday paradox to estimate the orbit size. To this end it creates points of the orbit until <var class="Arg">L</var> coincidences (points found twice) have been found. If before this happens <var class="Arg">limit</var> tries have been reached or if more than <var class="Arg">timeout</var> milliseconds have ellapsed, the function gives up and returns <code class="keyw">fail</code>. Otherwise it estimates the orbit size giving an estimate in the component <code class="code">estimate</code>, a confidence interval described by the components <code class="code">lowerbound</code> and <code class="code">upperbound</code>, a list of generators for the stabiliser in the component <code class="code">Sgens</code> and the number of coincidences that were caused by picking the same group element. The length of <code class="code">Sgens</code> is <span class="SimpleMath">\(\textit{L}-\)</span><code class="code">grpcoinc</code>. Use at least <span class="SimpleMath">\(15\)</span> for <var class="Arg">L</var>, otherwise the statistics are not valid.</p>

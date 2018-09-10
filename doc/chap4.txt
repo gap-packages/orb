@@ -42,7 +42,7 @@
   
   [1X4.2-1 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X operation
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThe first argument [3Xob[103X must be a sample object, that is, an object like those
@@ -67,7 +67,7 @@
   
   [1X4.2-2 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis  method is for compressed vectors over the field [10XGF(2)[110X of two elements.
@@ -79,7 +79,7 @@
   
   [1X4.2-3 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis  method  is  for  compressed vectors over a finite field with up to [22X256[122X
@@ -92,7 +92,7 @@
   
   [1X4.2-4 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis method is for compressed matrices over the field [10XGF(2)[110X of two elements.
@@ -104,7 +104,7 @@
   
   [1X4.2-5 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis  method  is  for compressed matrices over a finite field with up to [22X256[122X
@@ -117,42 +117,42 @@
   
   [1X4.2-6 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis method is for integers.[133X
   
   [1X4.2-7 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis method is for permutations.[133X
   
   [1X4.2-8 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis method is for lists of integers.[133X
   
   [1X4.2-9 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis method is for kernel Pc words.[133X
   
   [1X4.2-10 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis method is for lists of integers.[133X
   
   [1X4.2-11 ChooseHashFunction[101X
   
-  [29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method
+  [33X[1;0Y[29X[2XChooseHashFunction[102X( [3Xob[103X, [3Xlen[103X ) [32X method[133X
   [6XReturns:[106X  [33X[0;10Ya record[133X
   
   [33X[0;0YThis method is for lists of matrices.[133X
@@ -162,7 +162,7 @@
   
   [1X4.3-1 HTCreate[101X
   
-  [29X[2XHTCreate[102X( [3Xsample[103X[, [3Xopt[103X] ) [32X operation
+  [33X[1;0Y[29X[2XHTCreate[102X( [3Xsample[103X[, [3Xopt[103X] ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
   
   [33X[0;0YA new hash table for objects like [3Xsample[103X is created. The second argument [3Xopt[103X
@@ -250,7 +250,7 @@
   
   [1X4.3-2 HTAdd[101X
   
-  [29X[2XHTAdd[102X( [3Xht[103X, [3Xkey[103X, [3Xvalue[103X ) [32X operation
+  [33X[1;0Y[29X[2XHTAdd[102X( [3Xht[103X, [3Xkey[103X, [3Xvalue[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Ya hash value[133X
   
   [33X[0;0YStores  the  object  [3Xkey[103X  into  the  hash  table [3Xht[103X and stores the value [3Xval[103X
@@ -272,7 +272,7 @@
   
   [1X4.3-3 HTValue[101X
   
-  [29X[2XHTValue[102X( [3Xht[103X, [3Xkey[103X ) [32X operation
+  [33X[1;0Y[29X[2XHTValue[102X( [3Xht[103X, [3Xkey[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or [9Xtrue[109X or a value[133X
   
   [33X[0;0YLooks  up  the  object [3Xkey[103X in the hash table [3Xht[103X. If the object is not found,
@@ -281,7 +281,7 @@
   
   [1X4.3-4 HTUpdate[101X
   
-  [29X[2XHTUpdate[102X( [3Xht[103X, [3Xkey[103X, [3Xvalue[103X ) [32X operation
+  [33X[1;0Y[29X[2XHTUpdate[102X( [3Xht[103X, [3Xkey[103X, [3Xvalue[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or [9Xtrue[109X or a value[133X
   
   [33X[0;0YThe  object  [3Xkey[103X must already be stored in the hash table [3Xht[103X, otherwise this
@@ -290,7 +290,7 @@
   
   [1X4.3-5 HTDelete[101X
   
-  [29X[2XHTDelete[102X( [3Xht[103X, [3Xkey[103X ) [32X operation
+  [33X[1;0Y[29X[2XHTDelete[102X( [3Xht[103X, [3Xkey[103X ) [32X operation[133X
   [6XReturns:[106X  [33X[0;10Y[9Xfail[109X or [9Xtrue[109X or a value[133X
   
   [33X[0;0YThe  object  [3Xkey[103X  along with its stored value is removed from the hash table
@@ -300,7 +300,7 @@
   
   [1X4.3-6 HTGrow[101X
   
-  [29X[2XHTGrow[102X( [3Xht[103X, [3Xob[103X ) [32X function
+  [33X[1;0Y[29X[2XHTGrow[102X( [3Xht[103X, [3Xob[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ynothing[133X
   
   [33X[0;0YThis  is a more or less internal operation. It is called when the space in a
@@ -328,7 +328,7 @@
   
   [1X4.4-1 NewHT[101X
   
-  [29X[2XNewHT[102X( [3Xsample[103X, [3Xlen[103X ) [32X function
+  [33X[1;0Y[29X[2XNewHT[102X( [3Xsample[103X, [3Xlen[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
   
   [33X[0;0YA new hash table for objects like [3Xsample[103X of length [3Xlen[103X is created. Note that
@@ -340,7 +340,7 @@
   
   [1X4.4-2 AddHT[101X
   
-  [29X[2XAddHT[102X( [3Xht[103X, [3Xob[103X, [3Xval[103X ) [32X function
+  [33X[1;0Y[29X[2XAddHT[102X( [3Xht[103X, [3Xob[103X, [3Xval[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Yan integer or fail[133X
   
   [33X[0;0YStores  the  object  [3Xob[103X  into  the  hash  table  [3Xht[103X and stores the value [3Xval[103X
@@ -361,7 +361,7 @@
   
   [1X4.4-3 ValueHT[101X
   
-  [29X[2XValueHT[102X( [3Xht[103X, [3Xob[103X ) [32X function
+  [33X[1;0Y[29X[2XValueHT[102X( [3Xht[103X, [3Xob[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ythe stored value, [9Xtrue[109X, or [9Xfail[109X[133X
   
   [33X[0;0YLooks  up  the  object  [3Xob[103X in the hash table [3Xht[103X. If the object is not found,
@@ -373,7 +373,7 @@
   
   [1X4.4-4 InitHT[101X
   
-  [29X[2XInitHT[102X( [3Xlen[103X, [3Xhfun[103X, [3Xeqfun[103X ) [32X function
+  [33X[1;0Y[29X[2XInitHT[102X( [3Xlen[103X, [3Xhfun[103X, [3Xeqfun[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
   
   [33X[0;0YThis  is usually only an internal function. It is called from [2XNewHT[102X ([14X4.4-1[114X).
@@ -388,7 +388,7 @@
   
   [1X4.4-5 GrowHT[101X
   
-  [29X[2XGrowHT[102X( [3Xht[103X, [3Xob[103X ) [32X function
+  [33X[1;0Y[29X[2XGrowHT[102X( [3Xht[103X, [3Xob[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ynothing[133X
   
   [33X[0;0YThis  is  a more or less internal function. It is called when the space in a

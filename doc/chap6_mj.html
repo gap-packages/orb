@@ -56,7 +56,7 @@
 
 <h5>6.1-1 Randomize</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Randomize</code>( <var class="Arg">ob</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Randomize</code>( <var class="Arg">ob</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p>The mutable object <var class="Arg">ob</var> is changed in place. The value afterwards is random. The optional second argument <var class="Arg">rs</var> must be a random source and the random numbers used to randomize <var class="Arg">ob</var> are created using the random source <var class="Arg">rs</var> (see <a href="https://www.gap-system.org/Manuals/doc/ref/chap14_mj.html#X85361FAE8088C006"><span class="RefLink">Reference: Random Sources</span></a>). If <var class="Arg">rs</var> is not given, then the global <strong class="pkg">GAP</strong> random number generator is used.</p>
@@ -69,7 +69,7 @@
 
 <h5>6.1-2 MakeRandomVectors</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeRandomVectors</code>( <var class="Arg">sample</var>, <var class="Arg">number</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeRandomVectors</code>( <var class="Arg">sample</var>, <var class="Arg">number</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a list of random vectors</p>
 
 <p><var class="Arg">sample</var> must be a vector for the mutable copies of which <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>) is applicable and <var class="Arg">number</var> must be a positive integer. If given, <var class="Arg">rs</var> must be a random source. This function creates a list of <var class="Arg">number</var> random vectors with the same type as <var class="Arg">sample</var> using <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>). For the creation of random numbers the random source <var class="Arg">rs</var> is used or, if not given, the global <strong class="pkg">GAP</strong> random number generator.</p>
@@ -78,7 +78,7 @@
 
 <h5>6.1-3 MakeRandomLines</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeRandomLines</code>( <var class="Arg">sample</var>, <var class="Arg">number</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeRandomLines</code>( <var class="Arg">sample</var>, <var class="Arg">number</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a list of normalised random vectors</p>
 
 <p><var class="Arg">sample</var> must be a vector for the mutable copies of which <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>) is applicable and <var class="Arg">number</var> must be a positive integer. If given, <var class="Arg">rs</var> must be a random source. This function creates a list of <var class="Arg">number</var> normalised random vectors with the same type as <var class="Arg">sample</var> using <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>). "Normalised" here means that the first non-zero entry in the vector is equal to <span class="SimpleMath">\(1\)</span>. For the creation of random numbers the random source <var class="Arg">rs</var> is used or, if not given, the global <strong class="pkg">GAP</strong> random number generator.</p>
@@ -93,7 +93,7 @@
 
 <h5>6.2-1 ProductReplacer</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ProductReplacer</code>( <var class="Arg">gens</var>[, <var class="Arg">opt</var>] )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ProductReplacer</code>( <var class="Arg">gens</var>[, <var class="Arg">opt</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a new product replacer object</p>
 
 <p><var class="Arg">gens</var> must be a list of group generators. If given, <var class="Arg">opt</var> is a <strong class="pkg">GAP</strong> record with options. The operation creates a new product replacer object producing pseudo random elements in the group generated by the generators <var class="Arg">gens</var>.</p>
@@ -155,7 +155,7 @@
 
 <h5>6.2-2 Next</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Next</code>( <var class="Arg">pr</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Next</code>( <var class="Arg">pr</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a (pseudo-) random group element g</p>
 
 <p><var class="Arg">pr</var> must be a product replacer object. This operation makes the object generate the next random element and return it.</p>
@@ -164,7 +164,7 @@
 
 <h5>6.2-3 Reset</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Reset</code>( <var class="Arg">pr</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Reset</code>( <var class="Arg">pr</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p><var class="Arg">pr</var> must be a product replacer object. This operation resets the object in the sense that it resets the product replacement back to the state it had after scrambling. Note that since the random source is not reset, the product replacer object will return another sequence of random elements than before.</p>
@@ -173,7 +173,7 @@
 
 <h5>6.2-4 AddGeneratorToProductReplacer</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AddGeneratorToProductReplacer</code>( <var class="Arg">pr</var>, <var class="Arg">el</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AddGeneratorToProductReplacer</code>( <var class="Arg">pr</var>, <var class="Arg">el</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p><var class="Arg">pr</var> must be a product replacer object. This operation adds the new generator <var class="Arg">el</var> to the product replacer without needing a completely new initialisation phase. From after this call on the product replacer will generate random elements in the group generated by the old generators and the new element <var class="Arg">el</var>.</p>

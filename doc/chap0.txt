@@ -3,13 +3,13 @@
                                      [1X orb [101X
   
   
-                         [1X Methods to enumerate Orbits [101X
+                         [1X Methods to enumerate orbits [101X
   
   
-                                     4.8.0
+                                     4.8.1
   
   
-                                10 November 2017
+                               10 September 2018
   
   
                                 Juergen Mueller

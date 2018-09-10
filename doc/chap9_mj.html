@@ -91,7 +91,7 @@
 
 <h5>9.1-1 OrbitBySuborbit</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbit</code>( <var class="Arg">setup</var>, <var class="Arg">p</var>, <var class="Arg">j</var>, <var class="Arg">l</var>, <var class="Arg">i</var>, <var class="Arg">percentage</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbit</code>( <var class="Arg">setup</var>, <var class="Arg">p</var>, <var class="Arg">j</var>, <var class="Arg">l</var>, <var class="Arg">i</var>, <var class="Arg">percentage</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an orbit-by-suborbit object</p>
 
 <p>This is the main function in the whole business. All notations from the beginning of this Chapter <a href="chap9_mj.html#X7CC7EC257DD466E3"><span class="RefLink">9</span></a> remain in place. The argument <var class="Arg">setup</var> must be a setup record lying in the filter <code class="func">IsOrbitBySuborbitSetup</code> (<a href="chap9_mj.html#X7CFD48C17B48CDDD"><span class="RefLink">9.3-1</span></a>) described in detail in Section <a href="chap9_mj.html#X80F036B378A3FD32"><span class="RefLink">9.3</span></a> and produced for example by <code class="func">OrbitBySuborbitBootstrapForVectors</code> (<a href="chap9_mj.html#X830E221D84E44A64"><span class="RefLink">9.2-1</span></a>) or <code class="func">OrbitBySuborbitBootstrapForLines</code> (<a href="chap9_mj.html#X799056597EA62513"><span class="RefLink">9.2-2</span></a>) described below. In particular, it contains all the generators for <span class="SimpleMath">\(G\)</span> and the helper subgroups acting on the various sets. The argument <var class="Arg">p</var> must be the starting point of the orbit. Note that the function possibly does not take <var class="Arg">p</var> itself as starting point but rather its <span class="SimpleMath">\(U_k\)</span>-minimalisation, which is a point in the same <span class="SimpleMath">\(U_k\)</span>-orbit as <var class="Arg">p</var>. This information is important for the resulting stabiliser and words representing the <span class="SimpleMath">\(U_k\)</span>-suborbits.</p>
@@ -106,7 +106,7 @@
 
 <h5>9.1-2 OrbitBySuborbitKnownSize</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitKnownSize</code>( <var class="Arg">setup</var>, <var class="Arg">p</var>, <var class="Arg">j</var>, <var class="Arg">l</var>, <var class="Arg">i</var>, <var class="Arg">percentage</var>, <var class="Arg">knownsize</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitKnownSize</code>( <var class="Arg">setup</var>, <var class="Arg">p</var>, <var class="Arg">j</var>, <var class="Arg">l</var>, <var class="Arg">i</var>, <var class="Arg">percentage</var>, <var class="Arg">knownsize</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: an orbit-by-suborbit object</p>
 
 <p>Basically does the same as <code class="func">OrbitBySuborbit</code> (<a href="chap9_mj.html#X79B161FD84AB8C68"><span class="RefLink">9.1-1</span></a>) but does not compute the stabiliser by evaluating Schreier words. Instead, the size of the orbit to enumerate must already be known and be given in the argument <var class="Arg">knownsize</var>. The other arguments are as for the function <code class="func">OrbitBySuborbit</code> (<a href="chap9_mj.html#X79B161FD84AB8C68"><span class="RefLink">9.1-1</span></a>).</p>
@@ -115,7 +115,7 @@
 
 <h5>9.1-3 Size</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Size</code>( <var class="Arg">orb</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Size</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the number of points in the orbit-by-suborbit <var class="Arg">orb</var>.</p>
@@ -124,7 +124,7 @@
 
 <h5>9.1-4 Seed</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Seed</code>( <var class="Arg">orb</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Seed</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: a point in the orbit</p>
 
 <p>Returns the starting point of the orbit-by-suborbit <var class="Arg">orb</var>. It is the <span class="SimpleMath">\(U_i\)</span>-minimalisation of the starting point given to <code class="func">OrbitBySuborbit</code> (<a href="chap9_mj.html#X79B161FD84AB8C68"><span class="RefLink">9.1-1</span></a>).</p>
@@ -133,7 +133,7 @@
 
 <h5>9.1-5 SuborbitsDb</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SuborbitsDb</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SuborbitsDb</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a database of suborbits</p>
 
 <p>Returns the data base of suborbits of the orbit-by-suborbit object <var class="Arg">orb</var>. In particular, such a database object has methods for the operations <code class="func">Memory</code> (<a href="chap9_mj.html#X7926C96485985614"><span class="RefLink">9.1-7</span></a>), <code class="func">TotalLength</code> (<a href="chap9_mj.html#X79DB081F827B53CB"><span class="RefLink">9.1-11</span></a>), and <code class="func">Representatives</code> (<a href="chap9_mj.html#X81ABF8407AF16C34"><span class="RefLink">9.1-12</span></a>). For descriptions see below.</p>
@@ -142,7 +142,7 @@
 
 <h5>9.1-6 WordsToSuborbits</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; WordsToSuborbits</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; WordsToSuborbits</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a list of words</p>
 
 <p>Returns a list of words in the groups <span class="SimpleMath">\(U_*\)</span> reaching each of the suborbits in the orbit-by-suborbit <var class="Arg">orb</var>. Here a word is a list of integers. Positive numbers index generators in following numbering: The first few numbers are numbers of generators of <span class="SimpleMath">\(U_1\)</span> the next few adjacent numbers index the generators of <span class="SimpleMath">\(U_2\)</span> and so on until the generators of <span class="SimpleMath">\(G\)</span> in the end. Negative numbers indicate the corresponding inverses of these generators.</p>
@@ -153,7 +153,7 @@
 
 <h5>9.1-7 Memory</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Memory</code>( <var class="Arg">ob</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Memory</code>( <var class="Arg">ob</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the amount of memory needed by the object <var class="Arg">ob</var>, which can be either an orbit-by-suborbit object, a suborbit database object, or an object in the filter <code class="func">IsOrbitBySuborbitSetup</code> (<a href="chap9_mj.html#X7CFD48C17B48CDDD"><span class="RefLink">9.3-1</span></a>). The amount of memory used is given in bytes. Note that this includes all hashes, databases, and preparatory data of substantial size. For orbit-by-suborbits the memory needed for the precomputation is not included, ask the setup object for that.</p>
@@ -162,7 +162,7 @@
 
 <h5>9.1-8 Stabilizer</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Stabilizer</code>( <var class="Arg">orb</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Stabilizer</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: a permutation group</p>
 
 <p>Returns the stabiliser of the starting point of the orbit-by-suborbit in <var class="Arg">orb</var> in form of a permutation group, using the given faithful permutation representation in the setup record.</p>
@@ -173,7 +173,7 @@
 
 <h5>9.1-9 StabWords</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; StabWords</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; StabWords</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a list of words</p>
 
 <p>Returns generators for the stabiliser of the starting point of the orbit-by-suborbit in <var class="Arg">orb</var> in form of words as described with the operation <code class="func">WordsToSuborbits</code> (<a href="chap9_mj.html#X7B5E783478A337C9"><span class="RefLink">9.1-6</span></a>). Note again that <code class="func">OrbitBySuborbit</code> (<a href="chap9_mj.html#X79B161FD84AB8C68"><span class="RefLink">9.1-1</span></a>) takes the <span class="SimpleMath">\(U_i\)</span>-minimalisation of the starting point as its starting point and the stabiliser returned here is the one of this new starting point.</p>
@@ -182,7 +182,7 @@
 
 <h5>9.1-10 SavingFactor</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SavingFactor</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SavingFactor</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the quotient of the total number of points stored in the orbit-by-suborbit <var class="Arg">orb</var> and the total number of <span class="SimpleMath">\(U\)</span>-minimal points stored. Note that the memory for the precomputations is not considered here!</p>
@@ -193,7 +193,7 @@
 
 <h5>9.1-11 TotalLength</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TotalLength</code>( <var class="Arg">db</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TotalLength</code>( <var class="Arg">db</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the total number of points stored in all suborbits in the orbit-by-suborbit database <var class="Arg">db</var>.</p>
@@ -202,7 +202,7 @@
 
 <h5>9.1-12 Representatives</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Representatives</code>( <var class="Arg">db</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Representatives</code>( <var class="Arg">db</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a list of points</p>
 
 <p>Returns a list of representatives of the suborbits stored in the orbit-by-suborbit database <var class="Arg">db</var>.</p>
@@ -211,7 +211,7 @@
 
 <h5>9.1-13 SavingFactor</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SavingFactor</code>( <var class="Arg">db</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SavingFactor</code>( <var class="Arg">db</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the quotient of the total number of points stored in the suborbit database <var class="Arg">db</var> and the total number of <span class="SimpleMath">\(U\)</span>-minimal points stored. Note that the memory for the precomputations is not considered here!</p>
@@ -220,7 +220,7 @@
 
 <h5>9.1-14 OrigSeed</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrigSeed</code>( <var class="Arg">orb</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrigSeed</code>( <var class="Arg">orb</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: a point</p>
 
 <p>Returns the original starting point for the orbit, not yet minimalised.</p>
@@ -233,7 +233,7 @@
 
 <h5>9.2-1 OrbitBySuborbitBootstrapForVectors</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitBootstrapForVectors</code>( <var class="Arg">gens</var>, <var class="Arg">permgens</var>, <var class="Arg">sizes</var>, <var class="Arg">codims</var>, <var class="Arg">opt</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitBootstrapForVectors</code>( <var class="Arg">gens</var>, <var class="Arg">permgens</var>, <var class="Arg">sizes</var>, <var class="Arg">codims</var>, <var class="Arg">opt</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a setup record in the filter <code class="func">IsOrbitBySuborbitSetup</code> (<a href="chap9_mj.html#X7CFD48C17B48CDDD"><span class="RefLink">9.3-1</span></a>)</p>
 
 <p>All notations from the beginning of this Chapter <a href="chap9_mj.html#X7CC7EC257DD466E3"><span class="RefLink">9</span></a> remain in place. This function is for the action of matrices on row vectors, so all generators must be matrices. The set <span class="SimpleMath">\(X\)</span> thus is a row space usually over a finite field and the sets <span class="SimpleMath">\(X_i\)</span> are quotient spaces. The matrix generators for the various groups have to be adjusted with a base change, such that the canonical projection onto <span class="SimpleMath">\(X_i\)</span> is just to take the first few entries in a vector, which means, that the submodules divided out are generated by the last standard basis vectors.</p>
@@ -267,7 +267,7 @@
 
 <h5>9.2-2 OrbitBySuborbitBootstrapForLines</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitBootstrapForLines</code>( <var class="Arg">gens</var>, <var class="Arg">permgens</var>, <var class="Arg">sizes</var>, <var class="Arg">codims</var>, <var class="Arg">opt</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitBootstrapForLines</code>( <var class="Arg">gens</var>, <var class="Arg">permgens</var>, <var class="Arg">sizes</var>, <var class="Arg">codims</var>, <var class="Arg">opt</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a setup record in the filter <code class="func">IsOrbitBySuborbitSetup</code> (<a href="chap9_mj.html#X7CFD48C17B48CDDD"><span class="RefLink">9.3-1</span></a>)</p>
 
 <p>All notations from the beginning of this Chapter <a href="chap9_mj.html#X7CC7EC257DD466E3"><span class="RefLink">9</span></a> remain in place. This does exactly the same as <code class="func">OrbitBySuborbitBootstrapForVectors</code> (<a href="chap9_mj.html#X830E221D84E44A64"><span class="RefLink">9.2-1</span></a>) except that it handles the case of matrices acting on one-dimensional subspaces. Those one-dimensional subspaces are represented by normalised vectors, where a vector is normalised if its first non-vanishing entry is equal to <span class="SimpleMath">\(1\)</span>.</p>
@@ -276,7 +276,7 @@
 
 <h5>9.2-3 OrbitBySuborbitBootstrapForSpaces</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitBootstrapForSpaces</code>( <var class="Arg">gens</var>, <var class="Arg">permgens</var>, <var class="Arg">sizes</var>, <var class="Arg">codims</var>, <var class="Arg">spcdim</var>, <var class="Arg">opt</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitBySuborbitBootstrapForSpaces</code>( <var class="Arg">gens</var>, <var class="Arg">permgens</var>, <var class="Arg">sizes</var>, <var class="Arg">codims</var>, <var class="Arg">spcdim</var>, <var class="Arg">opt</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a setup record in the filter <code class="func">IsOrbitBySuborbitSetup</code> (<a href="chap9_mj.html#X7CFD48C17B48CDDD"><span class="RefLink">9.3-1</span></a>)</p>
 
 <p>All notations from the beginning of this Chapter <a href="chap9_mj.html#X7CC7EC257DD466E3"><span class="RefLink">9</span></a> remain in place. This does exactly the same as <code class="func">OrbitBySuborbitBootstrapForVectors</code> (<a href="chap9_mj.html#X830E221D84E44A64"><span class="RefLink">9.2-1</span></a>) except that it handles the case of matrices acting on <var class="Arg">spcdim</var>-dimensional subspaces. Those subspaces are represented by fully echelonised bases.</p>
@@ -291,7 +291,7 @@
 
 <h5>9.3-1 IsOrbitBySuborbitSetup</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsOrbitBySuborbitSetup</code>( <var class="Arg">ob</var> )</td><td class="tdright">( category )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsOrbitBySuborbitSetup</code>( <var class="Arg">ob</var> )</td><td class="tdright">(&nbsp;category&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
 <p>Objects in this category are also in <code class="code">IsComponentObjRep</code>. We describe the components, refering to the setup at the beginning of this Chapter <a href="chap9_mj.html#X7CC7EC257DD466E3"><span class="RefLink">9</span></a>.</p>
@@ -448,7 +448,7 @@
 
 <h5>9.4-1 InitOrbitBySuborbitList</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; InitOrbitBySuborbitList</code>( <var class="Arg">setup</var>, <var class="Arg">nrrandels</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; InitOrbitBySuborbitList</code>( <var class="Arg">setup</var>, <var class="Arg">nrrandels</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a list of orbit-by-suborbits object</p>
 
 <p>Creates an object that stores a list of orbit-by-suborbits. The argument <var class="Arg">setup</var> must be an orbit-by-suborbit setup record and <var class="Arg">nrrandels</var> must be an integer. It indicates how many random elements in <span class="SimpleMath">\(G\)</span> should be used to do a probabilistic check for membership in case an orbit-by-suborbit is only partially known.</p>
@@ -457,7 +457,7 @@
 
 <h5>9.4-2 IsVectorInOrbitBySuborbitList</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsVectorInOrbitBySuborbitList</code>( <var class="Arg">v</var>, <var class="Arg">obsol</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsVectorInOrbitBySuborbitList</code>( <var class="Arg">v</var>, <var class="Arg">obsol</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">fail</code> or an integer</p>
 
 <p>Checks probabilistically, if the element <var class="Arg">v</var> lies in one of the partially enumerated orbit-by-suborbits in the orbit-by-suborbit list object <var class="Arg">obsol</var>. If yes, the number of that orbit-by-suborbit is returned and the answer is guaranteed to be correct. If the answer is <code class="keyw">fail</code> there is a small probability that the point actually lies in one of the orbits but this could not be shown.</p>
@@ -466,7 +466,7 @@
 
 <h5>9.4-3 OrbitsFromSeedsToOrbitList</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitsFromSeedsToOrbitList</code>( <var class="Arg">obsol</var>, <var class="Arg">li</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; OrbitsFromSeedsToOrbitList</code>( <var class="Arg">obsol</var>, <var class="Arg">li</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
 <p>Takes the elements in the list <var class="Arg">li</var> as seeds for orbit-by-suborbits. For each such seed it is first checked whether it lies in one of the orbit-by-suborbits in <var class="Arg">obsol</var>, which must be an orbit-by-suborbit list object. If not found, 51% of the orbit-by-suborbit of the seed is enumerated and added to the list <var class="Arg">obsol</var>.</p>
@@ -477,7 +477,7 @@
 
 <h5>9.4-4 VerifyDisjointness</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VerifyDisjointness</code>( <var class="Arg">obsol</var> )</td><td class="tdright">( function )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; VerifyDisjointness</code>( <var class="Arg">obsol</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: <code class="keyw">true</code> or <code class="keyw">false</code></p>
 
 <p>This function checks deterministically, whether the orbit-by-suborbits in the orbit-by-suborbit list object <var class="Arg">obsol</var> are disjoint or not and returns the corresponding boolean value. This is not a Monte-Carlo algorithm. If the answer is <code class="keyw">false</code>, the function writes out, which orbits are in fact identical.</p>
@@ -486,7 +486,7 @@
 
 <h5>9.4-5 Memory</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Memory</code>( <var class="Arg">obsol</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Memory</code>( <var class="Arg">obsol</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the total memory used for all orbit-by-suborbits in the orbit-by-suborbit-list <var class="Arg">obsol</var>. Precomputation data is not included, ask the setup object instead.</p>
@@ -495,7 +495,7 @@
 
 <h5>9.4-6 TotalLength</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TotalLength</code>( <var class="Arg">obsol</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TotalLength</code>( <var class="Arg">obsol</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the total number of points stored in all orbit-by-suborbits in the orbit-by-suborbit-list <var class="Arg">obsol</var>.</p>
@@ -504,7 +504,7 @@
 
 <h5>9.4-7 Size</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Size</code>( <var class="Arg">obsol</var> )</td><td class="tdright">( method )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Size</code>( <var class="Arg">obsol</var> )</td><td class="tdright">(&nbsp;method&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the total number of points in the orbit-by-suborbit-list <var class="Arg">obsol</var>.</p>
@@ -513,7 +513,7 @@
 
 <h5>9.4-8 SavingFactor</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SavingFactor</code>( <var class="Arg">obsol</var> )</td><td class="tdright">( operation )</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; SavingFactor</code>( <var class="Arg">obsol</var> )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: an integer</p>
 
 <p>Returns the quotient of the total number of points stored in all orbit-by-suborbits in the orbit-by-suborbit-list <var class="Arg">obsol</var> and the total number of <span class="SimpleMath">\(U\)</span>-minimal points stored, which is the average saving factor considering all orbit-by-suborbits together. Note that the memory for the precomputations is not considered here!</p>
