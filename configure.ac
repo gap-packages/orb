@@ -1,5 +1,5 @@
 AC_PREREQ([2.68])
-AC_INIT([orb], m4_esyscmd([tr -d '\n' < VERSION]), [https://github.com/gap-packages/orb/issues], [orb], [http://gap-packages.github.io/cvec/])
+AC_INIT([orb], [package], [https://github.com/gap-packages/orb/issues], [orb], [http://gap-packages.github.io/cvec/])
 AC_CONFIG_SRCDIR([src/orb.c])
 AC_CONFIG_HEADER([src/pkgconfig.h:cnf/pkgconfig.h.in])
 AC_CONFIG_MACRO_DIR([m4])
