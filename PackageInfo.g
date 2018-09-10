@@ -6,7 +6,7 @@
 SetPackageInfo( rec(
 
 PackageName := "orb",
-Subtitle := "Methods to enumerate Orbits",
+Subtitle := "Methods to enumerate orbits",
 Version := "4.8.0",
 Date := "10/11/2017", # dd/mm/yyyy format
 
@@ -102,12 +102,12 @@ SourceRepository := rec(
 ),
 IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
 PackageWWWHome  := "https://gap-packages.github.io/orb",
-README_URL      := Concatenation( ~.PackageWWWHome, "/README" ),
+README_URL      := Concatenation( ~.PackageWWWHome, "/README.md" ),
 PackageInfoURL  := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
 ArchiveURL      := Concatenation( ~.SourceRepository.URL,
                                  "/releases/download/v", ~.Version,
                                  "/orb-", ~.Version ),
-ArchiveFormats := ".tar.gz .tar.bz2",
+ArchiveFormats := ".tar.gz",
 
 ##  Here you  must provide a short abstract explaining the package content 
 ##  in HTML format (used on the package overview Web page) and an URL 
