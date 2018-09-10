@@ -1,5 +1,12 @@
 This file describes changes in the orb package.
 
+4.8.1 (2018-09-10)
+  - Deal with hash functions returning 'fail', or any other non-integer
+    (instead of crashing or doing other random things)
+  - Change several ORB_HashFunction to return fail if necessary
+  - Require GAP >= 4.9
+  - Update build system for better compatibility with GAP >= 4.9
+
 4.8.0 (2017-11-10)
   - Renamed the IsClosed filter to IsClosedOrbit, and added a new operation
     IsClosed which simply returns the value of the IsClosedOrbit filter.
