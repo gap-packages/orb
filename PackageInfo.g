@@ -9,6 +9,7 @@ PackageName := "orb",
 Subtitle := "Methods to enumerate orbits",
 Version := "4.8.1",
 Date := "10/09/2018", # dd/mm/yyyy format
+License := "GPL-3.0-or-later",
 
 ##  Information about authors and maintainers.
 Persons := [
