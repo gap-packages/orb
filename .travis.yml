@@ -25,7 +25,8 @@ before_script:
   - git clone https://github.com/gap-system/pkg-ci-scripts.git scripts
   - scripts/build_gap.sh
 script:
-  - scripts/build_pkg.sh && scripts/run_tests.sh
+  - scripts/run_tests.sh # run tests without compilation ...
+  - scripts/build_pkg.sh && scripts/run_tests.sh # .. and with
 after_script:
   - bash scripts/gather-coverage.sh
   - bash <(curl -s https://codecov.io/bash)
