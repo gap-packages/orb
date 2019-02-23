@@ -8,17 +8,13 @@ addons:
   apt_packages:
     - libgmp-dev
     - libreadline-dev
-    - libgmp-dev:i386
-    - libreadline-dev:i386
-    - gcc-multilib
-    - g++-multilib
+    - zlib1g-dev
 
 matrix:
   include:
-    - env: ABI=64
-    - env: ABI=32
-    #- env: GAPBRANCH="stable-4.9"
-    #- env: HPCGAP=yes  # orb kernel extension is not HPC-GAP ready
+    - env: GAPBRANCH=master
+    - env: GAPBRANCH=stable-4.9
+    - env: GAPBRANCH=stable-4.10
 
 branches:
   only:
