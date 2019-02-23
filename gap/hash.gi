@@ -756,6 +756,11 @@ InstallMethod( ChooseHashFunction, "for memory objects",
     return rec( func := ORB_HashFunctionForMemory, data := [hf.func,hf.data] );
   end );
 
+if not IsBound(ORBC) then
+  # our kernel extension was not loaded: use a hack to set ORBC.PERM_HASH_SKIP
+  ORBC := rec( PERM_HASH_SKIP := SIZE_OBJ( () ) );
+fi;
+
 InstallGlobalFunction( ORB_HashFunctionForPermutations,
 function(p,data)
   local l;
@@ -929,7 +934,7 @@ if not IsBound(HASH_FUNC_FOR_BLIST) then
   BindGlobal("HASH_FUNC_FOR_BLIST", 
   function(blist, data)
     local h, x;
-    if not IsBlistRep(x) then return fail; fi;
+    if not IsBlistRep(blist) then return fail; fi;
     h := 0;
     for x in blist do
       if x then
