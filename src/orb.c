@@ -29,6 +29,7 @@ static Obj AVLTreeTypeMutable;
                     /* Imported from the library to be able to check type */
 static Obj AVLTree;        /* Constructor function imported from the library */
 static Obj HTGrow;         /* Operation function imported from the library */
+static Obj PermList;
 
 /* Conventions:
  *
@@ -1353,8 +1354,6 @@ static Obj HTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     return old;
 }
 
-Obj FuncPermList(Obj self, Obj list);
-
 static Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
 {
     Int l;
@@ -1395,7 +1394,7 @@ static Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
             next++;
         }
     }
-    return FuncPermList(self,out);
+    return CALL_1ARGS(PermList, out);
 } 
 
 static Obj HASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap) {
@@ -1517,6 +1516,7 @@ static Int InitKernel ( StructInitInfo *module )
     ImportGVarFromLibrary( "AVLTreeTypeMutable", &AVLTreeTypeMutable );
     ImportFuncFromLibrary( "AVLTree", &AVLTree );
     ImportFuncFromLibrary( "HTGrow", &HTGrow );
+    ImportFuncFromLibrary( "PermList", &PermList );
 
     /* return success                                                      */
     return 0;
