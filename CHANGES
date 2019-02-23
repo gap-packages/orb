@@ -1,5 +1,10 @@
 This file describes changes in the orb package.
 
+4.X.Y (2019-MM-DD)
+  - Rewrote build system to use gac, not autoconf/automake/libtool
+  - Improve compatibility with upcoming GAP 4.11
+  - Various janitorial changes
+
 4.8.1 (2018-09-10)
   - Deal with hash functions returning 'fail', or any other non-integer
     (instead of crashing or doing other random things)
