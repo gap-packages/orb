@@ -7,8 +7,9 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate orbits",
-Version := "4.8.1",
-Date := "10/09/2018", # dd/mm/yyyy format
+Version := "4.8.2",
+Date := "23/02/2019", # dd/mm/yyyy format
+License := "GPL-3.0-or-later",
 
 ##  Information about authors and maintainers.
 Persons := [
@@ -64,7 +65,7 @@ Persons := [
     IsAuthor      := false,
     IsMaintainer  := true,
     Email         := "max.horn@math.uni-giessen.de",
-    WWWHome       := "http://www.quendi.de/math",
+    WWWHome       := "https://www.quendi.de/math",
     PostalAddress := Concatenation(
                        "AG Algebra\n",
                        "Mathematisches Institut\n",
