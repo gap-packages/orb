@@ -24,11 +24,11 @@
 /* This file corresponds to orb/gap/avltree.gi, it imlements some of
  * its functionality on the C level for better performance. */
 
-Obj AVLTreeType;    /* Imported from the library to be able to check type */
-Obj AVLTreeTypeMutable;    
+static Obj AVLTreeType;    /* Imported from the library to be able to check type */
+static Obj AVLTreeTypeMutable;    
                     /* Imported from the library to be able to check type */
-Obj AVLTree;        /* Constructor function imported from the library */
-Obj HTGrow;         /* Operation function imported from the library */
+static Obj AVLTree;        /* Constructor function imported from the library */
+static Obj HTGrow;         /* Operation function imported from the library */
 
 /* Conventions:
  *
@@ -57,7 +57,7 @@ Obj HTGrow;         /* Operation function imported from the library */
 /* Note that we have to check the arguments for functions that are called
  * by user programs since we do not go through method selection! */
 
-Obj AVLCmp_C(Obj self, Obj a, Obj b)
+static Obj AVLCmp_C(Obj self, Obj a, Obj b)
 /* A very fast three-way comparison function. */
 {
     if (EQ(a,b)) return INTOBJ_INT(0);
@@ -172,7 +172,7 @@ static Obj AVLFreeNode_C( Obj self, Obj t, Obj n)
     return AVLFreeNode(t,INT_INTOBJ(n));
 }
 
-Obj static inline AVLValue( Obj t, Int n )
+static inline Obj AVLValue( Obj t, Int n )
 {
     Obj vals = AVLValues(t);
     if (vals == Fail) return True;
@@ -181,7 +181,7 @@ Obj static inline AVLValue( Obj t, Int n )
     return ELM_LIST(vals,n);
 }
 
-void static inline SetAVLValue( Obj t, Int n, Obj v )
+static inline void SetAVLValue( Obj t, Int n, Obj v )
 {
     Obj vals = AVLValues(t);
     n /= 4;
@@ -1206,7 +1206,7 @@ extern Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
         return Fail;
 }
 
-extern Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
+static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
 {
     Obj els;
     Obj vals;
@@ -1357,7 +1357,7 @@ static Obj HTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
 
 Obj FuncPermList(Obj self, Obj list);
 
-Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
+static Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
 {
     Int l;
     Int d,dd;
@@ -1400,7 +1400,7 @@ Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
     return FuncPermList(self,out);
 } 
 
-Obj HASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap) {
+static Obj HASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap) {
 
   size_t res  = 0;
   UInt   nr  = NUMBER_BLOCKS_BLIST(blist);
@@ -1416,7 +1416,8 @@ Obj HASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap) {
 
 /*F * * * * * * * * * * * * * initialize package * * * * * * * * * * * * * * */
 
-/******************************************************************************
+/****************************************************************************
+**
 *V  GVarFuncs . . . . . . . . . . . . . . . . . . list of functions to export
 */
 static StructGVarFunc GVarFuncs [] = {
@@ -1505,7 +1506,8 @@ static StructGVarFunc GVarFuncs [] = {
 
 };
 
-/******************************************************************************
+/****************************************************************************
+**
 *F  InitKernel( <module> )  . . . . . . . . initialise kernel data structures
 */
 static Int InitKernel ( StructInitInfo *module )
@@ -1524,7 +1526,8 @@ static Int InitKernel ( StructInitInfo *module )
 
 Obj FuncADD_SET(Obj self, Obj set, Obj obj);
 
-/******************************************************************************
+/****************************************************************************
+**
 *F  InitLibrary( <module> ) . . . . . . .  initialise library data structures
 */
 static Int InitLibrary ( StructInitInfo *module )
@@ -1551,7 +1554,8 @@ static Int InitLibrary ( StructInitInfo *module )
     return 0;
 }
 
-/******************************************************************************
+/****************************************************************************
+**
 *F  InitInfopl()  . . . . . . . . . . . . . . . . . table of init functions
 */
 static StructInitInfo module = {
