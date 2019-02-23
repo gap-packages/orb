@@ -363,7 +363,8 @@ static inline void AVLRebalance( Obj tree, Int q, Int *newroot, int *shrink )
 {
   Int p, l;
 
-  *shrink = 1;   /* in nearly all cases this happens */
+  if (shrink)
+      *shrink = 1;   /* in nearly all cases this happens */
   if (AVLBalFactor(tree,q) == 2)   /* was: < 0 */
       p = AVLLeft(tree,q);
   else
@@ -460,7 +461,8 @@ static inline void AVLRebalance( Obj tree, Int q, Int *newroot, int *shrink )
           SetAVLBalFactor(tree,p,1);
           SetAVLRank(tree,q,AVLRank(tree,q) - AVLRank(tree,p));
       }
-      *shrink = 0;
+      if (shrink)
+          *shrink = 0;
   }
   *newroot = p;
 }
@@ -500,7 +502,6 @@ static Obj AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
   Int c;
   Int l;
   Int i;
-  int shrink;
 
   if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeTypeMutable) {
       ErrorQuit( "Usage: AVLAdd(avltree, object, object)", 0L, 0L );
@@ -598,8 +599,7 @@ static Obj AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
   
   /* now at last we do have to rebalance at nodes[q] because the tree has
      gotten out of balance: */
-  shrink;   /* not used */
-  AVLRebalance(tree,nodes[q],&p,&shrink);
+  AVLRebalance(tree,nodes[q],&p,0);
   
   /* finishing touch: link new root of subtree (p) to t: */
   if (q == 1) {    /* q resp. r was First node */
@@ -635,7 +635,6 @@ static Obj AVLIndexAdd_C( Obj self, Obj tree, Obj data, Obj value, Obj ind )
   Int index;
   Int i;
   Int offset;
-  int shrink;
 
   if (TNUM_OBJ(tree) != T_POSOBJ || TYPE_POSOBJ(tree) != AVLTreeTypeMutable) {
       ErrorQuit( "Usage: AVLAdd(avltree, object, object)", 0L, 0L );
@@ -733,8 +732,7 @@ static Obj AVLIndexAdd_C( Obj self, Obj tree, Obj data, Obj value, Obj ind )
   
   /* now at last we do have to rebalance at nodes[q] because the tree has
      gotten out of balance: */
-  shrink;   /* not used */
-  AVLRebalance(tree,nodes[q],&p,&shrink);
+  AVLRebalance(tree,nodes[q],&p,0);
   
   /* finishing touch: link new root of subtree (p) to t: */
   if (q == 1) {    /* q resp. r was First node */
