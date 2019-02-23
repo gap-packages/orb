@@ -1,8 +1,9 @@
 This file describes changes in the orb package.
 
-4.X.Y (2019-MM-DD)
+4.8.2 (2019-02-23)
   - Rewrote build system to use gac, not autoconf/automake/libtool
   - Improve compatibility with upcoming GAP 4.11
+  - Fix for using the package without compilation (works again now)
   - Various janitorial changes
 
 4.8.1 (2018-09-10)
