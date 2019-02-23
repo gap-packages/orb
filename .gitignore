@@ -21,6 +21,7 @@
 /doc/title.xml
 
 /bin/
+/gen/
 /Makefile
 
 /tmp/
