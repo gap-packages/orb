@@ -1163,7 +1163,7 @@ function(gens,permgens,sizes,codims,opt)
   nrgenssum[k+2] := sum;
 
   # the future:
-  #sample := ZeroVector(RowLength(gens[1][1]),gens[1][1]);  
+  #sample := ZeroVector(NrCols(gens[1][1]),gens[1][1]);  
   sample := gens[1][1][1];  # first vector of first generator
 
   # First preparations:
@@ -1418,7 +1418,7 @@ function(gens,permgens,sizes,codims,opt)
   nrgenssum[k+2] := sum;
 
   # the future:
-  #sample := ZeroVector(RowLength(gens[1][1]),gens[1][1]);  
+  #sample := ZeroVector(NrCols(gens[1][1]),gens[1][1]);  
   sample := gens[1][1][1];    # first vector of first generator
 
   # First preparations:
@@ -1681,7 +1681,7 @@ function(gens,permgens,sizes,codims,spcdim,opt)
   nrgenssum[k+2] := sum;
 
   # the future:
-  #sample := ZeroVector(RowLength(gens[1][1]),gens[1][1]);  
+  #sample := ZeroVector(NrCols(gens[1][1]),gens[1][1]);  
   sample := ExtractSubMatrix(gens[1][1],[1..spcdim],[1..Length(gens[1][1][1])]);
   TriangulizeMat(sample);
 

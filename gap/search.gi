@@ -1038,17 +1038,17 @@ InstallGlobalFunction( FindWordsForRightTransversal,
     else
         inv := SumIntersectionMat(l[1],l[2]);
         inv := inv[2];
-        Info(InfoOrb,2,"Intersection has dim ",Length(inv));
+        Info(InfoOrb,2,"Intersection has dim ",NrRows(inv));
         i := 3;
-        while i <= Length(l) and Length(inv) > 0 do
+        while i <= Length(l) and NrRows(inv) > 0 do
             inv := SumIntersectionMat(inv,l[i]);
             inv := inv[2];
-            Info(InfoOrb,2,"Intersection has dim ",Length(inv));
+            Info(InfoOrb,2,"Intersection has dim ",NrRows(inv));
             i := i + 1;
         od;
     fi;
     # Now inv contains vectors that span the invariant space.
-    if Length(inv) = 0 then
+    if NrRows(inv) = 0 then
         Info(InfoOrb,1,"no H-invariants except 0");
         return fail;
     fi;
@@ -1074,8 +1074,8 @@ InstallGlobalFunction( FindWordsForRightTransversal,
     # First try whether one basis vector provides an orbit of the
     # right length:
     Info(InfoOrb,2,"Trying to find a nice orbit on vectors...");
-    for i in [1..Length(inv)] do
-        Info(InfoOrb,2,"Using vector #",i,"(",Length(inv),")");
+    for i in [1..NrRows(inv)] do
+        Info(InfoOrb,2,"Using vector #",i,"(",NrRows(inv),")");
         res := Check(ShallowCopy(inv[i]),OnRight);
         if res <> fail then return res; fi;
     od;
@@ -1083,9 +1083,9 @@ InstallGlobalFunction( FindWordsForRightTransversal,
     # Now try tuples of vectors:
     n := 2;  # first pairs, then maybe more
     repeat
-        l := Matrix([],RowLength(inv),inv);
+        l := Matrix([],NrCols(inv),inv);
         for i in [1..n] do
-            v := ZeroVector(Length(inv),inv[1]);
+            v := ZeroVector(NrRows(inv),inv[1]);
             Randomize(v);
             Add(l,v*inv);
         od;
@@ -1093,7 +1093,7 @@ InstallGlobalFunction( FindWordsForRightTransversal,
         res := Check(l,OnRight);
         if res <> fail then return res; fi;
         n := n + 1;
-    until n = Length(inv);
+    until n = NrRows(inv);
 
     # Now try the last resort:
     Info(InfoOrb,2,"Trying full invariant space...");
@@ -1147,8 +1147,8 @@ InstallGlobalFunction( TransformingMatsLSE,
   #        [B[3][1],0,0,B[3][2],0,0,B[3][3],0,0],
   #        [0,B[3][1],0,0,B[3][2],0,0,B[3][3],0],
   #        [0,0,B[3][1],0,0,B[3][2],0,0,B[3][3]] ];
-  n := Length(A);
-  if n <> RowLength(A) or n <> Length(B) or n <> RowLength(B) then
+  n := NrRows(A);
+  if n <> NrCols(A) or n <> NrRows(B) or n <> NrCols(B) then
       Error("need square matrices of same size");
   fi;
   M :=   KroneckerProduct(OneMutable(A),TransposedMat(A))
