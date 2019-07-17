@@ -3,7 +3,10 @@
 # metadata in PackageInfo.g.
 #
 LoadPackage("atlasrep");
+LoadPackage("cvec");
+LoadPackage("io");
 LoadPackage("orb");
+
 d := DirectoriesPackageLibrary("orb", "tst");
 
 TestDirectory(d[1], rec(exitGAP := true));

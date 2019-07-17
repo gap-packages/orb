@@ -1,5 +1,9 @@
 language: c
 
+env:
+  global:
+    - GAP_PKGS_TO_BUILD="io profiling cvec"
+
 addons:
   apt_packages:
     - libgmp-dev
