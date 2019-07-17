@@ -11,7 +11,7 @@
 LoadPackage("cvec");
 #SetInfoLevel(InfoOrb,2);  # to see more
 ReadPackage("orb","examples/co1F5d24/slpco1.g");
-gens := AtlasGenerators("2.Co1",3).generators;
+gens := AtlasGenerators([ "2.Co1", [ "2Co1G1-f5r24B0.m1", "2Co1G1-f5r24B0.m2" ], 1, 5 ]).generators;
 cgens := List(gens,CMat);
 basech := CVEC_ReadMatFromFile(
        Filename(DirectoriesPackageLibrary("orb",""),
@@ -22,7 +22,7 @@ cmax5 := ResultOfStraightLineProgram(slpmax5,cgens);
 cu3 := cmax5;
 cu2 := ResultOfStraightLineProgram(slpc4a,cmax5);
 cu1 := ResultOfStraightLineProgram(slpstab10752,cu2);
-pg := AtlasGenerators("2.Co1",1).generators;
+pg := AtlasGenerators([ "2.Co1", [ "2Co1G1-p196560B0.m1", "2Co1G1-p196560B0.m2" ], 1, 196560 ]).generators;
 pgmax5 := ResultOfStraightLineProgram(slpmax5,pg);
 pgu3 := pgmax5;
 pgu2 := ResultOfStraightLineProgram(slpc4a,pgmax5);

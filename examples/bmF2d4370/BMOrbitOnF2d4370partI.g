@@ -7,9 +7,9 @@ LoadPackage("chop");
 LoadPackage("genss");
 
 ##
-gens := AtlasGenerators("B",1).generators;
+gens := AtlasGenerators([ "B", [ "BG1-f2r4370B0.m1", "BG1-f2r4370B0.m2" ], 1, 2 ]).generators;
 bgens := List(gens,CMat);
-slpbtoe := AtlasStraightLineProgram("B",1).program;;
+slpbtoe := AtlasStraightLineProgram([ "B", "BG1-max1W1", 1 ]).program;;
 egens := ResultOfStraightLineProgram(slpbtoe,bgens);
 
 ##
@@ -73,8 +73,8 @@ IsOne((a*b)^11);
 IsOne((a*b^2)^21);
 
 ##
-slpfi22tom12 := AtlasStraightLineProgram("Fi22",14).program;;
-slpm12tol211 := AtlasStraightLineProgram("M12",5).program;;
+slpfi22tom12 := AtlasStraightLineProgram([ "Fi22", "F22G1-max14W1", 1 ]).program;;
+slpm12tol211 := AtlasStraightLineProgram([ "M12", "M12G1-max5W1", 1 ]).program;;
 mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
 lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);
 m := Module(mgens);;

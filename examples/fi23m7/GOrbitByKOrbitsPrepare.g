@@ -89,7 +89,7 @@ u1gens := List(u1gens,x->bas*x*basi);
 v := v * basi;
 
 # adjust to necessities for "OrbitBySuborbit":
-ggensp := AtlasGenerators("Fi23",1).generators;
+ggensp := AtlasGenerators([ "Fi23", [ "F23G1-p31671B0.m1", "F23G1-p31671B0.m2" ], 1, 31671 ]).generators;
 ngensp := ResultOfStraightLineProgram(s,ggensp);
 Print("Finding smaller degree permutation representation...\n");
 ii := SmallerDegreePermutationRepresentation(Group(ngensp):cheap);

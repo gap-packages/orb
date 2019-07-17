@@ -1,13 +1,13 @@
 LoadPackage("chop");
 LoadPackage("recog");
 DeclareInfoClass("InfoNiceQuot");
-#agens := AtlasGenerators("HS",10).generators;
+#agens := AtlasGenerators([ "HS", [ "HSG1-f2r56B0.m1", "HSG1-f2r56B0.m2" ], 1, 2 ]).generators;
 #cgens := List(agens,CMat);
-#s := AtlasStraightLineProgram("HS",5).program;
+#s := AtlasStraightLineProgram([ "HS", "HSG1-max5W1", 1 ]).program;
 #hgens := ResultOfStraightLineProgram(s,cgens);
 #h := Group(hgens);
-gens := AtlasGenerators("3.Fi22",2).generators;
-s := AtlasStraightLineProgram("Fi22",11).program;
+gens := AtlasGenerators([ "3.Fi22", [ "3F22G1-f4r27aB0.m1", "3F22G1-f4r27aB0.m2" ], 1, 4 ]).generators;
+s := AtlasStraightLineProgram([ "Fi22", "F22G1-max11W1", 1 ]).program;
 ggens := ResultOfStraightLineProgram(s,gens);
 g := Group(ggens);
 

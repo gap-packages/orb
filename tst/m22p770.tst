@@ -1,8 +1,8 @@
 gap> START_TEST("Orb package: m22p770.tst");
 
 #
-gap> gens := ShallowCopy(AtlasGenerators("M22",12).generators);;
-gap> pgens := ShallowCopy(AtlasGenerators("M22",1).generators);;
+gap> gens := ShallowCopy(AtlasGenerators([ "M22", [ "M22G1-p770B0.m1", "M22G1-p770B0.m2" ], 1, 770 ]).generators);;
+gap> pgens := ShallowCopy(AtlasGenerators([ "M22", [ "M22G1-p22B0.m1", "M22G1-p22B0.m2" ], 1, 22 ]).generators);;
 gap> v := 2;;
 
 #

@@ -5,8 +5,8 @@ Print("Use 500MB initial workspace, should show one garbage ",
       "collection per test\n");
 Print("and one initial one (more for enumerations with stabiliser).\n");
 
-gens := ShallowCopy(AtlasGenerators("M22",15).generators);
-pgens := ShallowCopy(AtlasGenerators("M22",1).generators);
+gens := ShallowCopy(AtlasGenerators([ "M22", [ "M22G1-f2r34B0.m1", "M22G1-f2r34B0.m2" ], 1, 2 ]).generators);
+pgens := ShallowCopy(AtlasGenerators([ "M22", [ "M22G1-p22B0.m1", "M22G1-p22B0.m2" ], 1, 22 ]).generators);
 v := [ Z(2)^0, Z(2)^0, 0*Z(2), Z(2)^0, 0*Z(2), Z(2)^0, 0*Z(2), Z(2)^0, 0*Z(2), 
 Z(2)^0, Z(2)^0, Z(2)^0, 0*Z(2), Z(2)^0, 0*Z(2), 0*Z(2), 0*Z(2), 0*Z(2), Z(2)^0,
 0*Z(2), 0*Z(2), Z(2)^0, Z(2)^0, 0*Z(2), 0*Z(2), 0*Z(2), 0*Z(2), Z(2)^0, 

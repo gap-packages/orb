@@ -1,8 +1,8 @@
 # mygap4currL -m 500m
 LoadPackage("atlasrep");
 LoadPackage("orb");
-gens := AtlasGenerators("HN",8).generators;                         
-s := AtlasStraightLineProgram("HN",1).program;
+gens := AtlasGenerators([ "HN", [ "HNG1-f5r133B0.m1", "HNG1-f5r133B0.m2" ], 1, 5 ]).generators;                         
+s := AtlasStraightLineProgram([ "HN", "HNG1-max1W1", 1 ]).program;
 ugens := ResultOfStraightLineProgram(s,gens);
 guck := List(ugens,x->x-One(x));
 guck := List(guck,NullspaceMat);
@@ -86,8 +86,8 @@ o := Orb(cgens,cv,OnRight,rec( hashlen := 2000000, report := 100000,
 Enumerate(o);
 time;
 
-gens := AtlasGenerators("Co1",2).generators;                         
-s := AtlasStraightLineProgram("Co1",3).program;
+gens := AtlasGenerators([ "Co1", [ "Co1G1-f2r24B0.m1", "Co1G1-f2r24B0.m2" ], 1, 2 ]).generators;                         
+s := AtlasStraightLineProgram([ "Co1", "Co1G1-max3W1", 1 ]).program;
 ugens := ResultOfStraightLineProgram(s,gens);
 guck := List(ugens,x->x-One(x));
 guck := List(guck,NullspaceMat);

@@ -120,9 +120,9 @@ LoadPackage("cvec");
 LoadPackage("atlasrep");
 
 SetInfoLevel(InfoOrb,2);
-pgens := AtlasGenerators("M11",1).generators;
+pgens := AtlasGenerators([ "M11", [ "M11G1-p11B0.m1", "M11G1-p11B0.m2" ], 1, 11 ]).generators;
 
-gens := AtlasGenerators("M11",14).generators;
+gens := AtlasGenerators([ "M11", [ "M11G1-f3r24B0.m1", "M11G1-f3r24B0.m2" ], 1, 3 ]).generators;
 cgens := List(gens,CMat);
 basech := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),
           "examples/m11PF3d24/m11basech.cmat"));
@@ -388,12 +388,12 @@ also available in the <Package>atlasrep</Package> package,
 expressing generators of <M>E</M> in terms of the generators of <M>B</M>. 
 
 <Log><![CDATA[
-gap> gens := AtlasGenerators("B",1).generators;
+gap> gens := AtlasGenerators([ "B", [ "BG1-f2r4370B0.m1", "BG1-f2r4370B0.m2" ], 1, 2 ]).generators;
 [ <an immutable 4370x4370 matrix over GF2>, 
   <an immutable 4370x4370 matrix over GF2> ]
 gap> bgens := List(gens,CMat);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] 
-gap> slpbtoe := AtlasStraightLineProgram("B",1).program;;
+gap> slpbtoe := AtlasStraightLineProgram([ "B", "BG1-max1W1", 1 ]).program;;
 gap> egens := ResultOfStraightLineProgram(slpbtoe,bgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] ]]>
 </Log>
@@ -747,8 +747,8 @@ To this end, we restrict to <M>M_{{12}}</M>
 and compute the radical series of the restricted module.
 
 <Log><![CDATA[
-gap> slpfi22tom12 := AtlasStraightLineProgram("Fi22",14).program;;
-gap> slpm12tol211 := AtlasStraightLineProgram("M12",5).program;;
+gap> slpfi22tom12 := AtlasStraightLineProgram([ "Fi22", "F22G1-max14W1", 1 ]).program;;
+gap> slpm12tol211 := AtlasStraightLineProgram([ "M12", "M12G1-max5W1", 1 ]).program;;
 gap> mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);
 [ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ]
 gap> lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);

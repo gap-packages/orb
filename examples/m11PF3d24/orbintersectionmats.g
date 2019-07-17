@@ -8,14 +8,14 @@ LoadPackage("atlasrep");
 LoadPackage("chop");
 
 # Find an slp for the 5-Sylow:
-pgens := AtlasGenerators("J2",1).generators;
+pgens := AtlasGenerators([ "J2", [ "J2G1-p100B0.m1", "J2G1-p100B0.m2" ], 1, 100 ]).generators;
 g := GroupWithGenerators(pgens);
 sy5 := SylowSubgroup(g,5);
 guck := FindShortGeneratorsOfSubgroup(g,sy5,\in);
 slp := guck.slp;
 
 # Now to the matrix rep:
-gens := AtlasGenerators("J2",9).generators;
+gens := AtlasGenerators([ "J2", [ "J2G1-f2r84B0.m1", "J2G1-f2r84B0.m2" ], 1, 2 ]).generators;
 hgens := ResultOfStraightLineProgram(slp,gens);
 
 # Make cmats out of the matrices:

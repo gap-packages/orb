@@ -4,8 +4,8 @@ LoadPackage("cvec");
 LoadPackage("atlasrep");
 #SetInfoLevel(InfoOrb,2);  # to see more
 
-pg := AtlasGenerators("Co1",1).generators;
-gens := AtlasGenerators("2.Co1",3).generators;
+pg := AtlasGenerators([ "Co1", [ "Co1G1-p98280B0.m1", "Co1G1-p98280B0.m2" ], 1, 98280 ]).generators;
+gens := AtlasGenerators([ "2.Co1", [ "2Co1G1-f5r24B0.m1", "2Co1G1-f5r24B0.m2" ], 1, 5 ]).generators;
 cgens := List(gens,CMat);
 basech := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),
           "examples/co1F5d24/co1basech.cmat"));
