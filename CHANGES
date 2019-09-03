@@ -1,5 +1,9 @@
 This file describes changes in the orb package.
 
+4.8.3 (2019-09-03)
+  - Adjust examples and tests for compatibility with AtlasRep 2.x
+  - Various janitorial changes
+
 4.8.2 (2019-02-23)
   - Rewrote build system to use gac, not autoconf/automake/libtool
   - Improve compatibility with upcoming GAP 4.11
