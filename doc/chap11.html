@@ -82,9 +82,9 @@ LoadPackage("cvec");
 LoadPackage("atlasrep");
 
 SetInfoLevel(InfoOrb,2);
-pgens := AtlasGenerators("M11",1).generators;
+pgens := AtlasGenerators([ "M11", [ "M11G1-p11B0.m1", "M11G1-p11B0.m2" ], 1, 11 ]).generators;
 
-gens := AtlasGenerators("M11",14).generators;
+gens := AtlasGenerators([ "M11", [ "M11G1-f3r24B0.m1", "M11G1-f3r24B0.m2" ], 1, 3 ]).generators;
 cgens := List(gens,CMat);
 basech := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),
           "examples/m11PF3d24/m11basech.cmat"));
@@ -221,12 +221,12 @@ Sum(oo!.obsos,Size);
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">gens := AtlasGenerators("B",1).generators;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">gens := AtlasGenerators([ "B", [ "BG1-f2r4370B0.m1", "BG1-f2r4370B0.m2" ], 1, 2 ]).generators;</span>
 [ &lt;an immutable 4370x4370 matrix over GF2&gt;, 
   &lt;an immutable 4370x4370 matrix over GF2&gt; ]
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">bgens := List(gens,CMat);</span>
 [ &lt;cmat 4370x4370 over GF(2,1)&gt;, &lt;cmat 4370x4370 over GF(2,1)&gt; ] 
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">slpbtoe := AtlasStraightLineProgram("B",1).program;;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">slpbtoe := AtlasStraightLineProgram([ "B", "BG1-max1W1", 1 ]).program;;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">egens := ResultOfStraightLineProgram(slpbtoe,bgens);</span>
 [ &lt;cmat 4370x4370 over GF(2,1)&gt;, &lt;cmat 4370x4370 over GF(2,1)&gt; ] 
 </pre></div>
@@ -372,8 +372,8 @@ true
 
 
 <div class="example"><pre>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">slpfi22tom12 := AtlasStraightLineProgram("Fi22",14).program;;</span>
-<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">slpm12tol211 := AtlasStraightLineProgram("M12",5).program;;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">slpfi22tom12 := AtlasStraightLineProgram([ "Fi22", "F22G1-max14W1", 1 ]).program;;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">slpm12tol211 := AtlasStraightLineProgram([ "M12", "M12G1-max5W1", 1 ]).program;;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">mgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);</span>
 [ &lt;cmat 4370x4370 over GF(2,1)&gt;, &lt;cmat 4370x4370 over GF(2,1)&gt; ]
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput">lgens := ResultOfStraightLineProgram(slpm12tol211,mgens);</span>

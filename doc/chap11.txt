@@ -69,9 +69,9 @@
     [4X[28XLoadPackage("atlasrep");[128X[104X
     [4X[28X[128X[104X
     [4X[28XSetInfoLevel(InfoOrb,2);[128X[104X
-    [4X[28Xpgens := AtlasGenerators("M11",1).generators;[128X[104X
+    [4X[28Xpgens := AtlasGenerators([ "M11", [ "M11G1-p11B0.m1", "M11G1-p11B0.m2" ], 1, 11 ]).generators;[128X[104X
     [4X[28X[128X[104X
-    [4X[28Xgens := AtlasGenerators("M11",14).generators;[128X[104X
+    [4X[28Xgens := AtlasGenerators([ "M11", [ "M11G1-f3r24B0.m1", "M11G1-f3r24B0.m2" ], 1, 3 ]).generators;[128X[104X
     [4X[28Xcgens := List(gens,CMat);[128X[104X
     [4X[28Xbasech := CVEC_ReadMatFromFile(Filename(DirectoriesPackageLibrary("orb",""),[128X[104X
     [4X[28X          "examples/m11PF3d24/m11basech.cmat"));[128X[104X
@@ -263,12 +263,12 @@
   expressing generators of [22XE[122X in terms of the generators of [22XB[122X.[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27Xgens := AtlasGenerators("B",1).generators;[127X[104X
+    [4X[25Xgap>[125X [27Xgens := AtlasGenerators([ "B", [ "BG1-f2r4370B0.m1", "BG1-f2r4370B0.m2" ], 1, 2 ]).generators;[127X[104X
     [4X[28X[ <an immutable 4370x4370 matrix over GF2>, [128X[104X
     [4X[28X  <an immutable 4370x4370 matrix over GF2> ][128X[104X
     [4X[25Xgap>[125X [27Xbgens := List(gens,CMat);[127X[104X
     [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] [128X[104X
-    [4X[25Xgap>[125X [27Xslpbtoe := AtlasStraightLineProgram("B",1).program;;[127X[104X
+    [4X[25Xgap>[125X [27Xslpbtoe := AtlasStraightLineProgram([ "B", "BG1-max1W1", 1 ]).program;;[127X[104X
     [4X[25Xgap>[125X [27Xegens := ResultOfStraightLineProgram(slpbtoe,bgens);[127X[104X
     [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ] [128X[104X
   [4X[32X[104X
@@ -491,8 +491,8 @@
   restrict to [22XM_{12}[122X and compute the radical series of the restricted module.[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[25Xgap>[125X [27Xslpfi22tom12 := AtlasStraightLineProgram("Fi22",14).program;;[127X[104X
-    [4X[25Xgap>[125X [27Xslpm12tol211 := AtlasStraightLineProgram("M12",5).program;;[127X[104X
+    [4X[25Xgap>[125X [27Xslpfi22tom12 := AtlasStraightLineProgram([ "Fi22", "F22G1-max14W1", 1 ]).program;;[127X[104X
+    [4X[25Xgap>[125X [27Xslpm12tol211 := AtlasStraightLineProgram([ "M12", "M12G1-max5W1", 1 ]).program;;[127X[104X
     [4X[25Xgap>[125X [27Xmgens := ResultOfStraightLineProgram(slpfi22tom12,fgens);[127X[104X
     [4X[28X[ <cmat 4370x4370 over GF(2,1)>, <cmat 4370x4370 over GF(2,1)> ][128X[104X
     [4X[25Xgap>[125X [27Xlgens := ResultOfStraightLineProgram(slpm12tol211,mgens);[127X[104X

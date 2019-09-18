@@ -6,10 +6,10 @@
                          [1X Methods to enumerate orbits [101X
   
   
-                                     4.8.2
+                                     4.8.3
   
   
-                                23 February 2019
+                                3 September 2019
   
   
                                 Juergen Mueller
@@ -17,8 +17,6 @@
                                  Max Neunhöffer
   
                                   Felix Noeske
-  
-                                    Max Horn
   
   
   
@@ -47,17 +45,6 @@
                 [33X[0;14YLehrstuhl D fuer Mathematik, RWTH Aachen[133X
                 [33X[0;14YTemplergraben 64[133X
                 [33X[0;14Y52056 Aachen[133X
-                [33X[0;14YGermany[133X
-  
-  
-  Max Horn
-      Email:    [7Xmailto:max.horn@math.uni-giessen.de[107X
-      Homepage: [7Xhttps://www.quendi.de/math[107X
-      Address:  [33X[0;14YAG Algebra[133X
-                [33X[0;14YMathematisches Institut[133X
-                [33X[0;14YJustus-Liebig-Universität Gießen[133X
-                [33X[0;14YArndtstraße 2[133X
-                [33X[0;14Y35392 Gießen[133X
                 [33X[0;14YGermany[133X
   
   
