@@ -20,13 +20,13 @@ SOURCES = src/orb.c
 GAPPATH = @GAPPATH@
 GAPARCH = @GAPARCH@
 
-BINARCHDIR = bin/@GAPARCH@
+BINARCHDIR = bin/$(GAPARCH)
 GAPINSTALLIB = $(BINARCHDIR)/$(MODULE_NAME).so
 
 MKDIR_P = /bin/mkdir -p
 
-GAP = @GAPPATH@/gap
-GAC = @GAPPATH@/gac
+GAP = $(GAPPATH)/gap
+GAC = $(GAPPATH)/gac
 
 all: $(GAPINSTALLIB)
 .PHONY: all
@@ -103,7 +103,7 @@ check: default
 	$(GAP) tst/testall.g
 
 Makefile: configure Makefile.in
-	./configure "@GAPPATH@"
+	./configure "$(GAPPATH)"
 
 .PHONY: default clean distclean doc check
 
