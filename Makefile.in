@@ -77,16 +77,16 @@ DEPFLAGS = -MQ "$@" -MMD -MP -MF $(@D)/$(*F).d
 
 # build rule for C code
 gen/%.lo: %.c Makefile
-	$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -c $< -o $@
+	$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -p "$(CFLAGS)" -c $< -o $@
 
 # build rule for C++ code
 gen/%.lo: %.cc Makefile
-	$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -c $< -o $@
+	$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -p "$(CXXFLAGS)" -c $< -o $@
 
 # build rule for linking all object files together into a kernel extension
 $(GAPINSTALLIB): $(OBJS)
 	@$(MKDIR_P) $(BINARCHDIR)
-	$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" $(OBJS) -o $@
+	$(QUIET_GAC)$(GAC) -d -p "$(DEPFLAGS)" -P "$(LDFLAGS)" $(OBJS) -o $@
 
 clean:
 	rm -rf $(BINARCHDIR)
