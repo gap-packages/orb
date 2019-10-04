@@ -1,19 +1,9 @@
 #
 # Makefile rules for the orb package
 #
-# This requires GNU make (just as the main GAP does).
-#
-# For simple packages one should only need to modify the MODULE_NAME
-# and the SOURCES variable.
-#
-MODULE_NAME = orb
+KEXT_NAME = orb
+KEXT_SOURCES = src/orb.c
 
-SOURCES = src/orb.c
-
-########################################################################
-# Some variables that come from GAP via our configure script
-########################################################################
+# include shared GAP package build system
 GAPPATH = @GAPPATH@
-GAPARCH = @GAPARCH@
-
 include Makefile.gappkg
