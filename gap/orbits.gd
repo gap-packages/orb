@@ -19,7 +19,7 @@ DeclareInfoClass( "InfoOrb" );
 SetInfoLevel( InfoOrb, 1 );
 
 # A central place for configurations:
-DeclareGlobalVariable( "ORB" );
+BindGlobal( "ORB", rec( ) );
 
 
 ####################################

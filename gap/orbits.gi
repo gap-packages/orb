@@ -14,11 +14,7 @@
 #############################################################################
 
 
-# A central place for configuration variables:
-
-InstallValue( ORB, rec( ) );
-
-# Possible options:
+# Possible options in the `ORB` record:
 #  .eqfunc
 #  .genstoapply
 #  .gradingfunc
