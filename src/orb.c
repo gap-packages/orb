@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 
-#include "src/compiled.h"          /* GAP headers                */
+#include "compiled.h" // GAP headers
 
 /* This file corresponds to orb/gap/avltree.gi, it imlements some of
  * its functionality on the C level for better performance. */
