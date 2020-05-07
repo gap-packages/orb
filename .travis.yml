@@ -17,6 +17,7 @@ matrix:
     - env: GAPBRANCH=master
     - env: GAPBRANCH=stable-4.11
     - env: GAPBRANCH=stable-4.10
+    - env: GAPBRANCH=stable-4.9
 
 branches:
   only:
