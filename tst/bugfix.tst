@@ -6,6 +6,8 @@ gap> o := Orb(GeneratorsOfSemigroup(S), [1], OnSets);
 <open orbit, 1 points>
 gap> Enumerate(o);
 <closed orbit, 2 points>
+gap> AsList(o);
+[ [ 1 ], [  ] ]
 gap> [] in o;
 true
 
