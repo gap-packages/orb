@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gap-packages/orb.svg?branch=master)](https://travis-ci.org/gap-packages/orb)
+[![Build Status](https://travis-ci.com/gap-packages/orb.svg?branch=master)](https://travis-ci.com/gap-packages/orb)
 [![Code Coverage](https://codecov.io/github/gap-packages/orb/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/orb)
 
 # orb -- GAP package providing methods to enumerate orbits
