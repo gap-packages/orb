@@ -167,7 +167,7 @@ InstallGlobalFunction( Orb,
         o.looking := true;
         if IsList(o.lookingfor) then
             o.lookfunc := ORB_LookForList;
-        elif IsRecord(o.lookingfor) and IsBound(o.lookingfor.ishash) then
+        elif IsHashTab(o.lookingfor) then
             o.lookfunc := ORB_LookForHash;
         elif IsFunction(o.lookingfor) then
             o.lookfunc := o.lookingfor;
