@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate orbits",
-Version := "4.8.3",
-Date := "03/09/2019", # dd/mm/yyyy format
+Version := "4.8.4",
+Date := "07/09/2021", # dd/mm/yyyy format
 License := "GPL-3.0-or-later",
 
 ##  Information about authors and maintainers.
@@ -64,16 +64,16 @@ Persons := [
     FirstNames    := "Max",
     IsAuthor      := false,
     IsMaintainer  := true,
-    Email         := "max.horn@uni-siegen.de",
+    Email         := "horn@mathematik.uni-kl.de",
     WWWHome       := "https://www.quendi.de/math",
     PostalAddress := Concatenation(
-                       "Department Mathematik\n",
-                       "Universität Siegen\n",
-                       "Walter-Flex-Straße 3\n",
-                       "57072 Siegen\n",
+                       "Fachbereich Mathematik\n",
+                       "TU Kaiserslautern\n",
+                       "Gottlieb-Daimler-Straße 48\n",
+                       "67663 Kaiserslautern\n",
                        "Germany" ),
-    Place         := "Siegen",
-    Institution   := "Universität Siegen"
+    Place         := "Kaiserslautern, Germany",
+    Institution   := "TU Kaiserslautern"
   ),
 ],
 
