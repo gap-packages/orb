@@ -6,4 +6,59 @@ KEXT_SOURCES = src/orb.c
 
 # include shared GAP package build system
 GAPPATH = @GAPPATH@
-include Makefile.gappkg
+
+# read GAP's build settings
+include $(GAPPATH)/sysinfo.gap
+
+# hack to support GAP <= 4.9
+ifndef GAP_KERNEL_MAJOR_VERSION
+  CFLAGS += -I$(GAP_LIB_DIR)/src
+endif
+
+# various derived settings
+KEXT_BINARCHDIR = bin/$(GAParch)
+KEXT_SO = $(KEXT_BINARCHDIR)/$(KEXT_NAME).so
+
+GAP ?= $(GAPPATH)/gap
+GAC ?= $(GAPPATH)/gac
+
+# default target
+all: $(KEXT_SO)
+.PHONY: all
+
+########################################################################
+# Quiet rules.
+#
+# Replace regular output with quiet messages, unless V is set,
+# e.g. "make V=1"
+########################################################################
+ifneq ($(findstring $(MAKEFLAGS),s),s)
+ifndef V
+QUIET_GAC     = @echo "   GAC     $< => $@";>/dev/null #
+endif
+endif
+
+# build rule for linking all object files together into a kernel extension
+$(KEXT_SO): $(KEXT_SOURCES)
+	@mkdir -p $(@D)
+	$(QUIET_GAC)$(GAC) -d -p "$(CFLAGS)" -P "$(LDFLAGS)" $< -o $@
+
+clean:
+	rm -rf $(KEXT_BINARCHDIR)
+
+distclean:
+	rm -rf bin Makefile
+	(cd doc && ./clean)
+
+doc:
+	$(GAP) makedoc.g
+
+check:
+	$(GAP) tst/testall.g
+
+# re-run configure if configure, Makefile.in or GAP itself changed
+Makefile: configure Makefile.in $(GAPPATH)/sysinfo.gap
+	
+	./configure "$(GAPPATH)"
+
+.PHONY: check clean distclean doc
