@@ -165,7 +165,7 @@ AutoDoc := rec(
                     "\n",
                     "You should have received a copy of the GNU General Public License\n",
                     "along with this program.  If not, see\n",
-                    "<URL><Link>http://www.gnu.org/licenses/</Link></URL>.\n"
+                    "<URL><Link>https://www.gnu.org/licenses/</Link></URL>.\n"
                 ),
     )
 ),

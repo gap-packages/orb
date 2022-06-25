@@ -50,7 +50,7 @@ This file describes changes in the orb package.
   - Remove Jenkins hash in favor of the Murmur hash built into GAP
   - Clarify that the code is licensed under GPL v3.
   - Document that MakeSchreierTreeShallow only works for orbits with log.
-  - Move website to http://gap-packages.github.io/orb/
+  - Move website to https://gap-packages.github.io/orb/
 
 4.7.3 (2014-11-08)
   - Tweak the build system to avoid potential issues when the source
