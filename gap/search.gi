@@ -65,7 +65,7 @@ InstallGlobalFunction( MakeRandomLines,
             Randomize(sample,randomsource);
             pos := PositionNonZero(sample);
         until pos <= Length(sample);
-        MultRowVector(sample,sample[pos]^-1);
+        MultVector(sample,sample[pos]^-1);
         l[i] := sample;
     od;
     return l;

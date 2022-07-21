@@ -1079,7 +1079,7 @@ InstallGlobalFunction( ORB_NormalizeVector,
     local c;
     c := PositionNonZero(v);
     if c <= Length(v) then
-        MultRowVector(v,v[c]^-1);
+        MultVector(v,v[c]^-1);
     fi;
     return v;
   end );
