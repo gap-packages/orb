@@ -48,12 +48,12 @@
   This  information  is  important  for  the  resulting  stabiliser  and words
   representing the [22XU_k[122X-suborbits.[133X
   
-  [33X[0;0YThe  integers  [3Xj[103X,  [3Xl[103X,  and  [3Xi[103X,  for  which [22Xk+1 ge [3Xj[103X ge [3Xl[103X > [3Xi[103X ge 1[122X must hold,
-  determine  the  running  mode. [3Xj[103X indicates in which set [22XX_j[122X the point [3Xp[103X lies
-  and  thus  in  which  set  the  orbit  enumeration  takes  place, with [22Xj=k+1[122X
-  indicating  the original set [22XX[122X. The value [3Xl[103X indicates which group to use for
-  orbit  enumeration. So the result will be a [22XU_l[122X orbit, with [22X[3Xl[103X=[3Xk[103X+1[122X indicating
-  a  [22XG[122X-orbit.  Finally,  the  value  [3Xi[103X indicates which group to use for the [21Xby
+  [33X[0;0YThe integers [3Xj[103X, [3Xl[103X, and [3Xi[103X, for which [22Xk+1 ≥ [3Xj[103X ≥ [3Xl[103X > [3Xi[103X ≥ 1[122X must hold, determine
+  the  running mode. [3Xj[103X indicates in which set [22XX_j[122X the point [3Xp[103X lies and thus in
+  which  set  the  orbit  enumeration  takes  place, with [22Xj=k+1[122X indicating the
+  original  set  [22XX[122X.  The  value  [3Xl[103X  indicates  which  group  to  use for orbit
+  enumeration.  So  the  result  will  be a [22XU_l[122X orbit, with [22X[3Xl[103X=[3Xk[103X+1[122X indicating a
+  [22XG[122X-orbit.  Finally,  the  value  [3Xi[103X  indicates  which  group to use for the [21Xby
   suborbit[121X  part,  that  is,  the orbit will be enumerated [21Xby [22XU_[3Xi[103X[122X-orbits[121X. Note
   that  nearly  all  possible combinations of these parameters actually occur,
   because  this  function  is  also  used  in  the  [21Xon-the-fly[121X  precomputation

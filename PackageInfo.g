@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate orbits",
-Version := "4.8.4",
-Date := "07/09/2021", # dd/mm/yyyy format
+Version := "4.8.5",
+Date := "25/07/2022", # dd/mm/yyyy format
 License := "GPL-3.0-or-later",
 
 ##  Information about authors and maintainers.
@@ -124,7 +124,7 @@ orbits in various ways.",
 PackageDoc := rec(
   BookName  := "orb",
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
+  HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "Methods to enumerate orbits",
@@ -165,7 +165,7 @@ AutoDoc := rec(
                     "\n",
                     "You should have received a copy of the GNU General Public License\n",
                     "along with this program.  If not, see\n",
-                    "<URL><Link>http://www.gnu.org/licenses/</Link></URL>.\n"
+                    "<URL><Link>https://www.gnu.org/licenses/</Link></URL>.\n"
                 ),
     )
 ),

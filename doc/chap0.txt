@@ -6,10 +6,10 @@
                          [1X Methods to enumerate orbits [101X
   
   
-                                     4.8.4
+                                     4.8.5
   
   
-                                7 September 2021
+                                  25 July 2022
   
   
                                 Juergen Mueller
@@ -61,7 +61,7 @@
   MERCHANTABILITY  or  FITNESS  FOR  A PARTICULAR PURPOSE. See the GNU General
   Public  License for more details. You should have received a copy of the GNU
   General   Public   License   along   with   this   program.   If   not,  see
-  [7Xhttp://www.gnu.org/licenses/[107X.[133X
+  [7Xhttps://www.gnu.org/licenses/[107X.[133X
   
   
   -------------------------------------------------------
