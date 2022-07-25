@@ -1,5 +1,10 @@
 This file describes changes in the orb package.
 
+4.8.5 (2022-07-25)
+  - Make `Orb` option `lookingfor` accept non legacy HT
+  - Update build system
+  - Various janitorial changes
+
 4.8.4 (2021-09-07)
   - Update build system
   - Various janitorial changes
