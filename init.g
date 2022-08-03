@@ -34,9 +34,6 @@ ReadPackage("orb","gap/cache.gd");
 ReadPackage("orb","gap/orbits.gd");
 ReadPackage("orb","gap/search.gd");
 ReadPackage("orb","gap/bysuborbit.gd");
-if not(CompareVersionNumbers(GAPInfo.Version,"4.7")) then
-    ReadPackage("orb","gap/transform.gd");
-fi;
 
 ##
 ##  This program is free software: you can redistribute it and/or modify
