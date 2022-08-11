@@ -27,6 +27,13 @@ if (not IsBound(ORBC)) and
   LoadDynamicModule(Filename(DirectoriesPackagePrograms("orb"), "orb.so"));
 fi;
 
+#
+# Compatibility between older and newer versions of the MatrixObj interface
+#
+if not IsBound(MultVector) then
+    DeclareSynonym( "MultVector", MultRowVector );
+fi;
+
 ReadPackage("orb","gap/homwdata.gd");
 ReadPackage("orb","gap/avltree.gd");
 ReadPackage("orb","gap/hash.gd");
