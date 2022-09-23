@@ -1099,24 +1099,6 @@ static Int RNam_allocsize = 0;
 static Int RNam_cangrow = 0;
 static Int RNam_len = 0;
 
-static inline void initRNams(void)
-{
-    /* Find RNams if not already done: */
-    if (!RNam_accesses) {
-        RNam_accesses = RNamName("accesses");
-        RNam_collisions = RNamName("collisions");
-        RNam_hfd = RNamName("hfd");
-        RNam_hf = RNamName("hf");
-        RNam_els = RNamName("els");
-        RNam_vals = RNamName("vals");
-        RNam_nr = RNamName("nr");
-        RNam_cmpfunc = RNamName("cmpfunc");
-        RNam_allocsize = RNamName("allocsize");
-        RNam_cangrow = RNamName("cangrow");
-        RNam_len = RNamName("len");
-    }
-}
-
 extern Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
 {
     Obj els;
@@ -1126,9 +1108,6 @@ extern Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     Int h;
     Obj t;
     Obj r;
-
-    /* Find RNams if not already done: */
-    initRNams();
 
     /* Increment accesses entry: */
     tmp = ElmPRec(ht,RNam_accesses);
@@ -1203,9 +1182,6 @@ static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
     Int h;
     Obj t;
 
-    /* Find RNams if not already done: */
-    initRNams();
-
     /* Increment accesses entry: */
     t = ElmPRec(ht,RNam_accesses);
     t = INTOBJ_INT(INT_INTOBJ(t)+1);
@@ -1258,9 +1234,6 @@ static Obj HTDelete_TreeHash_C(Obj self, Obj ht, Obj x)
     Obj t;
     Obj v;
 
-    /* Find RNams if not already done: */
-    initRNams();
-
     /* Compute hash value: */
     hfd = ElmPRec(ht,RNam_hfd);
     t = ElmPRec(ht,RNam_hf);
@@ -1305,9 +1278,6 @@ static Obj HTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     Int h;
     Obj t;
     Obj old;
-
-    /* Find RNams if not already done: */
-    initRNams();
 
     /* Compute hash value: */
     hfd = ElmPRec(ht,RNam_hfd);
@@ -1512,7 +1482,29 @@ static Int InitKernel ( StructInitInfo *module )
     return 0;
 }
 
-Obj FuncADD_SET(Obj self, Obj set, Obj obj);
+
+/****************************************************************************
+**
+*F  PostRestore( <module> ) . . . . . . . . . . . . . after restore workspace
+*/
+static Int PostRestore (
+    StructInitInfo *    module )
+{
+    RNam_accesses = RNamName("accesses");
+    RNam_collisions = RNamName("collisions");
+    RNam_hfd = RNamName("hfd");
+    RNam_hf = RNamName("hf");
+    RNam_els = RNamName("els");
+    RNam_vals = RNamName("vals");
+    RNam_nr = RNamName("nr");
+    RNam_cmpfunc = RNamName("cmpfunc");
+    RNam_allocsize = RNamName("allocsize");
+    RNam_cangrow = RNamName("cangrow");
+    RNam_len = RNamName("len");
+
+    return 0;
+}
+
 
 /****************************************************************************
 **
@@ -1538,8 +1530,7 @@ static Int InitLibrary ( StructInitInfo *module )
     CHANGED_BAG(tmp);
     gvar = GVarName("ORBC"); AssGVar( gvar, tmp ); MakeReadOnlyGVar(gvar);
 
-    /* return success                                                      */
-    return 0;
+    return PostRestore( module );
 }
 
 /****************************************************************************
@@ -1551,6 +1542,7 @@ static StructInitInfo module = {
     .name = "orb",
     .initKernel = InitKernel,
     .initLibrary = InitLibrary,
+    .postRestore = PostRestore,
 };
 
 StructInitInfo * Init__Dynamic ( void )
