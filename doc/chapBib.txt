@@ -4,7 +4,7 @@
   
   [[20XAVM62[120X] [16XAdelson-Velskii, G. and M., L. E.[116X, [17XAn algorithm for the organization
   of  information[117X,  [18XProceedings  of  the USSR Academy of Sciences[118X, [19X146[119X (1962),
-  263--266, ((Russian)).
+  263--266, (Russian).
   
   [[20XCCN+85[120X]  [16XConway,  J.  H.,  Curtis,  R. T., Norton, S. P., Parker, R. A. and
   Wilson, R. A.[116X, [17XAtlas of finite groups[117X, Oxford University Press (1985).

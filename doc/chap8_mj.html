@@ -318,7 +318,7 @@
 <td class="tdleft">7</td>
 <td class="tdleft">a plain list holding the values stored under the keys</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p>The four positions used for a node contain the following information, recall that each node starts at a position divisible by 4:</p>
@@ -340,7 +340,7 @@
 <td class="tdleft">3 mod 4</td>
 <td class="tdleft">index: number of nodes in left subtree plus one</td>
 </tr>
-</table><br /><p>&nbsp;</p><br />
+</table><br />
 </div>
 
 <p>Since all positions of nodes are divisible by 4, we can use the least significant two bits of the left node reference for the so called balance factor. Balance factor 0 (both bits 0) indicates that the depth of the left subtree is equal to the depth of the right subtree. Balance factor 1 (bits 01) indicates that the depth of the right subtree is one greater than the depth of the left subtree. Balance factor 2 (or -1 in <a href="chapBib_mj.html#biBACP3">[Knu97]</a>, here bits 10) indicates that the depth of the left subtree is one greater than the depth of the right subtree.</p>
