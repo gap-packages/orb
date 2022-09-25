@@ -333,7 +333,7 @@ InstallGlobalFunction( Orb,
             # matrices:
             if not(IsBound(re.hf)) and not(IsBound(re.forflatplainlists)) and
                IsRowVector(x) and IsFFECollection(x) and
-               ForAll(o.gens,g->IsFFECollColl(g)) then
+               ForAll(o.gens,IsFFECollColl) then
                 f := FieldOfMatrixList(o.gens);
                 if Size(DefaultField(x)) < Size(f) then
                     o.ht := HTCreate(x*PrimitiveRoot(f),re);
