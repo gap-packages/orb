@@ -257,6 +257,20 @@ InstallMethod(ViewObj, "for tree hash tables",
     fi;
   end);
 
+BindGlobal("HT_Hash", function(ht, x)
+    local h;
+    h := ht!.hf(x,ht!.hfd);
+    if h = fail or h = 0 then
+        Error("hash function not applicable to key of type ", TNAM_OBJ(x));
+    fi;
+    if not IsInt(h) then
+        Error("hash function should return small integer or the value 'fail', not a ",
+              TNAM_OBJ(h));
+    fi;
+    # TODO: also do a bounds check?
+    return h;
+end);
+
 InstallMethod( HTAdd, "for a tree hash table, an object and a value",
   [ IsTreeHashTabRep, IsObject, IsObject ],
   function(ht, x, val)
@@ -266,10 +280,7 @@ InstallMethod( HTAdd, "for a tree hash table, an object and a value",
         Info(InfoOrb,3,"Tree hash table too full, growing...");
         HTGrow(ht,x);
     fi;
-    h := ht!.hf(x,ht!.hfd);
-    if h = fail then
-        return fail;
-    fi;
+    h := HT_Hash(ht,x);
     if not(IsBound(ht!.els[h])) then
         ht!.els[h] := x;
         if val <> true then ht!.vals[h] := val; fi;
@@ -314,8 +325,8 @@ InstallMethod( HTValue, "for a tree hash table and an object",
   function(ht, x)
     local h,t;
     ht!.accesses := ht!.accesses + 1;
-    h := ht!.hf(x,ht!.hfd);
-    if h = fail or not(IsBound(ht!.els[h])) then
+    h := HT_Hash(ht,x);
+    if not(IsBound(ht!.els[h])) then
         return fail;
     fi;
     t := ht!.els[h];
@@ -341,8 +352,8 @@ InstallMethod( HTDelete, "for a tree hash table and an object",
   [ IsTreeHashTabRep, IsObject ],
   function(ht, x)
     local h,t,v;
-    h := ht!.hf(x,ht!.hfd);
-    if h = fail or not(IsBound(ht!.els[h])) then
+    h := HT_Hash(ht,x);
+    if not(IsBound(ht!.els[h])) then
         return fail;
     fi;
     t := ht!.els[h];
@@ -374,8 +385,8 @@ InstallMethod( HTUpdate, "for a tree hash table and an object",
   [ IsTreeHashTabRep, IsObject, IsObject ],
   function( ht, x, v )
     local h,t,o;
-    h := ht!.hf(x,ht!.hfd);
-    if h = fail or not(IsBound(ht!.els[h])) then
+    h := HT_Hash(ht,x);
+    if not(IsBound(ht!.els[h])) then
         return fail;
     fi;
     t := ht!.els[h];
@@ -433,10 +444,7 @@ InstallMethod(HTAdd, "for a hash table, an object and a value",
         return fail;
       fi;
     fi;
-    h := ht!.hf(x,ht!.hfd);
-    if h = fail then
-        return fail;
-    fi;
+    h := HT_Hash(ht,x);
     if IsBound(ht!.els[h]) then
       g := GcdInt(ht!.len,h);
       if g = 1 then g := h; else g := 1; fi;
@@ -469,10 +477,7 @@ InstallMethod( HTValue, "for a hash table and an object",
   function(ht, x)
     local h,g;
     ht!.accesses := ht!.accesses + 1;
-    h := ht!.hf(x,ht!.hfd);
-    if h = fail then
-        return fail;
-    fi;
+    h := HT_Hash(ht,x);
     g := 0;
     while IsBound(ht!.els[h]) do
       if ht!.eqf(ht!.els[h],x) then
@@ -514,10 +519,7 @@ InstallMethod( HTUpdate, "for a hash table, an object and a value",
     local old,h,g;
 
     ht!.accesses := ht!.accesses + 1;
-    h := ht!.hf(x,ht!.hfd);
-    if h = fail then
-        return fail;
-    fi;
+    h := HT_Hash(ht,x);
     g := 0;
     while IsBound(ht!.els[h]) do
       if ht!.eqf(ht!.els[h],x) then
