@@ -1,5 +1,14 @@
 This file describes changes in the orb package.
 
+4.9.0 (2022-09-26)
+  - Validate the output of hash functions in the C implementation,
+    and report bad values as errors, instead of crashing or corrupting
+    data. This also means that code which previously did run may now
+    raise errors; usually that's a good thing, as it flags an error,
+    but it may be that in rare cases a correct computation is affected
+    by this. If so, please report this via our bug tracker, i.e.,
+    <https://github.com/gap-packages/orb/issues>
+
 4.8.5 (2022-07-25)
   - Make `Orb` option `lookingfor` accept non legacy HT
   - Update build system
