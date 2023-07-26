@@ -653,13 +653,13 @@ end );
 
 InstallGlobalFunction( ORB_HashFunctionForGF2Vectors,
 function(v,data)
-  if not IsGF2VectorRep(v) then return 0; fi;
+  if not IsGF2VectorRep(v) then return fail; fi;
   return HashKeyBag(v,101,2*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
 InstallGlobalFunction( ORB_HashFunctionFor8BitVectors,
 function(v,data)
-  if not Is8BitVectorRep(v) then return 0; fi;
+  if not Is8BitVectorRep(v) then return fail; fi;
   # TODO: check q
   return HashKeyBag(v,101,3*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
@@ -718,6 +718,9 @@ InstallGlobalFunction( ORB_HashFunctionForCompressedMats,
 function(x,data)
   local i,res;
   res := 0;
+  if not IsGF2MatrixRep(x) and not Is8BitMatrixRep(x) then
+    return fail;
+  fi;
   for i in [1..Length(x)] do
       res := (res * data[3] + data[2].func(x[i],data[2].data)) mod data[1];
   od;
@@ -747,7 +750,7 @@ InstallMethod( ChooseHashFunction, "for compressed 8bit matrices",
 
 InstallGlobalFunction( ORB_HashFunctionForIntegers,
 function(x,data)
-  if not IsInt(x) then return 0; fi;
+  if not IsInt(x) then return fail; fi;
   return x mod data[1] + 1;
 end );
 
@@ -790,13 +793,18 @@ function(p,data)
       # hash keys, regardless of representation.)
       TRIM_PERM(p,l);
     fi;
-   fi;
-   # now we have a Perm2Rep:
-   return HashKeyBag(p,255,ORBC.PERM_HASH_SKIP,2*l) mod data + 1;
+  fi;
+  if IsPerm2Rep(p) then
+    return HashKeyBag(p,255,ORBC.PERM_HASH_SKIP,2*l) mod data + 1;
+  fi;
+  return fail;
 end );
 
 InstallGlobalFunction( ORB_HashFunctionForPlainFlatList,
   function( x, data )
+    if not IsPlistRep(x) then
+      return fail;
+    fi;
     return (HashKeyBag( x, 0, 0, 
                         GAPInfo.BytesPerVariable*(Length(x)+1)) mod data)+1;
   end );
@@ -816,7 +824,10 @@ elif IsBound(IsTrans2Rep) and IsBound(IsTrans4Rep) then
           return HashKeyBag(t,255,0,4*deg) mod data + 1; 
         fi;
       fi;
-      return HashKeyBag(t,255,0,2*deg) mod data + 1; 
+      if IsTrans2Rep(t) then
+        return HashKeyBag(t,255,0,2*deg) mod data + 1;
+      fi;
+      return fail;
   end);
 else
   InstallGlobalFunction( ORB_HashFunctionForTransformations,
@@ -932,7 +943,10 @@ elif IsBound(IsPPerm2Rep) and IsBound(IsPPerm4Rep) then
         return HashKeyBag(t,255,4,4*DegreeOfPartialPerm(t)) mod data + 1;
       fi;
     fi;
-    return HashKeyBag(t,255,2,2*DegreeOfPartialPerm(t)) mod data + 1;
+    if IsPPerm2Rep(t) then
+      return HashKeyBag(t,255,2,2*DegreeOfPartialPerm(t)) mod data + 1;
+    fi;
+    return fail;
   end);
 fi;
 
