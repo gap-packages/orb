@@ -56,14 +56,15 @@ InstallMethod( PreImageElm, "for a mapping by function with data, and an obj",
   return h!.invFun(h!.data,o);
   end );
 
-InstallMethod( PreImagesElm, "for a mapping by function with data, and an obj",
+InstallMethod( PreImagesElmNC,
+  "for a mapping by function with data, and an obj",
   [ IsMappingByFunctionWithInverseRep and IsMappingByFunctionWithData, 
     IsObject ], 0,
   function (h,o)
   return [h!.invFun(h!.data,o)];
   end );
 
-InstallMethod( PreImagesRepresentative, 
+InstallMethod( PreImagesRepresentativeNC, 
   "for a mapping by function with data, and an obj",
   [ IsMappingByFunctionWithInverseRep and IsMappingByFunctionWithData, 
     IsObject ], 0,
@@ -71,7 +72,7 @@ InstallMethod( PreImagesRepresentative,
   return h!.invFun(h!.data,o);
   end );
 
-InstallMethod( PreImagesRepresentative, 
+InstallMethod( PreImagesRepresentativeNC, 
   "for a mapping by function with invmap with data, and an obj",
   [ IsMappingByFunctionRep and IsMappingByFunctionWithData, 
     IsObject ], 0,

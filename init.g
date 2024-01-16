@@ -34,6 +34,16 @@ if not IsBound(MultVector) then
     DeclareSynonym( "MultVector", MultRowVector );
 fi;
 
+#
+#I introduce the NC versions of PreImages...
+#
+if not IsBound( PreImagesElmNC ) then
+    BindGlobal( "PreImagesElmNC", PreImagesElm );
+fi;
+if not IsBound( PreImagesRepresentativeNC ) then
+    BindGlobal( "PreImagesRepresentativeNC", PreImagesRepresentative );
+fi;
+
 ReadPackage("orb","gap/homwdata.gd");
 ReadPackage("orb","gap/avltree.gd");
 ReadPackage("orb","gap/hash.gd");
