@@ -1,5 +1,6 @@
 name: orb
-version: 4.9.0
+version: "4.9.0"
+license: "GPL-3.0-or-later"
 date: 2022-09-26
 description: |
     Methods to enumerate orbits
@@ -41,3 +42,32 @@ abstract: |
 status: deposited
 doc-html: doc/chap0_mj.html
 doc-pdf: doc/manual.pdf
+keywords: |
+    Orbit huge, OrbitBySuborbit, hash tables, searching in groups.
+citeas: |
+    <p class='BibEntry'>
+    [<span class='BibKey'>MNNH22</span>]   <b class='BibAuthor'>Mueller, J., Neunhöffer, M., Noeske, F. and Horn, M.</b>,
+     <i class='BibTitle'>orb, Methods to enumerate orbits,
+             Version 4.9.0</i>
+     (<span class='BibYear'>2022</span>)<br />
+    (<span class='BibNote'>GAP package</span>),
+    <span class='BibHowpublished'><a href="https://gap-packages.github.io/orb">https://gap-packages.github.io/orb</a></span>.
+    </p>
+    
+
+bibtex: |
+    @misc{ orb4.9.0,
+      author =           {Mueller,  J. and Neunh{\"o}ffer, M. and Noeske, F. and
+                          Horn, M.},
+      title =            {{orb}, Methods to enumerate orbits, {V}ersion 4.9.0},
+      month =            {Sep},
+      year =             {2022},
+      note =             {GAP package},
+      howpublished =     {\href             {https://gap-packages.github.io/orb}
+                          {\texttt{https://gap-packages.github.io/}\discretionary
+                          {}{}{}\texttt{orb}}},
+      keywords =         {Orbit huge; OrbitBySuborbit; hash tables; searching in
+                          groups},
+      printedkey =       {MNNH22}
+    }
+
