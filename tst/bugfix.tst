@@ -20,7 +20,8 @@ Error, hash function not applicable to key of type integer
 # verify equal vectors either have equal hashes, or at least one gives fail
 # (here for 8 bit vector rep)
 gap> v:=[1..100]*Z(5);;
-gap> w:=CopyToVectorRep(v,5);;
+gap> w:=[1..100]*Z(5);;
+gap> ConvertToVectorRep(w,5);;
 gap> v = w;
 true
 gap> IsPlistRep(v);
@@ -42,7 +43,8 @@ gap> hf.func(v, hf.data);
 
 # same check for GF(2)
 gap> v:=[1..100]*Z(2);;
-gap> w:=CopyToVectorRep(v,2);;
+gap> w:=[1..100]*Z(2);;
+gap> ConvertToVectorRep(w,2);;
 gap> v = w;
 true
 gap> IsPlistRep(v);
