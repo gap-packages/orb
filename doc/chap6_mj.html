@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <script type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 <title>GAP (orb) - Chapter 6: Random elements</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -50,7 +50,7 @@
 
 <h4>6.1 <span class="Heading">Randomizing mutable objects</span></h4>
 
-<p>For certain types of mutable objects one can get a "random one" by calling the following operation:</p>
+<p>For certain types of mutable objects one can get a <q>random one</q> by calling the following operation:</p>
 
 <p><a id="X83DD8B39864A2C94" name="X83DD8B39864A2C94"></a></p>
 
@@ -59,7 +59,7 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Randomize</code>( <var class="Arg">ob</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">(&nbsp;operation&nbsp;)</td></tr></table></div>
 <p>Returns: nothing</p>
 
-<p>The mutable object <var class="Arg">ob</var> is changed in place. The value afterwards is random. The optional second argument <var class="Arg">rs</var> must be a random source and the random numbers used to randomize <var class="Arg">ob</var> are created using the random source <var class="Arg">rs</var> (see <a href="https://www.gap-system.org/Manuals/doc/ref/chap14_mj.html#X85361FAE8088C006"><span class="RefLink">Reference: Random Sources</span></a>). If <var class="Arg">rs</var> is not given, then the global <strong class="pkg">GAP</strong> random number generator is used.</p>
+<p>The mutable object <var class="Arg">ob</var> is changed in place. The value afterwards is random. The optional second argument <var class="Arg">rs</var> must be a random source and the random numbers used to randomize <var class="Arg">ob</var> are created using the random source <var class="Arg">rs</var> (see <a href="https://docs.gap-system.org/doc/ref/chap14_mj.html#X85361FAE8088C006"><span class="RefLink">Reference: Random Sources</span></a>). If <var class="Arg">rs</var> is not given, then the global <strong class="pkg">GAP</strong> random number generator is used.</p>
 
 <p>Currently, there are <code class="func">Randomize</code> methods for compressed vectors and compressed matrices over finite fields. See also the <strong class="pkg">cvec</strong> package for methods for <code class="code">cvec</code>s and <code class="code">cmat</code>s.</p>
 
@@ -81,13 +81,13 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; MakeRandomLines</code>( <var class="Arg">sample</var>, <var class="Arg">number</var>[, <var class="Arg">rs</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a list of normalised random vectors</p>
 
-<p><var class="Arg">sample</var> must be a vector for the mutable copies of which <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>) is applicable and <var class="Arg">number</var> must be a positive integer. If given, <var class="Arg">rs</var> must be a random source. This function creates a list of <var class="Arg">number</var> normalised random vectors with the same type as <var class="Arg">sample</var> using <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>). "Normalised" here means that the first non-zero entry in the vector is equal to <span class="SimpleMath">\(1\)</span>. For the creation of random numbers the random source <var class="Arg">rs</var> is used or, if not given, the global <strong class="pkg">GAP</strong> random number generator.</p>
+<p><var class="Arg">sample</var> must be a vector for the mutable copies of which <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>) is applicable and <var class="Arg">number</var> must be a positive integer. If given, <var class="Arg">rs</var> must be a random source. This function creates a list of <var class="Arg">number</var> normalised random vectors with the same type as <var class="Arg">sample</var> using <code class="func">Randomize</code> (<a href="chap6_mj.html#X83DD8B39864A2C94"><span class="RefLink">6.1-1</span></a>). <q>Normalised</q> here means that the first non-zero entry in the vector is equal to <span class="SimpleMath">\(1\)</span>. For the creation of random numbers the random source <var class="Arg">rs</var> is used or, if not given, the global <strong class="pkg">GAP</strong> random number generator.</p>
 
 <p><a id="X7B46C06479401BED" name="X7B46C06479401BED"></a></p>
 
 <h4>6.2 <span class="Heading">Product replacement</span></h4>
 
-<p>For computations in finite groups product replacement algorithms are a viable method of generating pseudo-random elements. This section describes a framework and an object type to provide these algorithms. Roughly speaking a "product replacer object" is something that is created with a list of group generators and produces a sequence of pseudo random group elements using some random source for random numbers.</p>
+<p>For computations in finite groups product replacement algorithms are a viable method of generating pseudo-random elements. This section describes a framework and an object type to provide these algorithms. Roughly speaking a <q>product replacer object</q> is something that is created with a list of group generators and produces a sequence of pseudo random group elements using some random source for random numbers.</p>
 
 <p><a id="X8290E4C57DE25CD4" name="X8290E4C57DE25CD4"></a></p>
 
@@ -125,7 +125,7 @@
 
 </dd>
 <dt><strong class="Mark"><code class="code">noaccu</code></strong></dt>
-<dd><p>Without this option set to <code class="keyw">true</code> the "rattle" version of product replacement is used which involves an accumulator and uses two or three products per random element. To use the "shake" version with only one or two product replacement per random element set this component to <code class="keyw">true</code>. The exact number of multiplications per random element also depends on the value of the <code class="code">accelerator</code> component.</p>
+<dd><p>Without this option set to <code class="keyw">true</code> the <q>rattle</q> version of product replacement is used which involves an accumulator and uses two or three products per random element. To use the <q>shake</q> version with only one or two product replacement per random element set this component to <code class="keyw">true</code>. The exact number of multiplications per random element also depends on the value of the <code class="code">accelerator</code> component.</p>
 
 </dd>
 <dt><strong class="Mark"><code class="code">normalin</code></strong></dt>
@@ -133,7 +133,7 @@
 
 </dd>
 <dt><strong class="Mark"><code class="code">accelerator</code></strong></dt>
-<dd><p>If this option is set to <code class="keyw">true</code> (which is the default), then the accelerator is used. This means that in each step two product replacement steps are performed, where both involve one distinguished slot called the "captain". The idea is that the current "team" of random elements uses one amongst them more often to increase the length of the words produced. See below for details of the algorithm with and without accelerator.</p>
+<dd><p>If this option is set to <code class="keyw">true</code> (which is the default), then the accelerator is used. This means that in each step two product replacement steps are performed, where both involve one distinguished slot called the <q>captain</q>. The idea is that the current <q>team</q> of random elements uses one amongst them more often to increase the length of the words produced. See below for details of the algorithm with and without accelerator.</p>
 
 </dd>
 <dt><strong class="Mark"><code class="code">retirecaptain</code></strong></dt>
@@ -145,7 +145,7 @@
 
 </dd>
 </dl>
-<p>The algorithm used does the following: A list of <code class="code">Length(</code><var class="Arg">gens</var><code class="code">)+addslots</code> elements is created that starts with the elements <var class="Arg">gens</var> and is filled up with random generators from <var class="Arg">gens</var>. This element is called the "team". A product replacement without accelerator randomly chooses two elements in the list and replaces one of them by the product of the two. If an accelerator is used, then one product replacement step randomly chooses two slots <span class="SimpleMath">\(i\)</span> and <span class="SimpleMath">\(j\)</span> where <span class="SimpleMath">\(i,j &gt; 1\)</span> but <span class="SimpleMath">\(i=j\)</span> is possible. Then first <span class="SimpleMath">\(l[1]\)</span> is replaced by <span class="SimpleMath">\(l[1]*l[i]\)</span> and after that <span class="SimpleMath">\(l[j]\)</span> is replaced by <span class="SimpleMath">\(l[j]*l[1]\)</span>. The first team member is called the "captain", so the captain is involved in every product replacement.</p>
+<p>The algorithm used does the following: A list of <code class="code">Length(</code><var class="Arg">gens</var><code class="code">)+addslots</code> elements is created that starts with the elements <var class="Arg">gens</var> and is filled up with random generators from <var class="Arg">gens</var>. This element is called the <q>team</q>. A product replacement without accelerator randomly chooses two elements in the list and replaces one of them by the product of the two. If an accelerator is used, then one product replacement step randomly chooses two slots <span class="SimpleMath">\(i\)</span> and <span class="SimpleMath">\(j\)</span> where <span class="SimpleMath">\(i,j &gt; 1\)</span> but <span class="SimpleMath">\(i=j\)</span> is possible. Then first <span class="SimpleMath">\(l[1]\)</span> is replaced by <span class="SimpleMath">\(l[1]*l[i]\)</span> and after that <span class="SimpleMath">\(l[j]\)</span> is replaced by <span class="SimpleMath">\(l[j]*l[1]\)</span>. The first team member is called the <q>captain</q>, so the captain is involved in every product replacement.</p>
 
 <p>One step in the algorithm is to do one product replacement followed by post-multiplying the result to the accumulator if one (or more) is used. Multiple accus (see the <code class="code">accus</code> component) are used in a round robin fashion.</p>
 
@@ -185,6 +185,6 @@
 <div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0_mj.html">Top</a>  <a href="chap1_mj.html">1</a>  <a href="chap2_mj.html">2</a>  <a href="chap3_mj.html">3</a>  <a href="chap4_mj.html">4</a>  <a href="chap5_mj.html">5</a>  <a href="chap6_mj.html">6</a>  <a href="chap7_mj.html">7</a>  <a href="chap8_mj.html">8</a>  <a href="chap9_mj.html">9</a>  <a href="chap10_mj.html">10</a>  <a href="chap11_mj.html">11</a>  <a href="chapBib_mj.html">Bib</a>  <a href="chapInd_mj.html">Ind</a>  </div>
 
 <hr />
-<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
 </body>
 </html>

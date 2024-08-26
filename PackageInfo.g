@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate orbits",
-Version := "4.9.0",
-Date := "26/09/2022", # dd/mm/yyyy format
+Version := "4.9.1",
+Date := "26/08/2024", # dd/mm/yyyy format
 License := "GPL-3.0-or-later",
 
 ##  Information about authors and maintainers.
@@ -64,16 +64,16 @@ Persons := [
     FirstNames    := "Max",
     IsAuthor      := false,
     IsMaintainer  := true,
-    Email         := "horn@mathematik.uni-kl.de",
+    Email         := "mhorn@rptu.de",
     WWWHome       := "https://www.quendi.de/math",
     PostalAddress := Concatenation(
                        "Fachbereich Mathematik\n",
-                       "TU Kaiserslautern\n",
+                       "RPTU Kaiserslautern-Landau\n",
                        "Gottlieb-Daimler-Straße 48\n",
                        "67663 Kaiserslautern\n",
                        "Germany" ),
     Place         := "Kaiserslautern, Germany",
-    Institution   := "TU Kaiserslautern"
+    Institution   := "RPTU Kaiserslautern-Landau"
   ),
 ],
 
@@ -131,13 +131,20 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">=4.9",
+  GAP := ">=4.12",
   NeededOtherPackages := [],
   SuggestedOtherPackages := [["IO",">= 3.3"]],
   ExternalConditions := []
 ),
 
-AvailabilityTest := ReturnTrue,
+AvailabilityTest := function()
+    if IsKernelExtensionAvailable("orb") = false then
+      LogPackageLoadingMessage( PACKAGE_WARNING,
+              [ "kernel functions for orb are not available." ] );
+      return false;
+    fi;
+    return true;
+end,
 
 ##  *Optional*, but recommended: path relative to package root to a file which 
 ##  contains as many tests of the package functionality as sensible.

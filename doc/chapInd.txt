@@ -69,7 +69,7 @@
       forobsol 9.4-5 
   [2XNewHT[102X 4.4-1 
   [2XNext[102X 6.2-2 
-  [5Xorb[105X 2. 
+  [5Xorb[105X 2.0 
   [2XOrb[102X 3.1-1 
   [2XORB_EstimateOrbitSize[102X 3.1-24 
   [2XOrbActionHomomorphism[102X 3.1-15 

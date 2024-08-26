@@ -5,7 +5,7 @@
   [1X8.1 [33X[0;0YThe idea of AVL trees[133X[101X
   
   [33X[0;0YAVL  trees  are  balanced  binary  trees called [21XAVL trees[121X in honour of their
-  inventors  G.M. Adelson-Velskii and E.M. Landis (see [AVM62]). A description
+  inventors  G.M.  Adelson-Velskii and E.M. Landis (see [AM62]). A description
   in English can be found in [Knu97] in Section 6.2.3 about balanced trees.[133X
   
   [33X[0;0YThe  general idea is to store data in a binary tree such that all entries in

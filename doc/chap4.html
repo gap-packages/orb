@@ -79,7 +79,7 @@
 
 <p>If one wants to store a certain set of similar objects and wants to quickly access a given one (or come back with the result that it is unknown), the first idea would be to store them in a list, possibly sorted for faster access. This however still would need <span class="SimpleMath">log(n)</span> comparisons to find a given element or to decide that it is not yet stored.</p>
 
-<p>Therefore one uses a much bigger array and uses a function on the space of possible objects with integer values to decide, where in the array to store a certain object. If this so called hash function distributes the actually stored objects well enough over the array, the access time is constant in average. Of course, a hash function will usually not be injective, so one needs a strategy what to do in case of a so-called "collision", that is, if more than one object with the same hash value has to be stored. This package provides two ways to deal with collisions, one is implemented in the so called "HashTabs" and another in the "TreeHashTabs". The former simply uses other parts of the array to store the data involved in the collisions and the latter uses an AVL tree (see Chapter <a href="chap8.html#X7F2630FB7AA3C73D"><span class="RefLink">8</span></a>) to store all data objects with the same hash value. Both are used basically in the same way but sometimes behave a bit differently.</p>
+<p>Therefore one uses a much bigger array and uses a function on the space of possible objects with integer values to decide, where in the array to store a certain object. If this so called hash function distributes the actually stored objects well enough over the array, the access time is constant in average. Of course, a hash function will usually not be injective, so one needs a strategy what to do in case of a so-called <q>collision</q>, that is, if more than one object with the same hash value has to be stored. This package provides two ways to deal with collisions, one is implemented in the so called <q>HashTabs</q> and another in the <q>TreeHashTabs</q>. The former simply uses other parts of the array to store the data involved in the collisions and the latter uses an AVL tree (see Chapter <a href="chap8.html#X7F2630FB7AA3C73D"><span class="RefLink">8</span></a>) to store all data objects with the same hash value. Both are used basically in the same way but sometimes behave a bit differently.</p>
 
 <p>The basic functions to work with hash tables are <code class="func">HTCreate</code> (<a href="chap4.html#X79F46D9982BB0E12"><span class="RefLink">4.3-1</span></a>), <code class="func">HTAdd</code> (<a href="chap4.html#X833166757E58B83B"><span class="RefLink">4.3-2</span></a>), <code class="func">HTValue</code> (<a href="chap4.html#X8585E1687AE9E409"><span class="RefLink">4.3-3</span></a>), <code class="func">HTDelete</code> (<a href="chap4.html#X82A8245E875B0B8E"><span class="RefLink">4.3-5</span></a>) and <code class="func">HTUpdate</code> (<a href="chap4.html#X788B50C17A472DFD"><span class="RefLink">4.3-4</span></a>). They are described in Section <a href="chap4.html#X8424E70E78FAA203"><span class="RefLink">4.3</span></a>.</p>
 
@@ -242,7 +242,7 @@
 
 </dd>
 <dt><strong class="Mark"><code class="code">hashlen</code></strong></dt>
-<dd><p>If this component is bound the type of the hash table is a standard HashTab table. That is, collisions are dealt with by storing additional entries in other slots. This is the traditional way to implement a hash table. Note that currently deleting entries in such a hash table is not implemented, since it could only be done by leaving a "deleted" mark which could pollute that hash table. Use TreeHashTabs instead if you need deletion. The value bound to <code class="code">hashlen</code> must be a positive integer and will be the initial length of the hash table.</p>
+<dd><p>If this component is bound the type of the hash table is a standard HashTab table. That is, collisions are dealt with by storing additional entries in other slots. This is the traditional way to implement a hash table. Note that currently deleting entries in such a hash table is not implemented, since it could only be done by leaving a <q>deleted</q> mark which could pollute that hash table. Use TreeHashTabs instead if you need deletion. The value bound to <code class="code">hashlen</code> must be a positive integer and will be the initial length of the hash table.</p>
 
 <p>Note that it is a good idea to choose a prime number as the hash length due to the algorithm for collision handling which works particularly well in that case. The hash function is chosen automatically.</p>
 
@@ -451,7 +451,7 @@
 
 <p>This section is only relevant for HashTab objects.</p>
 
-<p>If two or more objects have the same hash value, the following is done: If the hash value is coprime to the hash length, the hash value is taken as "the increment", otherwise <span class="SimpleMath">1</span> is taken. The code to find the proper place for an object just repeatedly adds the increment to the current position modulo the hash length. Due to the choice of the increment this will eventually try all places in the hash table. Every such increment step is counted as a collision in the <code class="code">collisions</code> component in the hash table. This algorithm explains why it is sensible to choose a prime number as the length of a hash table.</p>
+<p>If two or more objects have the same hash value, the following is done: If the hash value is coprime to the hash length, the hash value is taken as <q>the increment</q>, otherwise <span class="SimpleMath">1</span> is taken. The code to find the proper place for an object just repeatedly adds the increment to the current position modulo the hash length. Due to the choice of the increment this will eventually try all places in the hash table. Every such increment step is counted as a collision in the <code class="code">collisions</code> component in the hash table. This algorithm explains why it is sensible to choose a prime number as the length of a hash table.</p>
 
 <p><a id="X836F7C2C7932FEAE" name="X836F7C2C7932FEAE"></a></p>
 
@@ -470,6 +470,6 @@
 <div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chap9.html">9</a>  <a href="chap10.html">10</a>  <a href="chap11.html">11</a>  <a href="chapBib.html">Bib</a>  <a href="chapInd.html">Ind</a>  </div>
 
 <hr />
-<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+<p class="foot">generated by <a href="https://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
 </body>
 </html>
