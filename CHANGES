@@ -1,5 +1,13 @@
 This file describes changes in the orb package.
 
+4.9.1 (2024-08-26)
+  - Require GAP >= 4.12
+  - More hash functions now detect invalid input and return `fail`
+    instead of returning garbage (like hashes of random memory blocks,
+    or the constant 0) or even crashing.
+  - Update build system
+  - Various janitorial changes
+
 4.9.0 (2022-09-26)
   - Validate the output of hash functions in the C implementation,
     and report bad values as errors, instead of crashing or corrupting
