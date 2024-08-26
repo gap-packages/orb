@@ -18,13 +18,8 @@
 ################################
 
 # load kernel function if it is installed:
-if (not IsBound(ORBC)) and ("orb" in SHOW_STAT()) then
-  # try static module
-  LoadStaticModule("orb");
-fi;
-if (not IsBound(ORBC)) and
-   (Filename(DirectoriesPackagePrograms("orb"), "orb.so") <> fail) then
-  LoadDynamicModule(Filename(DirectoriesPackagePrograms("orb"), "orb.so"));
+if LoadKernelExtension("orb", "orb") = false then
+  Error("failed to load orb kernel extension");
 fi;
 
 #
