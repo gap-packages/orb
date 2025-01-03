@@ -48,7 +48,7 @@ static Obj PermList;
 /* Note that we have to check the arguments for functions that are called
  * by user programs since we do not go through method selection! */
 
-static Obj AVLCmp_C(Obj self, Obj a, Obj b)
+static Obj FuncAVLCmp_C(Obj self, Obj a, Obj b)
 /* A very fast three-way comparison function. */
 {
     if (EQ(a,b)) return INTOBJ_INT(0);
@@ -129,7 +129,7 @@ static Int AVLNewNode( Obj t )
     return n;
 }
 
-static Obj AVLNewNode_C( Obj self, Obj t )
+static Obj FuncAVLNewNode_C( Obj self, Obj t )
 {
     if ( TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeTypeMutable) {
         ErrorQuit( "Usage: AVLNewNode(avltree)", 0L, 0L );
@@ -153,7 +153,7 @@ static inline Obj AVLFreeNode( Obj t, Int n )
     return True;
 }
 
-static Obj AVLFreeNode_C( Obj self, Obj t, Obj n)
+static Obj FuncAVLFreeNode_C( Obj self, Obj t, Obj n)
 {
     if (!IS_INTOBJ(n) ||
         TNUM_OBJ(t) != T_POSOBJ || TYPE_POSOBJ(t) != AVLTreeTypeMutable) {
@@ -202,7 +202,7 @@ static inline Int AVLFind( Obj t, Obj d )
     return 0;
 }
 
-static Obj AVLFind_C( Obj self, Obj t, Obj d )
+static Obj FuncAVLFind_C( Obj self, Obj t, Obj d )
 {
     if (TNUM_OBJ(t) != T_POSOBJ ||
         (TYPE_POSOBJ(t) != AVLTreeType &&
@@ -240,7 +240,7 @@ static inline Int AVLFindIndex( Obj t, Obj d )
     return 0;
 }
 
-static Obj AVLFindIndex_C( Obj self, Obj t, Obj d )
+static Obj FuncAVLFindIndex_C( Obj self, Obj t, Obj d )
 {
     if (TNUM_OBJ(t) != T_POSOBJ ||
         (TYPE_POSOBJ(t) != AVLTreeType &&
@@ -255,7 +255,7 @@ static Obj AVLFindIndex_C( Obj self, Obj t, Obj d )
         return INTOBJ_INT(tmp);
 }
             
-static Obj AVLLookup_C( Obj self, Obj t, Obj d )
+static Obj FuncAVLLookup_C( Obj self, Obj t, Obj d )
 {
     if (TNUM_OBJ(t) != T_POSOBJ ||
         (TYPE_POSOBJ(t) != AVLTreeType &&
@@ -288,7 +288,7 @@ static inline Int AVLIndex( Obj t, Int i )
     }
 }
 
-static Obj AVLIndex_C( Obj self, Obj t, Obj i )
+static Obj FuncAVLIndex_C( Obj self, Obj t, Obj i )
 {
     Int p;
     if (!IS_INTOBJ(i) || 
@@ -305,7 +305,7 @@ static Obj AVLIndex_C( Obj self, Obj t, Obj i )
         return AVLData(t,p);
 }
 
-static Obj AVLIndexFind_C( Obj self, Obj t, Obj i )
+static Obj FuncAVLIndexFind_C( Obj self, Obj t, Obj i )
 {
     Int p;
     if (!IS_INTOBJ(i) || 
@@ -322,7 +322,7 @@ static Obj AVLIndexFind_C( Obj self, Obj t, Obj i )
         return INTOBJ_INT(p);
 }
 
-static Obj AVLIndexLookup_C( Obj self, Obj t, Obj i )
+static Obj FuncAVLIndexLookup_C( Obj self, Obj t, Obj i )
 {
     Int p;
     Obj vals;
@@ -458,7 +458,7 @@ static inline void AVLRebalance( Obj tree, Int q, Int *newroot, int *shrink )
   *newroot = p;
 }
 
-static Obj AVLRebalance_C( Obj self, Obj tree, Obj q )
+static Obj FuncAVLRebalance_C( Obj self, Obj tree, Obj q )
 {
     Int newroot = 0;
     int shrink;
@@ -470,7 +470,7 @@ static Obj AVLRebalance_C( Obj self, Obj tree, Obj q )
     return tmp;
 }
 
-static Obj AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
+static Obj FuncAVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
 {
 /* Parameters: tree, data, value
     tree is an AVL tree
@@ -604,7 +604,7 @@ static Obj AVLAdd_C( Obj self, Obj tree, Obj data, Obj value )
   return True;
 }
 
-static Obj AVLIndexAdd_C( Obj self, Obj tree, Obj data, Obj value, Obj ind )
+static Obj FuncAVLIndexAdd_C( Obj self, Obj tree, Obj data, Obj value, Obj ind )
 {
 /* Parameters: tree, data, value
     tree is an AVL tree
@@ -737,7 +737,7 @@ static Obj AVLIndexAdd_C( Obj self, Obj tree, Obj data, Obj value, Obj ind )
   return True;
 }
 
-static Obj AVLDelete_C( Obj self, Obj tree, Obj data)
+static Obj FuncAVLDelete_C( Obj self, Obj tree, Obj data)
   /* Parameters: tree, data
       tree is an AVL tree
       data is a data structure defined by the user
@@ -911,7 +911,7 @@ static Obj AVLDelete_C( Obj self, Obj tree, Obj data)
   return old;
 }
  
-static Obj AVLIndexDelete_C( Obj self, Obj tree, Obj index)
+static Obj FuncAVLIndexDelete_C( Obj self, Obj tree, Obj index)
   /* Parameters: tree, index
       tree is an AVL tree
       index is the index of the element to be deleted, must be between 1 and
@@ -1117,7 +1117,7 @@ static inline Int HT_Hash(Obj ht, Obj x)
     return h;
 }
 
-extern Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
+extern Obj FuncHTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
 {
     Obj els;
     Obj vals;
@@ -1166,21 +1166,17 @@ extern Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
         AssPRec(r,RNam_allocsize,INTOBJ_INT(3));
         t = CALL_1ARGS(AVLTree,r);
         if (LEN_PLIST(vals) >= h && ELM_PLIST(vals,h) != 0L) {
-            AVLAdd_C(self,t,tmp,ELM_PLIST(vals,h));
+            FuncAVLAdd_C(self,t,tmp,ELM_PLIST(vals,h));
             UNB_LIST(vals,h);
         } else {
-            AVLAdd_C(self,t,tmp,True);
+            FuncAVLAdd_C(self,t,tmp,True);
         }
         SET_ELM_PLIST(els,h,t);
         CHANGED_BAG(els);
     } else t = tmp;
 
     /* Finally add value into tree: */
-    if (v != True) {
-        r = AVLAdd_C(self,t,x,v);
-    } else {
-        r = AVLAdd_C(self,t,x,True);
-    }
+    r = FuncAVLAdd_C(self,t,x,v);
 
     if (r != Fail) {
         AssPRec(ht,RNam_nr,INTOBJ_INT(INT_INTOBJ(ElmPRec(ht,RNam_nr))+1));
@@ -1189,7 +1185,7 @@ extern Obj HTAdd_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
         return Fail;
 }
 
-static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
+static Obj FuncHTValue_TreeHash_C(Obj self, Obj ht, Obj x)
 {
     Obj els;
     Obj vals;
@@ -1230,7 +1226,7 @@ static Obj HTValue_TreeHash_C(Obj self, Obj ht, Obj x)
     return AVLValue(t,h);
 }
 
-static Obj HTDelete_TreeHash_C(Obj self, Obj ht, Obj x)
+static Obj FuncHTDelete_TreeHash_C(Obj self, Obj ht, Obj x)
 {
     Obj els;
     Obj vals;
@@ -1265,14 +1261,14 @@ static Obj HTDelete_TreeHash_C(Obj self, Obj ht, Obj x)
         return Fail;
     }
 
-    v = AVLDelete_C(self,t,x);
+    v = FuncAVLDelete_C(self,t,x);
     if (v != Fail)
         AssPRec(ht,RNam_nr,INTOBJ_INT(INT_INTOBJ(ElmPRec(ht,RNam_nr))-1));
 
     return v;
 }
 
-static Obj HTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
+static Obj FuncHTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
 {
     Obj els;
     Obj vals;
@@ -1313,7 +1309,7 @@ static Obj HTUpdate_TreeHash_C(Obj self, Obj ht, Obj x, Obj v)
     return old;
 }
 
-static Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
+static Obj FuncMappingPermSetSet_C(Obj self, Obj src, Obj dst)
 {
     Int l;
     Int d,dd;
@@ -1356,7 +1352,7 @@ static Obj FuncMappingPermSetSet(Obj self, Obj src, Obj dst)
     return CALL_1ARGS(PermList, out);
 } 
 
-static Obj HASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap)
+static Obj FuncHASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap)
 {
     if (!IS_BLIST_REP(blist))
         return Fail;
@@ -1381,86 +1377,26 @@ static Obj HASH_FUNC_FOR_BLIST (Obj self, Obj blist, Obj data_gap)
 */
 static StructGVarFunc GVarFuncs [] = {
 
-  { "AVLCmp_C", 2, "a, b",
-    AVLCmp_C,
-    "orb.c:AVLCmp_C" },
-
-  { "AVLNewNode_C", 1, "t",
-    AVLNewNode_C,
-    "orb.c:AVLNewNode_C" },
-
-  { "AVLFreeNode_C", 2, "tree, n",
-    AVLFreeNode_C,
-    "orb.c:AVLFreeNode_C" },
-
-  { "AVLFind_C", 2, "tree, data",
-    AVLFind_C,
-    "orb.c:AVLFind_C" },
-
-  { "AVLIndexFind_C", 2, "tree, i",
-    AVLIndexFind_C,
-    "orb.c:AVLIndexFind_C" },
-
-  { "AVLFindIndex_C", 2, "tree, data",
-    AVLFindIndex_C,
-    "orb.c:AVLFindIndex_C" },
-
-  { "AVLLookup_C", 2, "tree, data",
-    AVLLookup_C,
-    "orb.c:AVLLookup_C" },
-
-  { "AVLIndex_C", 2, "tree, i",
-    AVLIndex_C,
-    "orb.c:AVLIndex_C" },
-
-  { "AVLIndexLookup_C", 2, "tree, i",
-    AVLIndexLookup_C,
-    "orb.c:AVLIndexLookup_C" },
-
-  { "AVLRebalance_C", 2, "tree, q",
-    AVLRebalance_C,
-    "orb.c:AVLRebalance_C" },
-
-  { "AVLAdd_C", 3, "tree, data, value",
-    AVLAdd_C,
-    "orb.c:AVLAdd_C" },
-
-  { "AVLIndexAdd_C", 4, "tree, data, value, index",
-    AVLIndexAdd_C,
-    "orb.c:AVLIndexAdd_C" },
-
-  { "AVLDelete_C", 2, "tree, data", 
-    AVLDelete_C,
-    "orb.c:AVLDelete_C" },
-
-  { "AVLIndexDelete_C", 2, "tree, index", 
-    AVLIndexDelete_C,
-    "orb.c:AVLIndexDelete_C" },
-
-  { "HTAdd_TreeHash_C", 3, "treehash, x, v",
-    HTAdd_TreeHash_C,
-    "orb.c:HTAdd_TreeHash_C" },
-
-  { "HTValue_TreeHash_C", 2, "treehash, x",
-    HTValue_TreeHash_C,
-    "orb.c:HTValue_TreeHash_C" },
-
-  { "HTDelete_TreeHash_C", 2, "treehash, x",
-    HTDelete_TreeHash_C,
-    "orb.c:HTDelete_TreeHash_C" },
-
-  { "HTUpdate_TreeHash_C", 3, "treehash, x, v",
-    HTUpdate_TreeHash_C,
-    "orb.c:HTUpdate_TreeHash_C" },
-
-  { "MappingPermSetSet_C", 2, "src, dst",
-    FuncMappingPermSetSet,
-    "pkg/orb/src/orb.c:FuncMappingPermSetSet_C" },
-
-  { "HASH_FUNC_FOR_BLIST", 2, "blist, data",
-    HASH_FUNC_FOR_BLIST,
-    "pkg/orb/src/orb.c:HASH_FUNC_FOR_BLIST" },
-
+  GVAR_FUNC(AVLCmp_C, 2, "a, b"),
+  GVAR_FUNC(AVLNewNode_C, 1, "t"),
+  GVAR_FUNC(AVLFreeNode_C, 2, "tree, n"),
+  GVAR_FUNC(AVLFind_C, 2, "tree, data"),
+  GVAR_FUNC(AVLIndexFind_C, 2, "tree, i"),
+  GVAR_FUNC(AVLFindIndex_C, 2, "tree, data"),
+  GVAR_FUNC(AVLLookup_C, 2, "tree, data"),
+  GVAR_FUNC(AVLIndex_C, 2, "tree, i"),
+  GVAR_FUNC(AVLIndexLookup_C, 2, "tree, i"),
+  GVAR_FUNC(AVLRebalance_C, 2, "tree, q"),
+  GVAR_FUNC(AVLAdd_C, 3, "tree, data, value"),
+  GVAR_FUNC(AVLIndexAdd_C, 4, "tree, data, value, index"),
+  GVAR_FUNC(AVLDelete_C, 2, "tree, data"),
+  GVAR_FUNC(AVLIndexDelete_C, 2, "tree, index"),
+  GVAR_FUNC(HTAdd_TreeHash_C, 3, "treehash, x, v"),
+  GVAR_FUNC(HTValue_TreeHash_C, 2, "treehash, x"),
+  GVAR_FUNC(HTDelete_TreeHash_C, 2, "treehash, x"),
+  GVAR_FUNC(HTUpdate_TreeHash_C, 3, "treehash, x, v"),
+  GVAR_FUNC(MappingPermSetSet_C, 2, "src, dst"),
+  GVAR_FUNC(HASH_FUNC_FOR_BLIST, 2, "blist, data"),
   { 0 }
 
 };
@@ -1568,6 +1504,3 @@ StructInitInfo * Init__Dynamic ( void )
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
-
-
