@@ -6,10 +6,10 @@
                          [1X Methods to enumerate orbits [101X
   
   
-                                     4.9.1
+                                     4.9.2
   
   
-                                 26 August 2024
+                                 3 January 2025
   
   
                                 Juergen Mueller
