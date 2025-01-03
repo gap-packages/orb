@@ -1,5 +1,10 @@
 This file describes changes in the orb package.
 
+4.9.2 (2025-01-03)
+  - Fix compilation with GCC 15
+  - Prepare for a future GAP version introducing PreImagesElmNC
+    and PreImagesRepresentativeNC
+
 4.9.1 (2024-08-26)
   - Require GAP >= 4.12
   - More hash functions now detect invalid input and return `fail`
