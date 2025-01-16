@@ -44,14 +44,6 @@ for i in [1..Length(l)] do
 od;
 Print("Time: ",Runtime()-ti,"\n");
 
-#t := NewHT(o[1],200000);
-#a:=1;b:=2;c:=3; GASMAN("collect");
-#ti := Runtime();
-#for i in [1..Length(l)] do
-#    AddHT(t,l[i],i);
-#od;
-#Print("Time: ",Runtime()-ti,"\n");
-
 ti := Runtime();
 for i in [1..Length(l)] do
     if HTValue(t,l[i]) <> i then Error(); fi;

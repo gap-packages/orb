@@ -1,5 +1,9 @@
 This file describes changes in the orb package.
 
+5.0.0 (TODO)
+  - Remove legacy APIs `InitHT`, `NewHT`, `AddHT`, `ValueHT`, `GrowHT`.
+    Instead use `HTCreate`, `HTAdd`, `HTValue`, `HTDelete` and `HTUpdate`.
+
 4.9.2 (2025-01-03)
   - Fix compilation with GCC 15
   - Prepare for a future GAP version introducing PreImagesElmNC
