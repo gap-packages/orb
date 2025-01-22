@@ -6,10 +6,10 @@
                          [1X Methods to enumerate orbits [101X
   
   
-                                     4.9.2
+                                     5.0.0
   
   
-                                 3 January 2025
+                                22 January 2025
   
   
                                 Juergen Mueller
@@ -122,16 +122,10 @@
       4.3-4 HTUpdate
       4.3-5 HTDelete
       4.3-6 HTGrow
-    4.4 [33X[0;0YUsing hash tables (legacy code)[133X
-      4.4-1 NewHT
-      4.4-2 AddHT
-      4.4-3 ValueHT
-      4.4-4 InitHT
-      4.4-5 GrowHT
-    4.5 [33X[0;0YThe data structures for hash tables[133X
-      4.5-1 [33X[0;0YMemory requirements[133X
-      4.5-2 [33X[0;0YHandling of collisions[133X
-      4.5-3 [33X[0;0YEfficiency[133X
+    4.4 [33X[0;0YThe data structures for hash tables[133X
+      4.4-1 [33X[0;0YMemory requirements[133X
+      4.4-2 [33X[0;0YHandling of collisions[133X
+      4.4-3 [33X[0;0YEfficiency[133X
   5 [33X[0;0YCaching techniques[133X
     5.1 [33X[0;0YThe idea of caching[133X
     5.2 [33X[0;0YUsing caches[133X

@@ -168,7 +168,7 @@ true
 <dt><strong class="Mark"><code class="code">eqfunc</code></strong></dt>
 <dd><p>This component always has to be given together with the component <code class="code">hashfunc</code>. If both are given, they are used to set up a hash table to store the points in the orbit. You have to use this if the automatic mechanism to find a suitable hash function does not work for your starting point in the orbit.</p>
 
-<p>Note that if you use this feature, the hash table cannot grow automatically any more, unless you also use the components <code class="code">hfbig</code> and <code class="code">hfdbig</code> as well. See the description of <code class="func">GrowHT</code> (<a href="chap4.html#X86E9DEC68728425C"><span class="RefLink">4.4-5</span></a>) for an explanation how to use this feature.</p>
+<p>Note that if you use this feature, the hash table cannot grow automatically any more, unless you also use the components <code class="code">hfbig</code> and <code class="code">hfdbig</code> as well. See the description of <code class="func">HTGrow</code> (<a href="chap4.html#X805BC8667B91890E"><span class="RefLink">4.3-6</span></a>) for an explanation how to use this feature.</p>
 
 </dd>
 <dt><strong class="Mark"><code class="code">genstoapply</code></strong></dt>
@@ -196,7 +196,7 @@ true
 
 </dd>
 <dt><strong class="Mark"><code class="code">hfbig</code> and <code class="code">hfdbig</code></strong></dt>
-<dd><p>These components can only be used in connection with <code class="code">eqfunc</code> and <code class="code">hashfunc</code> and are otherwise ignored. There values are simply passed on to the hash table created. The idea is to still be able to grow the hash table if need be. See Section <a href="chap4.html#X8069137484662072"><span class="RefLink">4.5</span></a> for more details.</p>
+<dd><p>These components can only be used in connection with <code class="code">eqfunc</code> and <code class="code">hashfunc</code> and are otherwise ignored. There values are simply passed on to the hash table created. The idea is to still be able to grow the hash table if need be. See Section <a href="chap4.html#X8069137484662072"><span class="RefLink">4.4</span></a> for more details.</p>
 
 </dd>
 <dt><strong class="Mark"><code class="code">treehashsize</code></strong></dt>

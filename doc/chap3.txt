@@ -138,7 +138,7 @@
   
         [33X[0;6YNote  that  if  you  use  this  feature,  the  hash  table cannot grow
         automatically  any  more, unless you also use the components [10Xhfbig[110X and
-        [10Xhfdbig[110X  as  well.  See  the  description  of  [2XGrowHT[102X  ([14X4.4-5[114X)  for  an
+        [10Xhfdbig[110X  as  well.  See  the  description  of  [2XHTGrow[102X  ([14X4.3-6[114X)  for  an
         explanation how to use this feature.[133X
   
   [8X[10Xgenstoapply[110X[8X[108X
@@ -201,7 +201,7 @@
         [33X[0;6YThese  components  can  only  be  used  in  connection with [10Xeqfunc[110X and
         [10Xhashfunc[110X  and are otherwise ignored. There values are simply passed on
         to  the  hash  table created. The idea is to still be able to grow the
-        hash table if need be. See Section [14X4.5[114X for more details.[133X
+        hash table if need be. See Section [14X4.4[114X for more details.[133X
   
   [8X[10Xtreehashsize[110X[8X[108X
         [33X[0;6YThis  component  indicates  that instead of a normal hash table a tree

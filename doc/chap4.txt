@@ -28,11 +28,6 @@
   ([14X4.3-2[114X),  [2XHTValue[102X  ([14X4.3-3[114X),  [2XHTDelete[102X ([14X4.3-5[114X) and [2XHTUpdate[102X ([14X4.3-4[114X). They are
   described in Section [14X4.3[114X.[133X
   
-  [33X[0;0YThe  legacy  functions from older versions of this package to work with hash
-  tables  are  [2XNewHT[102X  ([14X4.4-1[114X),  [2XAddHT[102X  ([14X4.4-2[114X),  and [2XValueHT[102X ([14X4.4-3[114X). They are
-  described  in  Section  [14X4.4[114X.  In  the  next  section,  we first describe the
-  infrastructure for hash functions.[133X
-  
   
   [1X4.2 [33X[0;0YHash functions[133X[101X
   
@@ -267,7 +262,7 @@
   used for the values. All other values are stored in the hash. The value [9Xfail[109X
   cannot be stored as it indicates that the object is not found in the hash.[133X
   
-  [33X[0;0YSee  Section  [14X4.5[114X  for  details  on the data structures and especially about
+  [33X[0;0YSee  Section  [14X4.4[114X  for  details  on the data structures and especially about
   memory requirements.[133X
   
   [1X4.3-3 HTValue[101X
@@ -317,95 +312,7 @@
   hash values.[133X
   
   
-  [1X4.4 [33X[0;0YUsing hash tables (legacy code)[133X[101X
-  
-  [33X[0;0YNote that the functions described in this section are obsolete since version
-  3.0  of  [5Xorb[105X  and  are  only kept for backward compatibility. Please use the
-  functions in Section [14X4.3[114X in new code.[133X
-  
-  [33X[0;0YThe following functions are needed to use hash tables. For details about the
-  data structures see Section [14X4.5[114X.[133X
-  
-  [1X4.4-1 NewHT[101X
-  
-  [33X[1;0Y[29X[2XNewHT[102X( [3Xsample[103X, [3Xlen[103X ) [32X function[133X
-  [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
-  
-  [33X[0;0YA new hash table for objects like [3Xsample[103X of length [3Xlen[103X is created. Note that
-  it  is  a  good  idea to choose a prime number as the hash length due to the
-  algorithm for collision handling which works particularly well in that case.
-  The  hash function is chosen automatically. The resulting object can be used
-  with  the  functions  [2XAddHT[102X  ([14X4.4-2[114X) and [2XValueHT[102X ([14X4.4-3[114X). It will start with
-  length [3Xlen[103X but will grow as necessary.[133X
-  
-  [1X4.4-2 AddHT[101X
-  
-  [33X[1;0Y[29X[2XAddHT[102X( [3Xht[103X, [3Xob[103X, [3Xval[103X ) [32X function[133X
-  [6XReturns:[106X  [33X[0;10Yan integer or fail[133X
-  
-  [33X[0;0YStores  the  object  [3Xob[103X  into  the  hash  table  [3Xht[103X and stores the value [3Xval[103X
-  together with [3Xob[103X. The result is [9Xfail[109X if an error occurred, which can only be
-  that the hash table is already full. This can only happen, if the hash table
-  cannot grow automatically.[133X
-  
-  [33X[0;0YIf  no  error  occurs,  the result is an integer indicating the place in the
-  hash  table  where the object is stored. Note that once the hash table grows
-  automatically this number is no longer the same![133X
-  
-  [33X[0;0YIf  the  value  [3Xval[103X  is [9Xtrue[109X for all objects in the hash, no extra memory is
-  used for the values. All other values are stored in the hash. The value [9Xfail[109X
-  cannot be stored as it indicates that the object is not found in the hash.[133X
-  
-  [33X[0;0YSee  Section  [14X4.5[114X  for  details  on the data structures and especially about
-  memory requirements.[133X
-  
-  [1X4.4-3 ValueHT[101X
-  
-  [33X[1;0Y[29X[2XValueHT[102X( [3Xht[103X, [3Xob[103X ) [32X function[133X
-  [6XReturns:[106X  [33X[0;10Ythe stored value, [9Xtrue[109X, or [9Xfail[109X[133X
-  
-  [33X[0;0YLooks  up  the  object  [3Xob[103X in the hash table [3Xht[103X. If the object is not found,
-  [9Xfail[109X  is  returned. Otherwise, the value stored with the object is returned.
-  Note that if this value was [9Xtrue[109X no extra memory is used for this.[133X
-  
-  [33X[0;0YThe  following  function is only documented for the sake of completeness and
-  for emergency situations, where [2XNewHT[102X ([14X4.4-1[114X) tries to be too intelligent.[133X
-  
-  [1X4.4-4 InitHT[101X
-  
-  [33X[1;0Y[29X[2XInitHT[102X( [3Xlen[103X, [3Xhfun[103X, [3Xeqfun[103X ) [32X function[133X
-  [6XReturns:[106X  [33X[0;10Ya new hash table object[133X
-  
-  [33X[0;0YThis  is usually only an internal function. It is called from [2XNewHT[102X ([14X4.4-1[114X).
-  The  argument [3Xlen[103X is the length of the hash table, [3Xhfun[103X is the hash function
-  record  as  returned by [2XChooseHashFunction[102X ([14X4.2-1[114X) and [3Xeqfun[103X is a comparison
-  function taking two arguments and returning [9Xtrue[109X or [9Xfalse[109X.[133X
-  
-  [33X[0;0YNote  that  automatic  growing  is  switched on for the new hash table which
-  means  that  if  the  hash  table grows, a new hash function is chosen using
-  [2XChooseHashFunction[102X  ([14X4.2-1[114X).  If  you do not want this, change the component
-  [10Xcangrow[110X to [9Xfalse[109X after creating the hash table.[133X
-  
-  [1X4.4-5 GrowHT[101X
-  
-  [33X[1;0Y[29X[2XGrowHT[102X( [3Xht[103X, [3Xob[103X ) [32X function[133X
-  [6XReturns:[106X  [33X[0;10Ynothing[133X
-  
-  [33X[0;0YThis  is  a more or less internal function. It is called when the space in a
-  hash  table  becomes  scarce.  The  first  argument  [3Xht[103X must be a hash table
-  object, the second a sample point. The function increases the hash size by a
-  factor  of  2  for  hash  tables  and 20 for tree hash tables. This makes it
-  necessary to choose a new hash function. Usually this is done with the usual
-  [10XChooseHashFunction[110X  method. However, one can assign the two components [10Xhfbig[110X
-  and  [10Xhfdbig[110X  to  a  function  and  a record respectively. In that case, upon
-  growing  the  hash,  a  new  hash function is created by taking the function
-  [10Xhfbig[110X  together  with  [10Xhfdbig[110X  as  second  data  argument  and  reducing the
-  resulting integer modulo the hash length. In this way one can specify a hash
-  function  suitable  for  all  hash sizes by simply producing big enough hash
-  values.[133X
-  
-  
-  [1X4.5 [33X[0;0YThe data structures for hash tables[133X[101X
+  [1X4.4 [33X[0;0YThe data structures for hash tables[133X[101X
   
   [33X[0;0YA legacy hash table object is just a record with the following components:[133X
   
@@ -467,7 +374,7 @@
   is bound to an AVL tree containing all such keys (and values).[133X
   
   
-  [1X4.5-1 [33X[0;0YMemory requirements[133X[101X
+  [1X4.4-1 [33X[0;0YMemory requirements[133X[101X
   
   [33X[0;0YDue to the data structure defined above the hash table will need one machine
   word  ([22X4[122X bytes on 32bit machines and [22X8[122X bytes on 64bit machines) per possible
@@ -489,7 +396,7 @@
   value.[133X
   
   
-  [1X4.5-2 [33X[0;0YHandling of collisions[133X[101X
+  [1X4.4-2 [33X[0;0YHandling of collisions[133X[101X
   
   [33X[0;0YThis section is only relevant for HashTab objects.[133X
   
@@ -504,7 +411,7 @@
   table.[133X
   
   
-  [1X4.5-3 [33X[0;0YEfficiency[133X[101X
+  [1X4.4-3 [33X[0;0YEfficiency[133X[101X
   
   [33X[0;0YHashing is efficient as long as there are not too many collisions. It is not
   a  problem if the number of collisions (counted in the [10Xcollisions[110X component)
