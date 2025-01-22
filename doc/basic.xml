@@ -163,7 +163,7 @@ list:
         Note that if you use this feature, the hash table cannot grow
         automatically any more, unless you also use the components
         <C>hfbig</C> and <C>hfdbig</C> as well. See the description
-        of <Ref Func="GrowHT"/> for an explanation how to use this
+        of <Ref Func="HTGrow"/> for an explanation how to use this
         feature.
     </Item>
     <Mark><C>genstoapply</C></Mark>

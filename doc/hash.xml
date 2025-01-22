@@ -46,13 +46,6 @@ The basic functions to work with hash tables are <Ref
     Oper="HTCreate"/>, <Ref Oper="HTAdd"/>, <Ref Oper="HTValue"/>,
 <Ref Oper="HTDelete"/> and <Ref Oper="HTUpdate"/>. They are described
 in Section <Ref Sect="hashtables"/>.
-
-<P/>
-The legacy functions from older versions of this package 
-to work with hash tables are <Ref Func="NewHT"/>,
-<Ref Func="AddHT"/>, and <Ref Func="ValueHT"/>. They are described
-in Section <Ref Sect="oldhashtables"/>. In the next section, we first
-describe the infrastructure for hash functions.
 </Section>
 
 <Section Label="hashfunc">
@@ -387,112 +380,6 @@ components <C>hfbig</C> and <C>hfdbig</C> in the options record
 of <Ref Oper="HTCreate"/> to a function and a record
 respectively and bind <C>cangrow</C> to <K>true</K>. 
 In that case, upon growing the hash, a new hash function
-is created by taking the function <C>hfbig</C> together with
-<C>hfdbig</C> as second data argument and reducing the resulting
-integer modulo the hash length. In this way one can specify a hash
-function suitable for all hash sizes by simply producing big enough
-hash values.
-</Description>
-</ManSection>
-
-</Section>
-
-<Section Label="oldhashtables">
-<Heading>Using hash tables (legacy code)</Heading>
-
-Note that the functions described in this section are obsolete since
-version 3.0 of <Package>orb</Package> and are only kept for backward
-compatibility. Please use the functions in Section <Ref
-    Sect="hashtables"/> in new code.
-
-<P/>
-The following functions are needed to use hash tables. For details
-about the data structures see Section <Ref Sect="hashdata"/>.
-
-<ManSection>
-<Func Name="NewHT" Arg="sample, len"/>
-<Returns> a new hash table object </Returns>
-<Description>
-A new hash table for objects like <A>sample</A> of length <A>len</A> 
-is created. Note that it is a good idea to choose a prime number as
-the hash length due to the algorithm for collision handling which 
-works particularly well in that case. The hash function is chosen
-automatically. The resulting object can be used with the functions
-<Ref Func="AddHT"/> and <Ref Func="ValueHT"/>. It will start with length
-<A>len</A> but will grow as necessary.
-</Description>
-</ManSection>
-
-<ManSection>
-<Func Name="AddHT" Arg="ht, ob, val"/>
-<Returns> an integer or fail </Returns>
-<Description>
-Stores the object <A>ob</A> into the hash table <A>ht</A> and stores
-the value <A>val</A> together with <A>ob</A>. The result is
-<K>fail</K> if an error occurred, which can only be that the hash
-table is already full. This can only happen, if the hash table cannot
-grow automatically.
-<P/>
-If no error occurs, the result is an integer indicating the place in the
-hash table where the object is stored. Note that once the hash table
-grows automatically this number is no longer the same!
-<P/>
-If the value <A>val</A> is <K>true</K> for all objects in the hash,
-no extra memory is used for the values. All other values are stored
-in the hash. The value <K>fail</K> cannot be stored as it indicates
-that the object is not found in the hash.
-<P/>
-See Section <Ref Sect="hashdata"/> for details on the data structures and
-especially about memory requirements.
-</Description>
-</ManSection>
-
-<ManSection>
-<Func Name="ValueHT" Arg="ht, ob"/>
-<Returns> the stored value, <K>true</K>, or <K>fail</K> </Returns>
-<Description>
-Looks up the object <A>ob</A> in the hash table <A>ht</A>. If the object
-is not found, <K>fail</K> is returned. Otherwise, the value stored with
-the object is returned. Note that if this value was <K>true</K> 
-no extra memory is used for this.
-</Description>
-</ManSection>
-
-The following function is only documented for the sake of completeness
-and for emergency situations, where <Ref Func="NewHT"/> tries to be
-too intelligent.
-
-<ManSection>
-<Func Name="InitHT" Arg="len, hfun, eqfun"/>
-<Returns> a new hash table object </Returns>
-<Description>
-This is usually only an internal function. It is called from 
-<Ref Func="NewHT"/>. The argument <A>len</A> is the length of the
-hash table, <A>hfun</A> is the hash function record as returned
-by <Ref Oper="ChooseHashFunction"/> and <A>eqfun</A> is a comparison
-function taking two arguments and returning <K>true</K> or <K>false</K>.
-<P/>
-Note that automatic growing is switched on for the new hash table which
-means that if the hash table grows, a new hash function is chosen using
-<Ref Oper="ChooseHashFunction"/>. If you do not want this, change the
-component <C>cangrow</C> to <K>false</K> after creating the hash table.
-</Description>
-</ManSection>
-
-<ManSection>
-<Func Name="GrowHT" Arg="ht, ob"/>
-<Returns> nothing </Returns>
-<Description>
-This is a more or less internal function. It is called when the space
-in a hash table becomes scarce. The first argument <A>ht</A> must be a
-hash table object, the second a sample point. 
-The function increases the hash size
-by a factor of 2 for hash tables and 20 for tree hash tables. 
-This makes it necessary to choose a new hash
-function. Usually this is done with the usual
-<C>ChooseHashFunction</C> method. However, one can assign the two
-components <C>hfbig</C> and <C>hfdbig</C> to a function and a record
-respectively. In that case, upon growing the hash, a new hash function
 is created by taking the function <C>hfbig</C> together with
 <C>hfdbig</C> as second data argument and reducing the resulting
 integer modulo the hash length. In this way one can specify a hash

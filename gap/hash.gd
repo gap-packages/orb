@@ -18,12 +18,6 @@
 # Generic hashing code:
 ########################
 
-DeclareGlobalFunction( "InitHT" );
-DeclareGlobalFunction( "NewHT" );
-DeclareGlobalFunction( "AddHT" );
-DeclareGlobalFunction( "ValueHT" );
-DeclareGlobalFunction( "GrowHT" );
-
 BindGlobal( "HashTabFamily", NewFamily("HashTabFamily") );
 DeclareCategory( "IsHashTab", IsComponentObjectRep);
 DeclareRepresentation( "IsHashTabRep", IsHashTab, [] );
