@@ -1,6 +1,6 @@
 This file describes changes in the orb package.
 
-5.0.0 (TODO)
+5.0.0 (2025-01-22)
   - Remove legacy APIs `InitHT`, `NewHT`, `AddHT`, `ValueHT`, `GrowHT`.
     Instead use `HTCreate`, `HTAdd`, `HTValue`, `HTDelete` and `HTUpdate`.
 
