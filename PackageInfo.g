@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate orbits",
-Version := "5.0.0",
-Date := "22/01/2025", # dd/mm/yyyy format
+Version := "5.0.1",
+Date := "20/06/2025", # dd/mm/yyyy format
 License := "GPL-3.0-or-later",
 
 ##  Information about authors and maintainers.
@@ -17,7 +17,7 @@ Persons := [
     LastName      := "Mueller",
     FirstNames    := "Juergen",
     IsAuthor      := true,
-    IsMaintainer  := true,
+    IsMaintainer  := false,
     Email         := "juergen.mueller@math.rwth-aachen.de",
     WWWHome       := "http://www.math.rwth-aachen.de/~Juergen.Mueller",
     PostalAddress := Concatenation( [
@@ -47,7 +47,7 @@ Persons := [
     LastName      := "Noeske",
     FirstNames    := "Felix",
     IsAuthor      := true,
-    IsMaintainer  := true,
+    IsMaintainer  := false,
     Email         := "felix.noeske@math.rwth-aachen.de",
     WWWHome       := "http://www.math.rwth-aachen.de/~Felix.Noeske",
     PostalAddress := Concatenation( [
