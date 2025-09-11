@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/gap-packages/orb/actions/workflows/CI.yml/badge.svg)](https://github.com/gap-packages/orb/actions/workflows/CI.yml)
+[![CI](https://github.com/gap-packages/orb/actions/workflows/CI.yml/badge.svg)](https://github.com/gap-packages/orb/actions/workflows/CI.yml)
 [![Code Coverage](https://codecov.io/github/gap-packages/orb/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/orb)
 
 # orb -- GAP package providing methods to enumerate orbits
