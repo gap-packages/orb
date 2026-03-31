@@ -7,8 +7,8 @@ SetPackageInfo( rec(
 
 PackageName := "orb",
 Subtitle := "Methods to enumerate orbits",
-Version := "5.0.1",
-Date := "20/06/2025", # dd/mm/yyyy format
+Version := "5.1.0",
+Date := "31/03/2026", # dd/mm/yyyy format
 License := "GPL-3.0-or-later",
 
 ##  Information about authors and maintainers.
