@@ -89,9 +89,7 @@ Oper="ChooseHashFunction"/>.
 <Returns> a record </Returns>
 <Description>
 This method is for compressed vectors over the field <C>GF(2)</C> of
-two elements. Note that there is no hash function for non-compressed
-vectors over <C>GF(2)</C> because those objects cannot efficiently
-be recognised from their type.
+two elements.
 <P/>
 Note that you can only use the resulting hash functions for vectors
 of the same length.
@@ -103,9 +101,7 @@ of the same length.
 <Returns> a record </Returns>
 <Description>
 This method is for compressed vectors over a finite field with up
-to <M>256</M> elements. Note that there is no hash function for
-non-compressed such vectors because those objects cannot efficiently be
-recognised from their type.
+to <M>256</M> elements.
 <P/>
 Note that you can only use the resulting hash functions for vectors
 of the same length.
@@ -117,9 +113,7 @@ of the same length.
 <Returns> a record </Returns>
 <Description>
 This method is for compressed matrices over the field <C>GF(2)</C> of
-two elements. Note that there is no hash function for non-compressed
-matrices over <C>GF(2)</C> because those objects cannot efficiently
-be recognised from their type.
+two elements.
 <P/>
 Note that you can only use the resulting hash functions for matrices
 of the same size.
@@ -131,9 +125,33 @@ of the same size.
 <Returns> a record </Returns>
 <Description>
 This method is for compressed matrices over a finite field with up
-to <M>256</M> elements. Note that there is no hash function for
-non-compressed such vectors because those objects cannot efficiently be
-recognised from their type.
+to <M>256</M> elements.
+<P/>
+Note that you can only use the resulting hash functions for matrices
+of the same size.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="ffevec"/>
+<Returns> a record </Returns>
+<Description>
+This method is for non-compressed vectors of finite field elements.
+It uses the smallest field containing all entries of the vector, so
+equal vectors involving entries from subfields get the same hash.
+<P/>
+Note that you can only use the resulting hash functions for vectors
+of the same length.
+</Description>
+</ManSection>
+
+<ManSection>
+<Meth Name="ChooseHashFunction" Arg="ob, len" Label="ffemat"/>
+<Returns> a record </Returns>
+<Description>
+This method is for non-compressed matrices of finite field elements.
+It hashes the rows using the method for non-compressed vectors of
+finite field elements.
 <P/>
 Note that you can only use the resulting hash functions for matrices
 of the same size.
