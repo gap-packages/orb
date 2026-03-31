@@ -17,10 +17,8 @@
 # First look after our C part: #
 ################################
 
-# load kernel function if it is installed:
-if LoadKernelExtension("orb", "orb") = false then
-  Error("failed to load orb kernel extension");
-fi;
+# load kernel functions if it is installed
+LoadKernelExtension("orb", "orb");
 
 #
 # Compatibility between older and newer versions of the MatrixObj interface

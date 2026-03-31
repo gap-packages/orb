@@ -138,14 +138,7 @@ Dependencies := rec(
   ExternalConditions := []
 ),
 
-AvailabilityTest := function()
-    if IsKernelExtensionAvailable("orb") = false then
-      LogPackageLoadingMessage( PACKAGE_WARNING,
-              [ "kernel functions for orb are not available." ] );
-      return false;
-    fi;
-    return true;
-end,
+AvailabilityTest := ReturnTrue,
 
 ##  *Optional*, but recommended: path relative to package root to a file which 
 ##  contains as many tests of the package functionality as sensible.
@@ -179,5 +172,3 @@ AutoDoc := rec(
 ),
 
 ));
-
-

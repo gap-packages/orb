@@ -37,6 +37,8 @@ jobs:
         with:
           GAP_PKGS_TO_BUILD: "io profiling cvec"
           GAPBRANCH: ${{ matrix.gap-branch }}
+      # run tests once before building orb to verify this still works
+      - uses: gap-actions/run-pkg-tests@v3
       - uses: gap-actions/build-pkg@v1
       - uses: gap-actions/run-pkg-tests@v3
       - uses: gap-actions/run-pkg-tests@v3
