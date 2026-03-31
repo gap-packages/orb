@@ -1,5 +1,9 @@
 This file describes changes in the orb package.
 
+5.x.y (2026-MM-DD)
+  - Once again allow using this package without its kernel extension
+    (this was accidentally broken in version 4.9.1)
+
 5.0.1 (2025-06-20)
   - Various janitorial changes
 
