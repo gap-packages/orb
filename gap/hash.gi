@@ -531,6 +531,20 @@ function(v,data)
   return HashKeyBag(v,101,3*GAPInfo.BytesPerVariable,data[2]) mod data[1] + 1;
 end );
 
+InstallGlobalFunction( ORB_HashFunctionForFFEVectors,
+function(v,data)
+  local f,x;
+  if not IsRowVector(v) or not IsFFECollection(v) then
+    return fail;
+  fi;
+  f := BaseDomain(v);
+  x := NumberFFVector(v, Size(f));
+  if x = fail then
+    return fail;
+  fi;
+  return x mod data[1] + 1;
+end );
+
 InstallMethod( ChooseHashFunction, "failure method",
   [IsObject,IsInt],
   function(p,hashlen)
@@ -540,7 +554,7 @@ InstallMethod( ChooseHashFunction, "failure method",
 # Now the choosing methods for compressed vectors:
 
 InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
-  [IsGF2VectorRep and IsList,IsInt],
+  [IsRowVector and IsFFECollection and IsGF2VectorRep,IsInt],
   function(p,hashlen)
     local bytelen;
     bytelen := QuoInt(Length(p),8);
@@ -557,7 +571,7 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 vectors",
   end );
 
 InstallMethod( ChooseHashFunction, "for compressed 8bit vectors",
-  [Is8BitVectorRep and IsList,IsInt],
+  [IsRowVector and IsFFECollection and Is8BitVectorRep,IsInt],
   function(p,hashlen)
     local bytelen,i,q,qq;
     q := Q_VEC8BIT(p);
@@ -595,7 +609,7 @@ function(x,data)
 end );
 
 InstallMethod( ChooseHashFunction, "for compressed gf2 matrices",
-  [IsGF2MatrixRep and IsList,IsInt],
+  [IsMatrix and IsFFECollColl and IsGF2MatrixRep and IsList,IsInt],
   function(p,hashlen)
     local data;
     data := [hashlen,ChooseHashFunction(p[1],hashlen),
@@ -605,7 +619,7 @@ InstallMethod( ChooseHashFunction, "for compressed gf2 matrices",
   end );
 
 InstallMethod( ChooseHashFunction, "for compressed 8bit matrices",
-  [Is8BitMatrixRep and IsList,IsInt],
+  [IsMatrix and IsFFECollColl and Is8BitMatrixRep and IsList,IsInt],
   function(p,hashlen)
     local data,q;
     q := Q_VEC8BIT(p[1]);
@@ -782,17 +796,32 @@ InstallMethod( ChooseHashFunction, "for lists of matrices",
   end );
 
 InstallMethod( ChooseHashFunction, 
-  "for finite field vectors over big finite fields",
-  [IsList, IsInt],
+  "for finite field vectors",
+  [IsRowVector and IsFFECollection, IsInt],
   function( l, hashlen )
-    local f,q;
-    if NestingDepthA(l) = 1 and Length(l) > 0 and IsFFE(l[1]) then
-        f := Field(l);
-        q := Size(f);
-        return rec( func := ORB_HashFunctionForShort8BitVectors,
-                    data := [hashlen,q] );
+    if IsGF2VectorRep(l) or Is8BitVectorRep(l) then
+        TryNextMethod();
     fi;
-    TryNextMethod();
+    return rec( func := ORB_HashFunctionForFFEVectors,
+                data := [hashlen] );
+  end );
+
+InstallMethod( ChooseHashFunction,
+  "for finite field matrices",
+  [IsMatrix and IsFFECollColl, IsInt],
+  function( m, hashlen )
+    local r;
+    if Length(m) = 0 then
+        r := rec( func := ORB_HashFunctionForFFEVectors,
+                  data := [hashlen] );
+    else
+        r := ChooseHashFunction( m[1], hashlen );
+        if r = fail then
+            return fail;
+        fi;
+    fi;
+    return rec( func := ORB_HashFunctionForMatList,
+                data := [101,hashlen,r] );
   end );
 
 if IsBound(HASH_FUNC_FOR_PPERM) then 
