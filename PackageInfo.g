@@ -135,6 +135,7 @@ Dependencies := rec(
   GAP := ">=4.12",
   NeededOtherPackages := [],
   SuggestedOtherPackages := [["IO",">= 3.3"]],
+  TestPackages := [["cvec",">= 2.7"]],
   ExternalConditions := []
 ),
 
