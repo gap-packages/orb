@@ -1,294 +1,337 @@
 This file describes changes in the orb package.
 
-5.1.0 (2026-03-31)
-  - Once again allow using this package without its kernel extension
-    (this was accidentally broken in version 4.9.1)
-  - Add hash functions for non-compressed finite-field vectors and matrices
+## 5.1.0 (2026-03-31)
 
-5.0.1 (2025-06-20)
-  - Various janitorial changes
+- Once again allow using this package without its kernel extension
+  (this was accidentally broken in version 4.9.1)
+- Add hash functions for non-compressed finite-field vectors and matrices
 
-5.0.0 (2025-01-22)
-  - Remove legacy APIs `InitHT`, `NewHT`, `AddHT`, `ValueHT`, `GrowHT`.
-    Instead use `HTCreate`, `HTAdd`, `HTValue`, `HTDelete` and `HTUpdate`.
+## 5.0.1 (2025-06-20)
 
-4.9.2 (2025-01-03)
-  - Fix compilation with GCC 15
-  - Prepare for a future GAP version introducing PreImagesElmNC
-    and PreImagesRepresentativeNC
+- Various janitorial changes
 
-4.9.1 (2024-08-26)
-  - Require GAP >= 4.12
-  - More hash functions now detect invalid input and return `fail`
-    instead of returning garbage (like hashes of random memory blocks,
-    or the constant 0) or even crashing.
-  - Update build system
-  - Various janitorial changes
+## 5.0.0 (2025-01-22)
 
-4.9.0 (2022-09-26)
-  - Validate the output of hash functions in the C implementation,
-    and report bad values as errors, instead of crashing or corrupting
-    data. This also means that code which previously did run may now
-    raise errors; usually that's a good thing, as it flags an error,
-    but it may be that in rare cases a correct computation is affected
-    by this. If so, please report this via our bug tracker, i.e.,
-    <https://github.com/gap-packages/orb/issues>
+- Remove legacy APIs `InitHT`, `NewHT`, `AddHT`, `ValueHT`, `GrowHT`.
+  Instead use `HTCreate`, `HTAdd`, `HTValue`, `HTDelete` and `HTUpdate`.
 
-4.8.5 (2022-07-25)
-  - Make `Orb` option `lookingfor` accept non legacy HT
-  - Update build system
-  - Various janitorial changes
+## 4.9.2 (2025-01-03)
 
-4.8.4 (2021-09-07)
-  - Update build system
-  - Various janitorial changes
+- Fix compilation with GCC 15
+- Prepare for a future GAP version introducing PreImagesElmNC
+  and PreImagesRepresentativeNC
 
-4.8.3 (2019-09-03)
-  - Adjust examples and tests for compatibility with AtlasRep 2.x
-  - Various janitorial changes
+## 4.9.1 (2024-08-26)
 
-4.8.2 (2019-02-23)
-  - Rewrote build system to use gac, not autoconf/automake/libtool
-  - Improve compatibility with upcoming GAP 4.11
-  - Fix for using the package without compilation (works again now)
-  - Various janitorial changes
+- Require GAP >= 4.12
+- More hash functions now detect invalid input and return `fail`
+  instead of returning garbage (like hashes of random memory blocks,
+  or the constant 0) or even crashing.
+- Update build system
+- Various janitorial changes
 
-4.8.1 (2018-09-10)
-  - Deal with hash functions returning 'fail', or any other non-integer
-    (instead of crashing or doing other random things)
-  - Change several ORB_HashFunction to return fail if necessary
-  - Require GAP >= 4.9
-  - Update build system for better compatibility with GAP >= 4.9
+## 4.9.0 (2022-09-26)
 
-4.8.0 (2017-11-10)
-  - Renamed the IsClosed filter to IsClosedOrbit, and added a new operation
-    IsClosed which simply returns the value of the IsClosedOrbit filter.
-    This allows other packages do also use the name IsClosed.
-  - Fix hash tables with initial size <= 5 not growing correctly
-  - Fix ORB_HashFunctionModWrapper
-  - Fix bug in HTGrow causing it to never call ORB_HashFunctionModWrapper
-  - Ensure compatibility with GAP 4.9
+- Validate the output of hash functions in the C implementation,
+  and report bad values as errors, instead of crashing or corrupting
+  data. This also means that code which previously did run may now
+  raise errors; usually that's a good thing, as it flags an error,
+  but it may be that in rare cases a correct computation is affected
+  by this. If so, please report this via our bug tracker, i.e.,
+  <https://github.com/gap-packages/orb/issues>
 
-4.7.6 (2016-03-08)
-  - Move MappingPermListList C implementation from orb to the GAP kernel
-  - Fix regression which prevent orb from being used without compilation
-  - Some changes to the C code for compatibility with HPC-GAP (resp. ward)
+## 4.8.5 (2022-07-25)
 
-4.7.5 (2016-01-20)
-  - Add a hash function for blists
-  - Technical change: orbit objects are not collections anymore (fixes issue #10,
-    where sometimes \in returned wrong results for orbits)
-  - Improve test suite
+- Make `Orb` option `lookingfor` accept non legacy HT
+- Update build system
+- Various janitorial changes
 
-4.7.4 (2016-01-07)
-  - Show an error when the user tries to compute orbits of objects for
-    which no ChooseHashFunction method is available. Previously, it would
-    fall back to a "trivial" hash function, which lead to worst-case
-    performance.
-  - Require GAP >= 4.6
-  - Remove Jenkins hash in favor of the Murmur hash built into GAP
-  - Clarify that the code is licensed under GPL v3.
-  - Document that MakeSchreierTreeShallow only works for orbits with log.
-  - Move website to https://gap-packages.github.io/orb/
+## 4.8.4 (2021-09-07)
 
-4.7.3 (2014-11-08)
-  - Tweak the build system to avoid potential issues when the source
-    code gets repackages by third parties (e.g. by the GAP team, when
-    creating their big package archives)
-  - Fix a missing variable initialization, which could cause Enumerate
-    (and hence anything using it, such as FindShortGeneratorsOfSubgroup)
-    to run into an error.
+- Update build system
+- Various janitorial changes
 
-4.7.2 (2014-09-24)
-  - Fix error in Memory() method for orbit-by-suborbit setup objects.
-  - Update Max Neunhoeffer's contact data
-  - Use AutoDoc to generate title page of the manual from PackageInfo.g
-  - Add Max Horn as a maintainer
+## 4.8.3 (2019-09-03)
 
-4.7.1 (2014-04-04)
-  - Previous release had an invalid release date in
-    PackageInfo.g (2014-04-31 instead of 2014-03-31).
-  - Merge HISTORY and CHANGES files.
+- Adjust examples and tests for compatibility with AtlasRep 2.x
+- Various janitorial changes
 
-4.7 (2014-03-31)
-  - Use hash functions for transformations and partial permutations
-    provided by newer GAP versions instead of our own. This way,
-    if the internal representation for these objects changes
-    (as has recently happened), we stay compatible (see issue #3).
-  - Fix bug were orb logs were not properly updated if the enumeration
-    stopped early (see issues #4 and #5).
-  - Fix bug caused by orbits with seeds (see issue #5).
-  - Update and tweak the package build system.
-  - Move package repository and website to GitHub.
+## 4.8.2 (2019-02-23)
 
-4.6 (2013-05-02)
-  - Fix a one by off bug in FuncMappingPermListList reported by Max Horn.
-  - Withdraw C versions of PermLeftQuoTransformationNC,
-    ImageAndKernelOfTransformation, CanonicalTransSameKernel and
-    IsInjectiveTransOnList
-  - No longer load the GAP versions of those for GAP >= 4.7
-  - Fix hash function for transformations for GAP >= 4.7
-  - Add hash function for partial perms for GAP >= 4.7
+- Rewrote build system to use gac, not autoconf/automake/libtool
+- Improve compatibility with upcoming GAP 4.11
+- Fix for using the package without compilation (works again now)
+- Various janitorial changes
 
-4.5 (2012-05-30)
-  - Fix a hash table bug for matrices over finite fields acting on
-    vectors. This was found in the context of the genss package.
+## 4.8.1 (2018-09-10)
 
-4.4 (2012-05-29)
-  - Fix a nasty bug in Orb function.
+- Deal with hash functions returning 'fail', or any other non-integer
+  (instead of crashing or doing other random things)
+- Change several ORB_HashFunction to return fail if necessary
+- Require GAP >= 4.9
+- Update build system for better compatibility with GAP >= 4.9
 
-4.3 (2012-05-28)
-  - Add ChooseHashFunction method for transformations.
-  - Add seeds option for Orb and additional seeds.
-  - Add script configure_like_gap.
-  - Replace "source" by "." in m4/ac_find_gap.m4 for BSD systems.
+## 4.8.0 (2017-11-10)
 
-4.2 (2012-01-30)
-  - Make it compile on Windows
-  - Transfer some minor details in the build setup from lessons
-    learned from the io package.
+- Renamed the IsClosed filter to IsClosedOrbit, and added a new operation
+  IsClosed which simply returns the value of the IsClosedOrbit filter.
+  This allows other packages do also use the name IsClosed.
+- Fix hash tables with initial size <= 5 not growing correctly
+- Fix ORB_HashFunctionModWrapper
+- Fix bug in HTGrow causing it to never call ORB_HashFunctionModWrapper
+- Ensure compatibility with GAP 4.9
 
-4.1 (2012-01-26)
-  - Change compilation setup slightly: allow for CONFIGNAME and
-    cleanup.
+## 4.7.6 (2016-03-08)
 
-4.0 (2012-01-10)
-  - Fix a bug in the hash function for flat plain lists which was
-    triggered by equal lists with different sizes of allocated memory.
-  - Use automake and libtool and no longer gac to compile.
+- Move MappingPermListList C implementation from orb to the GAP kernel
+- Fix regression which prevent orb from being used without compilation
+- Some changes to the C code for compatibility with HPC-GAP (resp. ward)
 
-3.8for4.5 (2011-11-09)
-3.8 (2011-11-09)
-  - Refix configure script for GAP >= 4.5.2
-  - Fix the documentation of TraceSchreierTreeForward and
-    TraceSchreierTreeBack
-  - Store OrbitGraph if it is computed afterwards
-  - Make MappingPermListList_C and friends not change things into
-    plain lists (keep ranges in particular)
-  - PermLeftQuoTransformationNC now also accepts plain lists of
-    integers instead of transformations
-  - Some minor improvements to the documentation
-  - Provide option forflatplainlists for hash tables and orbits
-  - Provide UnderlyingPlist for orbit objects
+## 4.7.5 (2016-01-20)
 
-3.7 (2011-02-02)
-  - Fix calling convention for ORB_EstimateOrbitSize
-  - Fix the bug that orb!.gens could be immutable.
-  - Improve OrbitBySuborbit to use random elements to find stabiliser els
-  - New operation TestMembership for OrbitBySuborbits
-  - Make all mutable objects properly mutable to allow for
-    StructuralCopy.
-  - New internal function TABLE_OF_KERNEL_TRANS.
-  - Immutable AVLtrees can no longer be changed.
-  - New internal function CanonicalTransSameKernel.
-  - New internal function IsInjectiveTransOnList.
-  - Fixed configure script for GAP 4.5
+- Add a hash function for blists
+- Technical change: orbit objects are not collections anymore (fixes issue #10,
+  where sometimes \in returned wrong results for orbits)
+- Improve test suite
 
-3.6 (2010-07-23)
-  - Fixed a bug in the AVL tree GAP code (C version was fine)
+## 4.7.4 (2016-01-07)
 
-3.5 (2010-07-19)
-  - Weak orbits of semigroups and monoids in Orb
-  - grading for an orbit
-  - Jenkins Hash Function (as yet undocumented)
-  - Slight improvement of hashfunc options
-  - Documentation improvements
-  - OrbitGraph for Orb orbits
-  - IsGradedOrbit
-  - New fast methods for AsList, Enumerator and ConstantTimeAccessList
-  - Method for Iterator for Orb orbits
-  - Kernel method for PermLeftQuoTransformationNC
-  - Kernel method for MappingPermSetSet
-  - Kernel method for MappingPermListList
-  - Kernel method for ImageSetOfTransformation and KernelOfTransformation
-  - Allow a different operation in FindSuborbits
-  - Provide ORB_HashFunctionForPlainFlatList
-  - Make ProfileGlobalFunctions(true) work for C functions
-  - Slightly change OrbitStatisticOn* with respect to orbit length limit
+- Show an error when the user tries to compute orbits of objects for
+  which no ChooseHashFunction method is available. Previously, it would
+  fall back to a "trivial" hash function, which lead to worst-case
+  performance.
+- Require GAP >= 4.6
+- Remove Jenkins hash in favor of the Murmur hash built into GAP
+- Clarify that the code is licensed under GPL v3.
+- Document that MakeSchreierTreeShallow only works for orbits with log.
+- Move website to https://gap-packages.github.io/orb/
 
-3.4 (2009-11-05)
-  - Fixed a bug in the gap4r4 compatibility file in SlotUsagePattern.
-  - Switch off accus in initialisation phase because there is no point.
+## 4.7.3 (2014-11-08)
 
-3.3 (2009-09-07)
-  - Fixed a bug in ProductReplacer
+- Tweak the build system to avoid potential issues when the source
+  code gets repackages by third parties (e.g. by the GAP team, when
+  creating their big package archives)
+- Fix a missing variable initialization, which could cause Enumerate
+  (and hence anything using it, such as FindShortGeneratorsOfSubgroup)
+  to run into an error.
 
-3.2 (2009-08-31)
-  - Fixed incompatibility with fr package, FLOATs again!
+## 4.7.2 (2014-09-24)
 
-3.1 (2009-08-26)
-  - Fixed bug in HTAdd (calling AddHT).
-  - Major reorganisation of product replacers (accelerator, multiple accus)
-  - AddGeneratorToProductReplacer new
-  - added AVLIndexFind
-  - allow automatic growing of tree hash tables
-  - change fallback for ChooseHashFunction to return 1 function
+- Fix error in Memory() method for orbit-by-suborbit setup objects.
+- Update Max Neunhoeffer's contact data
+- Use AutoDoc to generate title page of the manual from PackageInfo.g
+- Add Max Horn as a maintainer
 
-3.0 (2009-07-22)
-  - Fixed some bugs for hash functions for compressed vectors/matrices.
-  - Fixed a bug in the depth and depthmarks of orbits
-  - Improved MakeSchreierTreeShallow for great depths
-  - New implementation of AVL trees.
-  - C-part to speed up AVL trees and hash tables.
-  - New interface to hash functionality.
-  - New tree hash tables.
-  - C-port to speed up tree hash tables.
-  - New generic hash function in particular for compressed vectors/mats.
-  - ORB_EstimateOrbitSize using birthday paradox.
-  - Fix normalin component for product replacer objects.
-  - Various fixes and improvements of orbit-by-suborbit stuff.
-  - New HISTORY file for release history.
+## 4.7.1 (2014-04-04)
 
-2.0 (2008-06-22)
-  - Variant of "rattle" for random elements in normal closure.
-  - Fixed 64bit issue for hash functions for compressed vectors.
-  - Make compatible to GAP 4.4 again
-  - New chapter as a worked out example of OrbitBySuborbit technology
-  - Update of documentation to code
-  - Sort out licensing business
-  - Clean up examples directory
-  - Added Co1 example to documentation
-  - Added M11 example to documentation
-  - Added Fi23 example to documentation
-  - Use new "cheap" option of SmallerDegreePermutationRepresentation
-  - Release revision 211 as version 2.0
+- Previous release had an invalid release date in
+  PackageInfo.g (2014-04-31 instead of 2014-03-31).
+- Merge HISTORY and CHANGES files.
 
-1.5 (2007-10-31)
-  - Fixed documentation of ActionOnOrbit.
-  - New FindSuborbits methods and OrbitIntersectionMatrix to compute
-    condensed permutation modules in smaller cases.
-  - Improved methods for Intersection2 and IntersectSet for hash
-    orbits and perm on int orbits.
-  - Made FindShortGeneratorsOfSubgroup an operation.
-  - Methods for intersections of orbits.
-  - Fixed bug in the unpickling of caches.
-  - Fixed case of one generator in product replacers.
-  - Take out Randomize methods for gf2 and 8bit vectors and matrices.
-    They will reappear in GAP >= 4.5.
-  - New method for finding transversals in matrix groups.
-  - Use "Rattle" in product replacers (can be switched off)
-  - Release revision 149 as version 1.5, which is intended to be
-    a preliminary version without proper documentation.
+## 4.7 (2014-03-31)
 
-1.4 (2007-02-26)
-  - Picklers for orbits, caches, orbits-by-suborbits and other stuff.
-  - Action on subspaces for orbits-by-suborbits.
-  - Fixed bug in \in method for permutations on integer orbits.
-  - Picklers for product replacer objects and random searcher objects.
-  - Release revision 129 as version 1.4
+- Use hash functions for transformations and partial permutations
+  provided by newer GAP versions instead of our own. This way,
+  if the internal representation for these objects changes
+  (as has recently happened), we stay compatible (see issue #3).
+- Fix bug were orb logs were not properly updated if the enumeration
+  stopped early (see issues #4 and #5).
+- Fix bug caused by orbits with seeds (see issue #5).
+- Update and tweak the package build system.
+- Move package repository and website to GitHub.
 
-1.3 (2006-10-13)
-  - random sources are now in the library, thus, orb will only work
-    with GAP >= 4.4.8 and GAP.dev from now on
-  - Moved realrandom.* to the IO package.
-  - OrbitBySuborbitKnownSize
-  - lots of small changes, forgot to take notes
+## 4.6 (2013-05-02)
 
-1.2 (2006-07-27)
-  - ?
+- Fix a one by off bug in FuncMappingPermListList reported by Max Horn.
+- Withdraw C versions of PermLeftQuoTransformationNC,
+  ImageAndKernelOfTransformation, CanonicalTransSameKernel and
+  IsInjectiveTransOnList
+- No longer load the GAP versions of those for GAP >= 4.7
+- Fix hash function for transformations for GAP >= 4.7
+- Add hash function for partial perms for GAP >= 4.7
 
-1.1 (2006-06-12)
-  - ?
+## 4.5 (2012-05-30)
 
-1.0 (?)
-  - Initial release
+- Fix a hash table bug for matrices over finite fields acting on
+  vectors. This was found in the context of the genss package.
+
+## 4.4 (2012-05-29)
+
+- Fix a nasty bug in Orb function.
+
+## 4.3 (2012-05-28)
+
+- Add ChooseHashFunction method for transformations.
+- Add seeds option for Orb and additional seeds.
+- Add script configure_like_gap.
+- Replace "source" by "." in m4/ac_find_gap.m4 for BSD systems.
+
+## 4.2 (2012-01-30)
+
+- Make it compile on Windows
+- Transfer some minor details in the build setup from lessons
+  learned from the io package.
+
+## 4.1 (2012-01-26)
+
+- Change compilation setup slightly: allow for CONFIGNAME and
+  cleanup.
+
+## 4.0 (2012-01-10)
+
+- Fix a bug in the hash function for flat plain lists which was
+  triggered by equal lists with different sizes of allocated memory.
+- Use automake and libtool and no longer gac to compile.
+
+## 3.8for4.5 (2011-11-09)
+
+## 3.8 (2011-11-09)
+
+- Refix configure script for GAP >= 4.5.2
+- Fix the documentation of TraceSchreierTreeForward and
+  TraceSchreierTreeBack
+- Store OrbitGraph if it is computed afterwards
+- Make MappingPermListList_C and friends not change things into
+  plain lists (keep ranges in particular)
+- PermLeftQuoTransformationNC now also accepts plain lists of
+  integers instead of transformations
+- Some minor improvements to the documentation
+- Provide option forflatplainlists for hash tables and orbits
+- Provide UnderlyingPlist for orbit objects
+
+## 3.7 (2011-02-02)
+
+- Fix calling convention for ORB_EstimateOrbitSize
+- Fix the bug that orb!.gens could be immutable.
+- Improve OrbitBySuborbit to use random elements to find stabiliser els
+- New operation TestMembership for OrbitBySuborbits
+- Make all mutable objects properly mutable to allow for
+  StructuralCopy.
+- New internal function TABLE_OF_KERNEL_TRANS.
+- Immutable AVLtrees can no longer be changed.
+- New internal function CanonicalTransSameKernel.
+- New internal function IsInjectiveTransOnList.
+- Fixed configure script for GAP 4.5
+
+## 3.6 (2010-07-23)
+
+- Fixed a bug in the AVL tree GAP code (C version was fine)
+
+## 3.5 (2010-07-19)
+
+- Weak orbits of semigroups and monoids in Orb
+- grading for an orbit
+- Jenkins Hash Function (as yet undocumented)
+- Slight improvement of hashfunc options
+- Documentation improvements
+- OrbitGraph for Orb orbits
+- IsGradedOrbit
+- New fast methods for AsList, Enumerator and ConstantTimeAccessList
+- Method for Iterator for Orb orbits
+- Kernel method for PermLeftQuoTransformationNC
+- Kernel method for MappingPermSetSet
+- Kernel method for MappingPermListList
+- Kernel method for ImageSetOfTransformation and KernelOfTransformation
+- Allow a different operation in FindSuborbits
+- Provide ORB_HashFunctionForPlainFlatList
+- Make ProfileGlobalFunctions(true) work for C functions
+- Slightly change OrbitStatisticOn* with respect to orbit length limit
+
+## 3.4 (2009-11-05)
+
+- Fixed a bug in the gap4r4 compatibility file in SlotUsagePattern.
+- Switch off accus in initialisation phase because there is no point.
+
+## 3.3 (2009-09-07)
+
+- Fixed a bug in ProductReplacer
+
+## 3.2 (2009-08-31)
+
+- Fixed incompatibility with fr package, FLOATs again!
+
+## 3.1 (2009-08-26)
+
+- Fixed bug in HTAdd (calling AddHT).
+- Major reorganisation of product replacers (accelerator, multiple accus)
+- AddGeneratorToProductReplacer new
+- added AVLIndexFind
+- allow automatic growing of tree hash tables
+- change fallback for ChooseHashFunction to return 1 function
+
+## 3.0 (2009-07-22)
+
+- Fixed some bugs for hash functions for compressed vectors/matrices.
+- Fixed a bug in the depth and depthmarks of orbits
+- Improved MakeSchreierTreeShallow for great depths
+- New implementation of AVL trees.
+- C-part to speed up AVL trees and hash tables.
+- New interface to hash functionality.
+- New tree hash tables.
+- C-port to speed up tree hash tables.
+- New generic hash function in particular for compressed vectors/mats.
+- ORB_EstimateOrbitSize using birthday paradox.
+- Fix normalin component for product replacer objects.
+- Various fixes and improvements of orbit-by-suborbit stuff.
+- New HISTORY file for release history.
+
+## 2.0 (2008-06-22)
+
+- Variant of "rattle" for random elements in normal closure.
+- Fixed 64bit issue for hash functions for compressed vectors.
+- Make compatible to GAP 4.4 again
+- New chapter as a worked out example of OrbitBySuborbit technology
+- Update of documentation to code
+- Sort out licensing business
+- Clean up examples directory
+- Added Co1 example to documentation
+- Added M11 example to documentation
+- Added Fi23 example to documentation
+- Use new "cheap" option of SmallerDegreePermutationRepresentation
+- Release revision 211 as version 2.0
+
+## 1.5 (2007-10-31)
+
+- Fixed documentation of ActionOnOrbit.
+- New FindSuborbits methods and OrbitIntersectionMatrix to compute
+  condensed permutation modules in smaller cases.
+- Improved methods for Intersection2 and IntersectSet for hash
+  orbits and perm on int orbits.
+- Made FindShortGeneratorsOfSubgroup an operation.
+- Methods for intersections of orbits.
+- Fixed bug in the unpickling of caches.
+- Fixed case of one generator in product replacers.
+- Take out Randomize methods for gf2 and 8bit vectors and matrices.
+  They will reappear in GAP >= 4.5.
+- New method for finding transversals in matrix groups.
+- Use "Rattle" in product replacers (can be switched off)
+- Release revision 149 as version 1.5, which is intended to be
+  a preliminary version without proper documentation.
+
+## 1.4 (2007-02-26)
+
+- Picklers for orbits, caches, orbits-by-suborbits and other stuff.
+- Action on subspaces for orbits-by-suborbits.
+- Fixed bug in \in method for permutations on integer orbits.
+- Picklers for product replacer objects and random searcher objects.
+- Release revision 129 as version 1.4
+
+## 1.3 (2006-10-13)
+
+- random sources are now in the library, thus, orb will only work
+  with GAP >= 4.4.8 and GAP.dev from now on
+- Moved realrandom.* to the IO package.
+- OrbitBySuborbitKnownSize
+- lots of small changes, forgot to take notes
+
+## 1.2 (2006-07-27)
+
+- ?
+
+## 1.1 (2006-06-12)
+
+- ?
+
+## 1.0 (?)
+
+- Initial release
